@@ -10,6 +10,8 @@
 <use name=DataFormats/L1GlobalTrigger>
 <use name=CondFormats/CastorObjects>
 <use name=CalibFormats/CastorObjects>
+<use name=SimDataFormats/GeneratorProducts>
+<use name=SimDataFormats/Vertex>
 <flags EDM_PLUGIN=1>
 <export>
    <lib name=AnalyzersTreeMaker>

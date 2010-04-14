@@ -169,8 +169,11 @@ process.treemaker = cms.EDAnalyzer('TreeMaker',
       CaloJets = cms.InputTag('ak5CaloJets', '', 'RERECO'),
       PFJets = cms.InputTag('ak5PFJets', '', 'RERECO'),
       L1Trigger = cms.InputTag('gtDigis', '', 'RERECO'),
-      CastorDigis = cms.InputTag('castorDigis', '', 'TreeMaker')
+      CastorDigis = cms.InputTag('castorDigis', '', 'TreeMaker'),
+      HepMCColl = cms.InputTag('generator','','HLT'),
+      PrimaryVertexColl = cms.InputTag('offlinePrimaryVertices','','RERECO'),
+      BeamSpot = cms.InputTag('offlineBeamSpot','','RERECO'),
+      GenPartColl = cms.InputTag('genParticles','','HLT')
 )
-
 
 process.p = cms.Path(process.physDecl*process.hltLevel1GTSeed*process.oneGoodVertexFilter*process.noscraping*process.castorDigis*(process.calomonojetSelector+process.calodijetSelector+process.pfmonojetSelector+process.pfdijetSelector)*process.treemaker)

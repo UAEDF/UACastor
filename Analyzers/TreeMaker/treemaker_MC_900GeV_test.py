@@ -90,7 +90,11 @@ process.treemaker = cms.EDAnalyzer('TreeMaker',
       CaloJets = cms.InputTag('ak5CaloJets', '', 'RECO'),
       PFJets = cms.InputTag('ak5PFJets', '', 'RECO'),
       L1Trigger = cms.InputTag('gtDigis', '', 'RECO'),
-      CastorDigis = cms.InputTag('simCastorDigis', '', 'CastorREDIGI')
+      CastorDigis = cms.InputTag('simCastorDigis', '', 'CastorREDIGI'),
+      HepMCColl = cms.InputTag('generator','','HLT'),
+      PrimaryVertexColl = cms.InputTag('offlinePrimaryVertices','','RERECO'),
+      BeamSpot = cms.InputTag('offlineBeamSpot','','RERECO'),
+      GenPartColl = cms.InputTag('genParticles','','HLT')
 )
 
 process.TFileService = cms.Service("TFileService",

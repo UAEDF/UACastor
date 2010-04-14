@@ -170,6 +170,10 @@ process.treemaker = cms.EDAnalyzer('TreeMaker',
       PFJets = cms.InputTag('ak5PFJets', '', 'RERECO'),
       L1Trigger = cms.InputTag('gtDigis', '', 'RERECO'),
       CastorDigis = cms.InputTag('castorDigis', '', 'TreeMaker')
+      HepMCColl = cms.InputTag('generator','','HLT'),
+      PrimaryVertexColl = cms.InputTag('offlinePrimaryVertices','','RERECO'),
+      BeamSpot = cms.InputTag('offlineBeamSpot','','RERECO'),
+      GenPartColl = cms.InputTag('genParticles','','HLT')
 )
 
 

@@ -13,7 +13,7 @@
 //
 // Original Author:  Alexander Flossdorf,01c/159,1797,
 //         Created:  Wed Mar  3 14:13:07 CET 2010
-// $Id: CentralDiCaloJetProducer.cc,v 1.1 2010/03/03 16:39:24 floss Exp $
+// $Id: CentralDiCaloJetFilter.cc,v 1.1 2010/04/13 14:12:48 hvanhaev Exp $
 //
 //
 
@@ -168,7 +168,7 @@ void CentralDiCaloJetProducer::produce(edm::Event& iEvent, const edm::EventSetup
 
  if (iEvent.id().run() == 1) {
   	// MC: do nothing with HLT_PhysicsDeclared
-	cout << "this is MC, doing nothing with HLT_PhysicsDeclared in jet selector" << endl;
+	//-- cout << "this is MC, doing nothing with HLT_PhysicsDeclared in jet selector" << endl;
   } else {
   
   // HLT

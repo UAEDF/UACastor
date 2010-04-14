@@ -87,8 +87,8 @@ process.treemaker = cms.EDAnalyzer('TreeMaker',
       L1Trigger = cms.InputTag('gtDigis', '', 'RECO'),
       CastorDigis = cms.InputTag('simCastorDigis', '', 'CastorREDIGI'),
       HepMCColl = cms.InputTag('generator','','HLT'),
-      PrimaryVertexColl = cms.InputTag('offlinePrimaryVertices','','RERECO'),
-      BeamSpot = cms.InputTag('offlineBeamSpot','','RERECO'),
+      PrimaryVertexColl = cms.InputTag('offlinePrimaryVertices','','RECO'),
+      BeamSpot = cms.InputTag('offlineBeamSpot','','RECO'),
       GenPartColl = cms.InputTag('genParticles','','HLT')
 )
 

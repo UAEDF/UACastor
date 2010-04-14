@@ -13,7 +13,7 @@
 //
 // Original Author:  Alexander Flossdorf,01c/159,1797,
 //         Created:  Wed Mar  3 14:13:22 CET 2010
-// $Id: CentralMonoCaloJetProducer.cc,v 1.1 2010/03/03 16:39:25 floss Exp $
+// $Id: CentralMonoCaloJetFilter.cc,v 1.1 2010/04/13 14:20:00 hvanhaev Exp $
 //
 //
 
@@ -168,7 +168,7 @@ void CentralMonoCaloJetProducer::produce(edm::Event& iEvent, const edm::EventSet
 
   if (iEvent.id().run() == 1) {
   	// MC: do nothing with HLT_PhysicsDeclared
-	cout << "this is MC, doing nothing with HLT_PhysicsDeclared in jet selector" << endl;
+	//-- cout << "this is MC, doing nothing with HLT_PhysicsDeclared in jet selector" << endl;
   } else {
   
   // HLT

@@ -13,7 +13,7 @@
 //
 // Original Author:  Alexander Flossdorf,01c/159,1797,
 //         Created:  Wed Mar  3 14:13:12 CET 2010
-// $Id: CentralDiPFJetProducer.cc,v 1.1 2010/03/03 18:13:34 floss Exp $
+// $Id: CentralDiPFJetFilter.cc,v 1.1 2010/04/13 14:17:33 hvanhaev Exp $
 //
 //
 
@@ -158,7 +158,7 @@ void CentralDiPFJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
 
   if (iEvent.id().run() == 1) {
   	// MC: do nothing with HLT_PhysicsDeclared
-	cout << "this is MC, doing nothing with HLT_PhysicsDeclared in jet selector" << endl;
+	//-- cout << "this is MC, doing nothing with HLT_PhysicsDeclared in jet selector" << endl;
   } else {
   
   // HLT

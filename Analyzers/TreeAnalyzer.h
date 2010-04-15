@@ -59,6 +59,14 @@ public :
    Double_t        PFJetPt[4];
    Double_t        PFJetEta[4];
    Double_t        PFJetPhi[4];
+   Int_t           ProcessId;
+   Double_t        PtHat;
+   Int_t           nPV;
+   Int_t           nTrackPV;
+   Double_t        PV[3];
+   Double_t        PVerr[3];
+   Double_t        BS[3];
+   Double_t        PVsim[3];
 
    // List of branches
    TBranch        *b_ADC;   //!
@@ -98,6 +106,15 @@ public :
    TBranch        *b_PFJetPt;   //!
    TBranch        *b_PFJetEta;   //!
    TBranch        *b_PFJetPhi;   //!
+   TBranch        *b_ProcessId;   //!
+   TBranch        *b_PtHat;   //!
+   TBranch        *b_nPV;   //!
+   TBranch        *b_nTrackPV;   //!
+   TBranch        *b_PV;   //!
+   TBranch        *b_PVerr;   //!
+   TBranch        *b_BS;   //!
+   TBranch        *b_PVsim;   //!
+
 
    TreeAnalyzer();
    virtual void GetTreeFile(TTree *tree=0, TString filename="Dummyfile.root");
@@ -221,6 +238,14 @@ void TreeAnalyzer::Init(TTree *tree)
    fChain->SetBranchAddress("PFJetPt", PFJetPt, &b_PFJetPt);
    fChain->SetBranchAddress("PFJetEta", PFJetEta, &b_PFJetEta);
    fChain->SetBranchAddress("PFJetPhi", PFJetPhi, &b_PFJetPhi);
+   fChain->SetBranchAddress("ProcessId", &ProcessId, &b_ProcessId);
+   fChain->SetBranchAddress("PtHat", &PtHat, &b_PtHat);
+   fChain->SetBranchAddress("nPV", &nPV, &b_nPV);
+   fChain->SetBranchAddress("nTrackPV", &nTrackPV, &b_nTrackPV);
+   fChain->SetBranchAddress("PV", PV, &b_PV);
+   fChain->SetBranchAddress("PVerr", PVerr, &b_PVerr);
+   fChain->SetBranchAddress("BS", BS, &b_BS);
+   fChain->SetBranchAddress("PVsim", PVsim, &b_PVsim);
    Notify();
 }
 

@@ -131,7 +131,7 @@ TString cmsstring = "1";
 if (cms == 900) {cmsstring = "900"; maxRange = 40000;}
 if (cms == 2360) {cmsstring = "2360"; maxRange = 60000;}
 if (cms == 7000) {cmsstring = "7000"; maxRange = 80000;}
-Char_t HADscalestring[1];
+Char_t HADscalestring[10];
 sprintf(HADscalestring,"%6.4f",HADscale);
 
 // define histograms
@@ -360,7 +360,7 @@ std::cout << "Starting event loop now" << std::endl;
    } // end event loop
    
    
-   if (cms == 900) {
+   if (cms == 900 && nEvents != 0) {
    // print out event numbers
    std::cout << "run 124020 has " << nEvents_run124020 << " events" << std::endl;
    std::cout << "run 124022 has " << nEvents_run124022 << " events" << std::endl;
@@ -369,7 +369,13 @@ std::cout << "Starting event loop now" << std::endl;
    std::cout << "run 124027 has " << nEvents_run124027 << " events" << std::endl;
    std::cout << "run 124030 has " << nEvents_run124030 << " events" << std::endl;
    }
-   std::cout << "Total number of events in " + cmsstring + " data = " << nEvents << std::endl;
+   if ( nEvents != 0 && nMCEvents != 0) {
+   	std::cout << "Total number of events in " + cmsstring + " data = " << nEvents << std::endl;
+   	std::cout << "Total number of events in " + cmsstring + " MC = " << nMCEvents << std::endl;
+   } else {
+   	if (nEvents == 0) std::cout << "There's no data found! Please provide it... otherwise you'll see crazy things" <<std::endl;
+	if (nMCEvents == 0) std::cout << "There's no MC found! Please provide it... otherwise you'll see crazy things" <<std::endl;
+   }
    
    if (cms == 900) {
    // plot energy flows
@@ -464,7 +470,6 @@ std::cout << "Starting event loop now" << std::endl;
    if (savePlots == 1) c900MBEflow_all->SaveAs("./TreeAnalyzer/Eflowplots/MBEflow900GeV_allruns.eps");
    }
    
-   std::cout << "debug 1" << std::endl;
    
    TCanvas *cEflow_all = new TCanvas("cEflow_all","Energy flows in CASTOR for all "+cmsstring+" GeV runs");
    cEflow_all->Divide(1,1);
@@ -490,7 +495,6 @@ std::cout << "Starting event loop now" << std::endl;
    */
    if (savePlots == 1) cEflow_all->SaveAs("./TreeAnalyzer/Eflowplots/Eflow"+cmsstring+"GeV_HADscale"+HADscalestring+".eps");
    
-   std::cout << "debug 2" << std::endl;
    
    // get mean response for each channel
    for (int i=0;i<224;i++) {
@@ -513,7 +517,6 @@ std::cout << "Starting event loop now" << std::endl;
    hChannelMeans->Draw("samep");
    if (savePlots == 1) cChannelMeans->SaveAs("./TreeAnalyzer/Eflowplots/channels"+cmsstring+"GeV_HADscale"+HADscalestring+".eps");
    
-   std::cout << "debug 3" << std::endl;
 }
 
 void TreeAnalyzer::plotChannelDistributions(int savePlots, int nModules, int jetsample, int cms,double HADscale, double ABSscale) {
@@ -566,7 +569,7 @@ TString cmsstring = "1";
 if (cms == 900) {cmsstring = "900";}
 if (cms == 2360) {cmsstring = "2360";}
 if (cms == 7000) {cmsstring = "7000";}
-Char_t HADscalestring[1];
+Char_t HADscalestring[10];
 sprintf(HADscalestring,"%6.4f",HADscale);
 
 TH1D *hEChannel[maxChannel];
@@ -599,6 +602,9 @@ for (int i=0;i<maxChannel;i++) {
 	hEChannelQCDMC[i] = new TH1D(hnameQCDMC,htitleQCDMC,105,-2000,50000);
 }
 
+int nEvents = 0;
+int nMCEvents = 0;
+
 double ratios[maxChannel];
 double ratios_error[maxChannel];
 double ratiosMC[maxChannel];
@@ -628,7 +634,10 @@ std::cout << "Starting event loop now" << std::endl;
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       // if (Cut(ientry) < 0) continue;
-      if (jentry/(d*1000) > 1) {cout << jentry << endl; d++;};  
+      if (jentry/(d*1000) > 1) {cout << jentry << endl; d++;}; 
+      
+      if (runNumber != 1) nEvents += 1;
+      if (runNumber == 1) nMCEvents += 1; 
       
       double TotalSignal = 0;
       // get total signal
@@ -675,6 +684,14 @@ std::cout << "Starting event loop now" << std::endl;
       
       
    } // end event loop
+   
+   if ( nEvents != 0 && nMCEvents != 0) {
+   	std::cout << "Total number of events in " + cmsstring + " data = " << nEvents << std::endl;
+   	std::cout << "Total number of events in " + cmsstring + " MC = " << nMCEvents << std::endl;
+   } else {
+   	if (nEvents == 0) std::cout << "There's no data found! Please provide it... otherwise you'll see crazy things" <<std::endl;
+	if (nMCEvents == 0) std::cout << "There's no MC found! Please provide it... otherwise you'll see crazy things" <<std::endl;
+   }
    
    
    /*
@@ -747,7 +764,7 @@ std::cout << "Starting event loop now" << std::endl;
    
    //TString cte = mean_ratio.c_str();
    //TString cteMC = mean_ratioMC.c_str();
-   Char_t cte[2];
+   Char_t cte[20];
    sprintf(cte,"%6.4f",mean_ratio);
    TF1 *fFit = new TF1("fFit",cte,0,97);
    
@@ -759,7 +776,7 @@ std::cout << "Starting event loop now" << std::endl;
    fFit->Draw("same");
    //hRatios->Fit("pol0","VMEF","",1,96);
    
-   Char_t cteMC[2];
+   Char_t cteMC[20];
    sprintf(cteMC,"%6.4f",mean_ratioMC);
    TF1 *fFitMC = new TF1("fFitMC",cteMC,0,97);
    
@@ -925,6 +942,14 @@ std::cout << "Starting event loop now" << std::endl;
       } 
       
    } // end event loop
+   
+   if ( nEvents != 0 && nMCEvents != 0) {
+   	std::cout << "Total number of events in data = " << nEvents << std::endl;
+   	std::cout << "Total number of events in MC = " << nMCEvents << std::endl;
+   } else {
+   	if (nEvents == 0) std::cout << "There's no data found! Please provide it... otherwise you'll see crazy things" <<std::endl;
+	if (nMCEvents == 0) std::cout << "There's no MC found! Please provide it... otherwise you'll see crazy things" <<std::endl;
+   }
    
    double ChannelMeanRatio[maxChannel];
    double MeanRatio = 0;

@@ -31,7 +31,8 @@ public :
    Int_t           channel[224];
    Double_t        signal[224];
    Double_t        fCsignal[224];
-   Double_t        pedestal[224];
+   Double_t        pedestalADC[224];
+   Double_t        pedestalfC[224];
    Int_t           eventNum;
    Int_t           lumiBlock;
    Int_t           runNumber;
@@ -69,7 +70,8 @@ public :
    TBranch        *b_channel;   //!
    TBranch        *b_signal;   //!
    TBranch        *b_fCsignal;   //!
-   TBranch        *b_pedestal;   //!
+   TBranch        *b_pedestalADC;   //!
+   TBranch        *b_pedestalfC;   //
    TBranch        *b_eventNum;   //!
    TBranch        *b_lumiBlock;   //!
    TBranch        *b_runNumber;   //!
@@ -191,7 +193,8 @@ void TreeAnalyzer::Init(TTree *tree)
    fChain->SetBranchAddress("channel", channel, &b_channel);
    fChain->SetBranchAddress("signal", signal, &b_signal);
    fChain->SetBranchAddress("fCsignal", fCsignal, &b_fCsignal);
-   fChain->SetBranchAddress("pedestal", pedestal, &b_pedestal);
+   fChain->SetBranchAddress("pedestalADC", pedestalADC, &b_pedestalADC);
+   fChain->SetBranchAddress("pedestalfC", pedestalfC, &b_pedestalfC);
    fChain->SetBranchAddress("eventNum", &eventNum, &b_eventNum);
    fChain->SetBranchAddress("lumiBlock", &lumiBlock, &b_lumiBlock);
    fChain->SetBranchAddress("runNumber", &runNumber, &b_runNumber);

@@ -13,7 +13,7 @@
 //
 // Original Author:  Alexander Flossdorf,01c/159,1797,
 //         Created:  Wed Mar  3 14:13:22 CET 2010
-// $Id: CentralMonoCaloJetFilter.cc,v 1.1 2010/04/13 14:20:00 hvanhaev Exp $
+// $Id: CentralMonoCaloJetFilter.cc,v 1.2 2010/04/14 22:04:25 roland Exp $
 //
 //
 
@@ -32,7 +32,7 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
-#include "PhysicsTools/UtilAlgos/interface/TFileService.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
 
 #include "DataFormats/JetReco/interface/Jet.h"
 #include "DataFormats/JetReco/interface/JetCollection.h"
@@ -45,9 +45,8 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
-#include "FWCore/Framework/interface/TriggerNames.h"
+#include "FWCore/Common/interface/TriggerNames.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
-#include "FWCore/Framework/interface/TriggerNames.h"
 #include "L1Trigger/L1ExtraFromDigis/interface/L1ExtraParticleMapProd.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutSetupFwd.h"
@@ -178,7 +177,7 @@ void CentralMonoCaloJetProducer::produce(edm::Event& iEvent, const edm::EventSet
   }
   else {
     TriggerNames triggerName;
-    triggerName.init(*hlTriggers);
+    //-- triggerName.init(*hlTriggers);
 
     if(triggerName.triggerName(116) == "HLT_PhysicsDeclared") {
       bool trigAccept = hlTriggers.product()->accept(116);

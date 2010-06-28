@@ -13,7 +13,7 @@
 //
 // Original Author:  Alexander Flossdorf,01c/159,1797,
 //         Created:  Wed Mar  3 14:13:07 CET 2010
-// $Id: CentralDiCaloJetFilter.cc,v 1.1 2010/04/13 14:12:48 hvanhaev Exp $
+// $Id: CentralDiCaloJetFilter.cc,v 1.2 2010/04/14 22:04:25 roland Exp $
 //
 //
 
@@ -31,7 +31,8 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ServiceRegistry/interface/Service.h"
-#include "PhysicsTools/UtilAlgos/interface/TFileService.h"
+
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
@@ -46,9 +47,9 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
-#include "FWCore/Framework/interface/TriggerNames.h"
+#include "FWCore/Common/interface/TriggerNames.h"
+
 #include "DataFormats/Common/interface/TriggerResults.h"
-#include "FWCore/Framework/interface/TriggerNames.h"
 #include "L1Trigger/L1ExtraFromDigis/interface/L1ExtraParticleMapProd.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutSetupFwd.h"
@@ -178,7 +179,7 @@ void CentralDiCaloJetProducer::produce(edm::Event& iEvent, const edm::EventSetup
   }
   else {
     TriggerNames triggerName;
-    triggerName.init(*hlTriggers);
+    //-- triggerName.init(*hlTriggers);
     
     unsigned short int trigpos = 0;
     const unsigned short int numTriggers = triggerName.size();

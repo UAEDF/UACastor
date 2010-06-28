@@ -13,7 +13,7 @@
 //
 // Original Author:  local user
 //         Created:  Wed Mar  3 10:32:26 CET 2010
-// $Id$
+// $Id: TreeMaker.cc,v 1.2 2010/04/13 15:33:53 roland Exp $
 //
 //
 
@@ -72,9 +72,8 @@
 // #include "SimDataFormats/Vertex/interface/SimVertexContainer.h"
 
 // trigger includes
-#include "FWCore/Framework/interface/TriggerNames.h"
+#include "FWCore/Common/interface/TriggerNames.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
-#include "FWCore/Framework/interface/TriggerNames.h"
 #include "L1Trigger/L1ExtraFromDigis/interface/L1ExtraParticleMapProd.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutSetupFwd.h"
@@ -480,7 +479,7 @@ void TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    }
    else {
      TriggerNames triggerName;
-     triggerName.init(*hlTriggers);
+     //-- triggerName.init(*hlTriggers);
      
      unsigned short int trigpos = 0;
      const unsigned short int numTriggers = triggerName.size();

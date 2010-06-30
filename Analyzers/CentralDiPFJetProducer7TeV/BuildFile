@@ -8,7 +8,7 @@
 <use name=JetMETCorrections/Objects>
 <flags EDM_PLUGIN=1>
 <export>
-   <lib name=AnalyzersCentralDiPFJetFilter7TeV>
+   <lib name=AnalyzersCentralDiPFJetProducer7TeV>
    <use name=FWCore/Framework>
    <use name=FWCore/PluginManager>
    <use name=FWCore/ParameterSet>

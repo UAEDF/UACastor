@@ -13,7 +13,7 @@
 //
 // Original Author:  local user
 //         Created:  Wed Mar  3 10:32:26 CET 2010
-// $Id: TreeMaker.cc,v 1.2 2010/04/13 15:33:53 roland Exp $
+// $Id: TreeMaker.cc,v 1.3 2010/06/28 14:50:01 roland Exp $
 //
 //
 
@@ -478,9 +478,10 @@ void TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      LogError("HLTriggerError") << "Failed to get trigger results - skipping this part";
    }
    else {
-     TriggerNames triggerName;
+     //-- TriggerNames triggerName;
      //-- triggerName.init(*hlTriggers);
-     
+     const TriggerNames & triggerName = iEvent.triggerNames(*hlTriggers);
+
      unsigned short int trigpos = 0;
      const unsigned short int numTriggers = triggerName.size();
      if(debug) cout << "Number of HLTriggers: " << numTriggers << std::endl;

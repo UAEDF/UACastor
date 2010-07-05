@@ -13,7 +13,7 @@
 //
 // Original Author:  local user
 //         Created:  Wed Mar  3 10:32:26 CET 2010
-// $Id: TreeMaker7TeV.cc,v 1.1 2010/07/01 16:18:41 roland Exp $
+// $Id: TreeMaker7TeV.cc,v 1.2 2010/07/05 09:10:40 roland Exp $
 //
 //
 
@@ -194,12 +194,10 @@ private:
   
   Double_t pedestalADC[224];
   Double_t pedestalfC[224];
-  
-  Double_t PFJetEnergy[4];
-  Double_t PFJetPt[4];
-  Double_t PFJetEta[4];
-  Double_t PFJetPhi[4];
-  
+
+  std::vector<double> PFJetEnergy, PFJetPt, PFJetEta, PFJetPhi;  
+  std::vector<double> *pPFJetEnergy, *pPFJetPt, *pPFJetEta, *pPFJetPhi;
+
   Int_t ProcessId;
   Double_t PtHat;
 
@@ -536,13 +534,6 @@ void TreeMaker7TeV::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
    isPFDijet = 0;
    nPFJets = 0;
    
-   for (Int_t i=0;i<4;i++) { 
-     PFJetEnergy[i] = 0;
-     PFJetPt[i] = 0;
-     PFJetEta[i] = 0;
-     PFJetPhi[i] = 0;
-   }
-   
    // PFJets
    
    Handle<reco::PFJetCollection> ak5PFJets;
@@ -553,6 +544,22 @@ void TreeMaker7TeV::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
    if (ak5PFJets.isValid()) {
      nPFJets = ak5PFJets->size();
      
+     pPFJetEnergy=&PFJetEnergy;
+     pPFJetEnergy->clear();
+     pPFJetEnergy->reserve(nPFJets);
+
+     pPFJetPt=&PFJetPt;
+     pPFJetPt->clear();
+     pPFJetPt->reserve(nPFJets);
+
+     pPFJetEta=&PFJetEta;
+     pPFJetEta->clear();
+     pPFJetEta->reserve(nPFJets);
+
+     pPFJetPhi=&PFJetPhi;
+     pPFJetPhi->clear();
+     pPFJetPhi->reserve(nPFJets);
+
      PFJetCollection correctedJets;
      // do the jet energy scale correction
      for(PFJetCollection::const_iterator jet = ak5PFJets->begin(); jet < ak5PFJets->end(); ++jet) {
@@ -568,14 +575,14 @@ void TreeMaker7TeV::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
      stable_sort(sortedJets.begin(),sortedJets.end(), PtSorter());
      
      // fill all variables
+
      for(Int_t p=0;p<nPFJets;++p) {
-       if (p<4) {
-	 PFJetEnergy[p] = sortedJets[p].energy();
-	 PFJetPt[p] = sortedJets[p].pt();
-	 PFJetEta[p] = sortedJets[p].eta();
-	 PFJetPhi[p] = sortedJets[p].phi();
-       }
+       pPFJetEnergy->push_back(sortedJets[p].energy());
+       pPFJetPt->push_back(sortedJets[p].pt());
+       pPFJetEta->push_back(sortedJets[p].eta());
+       pPFJetPhi->push_back(sortedJets[p].phi());
      }
+
    } else {
      LogError("CentralJetError") << "Failed to get PFJet collection - skipping this part";
    }
@@ -762,11 +769,11 @@ TreeMaker7TeV::beginJob()
   EventTree->Branch("isPFInclusive",&isPFInclusive,"isPFInclusive/I");
   EventTree->Branch("isPFDijet",&isPFDijet,"isPFDijet/I");
   
-  EventTree->Branch("PFJetEnergy",PFJetEnergy,"PFJetEnergy[4]/D");
-  EventTree->Branch("PFJetPt",PFJetPt,"PFJetPt[4]/D");
-  EventTree->Branch("PFJetEta",PFJetEta,"PFJetEta[4]/D");
-  EventTree->Branch("PFJetPhi",PFJetPhi,"PFJetPhi[4]/D");
-  
+  EventTree->Branch("PFJetEnergy","std::vector<double>",&pPFJetEnergy);
+  EventTree->Branch("PFJetPt","std::vector<double>",&pPFJetPt);
+  EventTree->Branch("PFJetEta","std::vector<double>",&pPFJetEta);
+  EventTree->Branch("PFJetPhi","std::vector<double>",&pPFJetPhi);
+
   EventTree->Branch("ProcessId",&ProcessId,"ProcessId/I");
   EventTree->Branch("PtHat",&PtHat,"PtHat/D");
   

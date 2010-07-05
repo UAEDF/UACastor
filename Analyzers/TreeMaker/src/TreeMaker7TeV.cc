@@ -13,7 +13,7 @@
 //
 // Original Author:  local user
 //         Created:  Wed Mar  3 10:32:26 CET 2010
-// $Id: TreeMaker7TeV.cc,v 1.3 2010/06/28 14:50:01 roland Exp $
+// $Id: TreeMaker7TeV.cc,v 1.1 2010/07/01 16:18:41 roland Exp $
 //
 //
 
@@ -40,7 +40,6 @@
 #include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
 #include "DataFormats/HcalDetId/interface/HcalCastorDetId.h"
 
-
 #include "SimDataFormats/CaloHit/interface/PCaloHit.h"
 #include "SimDataFormats/CaloHit/interface/PCaloHitContainer.h"
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
@@ -52,8 +51,10 @@
 
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
+
 #include "DataFormats/HcalDigi/interface/CastorDataFrame.h"
 #include "DataFormats/HcalDigi/interface/HcalDigiCollections.h"
 
@@ -125,19 +126,22 @@ using namespace reco;
 //
 
 class TreeMaker7TeV : public edm::EDAnalyzer {
+
 public:
+
   explicit TreeMaker7TeV(const edm::ParameterSet&);
   ~TreeMaker7TeV();
   
   
 private:
+
   virtual void beginJob() ;
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
   virtual void endJob() ;
   
   // ----------member data ---------------------------
   
-  std::string fOutputFileName;
+  //-- std::string fOutputFileName;
   std::string PFJetCorrectionService;
   edm::InputTag hlTriggerResults_;
   edm::TriggerNames triggerNames_;
@@ -152,8 +156,10 @@ private:
   edm::InputTag GenPartColl_;
 
   Bool_t ReadPedestal;
+
+  edm::Service<TFileService> fs;
   TTree* EventTree;
-  TFile* fOutputFile;
+  //-- TFile* fOutputFile;
   
   Int_t eventNum;
   Int_t lumiBlock;
@@ -217,19 +223,21 @@ private:
 // constructors and destructor
 //
 
-TreeMaker7TeV::TreeMaker7TeV(const edm::ParameterSet& iConfig):
-  fOutputFileName(iConfig.getParameter<std::string>("OutputFileName")),
-  PFJetCorrectionService(iConfig.getParameter<std::string>("PFJetCorrector")),
-  hlTriggerResults_(iConfig.getParameter<edm::InputTag>("HLTriggerResults")),
-  pfJets_(iConfig.getParameter<edm::InputTag>("PFJets")),
-  l1Trigger_(iConfig.getParameter<edm::InputTag>("L1Trigger")),
-  castordigis_(iConfig.getParameter<edm::InputTag>("CastorDigis")),
-  hepMCColl_(iConfig.getParameter<edm::InputTag>("HepMCColl")),
-  PrimaryVertexColl_(iConfig.getParameter<edm::InputTag>("PrimaryVertexColl")),
-  BeamSpot_(iConfig.getParameter<edm::InputTag>("BeamSpot")),
-  GenPartColl_(iConfig.getParameter<edm::InputTag>("GenPartColl"))
-{
-  //now do what ever initialization is needed
+TreeMaker7TeV::TreeMaker7TeV(const edm::ParameterSet& iConfig) {
+  
+  //-- fOutputFileName = iConfig.getParameter<std::string>("OutputFileName");
+  PFJetCorrectionService = iConfig.getParameter<std::string>("PFJetCorrector");
+  hlTriggerResults_ = iConfig.getParameter<edm::InputTag>("HLTriggerResults");
+  pfJets_ = iConfig.getParameter<edm::InputTag>("PFJets");
+  l1Trigger_ = iConfig.getParameter<edm::InputTag>("L1Trigger");
+  castordigis_ = iConfig.getParameter<edm::InputTag>("CastorDigis");
+  hepMCColl_ = iConfig.getParameter<edm::InputTag>("HepMCColl");
+  PrimaryVertexColl_ = iConfig.getParameter<edm::InputTag>("PrimaryVertexColl");
+  BeamSpot_ = iConfig.getParameter<edm::InputTag>("BeamSpot");
+  GenPartColl_ = iConfig.getParameter<edm::InputTag>("GenPartColl");
+  
+  EventTree = fs->make<TTree>("CastorDigi","CastorDigi");
+  
   ReadPedestal = kTRUE;
 }
 
@@ -715,12 +723,8 @@ void
 TreeMaker7TeV::beginJob()
 {
   
-  //edm::Service<TFileService> fs;
-  //EventTree = fs->make<TTree>();
-  
-  fOutputFile = new TFile(fOutputFileName.c_str(),"RECREATE") ;
-  
-  EventTree = new TTree("CastorDigi","CastorDigi");
+  //-- fOutputFile = new TFile(fOutputFileName.c_str(),"RECREATE");
+  //-- EventTree = new TTree("CastorDigi","CastorDigi");
   
   EventTree->Branch("ADC",ADC,"ADC[224][10]/D");
   EventTree->Branch("sumADC",sumADC,"sumADC[224]/D");
@@ -777,8 +781,8 @@ TreeMaker7TeV::beginJob()
 // ------------ method called once each job just after ending the event loop  ------------
 void 
 TreeMaker7TeV::endJob() {
-fOutputFile->Write() ;
-fOutputFile->Close() ;
+  //-- fOutputFile->Write() ;
+  //-- fOutputFile->Close() ;
  return ;
 }
 

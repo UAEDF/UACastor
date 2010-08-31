@@ -37,12 +37,12 @@ extern "C" {
   
   // stop-hadrons
   void pystrhad_();   // init stop-hadrons (id's, names, charges...)
-  void pystfr_(int&); // tweaks fragmentation, fragments the string near to a stop, 
+  //void pystfr_(int&); // tweaks fragmentation, fragments the string near to a stop, 
                       // to form stop-hadron by producing a new q-qbar pair
   
   // gluino/r-hadrons
-  void pyglrhad_();
-  void pyglfr_();   // tweaks fragmentation, fragment the string near to a gluino,
+  //void pyglrhad_();
+  //void pyglfr_();   // tweaks fragmentation, fragment the string near to a gluino,
                     // to form gluino-hadron, either by producing a new g-g pair,
                     // or two new q-qbar ones
 } // extern "C"
@@ -256,13 +256,15 @@ bool Cascade2Hadronizer::generatePartonsAndHadronize()
       call_pygive("MSTJ(14)=-1");
    }
    
-   call_event();
+   //-- call_event();
    
+   /*
    if ( fStopHadronsEnabled || fGluinoHadronsEnabled )
    {
       // call_pygive("MSTJ(1)=1");
       call_pygive("MSTJ(14)=1");
       int ierr=0;
+     
       if ( fStopHadronsEnabled ) 
       {
          pystfr_(ierr);
@@ -274,7 +276,8 @@ bool Cascade2Hadronizer::generatePartonsAndHadronize()
       }
       if ( fGluinoHadronsEnabled ) pyglfr_();
    }
-   
+   */
+
    if ( pyint1.mint[50] != 0 ) // skip event if py6 considers it bad
    {
       event().reset();
@@ -315,9 +318,9 @@ bool Cascade2Hadronizer::initializeForExternalPartons()
    //    call_pytcha();
   
    //-- set up for running CASCADE  
-   call_cascade();
+   //call_cascade();
    //-- print result from integration
-   call_caend(1);   
+   //call_caend(1);   
 
    return true;
 }

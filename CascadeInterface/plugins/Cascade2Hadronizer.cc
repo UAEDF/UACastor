@@ -308,7 +308,7 @@ bool Cascade2Hadronizer::initializeForExternalPartons()
 
    
    //--initialise CASCADE parameters
-   call_casini();
+   //call_casini();
 
    //--read steering file
    //    call_steer();

@@ -1,9 +1,0 @@
-<library file="*.cc" name=GeneratorInterfaceCascadeInterface_plugins>
-  <use name=GeneratorInterface/PartonShowerVeto>
-  <use name=GeneratorInterface/ExternalDecays>
-  <use name=heppdt>
-  <flags FFLAGS=-w>
-  <flags EDM_PLUGIN=1>
-</library>
-
-

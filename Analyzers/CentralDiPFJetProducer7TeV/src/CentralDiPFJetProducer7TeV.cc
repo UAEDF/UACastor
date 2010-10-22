@@ -13,10 +13,9 @@
 //
 // Original Author:  Alexander Flossdorf,01c/271,1797,
 //         Created:  Tue Apr 27 17:43:18 CEST 2010
-// $Id: CentralDiPFJetProducer7TeV.cc,v 1.1 2010/04/27 16:05:06 floss Exp $
+// $Id: CentralDiPFJetProducer7TeV.cc,v 1.1 2010/06/30 13:00:10 roland Exp $
 //
 //
-
 
 // system include files
 #include <memory>
@@ -76,14 +75,15 @@ private:
   double jetEtaCut;
 
   bool accept;
+  bool DoTree_;
 
   edm::Service<TFileService> fs;
   TTree* EventTree;
 
-  int eventNum;
-  int runNumber;
-  int lumiBlock;
-  int bunchCrossing;
+  int event;
+  int run;
+  int lumiblock;
+  int bunchcrossing;
   int isDijet;
   double Pt1jet;
   double Pt2jet;
@@ -109,7 +109,9 @@ CentralDiPFJetProducer7TeV::CentralDiPFJetProducer7TeV(const edm::ParameterSet& 
   jetPtCut = iConfig.getParameter<double>("JetPtCut");
   jetEtaCut = iConfig.getParameter<double>("JetEtaCut");
 
-  EventTree = fs->make<TTree>("CentralPFDiJetSelection","CentralPFDiJetSelection");
+  DoTree_ = iConfig.getUntrackedParameter<bool>("DoTree");
+
+  if(DoTree_) EventTree = fs->make<TTree>("CentralPFDiJetSelection","CentralPFDiJetSelection");
   produces<bool>("dijet").setBranchAlias("DiJetEvent");
 }
 
@@ -226,31 +228,32 @@ void CentralDiPFJetProducer7TeV::produce(edm::Event& iEvent, const edm::EventSet
     } // end if(posJet1 >= 0 && posJet2 >= 0)  
   } // end if(ak5PFJets->size() >= 2)
 
-  eventNum      = iEvent.id().event() ;
-  runNumber     = iEvent.id().run() ;
-  lumiBlock     = iEvent.luminosityBlock() ;
-  bunchCrossing = iEvent.bunchCrossing();
+  event = iEvent.id().event() ;
+  run = iEvent.id().run() ;
+  lumiblock = iEvent.luminosityBlock() ;
+  bunchcrossing = iEvent.bunchCrossing();
+
   isDijet = 0;
   if(accept) isDijet = 1;
 
-  EventTree->Fill();
+  if(DoTree_) EventTree->Fill();
 
   std::auto_ptr<bool> DiJetEvent(new bool);
   *DiJetEvent = accept;
-  iEvent.put(DiJetEvent, "dijet");
+  iEvent.put(DiJetEvent,"dijet");
 }
 
 // ------------ method called once each job just before starting event loop  ------------
 void 
 CentralDiPFJetProducer7TeV::beginJob()
 {
-  EventTree->Branch("eventNum",&eventNum,"eventNum/I");
-  EventTree->Branch("runNumber",&runNumber,"runNumber/I");
-  EventTree->Branch("lumiBlock",&lumiBlock,"lumiBlock/I");
-  EventTree->Branch("bunchCrossing",&bunchCrossing,"bunchCrossing/I");
-  EventTree->Branch("isDijet",&isDijet,"isDijet/I");
-  EventTree->Branch("Pt1jet",&Pt1jet,"Pt1jet/D");
-  EventTree->Branch("Pt2jet",&Pt2jet,"Pt2jet/D");
+  if(DoTree_) EventTree->Branch("event",&event,"event/I");
+  if(DoTree_) EventTree->Branch("run",&run,"run/I");
+  if(DoTree_) EventTree->Branch("lumiblock",&lumiblock,"lumiblock/I");
+  if(DoTree_) EventTree->Branch("bunchcrossing",&bunchcrossing,"bunchcrossing/I");
+  if(DoTree_) EventTree->Branch("isDijet",&isDijet,"isDijet/I");
+  if(DoTree_) EventTree->Branch("Pt1jet",&Pt1jet,"Pt1jet/D");
+  if(DoTree_) EventTree->Branch("Pt2jet",&Pt2jet,"Pt2jet/D");
 }
 
 // ------------ method called once each job just after ending the event loop  ------------

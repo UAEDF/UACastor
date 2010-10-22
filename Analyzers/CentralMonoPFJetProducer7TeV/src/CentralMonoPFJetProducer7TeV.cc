@@ -13,7 +13,7 @@
 //
 // Original Author:  Alexander Flossdorf,01c/271,1797,
 //         Created:  Mon Apr 26 15:10:38 CEST 2010
-// $Id: CentralMonoPFJetProducer7TeV.cc,v 1.1 2010/04/27 15:04:49 floss Exp $
+// $Id: CentralMonoPFJetProducer7TeV.cc,v 1.1 2010/06/30 14:42:13 roland Exp $
 //
 //
 
@@ -76,14 +76,15 @@ private:
   double jetEtaCut;
 
   bool accept;
+  bool DoTree_;
 
   edm::Service<TFileService> fs;
   TTree* EventTree;
 
-  int eventNum;
-  int runNumber;
-  int lumiBlock;
-  int bunchCrossing;
+  int event;
+  int run;
+  int lumiblock;
+  int bunchcrossing;
   int isInclusive;
   double Ptjet;
 };
@@ -108,7 +109,9 @@ CentralMonoPFJetProducer7TeV::CentralMonoPFJetProducer7TeV(const edm::ParameterS
   jetPtCut = iConfig.getParameter<double>("JetPtCut");
   jetEtaCut = iConfig.getParameter<double>("JetEtaCut");
 
-  EventTree = fs->make<TTree>("CentralPFMonoJetSelection","CentralPFMonoJetSelection");
+  DoTree_ = iConfig.getUntrackedParameter<bool>("DoTree");
+
+  if(DoTree_) EventTree = fs->make<TTree>("CentralPFMonoJetSelection","CentralPFMonoJetSelection");
   produces<bool>("inclusive").setBranchAlias("InclusiveEvent");
 }
 
@@ -127,7 +130,7 @@ void CentralMonoPFJetProducer7TeV::produce(edm::Event& iEvent, const edm::EventS
 {
   using namespace edm;
   using namespace std;
-
+  cout<<"I am here"<<endl;
   accept = false;
   Ptjet = -999;
 
@@ -166,14 +169,15 @@ void CentralMonoPFJetProducer7TeV::produce(edm::Event& iEvent, const edm::EventS
 
   } // end for loop
     
-  eventNum      = iEvent.id().event() ;
-  runNumber     = iEvent.id().run() ;
-  lumiBlock     = iEvent.luminosityBlock() ;
-  bunchCrossing = iEvent.bunchCrossing();
+  event = iEvent.id().event() ;
+  run = iEvent.id().run() ;
+  lumiblock = iEvent.luminosityBlock() ;
+  bunchcrossing = iEvent.bunchCrossing();
+ 
   isInclusive = 0;
   if(accept) isInclusive = 1;
 
-  EventTree->Fill();
+  if(DoTree_) EventTree->Fill();
 
   std::auto_ptr<bool> InclusiveEvent(new bool);
   *InclusiveEvent = accept;
@@ -184,12 +188,12 @@ void CentralMonoPFJetProducer7TeV::produce(edm::Event& iEvent, const edm::EventS
 void 
 CentralMonoPFJetProducer7TeV::beginJob()
 {
-  EventTree->Branch("eventNum",&eventNum,"eventNum/I");
-  EventTree->Branch("runNumber",&runNumber,"runNumber/I");
-  EventTree->Branch("lumiBlock",&lumiBlock,"lumiBlock/I");
-  EventTree->Branch("bunchCrossing",&bunchCrossing,"bunchCrossing/I");
-  EventTree->Branch("isInclusive",&isInclusive,"isInclusive/I");
-  EventTree->Branch("Ptjet",&Ptjet,"Ptjet/D");
+  if(DoTree_) EventTree->Branch("event",&event,"event/I");
+  if(DoTree_) EventTree->Branch("run",&run,"run/I");
+  if(DoTree_) EventTree->Branch("lumiblock",&lumiblock,"lumiblock/I");
+  if(DoTree_) EventTree->Branch("bunchcrossing",&bunchcrossing,"bunchcrossing/I");
+  if(DoTree_) EventTree->Branch("isInclusive",&isInclusive,"isInclusive/I");
+  if(DoTree_) EventTree->Branch("Ptjet",&Ptjet,"Ptjet/D");
 }
 
 // ------------ method called once each job just after ending the event loop  ------------

@@ -402,8 +402,9 @@ void TreeMaker7TeVRun2010::analyze(const edm::Event& iEvent, const edm::EventSet
 	HcalQIESample mySample = castordf[sample];
 	ADC[channel_id][sample]=(mySample.adc());
 	fC[channel_id][sample] = coder->charge(*shape,mySample.adc(),mySample.capid()); 
-	if(sample > 2 && sample < 6) sumADC[channel_id]+=ADC[channel_id][sample]; //-- sum over time slices 3 - 4 - 5
-	if(sample > 2 && sample < 6) sumfC[channel_id]+=fC[channel_id][sample];   //-- sum over time slices 3 - 4 - 5
+	//-- new timing run >= 133239 (https://twiki.cern.ch/twiki/bin/view/CMS/CastorCalorimeterBeam09)
+	if(sample == 4 || sample == 5) sumADC[channel_id]+=ADC[channel_id][sample]; 
+	if(sample == 4 || sample == 5) sumfC[channel_id]+=fC[channel_id][sample];  
       }
 
     } //-- end loop over digiCollection
@@ -411,8 +412,8 @@ void TreeMaker7TeVRun2010::analyze(const edm::Event& iEvent, const edm::EventSet
     if(debug) {
       for (Int_t i = 0 ; i < 224; i++) {
 	cout<<"array entry: "<<i+1<<", module: "<<module[i]<<", sector: "<<sector[i]<<" ,channel: "<<channel[i] 
-	    <<", ADC signal in time slices 3 - 4 - 5: "<<sumADC[i]
-	    <<", fC signal in time slices 3 - 4 - 5: "<<sumfC[i]<<endl;
+	    <<", ADC signal summed over TS (ok for run  >= 133239): "<<sumADC[i]
+	    <<", fC signal summed over TS (ok for run  >= 133239): "<<sumfC[i]<<endl;
       }
       getchar();
     }
@@ -429,8 +430,8 @@ void TreeMaker7TeVRun2010::analyze(const edm::Event& iEvent, const edm::EventSet
      
     //-- reconstruct signal (for all channels)
     for (Int_t j=0;j<224;j++){
-      signalfC[j] = sumfC[j] - 3*pedestalfC[j];     //-- sum over time slices 3 - 4 - 5
-      signalADC[j] = sumADC[j] - 3*pedestalADC[j];  //-- sum over time slices 3 - 4 - 5
+      signalfC[j] = sumfC[j] - 2*pedestalfC[j];    
+      signalADC[j] = sumADC[j] - 2*pedestalADC[j]; 
     }
 
   } else {

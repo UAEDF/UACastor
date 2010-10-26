@@ -13,6 +13,8 @@
 <use name=CalibFormats/CastorObjects>
 <use name=SimDataFormats/GeneratorProducts>
 <use name=SimDataFormats/Vertex>
+<use name=L1Trigger/GlobalTriggerAnalyzer>
+<use name=HLTrigger/HLTcore>
 <flags EDM_PLUGIN=1>
 <export>
    <lib name=AnalyzersTreeMaker>

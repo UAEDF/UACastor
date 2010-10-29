@@ -13,7 +13,7 @@
 //
 // Original Author:  Alexander Flossdorf,01c/271,1797,
 //         Created:  Mon Apr 26 15:10:38 CEST 2010
-// $Id: CentralMonoPFJetProducer7TeV.cc,v 1.1 2010/06/30 14:42:13 roland Exp $
+// $Id: CentralMonoPFJetProducer7TeV.cc,v 1.2 2010/10/22 13:34:33 roland Exp $
 //
 //
 
@@ -130,7 +130,7 @@ void CentralMonoPFJetProducer7TeV::produce(edm::Event& iEvent, const edm::EventS
 {
   using namespace edm;
   using namespace std;
-  cout<<"I am here"<<endl;
+
   accept = false;
   Ptjet = -999;
 

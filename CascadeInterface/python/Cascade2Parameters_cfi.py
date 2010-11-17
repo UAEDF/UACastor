@@ -1,0 +1,36 @@
+import FWCore.ParameterSet.Config as cms
+
+                         
+Cascade2Parameters = cms.PSet(
+    parameterSets = cms.vstring('CascadeSettings'),
+    CascadeSettings = cms.vstring('KE =  ! flavour code of beam1',
+                                  'IRES(1) = ! direct or resolved particle 1',
+                                  'KP =  ! flavour code of beam2',
+                                  'IRES(2) = ! direct or resolved particle 2',
+                                  'NFRAG =  ! fragmentation (1=on, 0=off)',
+                                  'IPST =  !  ',
+                                  'IPSIPOL =  ! polarisation for J/psi (1=on,0=off)',
+                                  'I23S =  ! select 1S, 2S, 3S state for vector meson (0=1S,2=2S,3=3S from version 2.2.03 on)',
+                                  'IFPS = ! parton shower( 0=off,1=initiial, 2=final, 3=initila&final state PS)',
+                                  'ITIMSHR = ! swtich for time-like shower in intial state cascade (0=off,1=on)',
+                                  'IRAM = ! switch for running alphas (0=off,1=on)',
+                                  'IQ2 = ! scale for alphas',
+                                  'IPRO = ! process number (IPRO=2 VM,IPRO=2 chi,IPRO=10 light q,IPRO=11 heavy q...)',
+                                  'NFLA =  ! number of flavors in pdfs',
+                                  'INTER = ! mode of interaction for ep (photon exchange, Z-echange (not implemented))',
+                                  'IHFLA = ! flavor code of heavy flavor in IPRO=11, and for vectormeson producutin via IPRO=2,3',
+                                  'IRPA = ! switch to select QCD process',
+                                  'IRPB = ! switch to select QCD process',
+                                  'IRPC = ! switch to select QCD process',
+                                  'ICCF = ! select CCFM or DGLAP mode (=1 CCFM, =0 DGLAP)',
+                                            'IGLU = ! select uPDF (1010 = set A, default)',
+                                  'IREM = ! switch for p-remnant treatment',
+                                  'PLEPIN = ! pz of incoming beam 1',
+                                  'PPIN = ! pz of incoming beam 2',
+                                  'PT2CUT = ! pt2 cut in ME for massless partons',
+                                  'ACC1 = ! accurary requested for grid optimisation step (BASES)',
+                                  'ACC2 = ! accuracy requested for integration step (BASES)',
+                                  'SCALFA = ! scale factor for scale in alphas',
+                                  'SCALFAF = ! scale factor for final state parton shower scale',
+                                  'UPDF = ! path where updf grid files are stored')
+    )

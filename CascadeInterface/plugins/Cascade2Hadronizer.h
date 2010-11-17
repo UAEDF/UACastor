@@ -3,7 +3,7 @@
 
 // -*- C++ -*-
 
-// class Pythia6Hadronizer is an example of a class that models the
+// class Cascade2Hadronizer is an example of a class that models the
 // Hadronizer concept.
 
 #include <memory>
@@ -13,14 +13,6 @@
 #include "FWCore/ParameterSet/interface/ParameterSetfwd.h"
 
 #include "GeneratorInterface/Core/interface/BaseHadronizer.h"
-
-namespace lhef
-{
-class LHERunInfo;
-class LHEEvent;
-}
-
-class LHEEventProduct;
 
 namespace HepMC
 {
@@ -32,7 +24,7 @@ namespace gen
 {
 
 class Pythia6Service;
-//-- class JetMatching;
+class JetMatching;
 
   class Cascade2Hadronizer : public BaseHadronizer
   {
@@ -41,46 +33,44 @@ class Pythia6Service;
      Cascade2Hadronizer(edm::ParameterSet const& ps);
      ~Cascade2Hadronizer();
 
+     // bool generatePartons();
+     bool hadronize(); //-- hadronizer for the LHE input
      bool generatePartonsAndHadronize();
-    
-     //-- bool hadronize();
-     //-- bool decay();
-     //-- bool residualDecay();
+     bool decay();
+     bool residualDecay();
+     bool initializeForExternalPartons(); //-- initializer for the LHE input 
+     bool initializeForInternalPartons();
+     bool declareStableParticles( const std::vector<int> );
      
-     bool initializeForExternalPartons();
-     
-     //-- bool initializeForInternalPartons();
-     //-- bool declareStableParticles( const std::vector<int> );
-     
-     //-- static JetMatching* getJetMatching() { return fJetMatching; }
+     static JetMatching* getJetMatching() { return fJetMatching; }
           
      void finalizeEvent();
 
-     //-- void statistics();
+     void statistics();
 
      const char* classname() const;
      
   private:
      // methods
-     
+     //
      void flushTmpStorage();
      void fillTmpStorage();
      
      void imposeProperTime();
      
      // data members
-          
+     //
+     
      Pythia6Service* fPy6Service;
 
      // the following 3 params are common for all generators(interfaces)
      // probably better to wrap them up in a class and reuse ?
      // (the event/run pointers are already moved to BaseHadronizer)
      //
-    
      double fCOMEnergy ;  // this one is irrelevant for setting py6 as hadronizer
                           // or if anything, it should be picked up from LHERunInfoProduct !
 
-     //-- static JetMatching* fJetMatching; 
+     static JetMatching* fJetMatching; 
 
      bool            fHepMCVerbosity;
      unsigned int    fMaxEventsToPrint ;
@@ -91,10 +81,10 @@ class Pythia6Service;
      bool            fDisplayPythiaBanner;
      bool            fDisplayPythiaCards;
      
-     // these two params control stop- and r-hadron features,
+     // these two params control stop- and r-handron features,
      // that are "custom" add-ons to Py6; 
      // I doubt they should drag along Py6Int main library...
-     
+     //
      bool fStopHadronsEnabled;
      bool fGluinoHadronsEnabled;
      
@@ -103,6 +93,10 @@ class Pythia6Service;
      
      // and final touch - conversion of Py6 PID's into PDG convension 
      bool fConvertToPDG;
+     
+     // tmp stuff, to deal with EvtGen corrupting pyjets
+     // int NPartsBeforeDecays;
+                
   };
 }
 

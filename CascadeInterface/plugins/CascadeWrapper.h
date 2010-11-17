@@ -20,13 +20,14 @@
 // Initialization routine
 
 
-//--------------------------------------------------------------------------B
+//--------------------------------------------------------------------------
 // PYTHIA Common Block Declarations
 
 
 //--------------------------------------------------------------------------
 
 // CASCADE routine declarations
+
 #define casini casini_
 #define steer steer_
 #define cascha cascha_
@@ -34,13 +35,13 @@
 #define pyedit pyedit_
 #define cascade cascade_
 #define caend caend_
-#define event event_
+// #define event event_  //-- conflict with event() in Cascade2Hadronizer.cc 
 #define rluxgo rluxgo_
+
     extern "C" {
 // CASCADE routines
       void pytcha();
       void pyedit(int*);
-      void casini();
       void casini();
       void steer();
       void cascha();
@@ -51,11 +52,14 @@
     }
 
 // define methods to hide the subtle syntax necessary to call fortran from C++
+
 //inline void call_pyhepc( int mode ){ pyhepc( &mode ); }
 //inline void call_pylist( int mode ){ pylist( &mode ); }
 //inline void call_pystat( int mode ){ pystat( &mode ); }
 //inline void call_pyevnt(){ pyevnt(); }
+
 // CASCADE
+
 inline void call_casini() {casini();}
 inline void call_steer() {steer();}
 inline void call_cascha() {cascha();}

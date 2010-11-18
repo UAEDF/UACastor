@@ -1,11 +1,6 @@
 #ifndef gen_Cascade2Hadronizer_h
 #define gen_Cascade2Hadronizer_h
 
-// -*- C++ -*-
-
-// class Cascade2Hadronizer is an example of a class that models the
-// Hadronizer concept.
-
 #include <memory>
 
 #include <boost/shared_ptr.hpp>
@@ -19,84 +14,76 @@ namespace HepMC
 class GenEvent;
 }
 
+namespace CLHEP
+{
+  class HepRandomEngine;
+}
 
 namespace gen
 {
-
-class Pythia6Service;
-class JetMatching;
+  class Pythia6Service;
+  
+  class JetMatching;
 
   class Cascade2Hadronizer : public BaseHadronizer
   {
-  
+    
   public:
-     Cascade2Hadronizer(edm::ParameterSet const& ps);
-     ~Cascade2Hadronizer();
+    Cascade2Hadronizer(edm::ParameterSet const& ps);
+    ~Cascade2Hadronizer();
 
-     // bool generatePartons();
-     bool hadronize(); //-- hadronizer for the LHE input
-     bool generatePartonsAndHadronize();
-     bool decay();
-     bool residualDecay();
-     bool initializeForExternalPartons(); //-- initializer for the LHE input 
-     bool initializeForInternalPartons();
-     bool declareStableParticles( const std::vector<int> );
+    // bool generatePartons();
+    bool generatePartonsAndHadronize();
+    bool hadronize(); //-- hadronizer for the LHE input   
+    bool decay();
+    bool residualDecay();
+    bool initializeForExternalPartons(); //-- initializer for the LHE input 
+    bool initializeForInternalPartons();
+    bool declareStableParticles( const std::vector<int> );
      
-     static JetMatching* getJetMatching() { return fJetMatching; }
+    static JetMatching* getJetMatching() { return fJetMatching; }
           
-     void finalizeEvent();
+    void finalizeEvent();
 
-     void statistics();
+    void statistics();
 
-     const char* classname() const;
+    const char* classname() const;
      
   private:
-     // methods
-     //
+  
+    //-- methods
+    
      void flushTmpStorage();
      void fillTmpStorage();
+     void imposeProperTime();  //-- to correctly treat particle decay
+
      
-     void imposeProperTime();
-     
-     // data members
-     //
+     //-- data members
      
      Pythia6Service* fPy6Service;
+     CLHEP::HepRandomEngine* frandomEngine;
 
-     // the following 3 params are common for all generators(interfaces)
-     // probably better to wrap them up in a class and reuse ?
-     // (the event/run pointers are already moved to BaseHadronizer)
-     //
-     double fCOMEnergy ;  // this one is irrelevant for setting py6 as hadronizer
-                          // or if anything, it should be picked up from LHERunInfoProduct !
+
+     //-- the following 3 params are common for all generators(interfaces)
+     //-- probably better to wrap them up in a class and reuse ?
+     //-- (the event/run pointers are already moved to BaseHadronizer)
+     
+     double fCOMEnergy ;  //-- this one is irrelevant for setting py6 as hadronizer
+                          //-- or if anything, it should be picked up from LHERunInfoProduct !
+     bool            fHepMCVerbosity;
+     unsigned int    fMaxEventsToPrint ;
 
      static JetMatching* fJetMatching; 
 
-     bool            fHepMCVerbosity;
-     unsigned int    fMaxEventsToPrint ;
-           
-     // this is the only one specific to Pythia6
-     //
+     //-- this is the only one specific to Pythia6
+     
      unsigned int    fPythiaListVerbosity ;
      bool            fDisplayPythiaBanner;
      bool            fDisplayPythiaCards;
      
-     // these two params control stop- and r-handron features,
-     // that are "custom" add-ons to Py6; 
-     // I doubt they should drag along Py6Int main library...
-     //
-     bool fStopHadronsEnabled;
-     bool fGluinoHadronsEnabled;
-     
-     // this is a "trick" to generate enriched mu-samples and the likes
-     bool fImposeProperTime;
-     
-     // and final touch - conversion of Py6 PID's into PDG convension 
+     //-- conversion of Py6 PID's into PDG convention 
      bool fConvertToPDG;
      
-     // tmp stuff, to deal with EvtGen corrupting pyjets
-     // int NPartsBeforeDecays;
-                
   };
 }
 

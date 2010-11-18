@@ -79,12 +79,6 @@ Cascade2Hadronizer::Cascade2Hadronizer(edm::ParameterSet const& ps)
    // that they're tracked but get in optionally;
    // this will be fixed once we update all applications
       
-   fImposeProperTime = false;
-   if ( ps.exists( "imposeProperTime" ) )
-   {
-      fImposeProperTime = ps.getParameter<bool>("imposeProperTime");
-   }
-   
    fConvertToPDG = false;
    if ( ps.exists( "doPDGConvert" ) )
       fConvertToPDG = ps.getParameter<bool>("doPDGConvert");
@@ -212,9 +206,9 @@ void Cascade2Hadronizer::finalizeEvent()
 
    eventInfo()->setBinningValues( std::vector<double>(1, pypars.pari[16]) );
   
-   // here we treat long-lived particles
+   //-- here we treat long-lived particles
   
-   if ( fImposeProperTime || pydat1.mstj[21]==3 || pydat1.mstj[21]==4 ) imposeProperTime();
+   if ( pydat1.mstj[21]==3 || pydat1.mstj[21]==4 ) imposeProperTime();
 
    // convert particle IDs Py6->PDG, if requested
    if ( fConvertToPDG ) {

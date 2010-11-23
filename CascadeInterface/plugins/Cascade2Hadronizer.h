@@ -6,49 +6,42 @@
 #include <boost/shared_ptr.hpp>
 
 #include "FWCore/ParameterSet/interface/ParameterSetfwd.h"
-
+#include "GeneratorInterface/Core/interface/ParameterCollector.h"
 #include "GeneratorInterface/Core/interface/BaseHadronizer.h"
 
-namespace HepMC
-{
-class GenEvent;
+namespace HepMC {
+  class GenEvent;
 }
 
-namespace CLHEP
-{
+namespace CLHEP {
   class HepRandomEngine;
 }
 
-namespace gen
-{
+namespace gen {
   class Pythia6Service;
   
-  class JetMatching;
-
-  class Cascade2Hadronizer : public BaseHadronizer
-  {
+  class Cascade2Hadronizer : public BaseHadronizer  {
     
   public:
     Cascade2Hadronizer(edm::ParameterSet const& ps);
     ~Cascade2Hadronizer();
 
+    bool initializeForExternalPartons(); //-- initializer for the LHE input
+    bool initializeForInternalPartons();
+
+    bool declareStableParticles(const std::vector<int>);
+    void statistics();
+
     // bool generatePartons();
+  
     bool generatePartonsAndHadronize();
     bool hadronize(); //-- hadronizer for the LHE input   
     bool decay();
     bool residualDecay();
-    bool initializeForExternalPartons(); //-- initializer for the LHE input 
-    bool initializeForInternalPartons();
-    bool declareStableParticles( const std::vector<int> );
-     
-    static JetMatching* getJetMatching() { return fJetMatching; }
-          
     void finalizeEvent();
 
-    void statistics();
-
     const char* classname() const;
-     
+          
   private:
   
     //-- methods
@@ -59,30 +52,24 @@ namespace gen
 
      
      //-- data members
-     
+
+     gen::ParameterCollector parameters;
+
      Pythia6Service* fPy6Service;
      CLHEP::HepRandomEngine* frandomEngine;
 
+     double fComEnergy ;  //-- irrelevant for setting py6 as hadronizer (or if anything, it should be picked up from LHERunInfoProduct)
+     double fCrossSection;
+     double fFilterEfficiency;
 
-     //-- the following 3 params are common for all generators(interfaces)
-     //-- probably better to wrap them up in a class and reuse ?
-     //-- (the event/run pointers are already moved to BaseHadronizer)
-     
-     double fCOMEnergy ;  //-- this one is irrelevant for setting py6 as hadronizer
-                          //-- or if anything, it should be picked up from LHERunInfoProduct !
-     bool            fHepMCVerbosity;
      unsigned int    fMaxEventsToPrint ;
+     bool            fHepMCVerbosity;
+     unsigned int    fPythiaListVerbosity ; //-- p6 specific
 
-     static JetMatching* fJetMatching; 
+     bool            fDisplayPythiaBanner;  //-- p6 specific
+     bool            fDisplayPythiaCards;   //-- p6 specific
 
-     //-- this is the only one specific to Pythia6
-     
-     unsigned int    fPythiaListVerbosity ;
-     bool            fDisplayPythiaBanner;
-     bool            fDisplayPythiaCards;
-     
-     //-- conversion of Py6 PID's into PDG convention 
-     bool fConvertToPDG;
+     bool fConvertToPDG; //-- conversion of Py6 PID's into PDG convention
      
   };
 }

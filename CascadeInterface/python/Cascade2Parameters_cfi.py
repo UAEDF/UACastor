@@ -8,7 +8,7 @@ Cascade2Parameters = cms.PSet(
                                   'KP = 2212 ! flavour code of beam2',
                                   'IRES(2) = 1 ! direct or resolved particle 2',
                                   'NFRAG = 1 ! fragmentation (1=on, 0=off)',
-                                  'IPST = 0 !  ',
+                                  'IPST = 0 ! to keep track of intermediate state in PS ',
                                   'IPSIPOL = 0 ! polarisation for J/psi (1=on,0=off)',
                                   'I23S = 0 ! select 1S, 2S, 3S state for vector meson (0=1S,2=2S,3=3S from version 2.2.03 on)',
                                   'IFPS = 3 ! parton shower( 0 = off, 1 = initial, 2 = final, 3 = initial & final state PS)',

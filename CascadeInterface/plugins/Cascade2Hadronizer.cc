@@ -24,6 +24,9 @@ HepMC::IO_HEPEVT conv;
 #include "GeneratorInterface/Pythia6Interface/interface/Pythia6Service.h"
 #include "GeneratorInterface/Pythia6Interface/interface/Pythia6Declarations.h"
 
+using namespace edm;
+using namespace std;
+
 namespace gen {
   
   class Pythia6ServiceWithCallback : public Pythia6Service {
@@ -66,10 +69,10 @@ namespace gen {
       fPythiaListVerbosity(pset.getUntrackedParameter<int>("pythiaPylistVerbosity",0)),
       
       fDisplayPythiaBanner(pset.getUntrackedParameter<bool>("displayPythiaBanner",false)),
-      fDisplayPythiaCards(pset.getUntrackedParameter<bool>("displayPythiaCards",false)),
-      
-      parameters(pset.getParameter<edm::ParameterSet>("Cascade2Parameters")){
-    
+      fDisplayPythiaCards(pset.getUntrackedParameter<bool>("displayPythiaCards",false)){
+
+    fParameters = pset.getParameter<ParameterSet>("Cascade2Parameters");
+
     fConvertToPDG = false;
     if(pset.exists("doPDGConvert"))
       fConvertToPDG = pset.getParameter<bool>("doPDGConvert");
@@ -170,7 +173,7 @@ namespace gen {
    //-- in LHE mode the binning is done by the external ME generator
    //-- which is likely not pthat, so only filling it for Py6 internal mode
 
-   eventInfo()->setBinningValues(std::vector<double>(1,pypars.pari[16]));
+   eventInfo()->setBinningValues(vector<double>(1,pypars.pari[16]));
   
    //-- here we treat long-lived particles
   
@@ -186,15 +189,11 @@ namespace gen {
    }
    
    //-- service printouts, if requested
-   
    if(fMaxEventsToPrint > 0){
-   
      fMaxEventsToPrint--;
      if(fPythiaListVerbosity) call_pylist(fPythiaListVerbosity);
      if(fHepMCVerbosity){
-      
-       std::cout << "Event process = " << pypars.msti[0] << std::endl 
-		 << "----------------------" << std::endl;
+        cout <<"Event process = "<<pypars.msti[0]<<endl<<"----------------------"<<endl;
        event()->print();
      }
    }
@@ -401,16 +400,38 @@ namespace gen {
     fPy6Service->setSLHAParams();
     fPy6Service->setPYUPDAParams(false);
     
-    //-- call_pyinit("CMS", "p", "p", fCOMEnergy);
-  
     //--initialise CASCADE parameters
     call_casini();
 
-    IQ2 = 4;
+    //-- Read the parameters and pass them to the common blocks
+    //-- call_steer();
 
-    //--read steering file
-    call_steer();
-  
+    //-- retrieve all the different sets
+    vector<string> AllSets = fParameters.getParameter<vector<string> >("parameterSets");
+
+    //-- loop over the different sets
+    for(unsigned i=0; i<AllSets.size();++i) {
+    
+      string Set = AllSets[i];
+      vector<string> Para_Set = fParameters.getParameter<vector<string> >(Set);
+
+      //-- loop over all the parameters and stop in case of mistake
+      for(vector<string>::const_iterator itPara = Para_Set.begin(); itPara != Para_Set.end(); ++itPara) {
+	
+	if(!cascadeReadParameters(*itPara)) {
+	  throw edm::Exception(edm::errors::Configuration,"CascadeError")
+	    <<" Cascade did not accept the following parameter\""<<*itPara<<"\"";
+	}
+      } //-- end loop over all the parameters
+    } //-- end loop over the different sets
+
+    fCascade_Para.PLEPIN = fComEnergy/2; 
+    fCascade_Para.PPIN = -fComEnergy/2;
+
+    cout<<"fCascade_Para.KE: "<<fCascade_Para.KE<<endl;
+    getchar();
+
+
     //-- change standard parameters of CASCADE
     call_cascha();
     
@@ -424,16 +445,16 @@ namespace gen {
     return true;
   }
 
-  bool Cascade2Hadronizer::declareStableParticles(std::vector<int> pdg){
+  bool Cascade2Hadronizer::declareStableParticles(vector<int> pdg){
    
     for(size_t i=0; i<pdg.size(); i++){
       int PyID = HepPID::translatePDTtoPythia(pdg[i]);
       int pyCode = pycomp_( PyID );
 
       if(pyCode > 0){
-	std::ostringstream pyCard ;
+	ostringstream pyCard ;
 	pyCard << "MDCY(" << pyCode << ",1)=0";
-	//-- std::cout << "pdg= " << pdg[i] << " " << pyCard.str() << std::endl; 
+	//-- cout << "pdg= " << pdg[i] << " " << pyCard.str() << endl; 
 
 	call_pygive(pyCard.str());
       }
@@ -488,11 +509,11 @@ namespace gen {
 	  
 	  // Decay must be happen outside a cylindrical region
 	  if(pydat1.mstj[21]==4){
-	    if (std::sqrt(x*x+y*y)>pydat1.parj[72] || fabs(z)>pydat1.parj[73]) decayInRange = true;
+	    if (sqrt(x*x+y*y)>pydat1.parj[72] || fabs(z)>pydat1.parj[73]) decayInRange = true;
 	    // Decay must be happen outside a given sphere
 	  } 
 	  else if (pydat1.mstj[21]==3){
-	    if (std::sqrt(x*x+y*y+z*z)>pydat1.parj[71]) decayInRange = true;
+	    if (sqrt(x*x+y*y+z*z)>pydat1.parj[71]) decayInRange = true;
 	  } 
 	  // Decay is always OK otherwise
 	  else {
@@ -528,5 +549,100 @@ namespace gen {
   const char* Cascade2Hadronizer::classname() const {
     return "gen::Cascade2Hadronizer";
   }
-  
+
+  //-- Read the parameters and pass them to the common blocks
+ 
+  bool Cascade2Hadronizer::cascadeReadParameters(const string& ParameterString) {
+
+    bool accepted = 1;
+
+    if(!strncmp(ParameterString.c_str(),"KE",2))
+      fCascade_Para.KE = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"IRES(1)",7))
+      fCascade_Para.IRES1 = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"KP",2))
+      fCascade_Para.KP = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"IRES(2)",7))
+    fCascade_Para.IRES2 = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"NFRAG",5))
+      fCascade_Para.NFRAG = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"IPST",4))
+      fCascade_Para.IPST = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"IPSIPOL",7))
+      fCascade_Para.IPSIPOL = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"I23S",4))
+      fCascade_Para.I23S = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"IFPS",4))
+      fCascade_Para.IFPS = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"ITIMSHR",7))
+      fCascade_Para.ITIMSHR = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"IRAM",4))
+      fCascade_Para.IRAM = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"IQ2",3))
+      fCascade_Para.IQ2 = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"IPRO",4))
+      fCascade_Para.IPRO = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"NFLA",4))
+      fCascade_Para.NFLA = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"INTER",5))
+      fCascade_Para.INTER = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"IHFLA",5))
+      fCascade_Para.IHFLA = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"IRPA",4))
+      fCascade_Para.IRPA = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"IRPB",4))
+      fCascade_Para.IRPB = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"IRPC",4))
+      fCascade_Para.IRPC = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"ICCF",4))
+      fCascade_Para.ICCF = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"IGLU",4))
+      fCascade_Para.IGLU = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"IREM",4))
+      fCascade_Para.IREM = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"PT2CUT",6))
+      fCascade_Para.PT2CUT = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"ACC1",4))
+      fCascade_Para.ACC1 = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"ACC2",4))
+      fCascade_Para.ACC2 = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);      
+
+    else if(!strncmp(ParameterString.c_str(),"SCALFA",6))
+      fCascade_Para.SCALFA = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"SCALFAF",7))
+      fCascade_Para.SCALFAF = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"UPDF",4))
+      fCascade_Para.UPDF = &ParameterString[strcspn(ParameterString.c_str(),"=")+1];
+
+    else accepted = 0;
+    
+    return accepted;
+  }
+
 } //-- namespace gen

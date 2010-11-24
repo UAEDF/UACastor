@@ -25,12 +25,10 @@ Cascade2Parameters = cms.PSet(
                                   'ICCF = 1 ! select CCFM or DGLAP mode (=1 CCFM, =0 DGLAP)',
                                   'IGLU = 1010 ! select uPDF (1010 = set A, default)',
                                   'IREM = 4 ! switch for p-remnant treatment',
-                                  'PLEPIN = 3500 ! pz of incoming beam 1',
-                                  'PPIN = -3500 ! pz of incoming beam 2',
                                   'PT2CUT = 0.0 ! pt2 cut in ME for massless partons',
                                   'ACC1 = 1.0 ! accurary requested for grid optimisation step (BASES)',
                                   'ACC2 = 0.5 ! accuracy requested for integration step (BASES)',
                                   'SCALFA = 1 ! scale factor for scale in alphas',
                                   'SCALFAF = 1 ! scale factor for final state parton shower scale',
-                                  'UPDF = ! path where updf grid files are stored')
+                                  'UPDF = /path/updf.txt ! path where updf grid files are stored')
     )

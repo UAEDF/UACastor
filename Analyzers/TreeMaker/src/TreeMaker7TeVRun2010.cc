@@ -76,7 +76,6 @@
 
 #include "CalibFormats/CastorObjects/interface/CastorDbService.h"
 #include "CalibFormats/CastorObjects/interface/CastorDbRecord.h"
-#include "CalibFormats/CastorObjects/interface/CastorCalibrations.h"
 #include "CondFormats/CastorObjects/interface/CastorQIECoder.h"
 
 #include "TFile.h"
@@ -394,7 +393,6 @@ void TreeMaker7TeVRun2010::analyze(const edm::Event& iEvent, const edm::EventSet
       channel[channel_id]= channel_nb;
        
       //-- signal in linearized ADC
-      const CastorCalibrations& calibrations = conditions->getCastorCalibrations(castordf.id().rawId());
       const CastorQIECoder* coder = conditions->getCastorCoder(castordf.id().rawId());
       
       //-- loop over 10 time slices

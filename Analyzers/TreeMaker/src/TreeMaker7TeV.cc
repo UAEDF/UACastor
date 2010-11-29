@@ -13,7 +13,7 @@
 //
 // Original Author:  local user
 //         Created:  Wed Mar  3 10:32:26 CET 2010
-// $Id: TreeMaker7TeV.cc,v 1.2 2010/07/05 09:10:40 roland Exp $
+// $Id: TreeMaker7TeV.cc,v 1.3 2010/07/05 09:49:46 roland Exp $
 //
 //
 
@@ -95,7 +95,6 @@
 
 #include "CalibFormats/CastorObjects/interface/CastorDbService.h"
 #include "CalibFormats/CastorObjects/interface/CastorDbRecord.h"
-#include "CalibFormats/CastorObjects/interface/CastorCalibrations.h"
 #include "CondFormats/CastorObjects/interface/CastorQIECoder.h"
 
 #include "TFile.h"
@@ -381,7 +380,6 @@ void TreeMaker7TeV::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
        channel[channel_id]= channel_nb;
        
        // linearize ADC
-       const CastorCalibrations& calibrations = conditions->getCastorCalibrations(castordf.id().rawId());
        const CastorQIECoder* coder = conditions->getCastorCoder(castordf.id().rawId());
        
        for (Int_t sample = 0 ; sample < nrSamples; ++sample) { //loop over 10 time slices

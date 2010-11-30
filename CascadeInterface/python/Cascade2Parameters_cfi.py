@@ -28,7 +28,7 @@ Cascade2Parameters = cms.PSet(
                                   'PT2CUT = 0.0 ! pt2 cut in ME for massless partons',
                                   'ACC1 = 1.0 ! accurary requested for grid optimisation step (BASES)',
                                   'ACC2 = 0.5 ! accuracy requested for integration step (BASES)',
-                                  'SCALFA = 1 ! scale factor for scale in alphas',
-                                  'SCALFAF = 1 ! scale factor for final state parton shower scale',
+                                  'SCALE1 = 0.5 ! scale factor for scale in alphas',
+                                  'SCALE2 = 0.25 ! scale factor for final state parton shower scale',
                                   'UPDF = /path/updf.txt ! path where updf grid files are stored')
     )

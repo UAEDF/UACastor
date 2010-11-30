@@ -65,6 +65,7 @@ namespace gen {
 
     //-- Read the parameters and pass them to the common blocks
     bool cascadeReadParameters(const std::string& ParameterString);
+    void cascadePrintParameters();
 
     bool declareStableParticles(const std::vector<int>);
     void statistics();

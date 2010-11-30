@@ -27,6 +27,8 @@ HepMC::IO_HEPEVT conv;
 using namespace edm;
 using namespace std;
 
+#define debug 1
+
 namespace gen {
   
   class Pythia6ServiceWithCallback : public Pythia6Service {
@@ -58,7 +60,7 @@ namespace gen {
   
   Cascade2Hadronizer::Cascade2Hadronizer(edm::ParameterSet const& pset) 
     : BaseHadronizer(pset),
-      fPy6Service( new Pythia6ServiceWithCallback(pset) ), //-- this will store py6 parameters for further settings
+      //-- fPy6Service( new Pythia6ServiceWithCallback(pset) ), //-- this will store py6 parameters for further settings
       
       fComEnergy(pset.getParameter<double>("comEnergy")),
       fCrossSection(pset.getUntrackedParameter<double>("crossSection",-1.)),
@@ -393,18 +395,21 @@ namespace gen {
   bool Cascade2Hadronizer::initializeForInternalPartons(){
 
     //-- grab Py6 instance
-    Pythia6Service::InstanceWrapper guard(fPy6Service);
+    //Pythia6Service::InstanceWrapper guard(fPy6Service);
   
-    fPy6Service->setGeneralParams();   
-    fPy6Service->setCSAParams();
-    fPy6Service->setSLHAParams();
-    fPy6Service->setPYUPDAParams(false);
+    //fPy6Service->setGeneralParams();   
+    //fPy6Service->setCSAParams();
+    //fPy6Service->setSLHAParams();
+    //fPy6Service->setPYUPDAParams(false);
     
     //--initialise CASCADE parameters
     call_casini();
 
     //-- Read the parameters and pass them to the common blocks
     //-- call_steer();
+
+    if(debug) cout<<"retrieve cascade parameters from python configuration file"<<endl;
+    if(debug) getchar();
 
     //-- retrieve all the different sets
     vector<string> AllSets = fParameters.getParameter<vector<string> >("parameterSets");
@@ -428,13 +433,13 @@ namespace gen {
     fCascade_Para.PLEPIN = fComEnergy/2; 
     fCascade_Para.PPIN = -fComEnergy/2;
 
-    cout<<"fCascade_Para.KE: "<<fCascade_Para.KE<<endl;
-    getchar();
-
+    if(debug) cascadePrintParameters();
+    if(debug) getchar();
 
     //-- change standard parameters of CASCADE
     call_cascha();
-    
+
+     
     //-- change standard parameters of JETSET/PYTHIA
     call_pytcha();
     
@@ -631,10 +636,10 @@ namespace gen {
     else if(!strncmp(ParameterString.c_str(),"ACC2",4))
       fCascade_Para.ACC2 = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);      
 
-    else if(!strncmp(ParameterString.c_str(),"SCALFA",6))
+    else if(!strncmp(ParameterString.c_str(),"SCALE1",6))
       fCascade_Para.SCALFA = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
-    else if(!strncmp(ParameterString.c_str(),"SCALFAF",7))
+    else if(!strncmp(ParameterString.c_str(),"SCALE2",6))
       fCascade_Para.SCALFAF = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"UPDF",4))
@@ -643,6 +648,40 @@ namespace gen {
     else accepted = 0;
     
     return accepted;
+  }
+  
+  void Cascade2Hadronizer::cascadePrintParameters() {
+   
+    cout<<"flavour code of beam1: "<<fCascade_Para.KE<<endl; 
+    cout<<"direct or resolved particle 1: "<<fCascade_Para.IRES1<<endl; 
+    cout<<"flavour code of beam2: "<<fCascade_Para.KP<<endl;    
+    cout<<"direct or resolved particle 2: "<<fCascade_Para.IRES2<<endl;  
+    cout<<"fragmentation: "<<fCascade_Para.NFRAG<<endl;  
+    cout<<"keep track of intermediate state in PS: "<<fCascade_Para.IPST<<endl;  
+    cout<<"polarisation for J/psi: "<<fCascade_Para.IPSIPOL<<endl;
+    cout<<"select state for vector meson: "<<fCascade_Para.I23S<<endl;
+    cout<<"parton shower: "<<fCascade_Para.IFPS<<endl;   
+    cout<<"switch for time-like shower in intial state cascade: "<<fCascade_Para.ITIMSHR<<endl;
+    cout<<"switch for running alphas: "<<fCascade_Para.IRAM<<endl;  
+    cout<<"scale for alphas: "<<fCascade_Para.IQ2<<endl;   
+    cout<<"process number: "<<fCascade_Para.IPRO<<endl;  
+    cout<<"number of flavors in pdfs: "<<fCascade_Para.NFLA<<endl;   
+    cout<<"mode of interaction for ep: "<<fCascade_Para.INTER<<endl; 
+    cout<<"flavor code for heavy flavor (IPRO = 11), for VM (IPRO = 2,3): "<<fCascade_Para.IHFLA<<endl; 
+    cout<<"switch to select QCD process g* g* -> q qbar: "<<fCascade_Para.IRPA<<endl;   
+    cout<<"switch to select QCD process g* g -> g g: "<<fCascade_Para.IRPB<<endl; 
+    cout<<"switch to select QCD process g* q -> g q: "<<fCascade_Para.IRPC<<endl;   
+    cout<<"select CCFM or DGLAP mode: "<<fCascade_Para.ICCF<<endl; 
+    cout<<"select uPDF: "<<fCascade_Para.IGLU<<endl;  
+    cout<<"switch for p-remnant treatment: "<<fCascade_Para.IREM<<endl;  
+    cout<<"pz of incoming beam 1: "<<fCascade_Para.PLEPIN<<endl; 
+    cout<<"pz of incoming beam 2: "<<fCascade_Para.PPIN<<endl;  
+    cout<<"pt2 cut in ME for massless partons: "<<fCascade_Para.PT2CUT<<endl; 
+    cout<<"accurary requested for grid optimisation step (BASES): "<<fCascade_Para.ACC1<<endl;  
+    cout<<"accuracy requested for integration step (BASES): "<<fCascade_Para.ACC2<<endl; 
+    cout<<"scale factor for scale in alphas: "<<fCascade_Para.SCALFA<<endl; 
+    cout<<"scale factor for final state parton shower scale: "<<fCascade_Para.SCALFAF<<endl;
+    cout<<"path where updf grid files are stored: "<<fCascade_Para.UPDF<<endl;
   }
 
 } //-- namespace gen

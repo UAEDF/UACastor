@@ -18,7 +18,7 @@ namespace CLHEP {
 }
 
 namespace gen {
-
+  /*
   struct CASCADE_PARAM {
     int KE;      //-- flavour code of beam1
     int IRES1;   //-- direct or resolved particle 1
@@ -27,21 +27,21 @@ namespace gen {
     int NFRAG;   //-- fragmentation (1=on, 0=off)
     int IPST;    //-- to keep track of intermediate state in PS
     int IPSIPOL; //-- polarisation for J/psi (1=on,0=off)
-    int I23S;    //-- select 1S, 2S, 3S state for vector meson (0=1S,2=2S,3=3S from version 2.2.03 on)
+    //-- int I23S;    //-- select 1S, 2S, 3S state for vector meson (0=1S,2=2S,3=3S) from version 2.2.03 on
     int IFPS;    //-- parton shower( 0 = off, 1 = initial, 2 = final, 3 = initial & final state PS)
     int ITIMSHR; //-- swtich for time-like shower in intial state cascade (0=off,1=on)
-    int IRAM;    //-- switch for running alphas (0=off,1=on)
+    int IRUNAEM;    //-- switch for running alphas (0=off,1=on)
     int IQ2;     //-- scale for alphas
     int IPRO;    //-- process number (IPRO = 2 J/psi g, IPRO = 10 q qbar,IPRO = 11 Q Qbar)
-    int NFLA;    //-- number of flavors in pdfs
+    int NFLAV;    //-- number of flavors in pdfs
     int INTER;   //-- mode of interaction for ep (photon exchange, Z-echange (not implemented))
     int IHFLA;   //-- flavor code of heavy flavor in IPRO = 11, and for vector meson producutin via IPRO = 2,3
     int IRPA;    //-- switch to select QCD process g* g* -> q qbar via IRPA = 1
     int IRPB;    //-- switch to select QCD process g* g -> g g via IRPB = 1
     int IRPC;    //-- switch to select QCD process g* q -> g q via IRPC = 1
-    int ICCF;    //-- select CCFM or DGLAP mode (=1 CCFM, =0 DGLAP)
+    int ICCFM;    //-- select CCFM or DGLAP mode (=1 CCFM, =0 DGLAP)
     int IGLU;    //-- select uPDF (1010 = set A, default)
-    int IREM;    //-- switch for p-remnant treatment
+    int IRspl;    //-- switch for p-remnant treatment
     double PLEPIN;  //-- pz of incoming beam 1 (3500)
     double PPIN;    //-- pz of incoming beam 2 (-3500)
     double PT2CUT;  //-- pt2 cut in ME for massless partons
@@ -49,8 +49,9 @@ namespace gen {
     double ACC2;    //-- accuracy requested for integration step (BASES)
     double SCALFA;  //-- scale factor for scale in alphas
     double SCALFAF; //-- scale factor for final state parton shower scale
-    const char* UPDF; //-- path where updf grid files are stored
+    const char* PDFPATH; //-- path where updf grid files are stored
   };
+  */
 
   class Pythia6Service;
   
@@ -90,7 +91,7 @@ namespace gen {
      //-- data members
 
      edm::ParameterSet fParameters;
-     CASCADE_PARAM fCascade_Para;
+     //CASCADE_PARAM fCascade_Para;
 
      Pythia6Service* fPy6Service;
      CLHEP::HepRandomEngine* frandomEngine;

@@ -14,7 +14,7 @@
 #include "GeneratorInterface/Core/interface/FortranCallback.h"
 //-- JetMatching is there to veto on double counting between PS and ME -> for LHE workflow -> not needed for Cascade
  
-HepMC::IO_HEPEVT conv;
+HepMC::IO_HEPEVT hepevtio;
 
 #include "HepPID/ParticleIDTranslations.hh"
 
@@ -217,20 +217,22 @@ namespace gen {
     //-- generate event with Pythia6
     //call_pyevnt();
     
-    //-- generate event with Cascade
-
-
     //-- skip event if py6 considers it bad
     if(pyint1.mint[50] != 0 ){
       event().reset();
       return false;
     }
     
+    //-- generation of the event with CASCADE
+    //-- call_event();   //-- conflict with event(): need to be solved
+
+    //-- pythia pyhepc routine converts common PYJETS in common HEPEVT
     call_pyhepc(1);
-    event().reset( conv.read_next_event() );
+
+    //-- delete the created event from memory
+    event().reset(hepevtio.read_next_event());
     
     //-- this is to deal with post-gen tools & residualDecay() that may reuse PYJETS
-    
     flushTmpStorage();
     fillTmpStorage();
     
@@ -405,6 +407,12 @@ namespace gen {
     //fPy6Service->setSLHAParams();
     //fPy6Service->setPYUPDAParams(false);
     
+    //-- mstu(8) is set to NMXHEP in this dummy call (version >=6.404)
+    call_pyhepc(1);
+
+    //-- initialise random number generator (should be changed to be CMSSW compliant)   
+    call_rluxgo(4,12345678,0,0);
+
     //--initialise CASCADE parameters
     call_casini();
 
@@ -441,11 +449,16 @@ namespace gen {
 
     //-- change standard parameters of CASCADE
     call_cascha();
-
-     
+    
     //-- change standard parameters of JETSET/PYTHIA
     call_pytcha();
-    
+
+    //-- set up for running CASCADE (integration of the cross-section)
+    call_cascade(); 
+
+    //-- print cross-section result from integration
+    call_caend(1);
+ 
     //fPy6Service->setPYUPDAParams(true);
     
     //fPy6Service->closeSLHA();
@@ -549,6 +562,10 @@ namespace gen {
       // FIXME: can we get the xsec statistical error somewhere?
     }
 
+    //--  print out generated event summary
+    call_caend(2);
+
+    //-- write out some information from Pythia to the screen
     call_pystat(1);
   
     return;

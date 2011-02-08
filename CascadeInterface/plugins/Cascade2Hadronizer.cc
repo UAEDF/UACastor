@@ -1,9 +1,11 @@
-#include "Cascade2Hadronizer.h"
+#include "GeneratorInterface/CascadeInterface/plugins/Cascade2Hadronizer.h"
+
+#include "GeneratorInterface/Core/interface/RNDMEngineAccess.h"
 
 #include "HepMC/GenEvent.h"          //-- event()
 #include "HepMC/PdfInfo.h"
 #include "HepMC/PythiaWrapper6_2.h"  //-- /afs/cern.ch/sw/lcg/external/HepMC/2.05.01/x86_64-slc5-gcc44-opt/include/HepMC
-#include "CascadeWrapper.h"          //-- should be put in HepMC like the Pythia6 Wrapper (/afs/cern.ch/sw/lcg/external/HepMC)
+#include "GeneratorInterface/CascadeInterface/plugins/CascadeWrapper.h"          //-- should be put in HepMC like the Pythia6 Wrapper (/afs/cern.ch/sw/lcg/external/HepMC)
 
 #include "HepMC/HEPEVT_Wrapper.h"
 #include "HepMC/IO_HEPEVT.h"
@@ -21,14 +23,39 @@ HepMC::IO_HEPEVT hepevtio;
 // NOTE: here a number of Pythia6 routines are declared,
 // plus some functionalities to pass around Pythia6 params
 
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "FWCore/Utilities/interface/RandomNumberGenerator.h"
 #include "GeneratorInterface/Pythia6Interface/interface/Pythia6Service.h"
 #include "GeneratorInterface/Pythia6Interface/interface/Pythia6Declarations.h"
+
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RanluxEngine.h"
+#include "CLHEP/Random/RandFlat.h"
+
+// #include "GeneratorInterface/CascadeInterface/plugins/CascadeRandomEngine.h"
 
 using namespace edm;
 using namespace std;
 
 #define debug 1
 
+CLHEP::HepRandomEngine* fRandomEngine;
+
+extern "C" {
+    
+  double dcasrn_(int *idummy) {
+
+    static int call = 0;
+
+    edm::Service<edm::RandomNumberGenerator> rng;
+    fRandomEngine = &(rng->getEngine());
+    
+    if(debug && ++call < 100) cout<<"dcasrn from c++, call: "<<call<<" , seed: "<<rng->mySeed()<<endl;
+    
+    return fRandomEngine->flat();
+  }
+}
+  
 namespace gen {
   
   class Pythia6ServiceWithCallback : public Pythia6Service {
@@ -60,7 +87,15 @@ namespace gen {
   
   Cascade2Hadronizer::Cascade2Hadronizer(edm::ParameterSet const& pset) 
     : BaseHadronizer(pset),
-      //-- fPy6Service( new Pythia6ServiceWithCallback(pset) ), //-- this will store py6 parameters for further settings
+      fPy6Service(new Pythia6ServiceWithCallback(pset)), //-- this will store py6 parameters for further settings 
+      
+      //-- fRandomEngine(&getEngineReference()),
+
+      //-- defined in GeneratorInterface/Core/src/RNDMEngineAccess.cc
+      //-- CLHEP::HepRandomEngine& gen::getEngineReference()
+      //-- { edm::Service<edm::RandomNumberGenerator> rng;
+      //--  return rng->getEngine(); }
+
       
       fComEnergy(pset.getParameter<double>("comEnergy")),
       fCrossSection(pset.getUntrackedParameter<double>("crossSection",-1.)),
@@ -210,9 +245,9 @@ namespace gen {
   bool Cascade2Hadronizer::generatePartonsAndHadronize(){
     
     //-- grab Py6 instance
-    //Pythia6Service::InstanceWrapper guard(fPy6Service);
+    Pythia6Service::InstanceWrapper guard(fPy6Service);
     
-    //FortranCallback::getInstance()->resetIterationsPerEvent();
+    FortranCallback::getInstance()->resetIterationsPerEvent();
     
     //-- generate event with Pythia6
     //call_pyevnt();
@@ -224,7 +259,7 @@ namespace gen {
     }
     
     //-- generation of the event with CASCADE
-    //-- call_event();   //-- conflict with event(): need to be solved
+    call_event(); 
 
     //-- pythia pyhepc routine converts common PYJETS in common HEPEVT
     call_pyhepc(1);
@@ -396,23 +431,27 @@ namespace gen {
     return false;
   }
 
-
   bool Cascade2Hadronizer::initializeForInternalPartons(){
 
     //-- grab Py6 instance
-    //Pythia6Service::InstanceWrapper guard(fPy6Service);
+    Pythia6Service::InstanceWrapper guard(fPy6Service);
   
-    //fPy6Service->setGeneralParams();   
-    //fPy6Service->setCSAParams();
-    //fPy6Service->setSLHAParams();
-    //fPy6Service->setPYUPDAParams(false);
+    //-- change standard parameters of JETSET/PYTHIA - replace call_pytcha()
+    fPy6Service->setGeneralParams();   
+
+    // fPy6Service->setCSAParams();
+    // fPy6Service->setSLHAParams();
+    // fPy6Service->setPYUPDAParams(false);
     
     //-- mstu(8) is set to NMXHEP in this dummy call (version >=6.404)
     call_pyhepc(1);
 
     //-- initialise random number generator (should be changed to be CMSSW compliant)   
-    call_rluxgo(4,12345678,0,0);
-
+    //-- dcasrn overloaded -> not needed anymore
+    // call_rluxgo(4,314159265,0,0);
+    // if(debug) cout<<"dcasrn: "<<call_dcasrn()<<endl;
+    // if(debug) getchar();
+    
     //--initialise CASCADE parameters
     call_casini();
 
@@ -441,8 +480,8 @@ namespace gen {
       } //-- end loop over all the parameters
     } //-- end loop over the different sets
 
-    cainpu.PLEPIN = fComEnergy/2; 
-    cainpu.PPIN = -fComEnergy/2;
+    cainpu.plepin = fComEnergy/2; 
+    cainpu.ppin = -fComEnergy/2;
 
     if(debug) cascadePrintParameters();
     if(debug) getchar();
@@ -451,7 +490,7 @@ namespace gen {
     call_cascha();
     
     //-- change standard parameters of JETSET/PYTHIA
-    call_pytcha();
+    //-- call_pytcha();
 
     //-- set up for running CASCADE (integration of the cross-section)
     call_cascade(); 
@@ -582,89 +621,89 @@ namespace gen {
     bool accepted = 1;
 
     if(!strncmp(ParameterString.c_str(),"KE",2))
-      caluco.KE = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      caluco.ke = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"IRES(1)",7))
-      capar6.IRES[0] = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      capar6.ires[0] = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"KP",2))
-      caluco.KP = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      caluco.kp = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"IRES(2)",7))
-      capar6.IRES[1] = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      capar6.ires[1] = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"NFRAG",5))
-      cainpu.NFRAG = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      cainpu.nfrag = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"IPST",4))
-      cashower.IPST = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      cashower.ipst = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"IPSIPOL",7))
       jpsi.ipsipol = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     //-- from version 2.2.03 on
     // else if(!strncmp(ParameterString.c_str(),"I23S",4))
-    //  jpsi.I23S = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+    //  jpsi.i23s = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
     
     else if(!strncmp(ParameterString.c_str(),"IFPS",4))
-      cainpu.IFPS = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      cainpu.ifps = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"ITIMSHR",7))
-      casshwr.ITIMSHR = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      casshwr.itimshr = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"IRUNAEM",7))
-      capar1.IRUNAEM = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      capar1.irunaem = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"IQ2",3))
-      capar1.IQ2 = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      capar1.iq2 = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"IPRO",4))
-      capar1.IPRO = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      capar1.ipro = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"NFLAV",5))
-      caluco.NFLAV = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      caluco.nflav = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"INTER",5))
-      cainpu.INTER = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      cainpu.inter = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"IHFLA",5))
-      cahflav.IHFLA = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      cahflav.ihfla = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"IRPA",4))
-      cascol.IRPA = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      cascol.irpa = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"IRPB",4))
-      cascol.IRPB = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      cascol.irpb = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"IRPC",4))
-      cascol.IRPC = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      cascol.irpc = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"ICCFM",5))
-      casshwr.ICCFM = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      casshwr.iccfm = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"IGLU",4))
-      cagluon.IGLU = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      cagluon.iglu = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"IRspl",5))
-      casprre.IRspl = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      casprre.irspl = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"PT2CUT",6))
-      captcut.PT2CUT[capar1.IPRO] = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      captcut.pt2cut[capar1.ipro] = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"ACC1",4))
-      integr.ACC1 = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      integr.acc1 = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"ACC2",4))
-      integr.ACC2 = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);      
+      integr.acc2 = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);      
 
     else if(!strncmp(ParameterString.c_str(),"SCALFAF",7))
-      scalf.SCALFAF = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      scalf.scalfaf = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"SCALFA",6))
-      scalf.SCALFA = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      scalf.scalfa = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"PDFPATH",7))
-      caspdf.PDFPATH = &ParameterString[strcspn(ParameterString.c_str(),"=")+1];
+      caspdf.pdfpath = &ParameterString[strcspn(ParameterString.c_str(),"=")+1];
 
     else accepted = 0;
     
@@ -673,36 +712,36 @@ namespace gen {
   
   void Cascade2Hadronizer::cascadePrintParameters() {
    
-    cout<<"flavour code of beam1: "<<caluco.KE<<endl; 
-    cout<<"direct or resolved particle 1: "<<capar6.IRES[0]<<endl; 
-    cout<<"flavour code of beam2: "<<caluco.KP<<endl;    
-    cout<<"direct or resolved particle 2: "<<capar6.IRES[1]<<endl;  
-    cout<<"fragmentation: "<<cainpu.NFRAG<<endl;  
-    cout<<"keep track of intermediate state in PS: "<<cashower.IPST<<endl;  
+    cout<<"flavour code of beam1: "<<caluco.ke<<endl; 
+    cout<<"direct or resolved particle 1: "<<capar6.ires[0]<<endl; 
+    cout<<"flavour code of beam2: "<<caluco.kp<<endl;    
+    cout<<"direct or resolved particle 2: "<<capar6.ires[1]<<endl;  
+    cout<<"fragmentation: "<<cainpu.nfrag<<endl;  
+    cout<<"keep track of intermediate state in PS: "<<cashower.ipst<<endl;  
     cout<<"polarisation for J/psi: "<<jpsi.ipsipol<<endl;
-    // cout<<"select state for vector meson: "<<jpsi.I23S<<endl;
-    cout<<"parton shower: "<<cainpu.IFPS<<endl;   
-    cout<<"switch for time-like shower in initial state cascade: "<<casshwr.ITIMSHR<<endl;
-    cout<<"switch for running alphas: "<<capar1.IRUNAEM<<endl;  
-    cout<<"scale for alphas: "<<capar1.IQ2<<endl;   
-    cout<<"process number: "<<capar1.IPRO<<endl;  
-    cout<<"number of flavors in pdfs: "<<caluco.NFLAV<<endl;   
-    cout<<"mode of interaction for ep: "<<cainpu.INTER<<endl; 
-    cout<<"flavor code for heavy flavor (IPRO = 11), for VM (IPRO = 2,3): "<<cahflav.IHFLA<<endl; 
-    cout<<"switch to select QCD process g* g* -> q qbar: "<<cascol.IRPA<<endl;   
-    cout<<"switch to select QCD process g* g -> g g: "<<cascol.IRPB<<endl; 
-    cout<<"switch to select QCD process g* q -> g q: "<<cascol.IRPC<<endl;   
-    cout<<"select CCFM or DGLAP mode: "<<casshwr.ICCFM<<endl; 
-    cout<<"select uPDF: "<<cagluon.IGLU<<endl;  
-    cout<<"switch for p-remnant treatment: "<<casprre.IRspl<<endl;  
-    cout<<"pz of incoming beam 1: "<<cainpu.PLEPIN<<endl; 
-    cout<<"pz of incoming beam 2: "<<cainpu.PPIN<<endl;  
-    cout<<"pt2 cut in ME for massless partons: "<<captcut.PT2CUT[capar1.IPRO]<<endl; 
-    cout<<"accurary requested for grid optimisation step (BASES): "<<integr.ACC1<<endl;  
-    cout<<"accuracy requested for integration step (BASES): "<<integr.ACC2<<endl; 
-    cout<<"scale factor for scale in alphas: "<<scalf.SCALFA<<endl; 
-    cout<<"scale factor for final state parton shower scale: "<<scalf.SCALFAF<<endl;
-    cout<<"path where updf grid files are stored: "<<caspdf.PDFPATH<<endl;
+    // cout<<"select state for vector meson: "<<jpsi.i23s<<endl;
+    cout<<"parton shower: "<<cainpu.ifps<<endl;   
+    cout<<"switch for time-like shower in initial state cascade: "<<casshwr.itimshr<<endl;
+    cout<<"switch for running alphas: "<<capar1.irunaem<<endl;  
+    cout<<"scale for alphas: "<<capar1.iq2<<endl;   
+    cout<<"process number: "<<capar1.ipro<<endl;  
+    cout<<"number of flavors in pdfs: "<<caluco.nflav<<endl;   
+    cout<<"mode of interaction for ep: "<<cainpu.inter<<endl; 
+    cout<<"flavor code for heavy flavor (IPRO = 11), for VM (IPRO = 2,3): "<<cahflav.ihfla<<endl; 
+    cout<<"switch to select QCD process g* g* -> q qbar: "<<cascol.irpa<<endl;   
+    cout<<"switch to select QCD process g* g -> g g: "<<cascol.irpb<<endl; 
+    cout<<"switch to select QCD process g* q -> g q: "<<cascol.irpc<<endl;   
+    cout<<"select CCFM or DGLAP mode: "<<casshwr.iccfm<<endl; 
+    cout<<"select uPDF: "<<cagluon.iglu<<endl;  
+    cout<<"switch for p-remnant treatment: "<<casprre.irspl<<endl;  
+    cout<<"pz of incoming beam 1: "<<cainpu.plepin<<endl; 
+    cout<<"pz of incoming beam 2: "<<cainpu.ppin<<endl;  
+    cout<<"pt2 cut in ME for massless partons: "<<captcut.pt2cut[capar1.ipro]<<endl; 
+    cout<<"accurary requested for grid optimisation step (BASES): "<<integr.acc1<<endl;  
+    cout<<"accuracy requested for integration step (BASES): "<<integr.acc2<<endl; 
+    cout<<"scale factor for scale in alphas: "<<scalf.scalfa<<endl; 
+    cout<<"scale factor for final state parton shower scale: "<<scalf.scalfaf<<endl;
+    cout<<"path where updf grid files are stored: "<<caspdf.pdfpath<<endl;
   }
 
 } //-- namespace gen

@@ -23,7 +23,7 @@ Cascade2Parameters = cms.PSet(
                                   'IRPB = 0 ! switch to select QCD process g* g -> g g via IRPB = 1',
                                   'IRPC = 0 ! switch to select QCD process g* q -> g q via IRPC = 1',
                                   'ICCFM = 1 ! select CCFM or DGLAP mode (=1 CCFM, =0 DGLAP)',
-                                  'IGLU = 1010 ! select uPDF (1010 = set A, default)',
+                                  'IGLU = 5 ! select uPDF (1010 = set A, default)',
                                   'IRspl = 4 ! switch for p-remnant treatment',
                                   'PT2CUT = 0.0 ! pt2 cut in ME for massless partons',
                                   'ACC1 = 1.0 ! accurary requested for grid optimisation step (BASES)',

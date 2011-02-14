@@ -30,5 +30,5 @@ Cascade2Parameters = cms.PSet(
                                   'ACC2 = 0.5 ! accuracy requested for integration step (BASES)',
                                   'SCALFA = 1.0 ! scale factor for scale in alphas',
                                   'SCALFAF = 1.0 ! scale factor for final state parton shower scale',
-                                  'PDFPATH =/afs/cern.ch/sw/lcg/external/MCGenerators/cascade/2.2.0/share/data/')) # path where updf grid files are stored
-    
+                                  # 'PDFPATH =/afs/cern.ch/sw/lcg/external/MCGenerators/cascade/2.2.0/share/data/')) # path where updf grid files are stored
+                                  'PDFPATH =/afs/cern.ch/cms/slc5_ia32_gcc434/external/cascade/2.2.0/share')) # path where updf grid files are stored

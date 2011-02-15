@@ -47,6 +47,7 @@ namespace gen {
     void cascadePrintParameters();
     
     bool declareStableParticles(const std::vector<int>);
+    bool declareSpecialSettings( const std::vector<std::string> ) { return true; }
     void statistics();
     
     bool generatePartonsAndHadronize();

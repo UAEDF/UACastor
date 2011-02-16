@@ -103,7 +103,7 @@ void CastorTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   GetRecoVertex(iEvent,"offlinePrimaryVertices",primaryVertex);
 
   //-- Castor Information
-  if(StoreCastorDigi) GetCastorDigi(iEvent,castorDigi);
+  if(StoreCastorDigi) GetCastorDigi(iEvent,iSetup,castorDigi);
   GetCastorRecHit(iEvent,castorRecHit);
   nCastorJet = 0;
   if(StoreCastorJet) GetCastorJet(iEvent,castorJet);
@@ -164,6 +164,7 @@ void CastorTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    if ( ! badEvent ) tree->Fill();
    // tree->Fill(); 
    */ // benoit
+   tree->Fill();
 }
 
 //-- method called once each job just before starting the event loop 

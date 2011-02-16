@@ -16,11 +16,17 @@
 #include "DataFormats/HcalDigi/interface/CastorDataFrame.h"
 #include "DataFormats/HcalDetId/interface/HcalCastorDetId.h"
 
+#include "CondFormats/CastorObjects/interface/CastorQIEShape.h"
+#include "CondFormats/CastorObjects/interface/CastorQIECoder.h"
+#include "CalibFormats/CastorObjects/interface/CastorCoderDb.h"
+#include "CalibFormats/CastorObjects/interface/CastorDbService.h"
+#include "CalibFormats/CastorObjects/interface/CastorDbRecord.h"
+
 #include "UACastor/CastorTree/interface/CastorTree.h"
 
 bool CastorDigiDebug = true;
 
-void CastorTree::GetCastorDigi(const edm::Event& iEvent, vector<MyCastorDigi>& CastorDigiVector) {
+void CastorTree::GetCastorDigi(const edm::Event& iEvent, const edm::EventSetup& iSetup, vector<MyCastorDigi>& CastorDigiVector) {
   
   using namespace std;
   using namespace edm;
@@ -32,6 +38,12 @@ void CastorTree::GetCastorDigi(const edm::Event& iEvent, vector<MyCastorDigi>& C
   Handle<CastorDigiCollection> digicoll;
   iEvent.getByLabel(CastorDigiColl_,digicoll);
   
+  // QIE coder to convert to fC
+  // get conditions
+  edm::ESHandle<CastorDbService> conditions;
+  iSetup.get<CastorDbRecord>().get(conditions);
+  const CastorQIEShape* shape = conditions->getCastorShape ();
+  
   if (CastorDigiDebug) cout<<"number of Castor Digi: "<<digicoll->size()<<endl;
   
   //-- loop over the digi collection (224 digis)
@@ -39,6 +51,11 @@ void CastorTree::GetCastorDigi(const edm::Event& iEvent, vector<MyCastorDigi>& C
   
     CastorDataFrame digi = (*digicoll)[i];
     HcalCastorDetId castorid = digi.id();
+    
+    const CastorQIECoder* channelCoder = conditions->getCastorCoder (castorid);
+    CastorCoderDb coder (*channelCoder, *shape);
+    CaloSamples tool;
+    coder.adc2fC(digi,tool);
 
     mycastordigi.mod = castorid.module();
     mycastordigi.sec = castorid.sector();
@@ -48,7 +65,7 @@ void CastorTree::GetCastorDigi(const edm::Event& iEvent, vector<MyCastorDigi>& C
    
     for (int ts = 0; ts < digi.size(); ts++) {   
       mycastordigi.adc.push_back(digi[ts].adc());
-      mycastordigi.fC.push_back(digi[ts].nominal_fC());
+      mycastordigi.fC.push_back(tool[ts]);
     }
     
     CastorDigiVector.push_back(mycastordigi);

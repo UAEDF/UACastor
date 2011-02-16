@@ -91,7 +91,7 @@ class CastorTree : public edm::EDAnalyzer {
   virtual void GetRecoVertex(const edm::Event&, const char[60], vector<MyVertex>&); 
   virtual void GetBeamSpot(const edm::Event&);
 
-  virtual void GetCastorDigi(const edm::Event&, vector<MyCastorDigi>&);
+  virtual void GetCastorDigi(const edm::Event&, const edm::EventSetup&, vector<MyCastorDigi>&);
   virtual void GetCastorRecHit(const edm::Event&, vector<MyCastorRecHit>&);
   virtual void GetCastorJet(const edm::Event&, vector<MyCastorJet>&);
 

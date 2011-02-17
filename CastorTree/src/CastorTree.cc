@@ -105,15 +105,12 @@ void CastorTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   //-- Castor Information
   if(StoreCastorDigi) GetCastorDigi(iEvent,iSetup,castorDigi);
   GetCastorRecHit(iEvent,castorRecHit);
-  nCastorJet = 0;
   if(StoreCastorJet) GetCastorJet(iEvent,castorJet);
   
   //-- Central Jet Information
-  nPFJet = 0;
   GetRecoPFJet(iEvent,iSetup,pfJet);
   GetCentralPFDiJet(pfJet,pfDiJet);
 
-  nCaloJet = 0;
   GetRecoCaloJet(iEvent,iSetup,caloJet);
   GetCentralCaloDiJet(caloJet,caloDiJet);
 
@@ -192,14 +189,10 @@ void CastorTree::beginJob() {
   tree->Branch("castorDigi",&castorDigi);
   tree->Branch("castorRecHit",&castorRecHit);
   tree->Branch("castorJet",&castorJet);
-  tree->Branch("nCastorJet",&nCastorJet,"nCastorJet/I");
-
+ 
   //-- Central Jet Information 
   tree->Branch("pfJet",&pfJet);
-  tree->Branch("nPFJet",&nPFJet,"nPFJet/I");
-
   tree->Branch("caloJet",&caloJet);
-  tree->Branch("nCaloJet",&nCaloJet,"nCaloJet/I");
 
   tree->Branch("pfDiJet",&pfDiJet);
   tree->Branch("caloDiJet",&caloDiJet);

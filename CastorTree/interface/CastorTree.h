@@ -189,9 +189,6 @@ class CastorTree : public edm::EDAnalyzer {
   MyDiJet pfDiJet;
   MyDiJet caloDiJet;
 
-  Int_t nCastorJet;
-  Int_t nPFJet;
-  Int_t nCaloJet;
 };
 
 #endif

@@ -36,14 +36,12 @@ void CastorTree::GetCastorJet(const edm::Event& iEvent, vector<MyCastorJet>& Cas
   iEvent.getByLabel(CastorJetID_,jetIdMap);
 
   if(basicjetcoll.isValid()) {
-
-    nCastorJet = basicjetcoll->size();
-
+    
     for(edm::View<reco::BasicJet>::const_iterator ibegin = basicjetcoll->begin(), iend = basicjetcoll->end(), ijet = ibegin; ijet != iend; ++ijet) {
-
+      
       unsigned int idx = ijet - ibegin;
       const BasicJet & basicjet = (*basicjetcoll)[idx];
-
+      
       mycastorjet.energy = basicjet.energy();
       mycastorjet.pt = basicjet.pt();
       mycastorjet.eta = basicjet.eta();

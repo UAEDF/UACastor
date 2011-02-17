@@ -57,12 +57,10 @@ void CastorTree::GetRecoCaloJet(const edm::Event& iEvent, const edm::EventSetup&
   JetCorrectorParameters const & CaloJetCorPar = (*CaloJetCorParColl)["Uncertainty"];
   CaloJetCorUnc = new JetCorrectionUncertainty(CaloJetCorPar);
   
-  nCaloJet = CaloJetcoll->size();
-
   for (CaloJetCollection::const_iterator jet = CaloJetcoll->begin(); jet != CaloJetcoll->end(); jet++) {    
-
+    
     MyJet myjet;
-
+    
     //-- raw jet variables
     myjet.e_raw = jet->energy();
     myjet.pt_raw  = jet->pt();

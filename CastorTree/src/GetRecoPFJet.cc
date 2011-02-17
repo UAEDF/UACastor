@@ -50,8 +50,6 @@ void CastorTree::GetRecoPFJet(const edm::Event& iEvent, const edm::EventSetup& i
   JetCorrectorParameters const & PFJetCorPar = (*PFJetCorParColl)["Uncertainty"];
   PFJetCorUnc = new JetCorrectionUncertainty(PFJetCorPar);
   
-  nPFJet = PFJetcoll->size();
-
   for (PFJetCollection::const_iterator jet = PFJetcoll->begin(); jet != PFJetcoll->end(); jet++) {    
 
     MyJet myjet;

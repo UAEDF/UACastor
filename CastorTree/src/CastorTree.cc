@@ -28,8 +28,6 @@ CastorTree::CastorTree(const edm::ParameterSet& iConfig) {
   
   //-- do what ever initialization is needed
 
-  rnd = new TRandom3();
-  
   //-- Modules to execute 
   StoreGenKine = iConfig.getParameter<bool>("StoreGenKine");
   StoreGenPart = iConfig.getParameter<bool>("StoreGenPart");

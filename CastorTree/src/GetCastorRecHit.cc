@@ -38,6 +38,12 @@ void CastorTree::GetCastorRecHit(const edm::Event& iEvent, vector<MyCastorRecHit
   
   if (CastorRecHitDebug) cout<<"number of Castor Digi: "<<rechitcoll->size()<<endl;
 
+  //-- random number needs to be initialized for EACH event
+  //-- in order to get the SAME random numbers sequence for EACH event
+  //-- because we want the SAME calibration for EACH event (do not change calibration event by event)
+  
+  TRandom3* rnd = new TRandom3();
+
   //-- loop over the rechit collection (224 rechits)
   if(rechitcoll.isValid()) {
     

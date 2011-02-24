@@ -155,10 +155,6 @@ class CastorTree : public edm::EDAnalyzer {
   HLTConfigProvider hltConfig;
   bool isValidHLTConfig_;
 
-  //-- random number
-
-  TRandom3* rnd; 
-
   //-- Tree & File
 
   edm::Service<TFileService> fs;

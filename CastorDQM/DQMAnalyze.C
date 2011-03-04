@@ -29,7 +29,7 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
 
-  Int_t debug = 1;
+  Int_t debug = 0;
   Int_t debug_choice2 = 0;
 
   SetStyle();
@@ -122,6 +122,16 @@ int main(int argc, char *argv[]) {
 
   TApplication* rootapp = new TApplication("app",&argc, argv);
 
+  Int_t nhisto1_missing = 0;
+  Int_t nhisto2_missing = 0;
+  Int_t nhisto3_missing = 0;
+  Int_t nhisto4_missing = 0;
+
+  Bool_t is_histo1 = false;
+  Bool_t is_histo2 = false;  //-- histo2 not present in some file !!
+  Bool_t is_histo3 = false;
+  Bool_t is_histo4 = false;
+
   while(fn = (TObjString*) next()) { 
     
     //-- retrieve the DQM files
@@ -144,6 +154,8 @@ int main(int argc, char *argv[]) {
       cout<<"run: "<<atoi(run.Data())<<"\n"<<endl;
 
       TString histoname = "DQMData/Run " + run + "/Castor/Run summary/";
+      TString histoname1;
+      TString histoname2;
 
       //-- Castor reportSummaryMap
 
@@ -151,7 +163,12 @@ int main(int argc, char *argv[]) {
 
 	histoname+="EventInfo/reportSummaryMap";
 	TH2F* histo1 = (TH2F*) file->Get(histoname.Data());
-	
+
+	is_histo1 = false;
+	if(!histo1) nhisto1_missing++;
+	if(!histo1) continue;
+	is_histo1 = true;
+
 	cname = "Castor_reportSummaryMap";
 	ctitle = "Castor reportSummaryMap";
 	epsname = "DQMPlot/" + cname + ".pdf";
@@ -180,6 +197,11 @@ int main(int argc, char *argv[]) {
 	histoname+="CastorPSMonitor/CASTOR Digi ChannelSummaryMap";
 	TH2F* histo2temp = (TH2F*) file->Get(histoname.Data());
 	
+	is_histo2 = false;
+	if(!histo2temp) nhisto2_missing++;
+	if(!histo2temp) continue;
+	is_histo2 = true;
+
 	TH2F* histo2 = (TH2F*) histo2temp->Clone("histo2");
 	histo2->SetName(histoname.Data());
 
@@ -228,6 +250,11 @@ int main(int argc, char *argv[]) {
 	histoname+="CastorDigiMonitor/Castor All Digi Values";
 	TH1F* histo3 = (TH1F*) file->Get(histoname.Data());
 	
+	is_histo3 = false;
+	if(!histo3) nhisto3_missing++;
+	if(!histo3) continue;
+	is_histo3 = true;
+
 	cname = "Castor_AllDigiValues";
 	ctitle = "Castor All Digi Values";
 	epsname = "DQMPlot/" + cname + ".pdf";
@@ -247,6 +274,8 @@ int main(int argc, char *argv[]) {
 	fprintf(file_Castor_AllDigiValues,"%d  %d\n",atoi(run),decision3);
       }
 
+      if((choice == 1 && is_histo1 == false) || (choice == 2 && is_histo2 == false) || (choice == 3 && is_histo3 == false)) continue;
+
       leg->Clear();
       entry = leg->AddEntry("",run.Data(),"");
       SetStyle(entry);
@@ -256,11 +285,15 @@ int main(int argc, char *argv[]) {
       
       if(ican == 0) c[ican]->Print(TString(TString(epsname)+TString("[")).Data());   // No actual print, just open file
       c[ican]->Print(epsname.Data());  // actually print canvas to file 
-      if(ican == nbcan-1) c[ican]->Print(TString(TString(epsname)+TString("]")).Data()); // No actual print, just close file
-      
+      if(choice == 1 && ican == nbcan -1 -nhisto1_missing) c[ican]->Print(TString(TString(epsname)+TString("]")).Data()); // No actual print, just close file
+      if(choice == 2 && ican == nbcan -1 -nhisto2_missing) c[ican]->Print(TString(TString(epsname)+TString("]")).Data()); // No actual print, just close file
+      if(choice == 3 && ican == nbcan -1 -nhisto3_missing) c[ican]->Print(TString(TString(epsname)+TString("]")).Data()); // No actual print, just close file
+
       if(debug == 1) c[ican]->WaitPrimitive();
-      if(debug == 0 && ican == nbcan-1) c[ican]->WaitPrimitive();
-      
+      if(debug == 0 && choice == 1 && ican == nbcan -1 -nhisto1_missing) c[ican]->WaitPrimitive();
+      if(debug == 0 && choice == 2 && ican == nbcan -1 -nhisto2_missing) c[ican]->WaitPrimitive();
+      if(debug == 0 && choice == 3 && ican == nbcan -1 -nhisto3_missing) c[ican]->WaitPrimitive();
+
       ican++;
     } //-- end loop over the DQM Castor files
 
@@ -275,8 +308,13 @@ int main(int argc, char *argv[]) {
       TString histoname = "DQMData/Run " + run + "/Info/Run summary/";
 
       histoname+="EventInfo/reportSummaryMap";
-      TH2F* histo1 = (TH2F*) file->Get(histoname.Data());
-	
+      TH2F* histo4 = (TH2F*) file->Get(histoname.Data());
+
+      is_histo4 = false;
+      if(!histo4) nhisto4_missing++;
+      if(!histo4) continue;
+      is_histo4 = true;
+
       cname = "Info_reportSummaryMap";
       ctitle = "Info reportSummaryMap";
       epsname = "DQMPlot/" + cname + ".pdf";
@@ -287,14 +325,14 @@ int main(int argc, char *argv[]) {
       c[ican]->Divide(1,1);
 	
       TPad* pad = (TPad*) c[ican]->cd(1);
-      preDrawInfoTH2(pad,histo1);
-      histo1->Draw();
+      preDrawInfoTH2(pad,histo4);
+      histo4->Draw();
 
       //Int_t ngreen1 = 0;
       //Double_t ratio1 = 0;
       //Int_t decision1 = 0;
 
-      //GetDecision_reportSummaryMap(histo1,ngreen1,ratio1,decision1);
+      GetDecision_HVBeamStatus(histo4);
       //fprintf(file_Castor_reportSummaryMap,"%d  %d\n",atoi(run),decision1);
 
       leg->Clear();
@@ -306,11 +344,11 @@ int main(int argc, char *argv[]) {
       
       if(ican == 0) c[ican]->Print(TString(TString(epsname)+TString("[")).Data());   // No actual print, just open file
       c[ican]->Print(epsname.Data());  // actually print canvas to file 
-      if(ican == nbcan-1) c[ican]->Print(TString(TString(epsname)+TString("]")).Data()); // No actual print, just close file
+      if(ican == nbcan -1 -nhisto4_missing) c[ican]->Print(TString(TString(epsname)+TString("]")).Data()); // No actual print, just close file
       
       if(debug == 1) c[ican]->WaitPrimitive();
-      if(debug == 0 && ican == nbcan-1) c[ican]->WaitPrimitive();
-      
+      if(debug == 0 && ican == nbcan -1 -nhisto4_missing) c[ican]->WaitPrimitive();
+
       ican++;
     }  //-- end loop over the DQM Info files
 

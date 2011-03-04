@@ -22,6 +22,7 @@
 #include <iostream>
 #include <fstream>
 #include <cassert>
+#include <vector>
 
 using namespace std;
 
@@ -46,9 +47,9 @@ void SetStyle(TLegend* leg) {
 
 bool init = false;
 
-void reportSummaryMapPalette(TH2* obj) {
+void reportSummaryMapPalette(TH2* histo) {
 
-  static int pcol[20];
+  static Int_t pcol[20];
 
   if( !init ) {
 
@@ -84,18 +85,18 @@ void reportSummaryMapPalette(TH2* obj) {
   }
 
   gStyle->SetPalette(20, pcol);
-
-  if(obj) {
-    obj->SetMinimum(-1.e-15);
-    obj->SetMaximum(+1.0);
-    obj->SetOption("colz");
+ 
+  if(histo) {
+    histo->SetMinimum(-1.e-15);
+    histo->SetMaximum(+1.0);
+    histo->SetOption("colz");
   }
 
 }
 
 void preDrawCastorTH2(TPad *pad,TH2F* histo) { 
 
-  Int_t debug = 1;
+  Int_t debug = 0;
 
   assert(histo);
   
@@ -107,13 +108,13 @@ void preDrawCastorTH2(TPad *pad,TH2F* histo) {
   histo->GetYaxis()->SetTitle("#phi-sector");
   
   TString histo_name = histo->GetName(); 
-  if(debug == 1) cout<<"name of the histogram: "<<histo_name.Data()<<endl;
+  if(debug) cout<<"name of the histogram: "<<histo_name.Data()<<endl;
 
   char *label[16] = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16"};
 
   if (histo_name.Index("reportSummaryMap") != kNPOS) {
     
-    if(debug == 1) cout<<"reportSummaryMap \n"<<endl;
+    if(debug) cout<<"reportSummaryMap \n"<<endl;
   
     histo->GetXaxis()->SetNdivisions(15,true);
     histo->GetYaxis()->SetNdivisions(17,true);
@@ -136,7 +137,7 @@ void preDrawCastorTH2(TPad *pad,TH2F* histo) {
 
   if (histo_name.Index("ChannelSummaryMap") != kNPOS) {
     
-    if(debug == 1) cout<<"ChannelSummaryMap \n"<<endl;
+    if(debug) cout<<"ChannelSummaryMap \n"<<endl;
        
     histo->GetXaxis()->SetNdivisions(15,true);
     histo->GetYaxis()->SetNdivisions(17,true);
@@ -154,7 +155,7 @@ void preDrawCastorTH2(TPad *pad,TH2F* histo) {
     histo->SetMinimum(-1.0);
     histo->SetMaximum(+1.0);
 
-    int colorError1[4];
+    Int_t colorError1[4];
     colorError1[0] = 632; // kRed
     colorError1[1] = 800; // kOrange
     colorError1[2] = 432; // kCyan 
@@ -169,13 +170,11 @@ void preDrawCastorTH2(TPad *pad,TH2F* histo) {
 
 void preDrawInfoTH2(TPad* pad,TH2F* histo) {
 
-  Int_t debug = 1;
-
   assert(histo);
   
-  int nbinx = histo->GetNbinsX();
-  int topBin = histo->GetNbinsY();
-  int maxRange = nbinx;
+  Int_t nbinx = histo->GetNbinsX();
+  Int_t topBin = histo->GetNbinsY();
+  Int_t maxRange = nbinx;
   
   for (int i = nbinx; i > 0; --i) {
     if (histo->GetBinContent(i,topBin) != 0) {
@@ -186,12 +185,12 @@ void preDrawInfoTH2(TPad* pad,TH2F* histo) {
  
   histo->GetXaxis()->SetRange(1,maxRange);
   histo->GetYaxis()->SetRange(1,topBin);
-  
+    
   pad->SetGrid(1,1);
   pad->SetLeftMargin(0.12);
   histo->SetStats(kFALSE);
   
-  int pcol[2];
+  Int_t pcol[2];
   float rgb[2][2];
   rgb[0][0] = 0.80;
   rgb[0][1] = 0.00;
@@ -230,18 +229,18 @@ void GetDecision_reportSummaryMap(TH2F* histo,Int_t& ngreen,Double_t& ratio,Int_
 	  
       value = histo->GetBinContent(ibin_x,ibin_y);
       if(value > 0.949) ngreen++; 
-      if(debug == 1) cout<<"module: "<<ibin_x<<" sector: "<<ibin_y<<" value: "<<value<<endl;
+      if(debug) cout<<"module: "<<ibin_x<<" sector: "<<ibin_y<<" value: "<<value<<endl;
     }
   }
-
+ 
   ratio = 1.0*ngreen/ntot;
   if(ratio > ratio_min) decision = 1; 
 
-  if(debug == 1) cout<<endl;
+  if(debug) cout<<endl;
   if(debug) cout<<"reportSummaryMap ngreen: "<<ngreen<<endl;
   if(debug) cout<<"reportSummaryMap ratio: "<<ratio<<endl;
   if(debug) cout<<"reportSummaryMap decision: "<<decision<<endl;
-  if(debug == 1) cout<<endl;
+  if(debug) cout<<endl;
 }
 
 void GetDecision_ChannelSummaryMap(TH2F* histo,Int_t& ngreen,Int_t& ncyan,Double_t& ratio,Int_t& decision) {
@@ -262,19 +261,19 @@ void GetDecision_ChannelSummaryMap(TH2F* histo,Int_t& ngreen,Int_t& ncyan,Double
       value = histo->GetBinContent(ibin_x,ibin_y);
       if(value > 0 && value < 0.5) ncyan++;
       if(value > 0.5) ngreen++;
-      if(debug == 1) cout<<"module: "<<ibin_x<<" sector: "<<ibin_y<<" value: "<<value<<endl;
+      if(debug) cout<<"module: "<<ibin_x<<" sector: "<<ibin_y<<" value: "<<value<<endl;
     }
   }
 
   ratio = 1.0*(ngreen+ncyan)/ntot;
   if(ratio > ratio_min && ncyan != 224) decision = 1; //-- ncyan == 224: pedestal or not in the DAQ
 
-  if(debug == 1) cout<<endl;
+  if(debug) cout<<endl;
   if(debug) cout<<"ChannelSummaryMap ngreen: "<<ngreen<<endl;
   if(debug) cout<<"ChannelSummaryMap ncyan: "<<ncyan<<endl;
   if(debug) cout<<"ChannelSummaryMap ratio: "<<ratio<<endl;
   if(debug) cout<<"ChannelSummaryMap decision: "<<decision<<endl;
-  if(debug == 1) cout<<endl;
+  if(debug) cout<<endl;
 }
 
 
@@ -291,8 +290,92 @@ void GetDecision_AllDigiValues(TH1F* histo,Double_t& mean,Int_t& decision) {
   mean = histo->GetMean();
   if(mean > min && mean < max) decision = 1;
 
-  if(debug == 1) cout<<endl;
+  if(debug) cout<<endl;
   if(debug) cout<<"AllDigiValues mean: "<<mean<<endl;
   if(debug) cout<<"AllDigiValues decision: "<<decision<<endl;
-  if(debug == 1) cout<<endl;
+  if(debug) cout<<endl;
 }
+
+void GetDecision_HVBeamStatus(TH2F* histo) {
+
+  Int_t debug = 1;
+
+  Int_t nbinx = histo->GetNbinsX();
+  Int_t topBin = histo->GetNbinsY();
+  Int_t maxRange = nbinx;
+
+  TString label;
+  TRegexp regexp_Castor("CASTOR");
+  Int_t CastorBin = 0;
+
+  //-- retrieve the bin in y corresponding to Castor (CastorBin)
+
+  for (int i = 1; i < topBin+1; i++) {
+    label = histo->GetYaxis()->GetBinLabel(i);
+    if(debug) cout<<"bin "<<i<<" has label: "<<label.Data()<<endl;
+    if(label.Index(regexp_Castor) != kNPOS) CastorBin = i;
+  }
+
+  if(debug) cout<<""<<endl;
+  if(debug) cout<<"Castor bin: "<<CastorBin<<endl;
+  if(debug) cout<<""<<endl;
+
+  //-- retrieve the "last good LS + one" (maxRange)
+
+  for (int i = nbinx; i > 0; --i) {
+    if (histo->GetBinContent(i,topBin) != 0) {
+      maxRange = i+1;
+      break;
+    }
+  }
+
+  if(debug) cout<<"last good LS + one: "<<maxRange<<endl;
+  if(debug) cout<<""<<endl;
+
+  //-- retrieve the good LS intervals
+
+  Bool_t current_min = false;
+  Int_t LS_min  = 0;
+  Int_t LS_max = 0;
+  vector<Int_t> list_LS_min;
+  vector<Int_t> list_LS_max;
+  
+  for(int i = 1; i < maxRange+1; i++) {
+
+    if(debug && i != maxRange) cout<<"LS: "<<i<<" Castor status: "<<histo->GetBinContent(i,CastorBin)<<endl;
+
+    //-- good LS
+    if(histo->GetBinContent(i,CastorBin) > 0.5){ 
+
+      if (current_min == false) {
+	LS_min = i;
+	current_min = true; 
+      }
+
+      if(current_min == true) LS_max = i;
+    }
+
+    //-- bad LS
+    if(histo->GetBinContent(i,CastorBin) < 0.5 && current_min == true) { // to avoid to read multiple time when several consecutive bad LS 
+      list_LS_min.push_back(LS_min);
+      list_LS_max.push_back(LS_max);
+      current_min = false;
+    }
+  }
+  
+  //-- if no good LS at all
+  if(LS_min == 0 && LS_max == 0) {
+    list_LS_min.push_back(LS_min);
+    list_LS_max.push_back(LS_max);
+  }
+
+  if(debug) {
+    cout<<""<<endl;
+    cout<<"selected good LS intervals: "<<endl;
+    for(int i = 0; i < list_LS_min.size(); i++) cout<<list_LS_min.at(i)<<" - "<<list_LS_max.at(i)<<endl;
+    cout<<""<<endl;
+  }
+
+}
+
+

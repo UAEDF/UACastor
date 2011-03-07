@@ -104,6 +104,9 @@ int main(int argc, char *argv[]) {
   FILE* file_Info_reportSummaryMap;
   if(choice == 4) file_Info_reportSummaryMap = fopen("Decision/Info_reportSummaryMap.txt","w+");
 
+  FILE* file_Info_reportSummaryMap_LS;
+  if(choice == 4) file_Info_reportSummaryMap_LS = fopen("Decision/Info_reportSummaryMap_LS.txt","w+");
+
   //-- define the legend
 
   TLegend* leg = new TLegend(0.54,0.96,0.75,0.98);
@@ -161,11 +164,17 @@ int main(int argc, char *argv[]) {
 
       if(choice == 1) {
 
+	Int_t ngreen1 = 0;
+	Double_t ratio1 = 0;
+	Int_t decision1 = 0;
+
 	histoname+="EventInfo/reportSummaryMap";
 	TH2F* histo1 = (TH2F*) file->Get(histoname.Data());
 
 	is_histo1 = false;
 	if(!histo1) nhisto1_missing++;
+	if(!histo1 && !debug) fprintf(file_Castor_reportSummaryMap,"%d  %d \n",atoi(run),decision1); 
+	if(!histo1 && debug) fprintf(file_Castor_reportSummaryMap,"%d  %d (histo not present)\n",atoi(run),decision1); 
 	if(!histo1) continue;
 	is_histo1 = true;
 
@@ -182,10 +191,6 @@ int main(int argc, char *argv[]) {
 	preDrawCastorTH2(pad,histo1);
 	histo1->Draw();
 
-	Int_t ngreen1 = 0;
-	Double_t ratio1 = 0;
-	Int_t decision1 = 0;
-
 	GetDecision_reportSummaryMap(histo1,ngreen1,ratio1,decision1);
 	fprintf(file_Castor_reportSummaryMap,"%d  %d\n",atoi(run),decision1);
       }
@@ -194,11 +199,18 @@ int main(int argc, char *argv[]) {
      
       if(choice == 2) {
 
+	Int_t ngreen2 = 0;
+	Int_t ncyan2 = 0;
+	Double_t ratio2 = 0;
+	Int_t decision2 = 0;
+
 	histoname+="CastorPSMonitor/CASTOR Digi ChannelSummaryMap";
 	TH2F* histo2temp = (TH2F*) file->Get(histoname.Data());
 	
 	is_histo2 = false;
 	if(!histo2temp) nhisto2_missing++;
+	if(!histo2temp && !debug) fprintf(file_Castor_ChannelSummaryMap,"%d  %d\n",atoi(run),decision2);
+	if(!histo2temp && debug) fprintf(file_Castor_ChannelSummaryMap,"%d  %d (histo not present)\n",atoi(run),decision2);
 	if(!histo2temp) continue;
 	is_histo2 = true;
 
@@ -234,11 +246,6 @@ int main(int argc, char *argv[]) {
 	  histo2temp->Draw();
 	}
 
-	Int_t ngreen2 = 0;
-	Int_t ncyan2 = 0;
-	Double_t ratio2 = 0;
-	Int_t decision2 = 0;
-
 	GetDecision_ChannelSummaryMap(histo2,ngreen2,ncyan2,ratio2,decision2);
 	fprintf(file_Castor_ChannelSummaryMap,"%d  %d\n",atoi(run),decision2);
       }
@@ -247,11 +254,16 @@ int main(int argc, char *argv[]) {
 
       if(choice == 3) {
 
+	Double_t mean3 = 0;
+	Int_t decision3 = 0;
+
 	histoname+="CastorDigiMonitor/Castor All Digi Values";
 	TH1F* histo3 = (TH1F*) file->Get(histoname.Data());
 	
 	is_histo3 = false;
 	if(!histo3) nhisto3_missing++;
+	if(!histo3 && !debug) fprintf(file_Castor_AllDigiValues,"%d  %d\n",atoi(run),decision3);
+	if(!histo3 && debug) fprintf(file_Castor_AllDigiValues,"%d  %d (histo not present)\n",atoi(run),decision3);
 	if(!histo3) continue;
 	is_histo3 = true;
 
@@ -266,9 +278,6 @@ int main(int argc, char *argv[]) {
 	
 	TPad* pad = (TPad*) c[ican]->cd(1);
 	histo3->Draw();
-
-	Double_t mean3 = 0;
-	Int_t decision3 = 0;
 
 	GetDecision_AllDigiValues(histo3,mean3,decision3);
 	fprintf(file_Castor_AllDigiValues,"%d  %d\n",atoi(run),decision3);
@@ -307,11 +316,19 @@ int main(int argc, char *argv[]) {
       
       TString histoname = "DQMData/Run " + run + "/Info/Run summary/";
 
+      vector<Int_t> list_LS_min;
+      vector<Int_t> list_LS_max;
+      list_LS_min.clear();
+      list_LS_max.clear();
+      Int_t decision4 = 0;
+
       histoname+="EventInfo/reportSummaryMap";
       TH2F* histo4 = (TH2F*) file->Get(histoname.Data());
 
       is_histo4 = false;
       if(!histo4) nhisto4_missing++;
+      if(!histo4 && !debug) fprintf(file_Info_reportSummaryMap,"%d  %d\n",atoi(run),decision4);
+      if(!histo4 && debug) fprintf(file_Info_reportSummaryMap,"%d  %d (histo not present)\n",atoi(run),decision4);
       if(!histo4) continue;
       is_histo4 = true;
 
@@ -328,12 +345,14 @@ int main(int argc, char *argv[]) {
       preDrawInfoTH2(pad,histo4);
       histo4->Draw();
 
-      //Int_t ngreen1 = 0;
-      //Double_t ratio1 = 0;
-      //Int_t decision1 = 0;
-
-      GetDecision_HVBeamStatus(histo4);
-      //fprintf(file_Castor_reportSummaryMap,"%d  %d\n",atoi(run),decision1);
+      GetDecision_HVBeamStatus(histo4,list_LS_min,list_LS_max,decision4);
+      fprintf(file_Info_reportSummaryMap,"%d  %d\n",atoi(run),decision4);
+      
+      fprintf(file_Info_reportSummaryMap_LS,"%d  %d",atoi(run),decision4);
+      for(int i = 0; i < list_LS_min.size(); i++) {
+	fprintf(file_Info_reportSummaryMap_LS,"  %d  %d",list_LS_min.at(i),list_LS_max.at(i));
+	if(i == list_LS_min.size() -1) fprintf(file_Info_reportSummaryMap_LS,"\n");
+      }
 
       leg->Clear();
       entry = leg->AddEntry("",run.Data(),"");
@@ -358,6 +377,7 @@ int main(int argc, char *argv[]) {
   if(choice == 2) fclose(file_Castor_ChannelSummaryMap);
   if(choice == 3) fclose(file_Castor_AllDigiValues);
   if(choice == 4) fclose(file_Info_reportSummaryMap);
+  if(choice == 4) fclose(file_Info_reportSummaryMap_LS);
 
   return(0);
 }

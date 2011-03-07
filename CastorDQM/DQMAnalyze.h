@@ -296,9 +296,9 @@ void GetDecision_AllDigiValues(TH1F* histo,Double_t& mean,Int_t& decision) {
   if(debug) cout<<endl;
 }
 
-void GetDecision_HVBeamStatus(TH2F* histo) {
+void GetDecision_HVBeamStatus(TH2F* histo,vector<Int_t>& list_LS_min,vector<Int_t>& list_LS_max,Int_t& decision) {
 
-  Int_t debug = 1;
+  Int_t debug = 0;
 
   Int_t nbinx = histo->GetNbinsX();
   Int_t topBin = histo->GetNbinsY();
@@ -337,8 +337,6 @@ void GetDecision_HVBeamStatus(TH2F* histo) {
   Bool_t current_min = false;
   Int_t LS_min  = 0;
   Int_t LS_max = 0;
-  vector<Int_t> list_LS_min;
-  vector<Int_t> list_LS_max;
   
   for(int i = 1; i < maxRange+1; i++) {
 
@@ -346,6 +344,8 @@ void GetDecision_HVBeamStatus(TH2F* histo) {
 
     //-- good LS
     if(histo->GetBinContent(i,CastorBin) > 0.5){ 
+
+      decision = 1;
 
       if (current_min == false) {
 	LS_min = i;
@@ -371,8 +371,12 @@ void GetDecision_HVBeamStatus(TH2F* histo) {
 
   if(debug) {
     cout<<""<<endl;
-    cout<<"selected good LS intervals: "<<endl;
-    for(int i = 0; i < list_LS_min.size(); i++) cout<<list_LS_min.at(i)<<" - "<<list_LS_max.at(i)<<endl;
+    cout<<"decision: "<<decision<<endl;
+    cout<<"selected good LS: ";
+    for(int i = 0; i < list_LS_min.size(); i++) {
+      cout<<" "<<list_LS_min.at(i)<<" - "<<list_LS_max.at(i);
+      if(i != list_LS_min.size() -1) cout<<" , ";
+    }
     cout<<""<<endl;
   }
 

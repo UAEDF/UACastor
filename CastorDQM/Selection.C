@@ -100,7 +100,9 @@ int main(int argc, char *argv[]) {
   //-- compute the final decision
 
   int final_decision[nbrun];
-  
+  FILE* file_Castor_final_decision;
+  file_Castor_final_decision = fopen("Decision/Castor_final_decision.txt","w+");
+
   for(int irun = 0; irun < nbrun; ++irun) {
 
     final_decision[irun] = 1;
@@ -118,9 +120,11 @@ int main(int argc, char *argv[]) {
     }
     
     cout<<"run: "<<run[0][irun]<<" final decision "<<final_decision[irun]<<endl;
+    fprintf(file_Castor_final_decision,"%d  %d\n",run[0][irun],final_decision[irun]);
     if(debug) cout<<""<<endl;
     if(debug) getchar();
   }
-
+  
+  fclose(file_Castor_final_decision);
   return(0);
 }

@@ -11,3 +11,5 @@ ROOT = /opt/root/bin/root -b -q
 DQMAnalyze : DQMAnalyze.C DQMAnalyze.h     
 	${COMPILER} DQMAnalyze.C -o $@ ${CFLAGS} ${LIBS}
 
+Selection : Selection.C    
+	${COMPILER} Selection.C -o $@ ${CFLAGS} ${LIBS}

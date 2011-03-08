@@ -19,7 +19,6 @@
 #include <stdlib.h>
 #include <string>
 #include <cmath>
-#include <iostream>
 #include <fstream>
 #include <cassert>
 #include <vector>

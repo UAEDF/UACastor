@@ -19,7 +19,6 @@
 #include <stdlib.h>
 #include <string>
 #include <cmath>
-#include <iostream>
 #include <fstream>
 #include <cassert>
 
@@ -348,7 +347,7 @@ int main(int argc, char *argv[]) {
       GetDecision_HVBeamStatus(histo4,list_LS_min,list_LS_max,decision4);
       fprintf(file_Info_reportSummaryMap,"%d  %d\n",atoi(run),decision4);
       
-      fprintf(file_Info_reportSummaryMap_LS,"%d  %d",atoi(run),decision4);
+      fprintf(file_Info_reportSummaryMap_LS,"%d  %d  %d",atoi(run),decision4,int (list_LS_min.size()));
       for(int i = 0; i < list_LS_min.size(); i++) {
 	fprintf(file_Info_reportSummaryMap_LS,"  %d  %d",list_LS_min.at(i),list_LS_max.at(i));
 	if(i == list_LS_min.size() -1) fprintf(file_Info_reportSummaryMap_LS,"\n");

@@ -14,7 +14,6 @@ process.source = cms.Source("PoolSource",
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(NUMOFEVENTS))
 
-
 #================
 # DQM Environment
 #================
@@ -29,7 +28,7 @@ process.dqmEnv.subSystemFolder = "Castor"
 
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 
-process.MessageLogger.cerr.FwkReport.reportEvery = 500
+process.MessageLogger.cerr.FwkReport.reportEvery = 5000
 
 #==============================================
 # Castor Conditions: from Global Conditions Tag 

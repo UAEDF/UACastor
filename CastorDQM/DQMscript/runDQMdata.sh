@@ -20,12 +20,13 @@ jobid=1
 
 for file in template* ; do
 
+ echo -e "\n"   
  echo Creating job $jobid
 
  final_file=${file:9:${#file}-9}
  run=${file:38:${#file}-45}
  
- if [ $debug -eq 1 ] ; then echo -e "file ${dir}/${final_file} is created for run ${run}\n"; read tt; fi 
+ if [ $debug -eq 1 ] ; then echo -e "file ${dir}/${final_file} is created for run ${run}"; read tt; fi 
  
  cat $file | sed "s:NUMOFEVENTS:-1:" > temp1
  cat temp1 | sed "s:OUTPUTDIR:./:" > ${dir}/${final_file} 
@@ -44,7 +45,7 @@ for file in template* ; do
  bsub -q 1nd -J job_$jobid -R "pool>10000" < submit_$run.sh
  cd ..
 
- jobid=`expr $jobid + 1`
+((jobid++))
 done
 
 rm -f template*

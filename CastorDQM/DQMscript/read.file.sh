@@ -3,9 +3,6 @@
 # Declare array
 declare -a ARRAY
 
-# stdin replaced with a file supplied as a first argument
-# exec < $1
-
 count=0
 
 while read LINE; do
@@ -13,9 +10,7 @@ while read LINE; do
     ((count++))
 done < $1
 
-echo Number of elements: ${#ARRAY[@]}
-
-# echo array's content
-echo ${ARRAY[@]}
+echo -e "number of runs: ${#ARRAY[@]}\n"
+echo -e "${ARRAY[@]}\n"
 
 

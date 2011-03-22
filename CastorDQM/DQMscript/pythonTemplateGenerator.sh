@@ -79,6 +79,7 @@ done
 cat castor_dqm_sourceclient_file_templateB_cfg.py >> $python_cfg
 
 if [ $debug -eq 1 ] ; then echo 'python file created for run '$dir$subdir': '$python_cfg; read tt; fi
+echo 'python file created for run '$dir$subdir': '$python_cfg;
 
 ((numpython++)) 
 

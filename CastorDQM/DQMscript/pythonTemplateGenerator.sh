@@ -1,15 +1,19 @@
 #!/bin/sh
 
-USAGE="Usage:  pythonTemplateGenerator.sh dataset"
+USAGE="Usage:  pythonTemplateGenerator.sh dataset inf sup"
 
-if [ $# -ne 1 ] ; then echo $USAGE; exit 1; fi
+if [ $# -ne 3 ] ; then echo $USAGE; exit 1; fi
 
 debug=0
 
 dataset=$1
+inf=$2
+sup=$3
 
 if [ $debug -eq 1 ] ; then 
-echo -e "dataset: $dataset\n"
+echo "dataset: $dataset"
+echo "inf: $inf"
+echo -e "sup: $sup\n"
 fi
 
 # retrieve the Collisions10 run
@@ -29,7 +33,7 @@ echo -e "${RunList[@]}\n"
 read tt;
 fi
 
-numpython=0
+numpython=1
 
 cat castor_dqm_sourceclient_file_template_cfg.py | sed '/FILELIST/,$ d' > castor_dqm_sourceclient_file_templateA_cfg.py
 cat castor_dqm_sourceclient_file_template_cfg.py | sed '1,/FILELIST/ d' > castor_dqm_sourceclient_file_templateB_cfg.py
@@ -78,16 +82,26 @@ done
 
 cat castor_dqm_sourceclient_file_templateB_cfg.py >> $python_cfg
 
+if [ $numpython -ge $inf ] && [ $numpython -le $sup ] ; then
 if [ $debug -eq 1 ] ; then echo 'python file created for run '$dir$subdir': '$python_cfg; read tt; fi
 echo 'python file created for run '$dir$subdir': '$python_cfg;
+fi
 
-((numpython++)) 
+if [ $numpython -lt $inf ] ; then rm -f $python_cfg; fi 
+if [ $numpython -gt $sup ] ; then rm -f $python_cfg; fi
+if [ $numpython -gt $sup ] ; then 
+rm -f castor_dqm_sourceclient_file_templateA_cfg.py;
+rm -f castor_dqm_sourceclient_file_templateB_cfg.py;
+exit 1;
+fi
 
 if [ $debug -eq 1 ] && [ $numpython -eq 5 ] ; then 
 rm -f castor_dqm_sourceclient_file_templateA_cfg.py;
 rm -f castor_dqm_sourceclient_file_templateB_cfg.py;
 exit 1; 
 fi 
+
+((numpython++))
 
 done
 

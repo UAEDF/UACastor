@@ -1,8 +1,14 @@
 #!/bin/bash
 
+USAGE="Usage:  runDQMdata inf sup"
+
+if [ $# -ne 2 ] ; then echo $USAGE; exit 1; fi
+
 debug=0
 
 dataset=/castor/cern.ch/cms/store/data/Commissioning10/MinimumBias/RAW/v4/000
+inf=$1
+sup=$2
 
 dir=DQMCommissioning10
 pythondir=`pwd`/${dir}
@@ -10,13 +16,11 @@ storedir=/castor/cern.ch/user/r/roland/DQM2010/Commissioning10
 
 if [ ! -d ${dir} ]; then 
   mkdir ${dir}
-else
-  rm -fr ${dir}/*
 fi
 
-./pythonTemplateGenerator.sh $dataset 
+./pythonTemplateGenerator.sh $dataset $inf $sup
 
-jobid=1
+jobid=$inf
 
 for file in template* ; do
 

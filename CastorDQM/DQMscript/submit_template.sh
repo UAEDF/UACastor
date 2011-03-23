@@ -33,9 +33,9 @@ cmsRun $cfgfile > $logfile 2>&1
 return_val=$?
 
 if [ $return_val -eq 0 ]; then
-  rfcp $cfgfile ${storedir}/
-  rfcp $outputfile ${storedir}/
-  rfcp $logfile ${storedir}/
+  rfcp ${cfgfile} ${storedir}/
+  rfcp ${outputfile} ${storedir}/
+  rfcp ${logfile} ${storedir}/
 fi
 
 

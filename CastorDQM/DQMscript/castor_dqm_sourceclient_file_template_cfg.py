@@ -7,9 +7,9 @@ process = cms.Process("CASTORDQM")
 #=============
 
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring(
+    fileNames = cms.untracked.vstring(*(
                FILELIST
-  )
+  ))
 )
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(NUMOFEVENTS))

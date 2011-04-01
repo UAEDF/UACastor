@@ -46,7 +46,7 @@ for file in template* ; do
  rm -fr temp3
 
  cd $dir
- bsub -q 1nw -J job_$jobid -R "pool>20000" < submit_$run.sh
+ bsub -q 2nw -J job_$jobid -R "pool>20000" < submit_$run.sh
  cd ..
 
 ((jobid++))

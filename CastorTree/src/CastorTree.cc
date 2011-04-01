@@ -44,6 +44,7 @@ CastorTree::CastorTree(const edm::ParameterSet& iConfig) {
 
   CastorDigiColl_ = iConfig.getParameter<edm::InputTag>("CastorDigiColl");
   CastorRecHitColl_ = iConfig.getParameter<edm::InputTag>("CastorRecHitColl");
+  CastorTower_ = iConfig.getParameter<edm::InputTag>("CastorTowerColl");
   BasicJet_ = iConfig.getParameter<edm::InputTag>("BasicJet");
   CastorJetID_ = iConfig.getParameter<edm::InputTag>("CastorJetID");
  
@@ -103,6 +104,7 @@ void CastorTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   //-- Castor Information
   if(StoreCastorDigi) GetCastorDigi(iEvent,iSetup,castorDigi);
   GetCastorRecHit(iEvent,castorRecHit);
+  GetCastorTower(iEvent,castorTower);
   if(StoreCastorJet) GetCastorJet(iEvent,castorJet);
   
   //-- Central Jet Information
@@ -186,6 +188,7 @@ void CastorTree::beginJob() {
   //-- Castor Information
   tree->Branch("castorDigi",&castorDigi);
   tree->Branch("castorRecHit",&castorRecHit);
+  tree->Branch("castorTower",&castorTower);
   tree->Branch("castorJet",&castorJet);
  
   //-- Central Jet Information 

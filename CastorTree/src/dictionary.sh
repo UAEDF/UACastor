@@ -12,6 +12,7 @@ rootcint -f eventdict.cc -c -I${PWD}/../../.. \
             UACastor/CastorTree/interface/MyBeamSpot.h \
             UACastor/CastorTree/interface/MyCastorDigi.h \
             UACastor/CastorTree/interface/MyCastorRecHit.h \
+	    UACastor/CastorTree/interface/MyCastorTower.h \
             UACastor/CastorTree/interface/MyCastorJet.h \
             UACastor/CastorTree/interface/MyJet.h \
             UACastor/CastorTree/interface/MyDiJet.h \

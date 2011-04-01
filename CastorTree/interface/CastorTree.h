@@ -58,6 +58,7 @@ using namespace std;
 //-- Castor 
 #include "UACastor/CastorTree/interface/MyCastorDigi.h"
 #include "UACastor/CastorTree/interface/MyCastorRecHit.h"
+#include "UACastor/CastorTree/interface/MyCastorTower.h"
 #include "UACastor/CastorTree/interface/MyCastorJet.h"
 
 //-- some constants
@@ -93,6 +94,7 @@ class CastorTree : public edm::EDAnalyzer {
 
   virtual void GetCastorDigi(const edm::Event&, const edm::EventSetup&, vector<MyCastorDigi>&);
   virtual void GetCastorRecHit(const edm::Event&, vector<MyCastorRecHit>&);
+  virtual void GetCastorTower(const edm::Event&, vector<MyCastorTower>&);
   virtual void GetCastorJet(const edm::Event&, vector<MyCastorJet>&);
 
   virtual void GetRecoPFJet(const edm::Event&, const edm::EventSetup&, vector<MyJet>&);
@@ -124,6 +126,7 @@ class CastorTree : public edm::EDAnalyzer {
 
   edm::InputTag CastorDigiColl_;
   edm::InputTag CastorRecHitColl_;
+  edm::InputTag CastorTower_;
   edm::InputTag BasicJet_;
   edm::InputTag CastorJetID_;
 
@@ -177,6 +180,7 @@ class CastorTree : public edm::EDAnalyzer {
   //-- Castor Information
   vector<MyCastorDigi> castorDigi;
   vector<MyCastorRecHit> castorRecHit;
+  vector<MyCastorTower> castorTower;
   vector<MyCastorJet> castorJet;
 
   //-- Central Jet Information

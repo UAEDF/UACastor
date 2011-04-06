@@ -67,6 +67,9 @@ CastorTree::CastorTree(const edm::ParameterSet& iConfig) {
   jetPtCut_ = iConfig.getParameter<double>("JetPtCut");
   jetEtaCut_ = iConfig.getParameter<double>("JetEtaCut");
 
+  //-- CaloTower Information
+  CaloTower_ = iConfig.getParameter<edm::InputTag>("CaloTowerColl");
+
   //-- HLT triggers requested by user
   hlt_bits = iConfig.getParameter<vector<string> >("requested_hlt_bits");
 
@@ -114,6 +117,9 @@ void CastorTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   GetRecoCaloJet(iEvent,iSetup,caloJet);
   GetCentralCaloDiJet(caloJet,caloDiJet);
 
+  //-- CaloTower Information
+  GetCaloTower(iEvent,caloTower);
+ 
   /* benoit
      
    // Event Selection (DATA ONLY) 
@@ -197,6 +203,9 @@ void CastorTree::beginJob() {
 
   tree->Branch("pfDiJet",&pfDiJet);
   tree->Branch("caloDiJet",&caloDiJet);
+
+  //-- CaloTower Information
+  tree->Branch("caloTower",&caloTower);
 }
 
 

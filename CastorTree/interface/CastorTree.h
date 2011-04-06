@@ -61,6 +61,9 @@ using namespace std;
 #include "UACastor/CastorTree/interface/MyCastorTower.h"
 #include "UACastor/CastorTree/interface/MyCastorJet.h"
 
+//-- Calotower
+#include "UACastor/CastorTree/interface/MyCaloTower.h"
+
 //-- some constants
 
 //-- class declaration
@@ -106,6 +109,8 @@ class CastorTree : public edm::EDAnalyzer {
   Bool_t GetTightCaloJetId(const MyJet&);
   void GetCentralCaloDiJet(const vector<MyJet>&, MyDiJet&);
 
+  void GetCaloTower(const edm::Event&, vector<MyCaloTower>&);
+
   void CheckPtSorting(vector<MyJet>&);
 
   //-- Modules to execute
@@ -149,6 +154,8 @@ class CastorTree : public edm::EDAnalyzer {
   double jetPtCut_; 
   double jetEtaCut_; 
 
+  edm::InputTag CaloTower_;
+
   //c    edm::InputTag l1GtTML_;
 
   //-- HLT triggers requested by user
@@ -189,6 +196,9 @@ class CastorTree : public edm::EDAnalyzer {
   MyDiJet pfDiJet;
   MyDiJet caloDiJet;
 
+  //-- CaloTower Information
+  vector<MyCaloTower> caloTower;
+ 
 };
 
 #endif

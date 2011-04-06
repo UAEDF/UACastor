@@ -12,11 +12,7 @@ MyGenPart::~MyGenPart() { }
 
 void MyGenPart::Print() {
 
-  cout<<"px: "<<this->Part.v.Px()<<endl;
-  cout<<"py: "<<this->Part.v.Py()<<endl;
-  cout<<"pz: "<<this->Part.v.Pz()<<endl;
-  cout<<"E: "<<this->Part.v.E()<<endl;
-  cout<<"charge: "<<this->Part.charge<<endl;
+  this->MyPart::Print();
 
   cout<<"pdgId: "<<this->pdgId<<endl;
   cout<<"status: "<<this->status<<endl;

@@ -1,17 +1,18 @@
 #ifndef __MyPart_H__
 #define __MyPart_H__
 
-#include "TObject.h"
 #include "TLorentzVector.h"
 
-class MyPart : public TObject {
+class MyPart : public TLorentzVector {
   
  public :
   MyPart();
   virtual ~MyPart();
+
+  virtual void Reset();
+  virtual void Print();
   
   Double_t charge;
-  TLorentzVector v;
   
  private:
   
@@ -19,5 +20,6 @@ class MyPart : public TObject {
 };
 
 #endif
+
 
 

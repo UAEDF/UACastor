@@ -38,5 +38,8 @@
 
 #pragma link C++ class MyDiJet+;
 
+#pragma link C++ class MyCaloTower+;
+#pragma link C++ class vector<MyCaloTower>+;
+
 #endif
 

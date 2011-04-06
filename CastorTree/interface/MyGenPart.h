@@ -5,7 +5,7 @@
 #include "TObject.h"
 #include "./MyPart.h"
 
-class MyGenPart : public TObject {
+class MyGenPart : public MyPart {
   
  public :
   MyGenPart();
@@ -13,8 +13,7 @@ class MyGenPart : public TObject {
 
   void Print();
   
-  MyPart      Part;
-  Int_t       pdgId,status;
+  Int_t pdgId,status;
   std::string name;
 
   private:

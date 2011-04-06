@@ -63,8 +63,8 @@ void CastorTree::GetGenPart(const edm::Event& iEvent, const edm::EventSetup& iSe
      int st = p->status();
      MyGenPart genpart;
 
-     genpart.Part.v.SetPxPyPzE(p->px(),p->py(),p->pz(),p->energy());
-     genpart.Part.charge  = p->charge();
+     genpart.SetPxPyPzE(p->px(),p->py(),p->pz(),p->energy());
+     genpart.charge  = p->charge();
 
      genpart.pdgId   = p->pdgId();
      genpart.status  = p->status();

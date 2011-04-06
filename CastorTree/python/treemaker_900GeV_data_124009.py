@@ -157,7 +157,8 @@ process.castortree = cms.EDAnalyzer('CastorTree',
                                                
    hepMCColl = cms.InputTag('generator','','HLT'),
    genPartColl = cms.InputTag('genParticles','','HLT'),
-                                    
+
+   CastorTowerColl = cms.InputTag('CastorTowerReco', '','Analysis'),                                       
    CastorDigiColl = cms.InputTag('castorDigis', '','Analysis'),
    CastorRecHitColl = cms.InputTag('castorreco','','Analysis'),
    BasicJet = cms.InputTag('ak7BasicJets','','Analysis'),  
@@ -172,6 +173,8 @@ process.castortree = cms.EDAnalyzer('CastorTree',
    CaloJetJEC = cms.string('ak5CaloL2L3Residual'), # L2L3Residual JEC should be applied to data only 
    CaloJetJECunc = cms.string('AK5Calo'),
 
+   CaloTowerColl = cms.InputTag('towerMaker','','RECO'),
+                                    
    TightPFJetID_Parameters = TightPFJetID_Parameters_Ref,
    LooseCaloJetID_Parameters = LooseCaloJetID_Parameters_Ref,
    TightCaloJetID_Parameters = TightCaloJetID_Parameters_Ref,

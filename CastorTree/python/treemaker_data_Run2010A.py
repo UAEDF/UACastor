@@ -126,6 +126,8 @@ process.castortree = cms.EDAnalyzer('CastorTree',
    CaloJetJEC = cms.string('ak5CaloL2L3Residual'), # L2L3Residual JEC should be applied to data only 
    CaloJetJECunc = cms.string('AK5Calo'),
 
+   CaloTowerColl = cms.InputTag('towerMaker','','RECO'),
+                                    
    TightPFJetID_Parameters = TightPFJetID_Parameters_Ref,
    LooseCaloJetID_Parameters = LooseCaloJetID_Parameters_Ref,
    TightCaloJetID_Parameters = TightCaloJetID_Parameters_Ref,

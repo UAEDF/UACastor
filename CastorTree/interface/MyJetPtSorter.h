@@ -1,7 +1,7 @@
 #ifndef MyJetPtSorter_h
 #define MyJetPtSorter_h
 
-#include "UACastor/CastorTree/interface/MyJet.h"
+#include "./MyJet.h"
 
 class MyJetPtSorter {
 

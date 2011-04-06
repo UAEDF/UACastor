@@ -3,7 +3,7 @@
 
 #include <string>
 #include "TObject.h"
-#include "UACastor/CastorTree/interface/MyPart.h"
+#include "./MyPart.h"
 
 class MyGenPart : public TObject {
   

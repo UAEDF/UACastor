@@ -27,6 +27,9 @@
 #pragma link C++ class MyCastorRecHit+;
 #pragma link C++ class vector<MyCastorRecHit>+;
 
+#pragma link C++ class MyCastorTower+;
+#pragma link C++ class vector<MyCastorTower>+;
+
 #pragma link C++ class MyCastorJet+;
 #pragma link C++ class vector<MyCastorJet>+;
 

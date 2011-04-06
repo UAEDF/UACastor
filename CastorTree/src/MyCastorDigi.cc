@@ -1,5 +1,5 @@
 
-#include "UACastor/CastorTree/interface/MyCastorDigi.h"
+#include "../interface/MyCastorDigi.h"
 #include <iostream>
 
 using namespace std;

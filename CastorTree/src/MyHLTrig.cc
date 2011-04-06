@@ -1,5 +1,5 @@
 
-#include "UACastor/CastorTree/interface/MyHLTrig.h"
+#include "../interface/MyHLTrig.h"
 
 ClassImp(MyHLTrig)
 

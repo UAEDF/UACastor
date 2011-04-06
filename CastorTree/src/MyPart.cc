@@ -1,5 +1,5 @@
 
-#include "UACastor/CastorTree/interface/MyPart.h"
+#include "../interface/MyPart.h"
 
 ClassImp(MyPart)
 

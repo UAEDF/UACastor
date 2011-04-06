@@ -22,13 +22,13 @@
 #include <vector>
 
 // own classes includes
-#include "../src/MyCastorRecHit.h"
-#include "../src/MyCastorDigi.h"
-#include "../src/MyCastorTower.h"
-#include "../src/MyCastorJet.h"
-#include "../src/MyEvtId.h"
-#include "../src/MyDiJet.h"
-#include "../src/MyVertex.h"
+#include "../interface/MyCastorRecHit.h"
+#include "../interface/MyCastorDigi.h"
+#include "../interface/MyCastorTower.h"
+#include "../interface/MyCastorJet.h"
+#include "../interface/MyEvtId.h"
+#include "../interface/MyDiJet.h"
+#include "../interface/MyVertex.h"
 
 TreeAnalyzer::TreeAnalyzer() { }
 

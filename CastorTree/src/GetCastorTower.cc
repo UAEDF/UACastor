@@ -14,7 +14,7 @@
 //-- Castor Tower
 #include "DataFormats/CastorReco/interface/CastorTower.h"
 
-#include "./CastorTree.h"
+#include "../interface/CastorTree.h"
 
 bool CastorTowerDebug = false;
 
@@ -32,7 +32,7 @@ void CastorTree::GetCastorTower(const edm::Event& iEvent, vector<MyCastorTower>&
 
   if(towercoll.isValid()) {
 
-    nCastorTower = towercoll->size();
+    //nCastorTower = towercoll->size();
 
     for(unsigned int i=0;i<towercoll->size();i++) {
 

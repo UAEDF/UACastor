@@ -1,5 +1,5 @@
 
-#include "./MyCastorTower.h"
+#include "../interface/MyCastorTower.h"
 #include <iostream>
 
 using namespace std;

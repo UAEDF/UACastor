@@ -35,8 +35,11 @@ fi
 
 numpython=1
 
-cat castor_dqm_sourceclient_file_template_cfg.py | sed '/FILELIST/,$ d' > castor_dqm_sourceclient_file_templateA_cfg.py
-cat castor_dqm_sourceclient_file_template_cfg.py | sed '1,/FILELIST/ d' > castor_dqm_sourceclient_file_templateB_cfg.py
+cat castor_dqm_sourceclient_small_file_template_cfg.py | sed '/FILELIST/,$ d' > castor_dqm_sourceclient_small_file_templateA_cfg.py
+cat castor_dqm_sourceclient_small_file_template_cfg.py | sed '1,/FILELIST/ d' > castor_dqm_sourceclient_small_file_templateB_cfg.py
+
+cat castor_dqm_sourceclient_big_file_template_cfg.py | sed '/FILELIST/,$ d' > castor_dqm_sourceclient_big_file_templateA_cfg.py
+cat castor_dqm_sourceclient_big_file_template_cfg.py | sed '1,/FILELIST/ d' > castor_dqm_sourceclient_big_file_templateB_cfg.py
 
 for dir in `rfdir $dataset | awk '{ print $9 }'` ; do
 
@@ -56,9 +59,10 @@ if [ $selected -eq 0 ] ; then continue; fi
 
 python_cfg='template_castor_dqm_sourceclient_file_'$dir$subdir'_cfg.py' 
 
-cat castor_dqm_sourceclient_file_templateA_cfg.py > $python_cfg
-
 nbfile=$(rfdir $dataset/$dir/$subdir | awk '{ print $9 }' | grep "root" -c) 
+
+if [ $nbfile -le 200 ] ; then cat castor_dqm_sourceclient_small_file_templateA_cfg.py > $python_cfg; fi
+if [ $nbfile -ge 201 ] ; then cat castor_dqm_sourceclient_big_file_templateA_cfg.py > $python_cfg; fi
 
 if [ $debug -eq 1 ] ; then echo -e "$nbfile root files:\n"; fi
 
@@ -80,7 +84,8 @@ fi
   
 done
 
-cat castor_dqm_sourceclient_file_templateB_cfg.py >> $python_cfg
+if [ $nbfile -le 200 ] ; then cat castor_dqm_sourceclient_small_file_templateB_cfg.py >> $python_cfg; fi
+if [ $nbfile -ge 201 ] ; then cat castor_dqm_sourceclient_big_file_templateB_cfg.py >> $python_cfg; fi
 
 if [ $numpython -ge $inf ] && [ $numpython -le $sup ] ; then
 if [ $debug -eq 1 ] ; then echo 'python file created for run '$dir$subdir': '$python_cfg; read tt; fi
@@ -90,14 +95,18 @@ fi
 if [ $numpython -lt $inf ] ; then rm -f $python_cfg; fi 
 if [ $numpython -gt $sup ] ; then rm -f $python_cfg; fi
 if [ $numpython -gt $sup ] ; then 
-rm -f castor_dqm_sourceclient_file_templateA_cfg.py;
-rm -f castor_dqm_sourceclient_file_templateB_cfg.py;
+rm -f castor_dqm_sourceclient_small_file_templateA_cfg.py;
+rm -f castor_dqm_sourceclient_small_file_templateB_cfg.py;
+rm -f castor_dqm_sourceclient_big_file_templateA_cfg.py;
+rm -f castor_dqm_sourceclient_big_file_templateB_cfg.py;
 exit 1;
 fi
 
 if [ $debug -eq 1 ] && [ $numpython -eq 5 ] ; then 
-rm -f castor_dqm_sourceclient_file_templateA_cfg.py;
-rm -f castor_dqm_sourceclient_file_templateB_cfg.py;
+rm -f castor_dqm_sourceclient_small_file_templateA_cfg.py;
+rm -f castor_dqm_sourceclient_small_file_templateB_cfg.py;
+rm -f castor_dqm_sourceclient_big_file_templateA_cfg.py;
+rm -f castor_dqm_sourceclient_big_file_templateB_cfg.py;
 exit 1; 
 fi 
 
@@ -107,7 +116,9 @@ done
 
 done
 
-rm -f castor_dqm_sourceclient_file_templateA_cfg.py
-rm -f castor_dqm_sourceclient_file_templateB_cfg.py
+rm -f castor_dqm_sourceclient_small_file_templateA_cfg.py
+rm -f castor_dqm_sourceclient_small_file_templateB_cfg.py
+rm -f castor_dqm_sourceclient_big_file_templateA_cfg.py
+rm -f castor_dqm_sourceclient_big_file_templateB_cfg.py
 
 

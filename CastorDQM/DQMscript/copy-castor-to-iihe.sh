@@ -1,6 +1,6 @@
 #!/bin/sh
 
-debug=0
+debug=1
 
 USAGE="Usage: copy-castor-to-iihe.sh castordir, with castordir like /castor/cern.ch/.../dir"
 if [ $# -ne 1 ] ; then echo $USAGE; exit 1; fi

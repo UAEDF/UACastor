@@ -33,19 +33,33 @@ int main(int argc, char *argv[]) {
 
   SetStyle();
 
-  if (argc != 2) {
+  if (argc != 3) {
     cout<<"This program was called with "<<argv[0]<<endl;
+    cout<<""<<endl;
+    cout<<"dataset = 1: Commissioning10"<<endl;
+    cout<<"dataset = 2: Run210A"<<endl;
+    cout<<"dataset = 3: Run210B"<<endl;
+    cout<<""<<endl;
     cout<<"choice = 1: Castor reportSummaryMap"<<endl;
     cout<<"choice = 2: Castor ChannelSummaryMap"<<endl;
     cout<<"choice = 3: Castor AllDigiValues"<<endl;
-    cout<<"choice = 4: Info reportSummaryMap"<<endl;
+    cout<<"choice = 4: Info reportSummaryMap (HV)"<<endl;
     return(0);
   }
+  
+  Int_t dataset = atoi(argv[1]);
+  Int_t choice = atoi(argv[2]);
 
   //-- retrieve the DQM files
-
+ 
   TString dirname = "/home/roland/Castor/CastorStudy/RunSelection2010/DQMfiles/"; 
-	
+  if(dataset == 1) dirname+="Commissioning10/";
+  if(dataset == 2) dirname+="Run2010A/";
+  if(dataset == 3) dirname+="Run2010B/";
+
+  if(choice == 1 || choice == 2 || choice == 3) dirname+="DQMCastor/";
+  if(choice == 4)  dirname+="DQMInfo/";
+
   void *dir = gSystem->OpenDirectory(dirname);
        
   if (!dir) {
@@ -72,7 +86,7 @@ int main(int argc, char *argv[]) {
   //-- define the array of canvas
 
   Int_t nbfile = fileList->GetEntries();
-  Int_t nbcan = nbfile/2;
+  Int_t nbcan = nbfile;
   TCanvas* c[nbcan];
   
   TString cname; 
@@ -80,8 +94,6 @@ int main(int argc, char *argv[]) {
   TString epsname;
 
   //-- define the choice 
-
-  Int_t choice = atoi(argv[1]);
   
   Bool_t DQMCastor = false;
   Bool_t DQMInfo = false;
@@ -92,19 +104,35 @@ int main(int argc, char *argv[]) {
   //-- define the output files
 
   FILE* file_Castor_reportSummaryMap;
-  if(choice == 1) file_Castor_reportSummaryMap = fopen("Decision/Castor_reportSummaryMap.txt","w+");
-  
   FILE* file_Castor_ChannelSummaryMap;
-  if(choice == 2) file_Castor_ChannelSummaryMap = fopen("Decision/Castor_ChannelSummaryMap.txt","w+");
-
   FILE* file_Castor_AllDigiValues;
-  if(choice == 3) file_Castor_AllDigiValues = fopen("Decision/Castor_AllDigiValues.txt","w+");
 
   FILE* file_Info_reportSummaryMap;
-  if(choice == 4) file_Info_reportSummaryMap = fopen("Decision/Info_reportSummaryMap.txt","w+");
-
   FILE* file_Info_reportSummaryMap_LS;
-  if(choice == 4) file_Info_reportSummaryMap_LS = fopen("Decision/Info_reportSummaryMap_LS.txt","w+");
+
+  if(dataset == 1) { 
+    if(choice == 1) file_Castor_reportSummaryMap = fopen("Decision/Castor_Commissioning10_reportSummaryMap.txt","w+");  
+    if(choice == 2) file_Castor_ChannelSummaryMap = fopen("Decision/Castor_Commissioning10_ChannelSummaryMap.txt","w+");
+    if(choice == 3) file_Castor_AllDigiValues = fopen("Decision/Castor_Commissioning10_AllDigiValues.txt","w+");
+    if(choice == 4) file_Info_reportSummaryMap = fopen("Decision/Info_Commissioning10_reportSummaryMap.txt","w+");
+    if(choice == 4) file_Info_reportSummaryMap_LS = fopen("Decision/Info_Commissioning10_reportSummaryMap_LS.txt","w+");
+  }
+  
+  if(dataset == 2) { 
+    if(choice == 1) file_Castor_reportSummaryMap = fopen("Decision/Castor_Run2010A_reportSummaryMap.txt","w+");  
+    if(choice == 2) file_Castor_ChannelSummaryMap = fopen("Decision/Castor_Run2010A_ChannelSummaryMap.txt","w+");
+    if(choice == 3) file_Castor_AllDigiValues = fopen("Decision/Castor_Run2010A_AllDigiValues.txt","w+");
+    if(choice == 4) file_Info_reportSummaryMap = fopen("Decision/Info_Run2010A_reportSummaryMap.txt","w+");
+    if(choice == 4) file_Info_reportSummaryMap_LS = fopen("Decision/Info_Run2010A_reportSummaryMap_LS.txt","w+");
+  }
+  
+  if(dataset == 3) { 
+    if(choice == 1) file_Castor_reportSummaryMap = fopen("Decision/Castor_Run2010B_reportSummaryMap.txt","w+");  
+    if(choice == 2) file_Castor_ChannelSummaryMap = fopen("Decision/Castor_Run2010B_ChannelSummaryMap.txt","w+");
+    if(choice == 3) file_Castor_AllDigiValues = fopen("Decision/Castor_Run2010B_AllDigiValues.txt","w+");
+    if(choice == 4) file_Info_reportSummaryMap = fopen("Decision/Info_Run2010B_reportSummaryMap.txt","w+");
+    if(choice == 4) file_Info_reportSummaryMap_LS = fopen("Decision/Info_Run2010B_reportSummaryMap_LS.txt","w+");
+  }
 
   //-- define the legend
 
@@ -115,7 +143,7 @@ int main(int argc, char *argv[]) {
   //-- loop over the DQM files
 
   cout<<""<<endl;
-  cout<<"Retrieve "<<nbfile<<" DQM files ("<<nbfile/2<<" Castor and "<<nbfile/2<<" Info)"<<endl;
+  cout<<"Retrieve "<<nbfile<<endl; // " DQM files ("<<nbfile/2<<" Castor and "<<nbfile/2<<" Info)"<<endl;
   cout<<"Start to loop over them\n"<<endl;
 
   TIter next(fileList); 
@@ -134,6 +162,8 @@ int main(int argc, char *argv[]) {
   Bool_t is_histo3 = false;
   Bool_t is_histo4 = false;
 
+  Int_t idfile=0;
+  
   while(fn = (TObjString*) next()) { 
     
     //-- retrieve the DQM files
@@ -151,8 +181,9 @@ int main(int argc, char *argv[]) {
 
     if ((TString(fn->GetString())).Index(regexp_Castor) != kNPOS && DQMCastor == true) {
 
+      idfile++;
       cout<<""<<endl;
-      cout <<"open the file: "<<fn->GetString()<<endl;
+      cout <<"open the file: "<<fn->GetString()<<" ("<<idfile<<"/"<<nbfile<<") "<<endl;
       cout<<"run: "<<atoi(run.Data())<<"\n"<<endl;
 
       TString histoname = "DQMData/Run " + run + "/Castor/Run summary/";
@@ -177,9 +208,15 @@ int main(int argc, char *argv[]) {
 	if(!histo1) continue;
 	is_histo1 = true;
 
-	cname = "Castor_reportSummaryMap";
-	ctitle = "Castor reportSummaryMap";
-	epsname = "DQMPlot/" + cname + ".pdf";
+	if(dataset == 1) cname = "Castor_Commissioning10_reportSummaryMap";
+	if(dataset == 2) cname = "Castor_Run2010A_reportSummaryMap";
+	if(dataset == 3) cname = "Castor_Run2010B_reportSummaryMap";
+
+	if(dataset == 1) ctitle = "Castor Commissioning10 reportSummaryMap";
+	if(dataset == 2) ctitle = "Castor Run2010A reportSummaryMap";
+	if(dataset == 3) ctitle = "Castor Run2010B reportSummaryMap";
+
+	epsname = "DQMPlot/" + cname + ".pdf";	
 	cname+= "_" + run;
 	ctitle+= " " + run;
 	
@@ -225,8 +262,14 @@ int main(int argc, char *argv[]) {
 	  }
 	}
 
-	cname = "Castor_ChannelSummaryMap";
-	ctitle = "Castor ChannelSummaryMap";
+	if(dataset == 1) cname = "Castor_Commissioning10_ChannelSummaryMap";
+	if(dataset == 2) cname = "Castor_Run2010A_ChannelSummaryMap";
+	if(dataset == 3) cname = "Castor_Run2010B_ChannelSummaryMap";
+
+	if(dataset == 1) ctitle = "Castor Commissioning10 ChannelSummaryMap";
+	if(dataset == 2) ctitle = "Castor Run2010A ChannelSummaryMap";
+	if(dataset == 3) ctitle = "Castor Run2010B ChannelSummaryMap";
+
 	epsname = "DQMPlot/" + cname + ".pdf";
 	cname+= "_" + run;
 	ctitle+= " " + run;
@@ -266,8 +309,14 @@ int main(int argc, char *argv[]) {
 	if(!histo3) continue;
 	is_histo3 = true;
 
-	cname = "Castor_AllDigiValues";
-	ctitle = "Castor All Digi Values";
+	if(dataset == 1) cname = "Castor_Commissioning10_AllDigiValues";
+	if(dataset == 2) cname = "Castor_Run2010A_AllDigiValues";
+	if(dataset == 3) cname = "Castor_Run2010B_AllDigiValues";
+
+	if(dataset == 1) ctitle = "Castor Commissioning10 All Digi Values";
+	if(dataset == 2) ctitle = "Castor Run2010A All Digi Values";
+	if(dataset == 3) ctitle = "Castor Run2010B All Digi Values";
+
 	epsname = "DQMPlot/" + cname + ".pdf";
 	cname+= "_" + run;
 	ctitle+= " " + run;
@@ -331,8 +380,14 @@ int main(int argc, char *argv[]) {
       if(!histo4) continue;
       is_histo4 = true;
 
-      cname = "Info_reportSummaryMap";
-      ctitle = "Info reportSummaryMap";
+      if(dataset == 1) cname = "Info_Commissioning10_reportSummaryMap";
+      if(dataset == 2) cname = "Info_Run2010A_reportSummaryMap";
+      if(dataset == 3) cname = "Info_Run2010B_reportSummaryMap";
+
+      if(dataset == 1) ctitle = "Info Commissioning10 reportSummaryMap";
+      if(dataset == 2) ctitle = "Info Run2010A reportSummaryMap";
+      if(dataset == 3) ctitle = "Info Run2010B reportSummaryMap";
+
       epsname = "DQMPlot/" + cname + ".pdf";
       cname+= "_" + run;
       ctitle+= " " + run;

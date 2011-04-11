@@ -12,21 +12,45 @@ int main(int argc, char *argv[]) {
 
   int debug = 1;
 
-  if (argc != 2) {
+  if (argc != 3) {
     cout<<"This program was called with "<<argv[0]<<endl;
-    cout<<"you should give the number of run"<<endl;
+    cout<<""<<endl;
+    cout<<"dataset = 1: Commissioning10"<<endl;
+    cout<<"dataset = 2: Run210A"<<endl;
+    cout<<"dataset = 3: Run210B"<<endl;
+    cout<<""<<endl;
+    cout<<"number of runs"<<endl;
     return(0);
   }
 
+  int dataset = atoi(argv[1]);
+  int nbrun = atoi(argv[2]);
+  
   //-- open the txt files
 
   int nbfile = 4;
   char* filename[nbfile];
 
-  filename[0] = "Decision/Castor_reportSummaryMap.txt";
-  filename[1] = "Decision/Castor_ChannelSummaryMap.txt";
-  filename[2] = "Decision/Castor_AllDigiValues.txt";
-  filename[3] = "Decision/Info_reportSummaryMap_LS.txt";
+  if(dataset == 1) { 
+    filename[0] = "Decision/Castor_Commissioning10_reportSummaryMap.txt";
+    filename[1] = "Decision/Castor_Commissioning10_ChannelSummaryMap.txt";
+    filename[2] = "Decision/Castor_Commissioning10_AllDigiValues.txt";
+    filename[3] = "Decision/Info_Commissioning10_reportSummaryMap_LS.txt";
+  }
+
+  if(dataset == 2) { 
+    filename[0] = "Decision/Castor_Run2010A_reportSummaryMap.txt";
+    filename[1] = "Decision/Castor_Run2010A_ChannelSummaryMap.txt";
+    filename[2] = "Decision/Castor_Run2010A_AllDigiValues.txt";
+    filename[3] = "Decision/Info_Run2010A_reportSummaryMap_LS.txt";
+  }
+
+  if(dataset == 3) { 
+    filename[0] = "Decision/Castor_Run2010B_reportSummaryMap.txt";
+    filename[1] = "Decision/Castor_Run2010B_ChannelSummaryMap.txt";
+    filename[2] = "Decision/Castor_Run2010B_AllDigiValues.txt";
+    filename[3] = "Decision/Info_Run2010B_reportSummaryMap_LS.txt";
+  }
 
   ifstream file[nbfile];
 
@@ -43,8 +67,6 @@ int main(int argc, char *argv[]) {
 
   //-- retrieve run, decision, nbLS, list_LS_min, list_LS_max
 
-  int nbrun = atoi(argv[1]);
-
   int run[nbfile][nbrun];
   int decision[nbfile][nbrun];
   int nbLS[nbrun];
@@ -59,25 +81,32 @@ int main(int argc, char *argv[]) {
   }
 
   for (int ifile = 0; ifile < nbfile; ++ifile) {
+
     for(int irun = 0; irun < nbrun; ++irun) {
+      
       if(ifile != 3) file[ifile] >> run[ifile][irun] >> decision[ifile][irun];
-      if(ifile == 3) { 
-	file[ifile] >> run[ifile][irun] >> decision[ifile][irun] >> nbLS[irun];
+      
+      if(ifile != 3) continue; //-- so the following only applies to ifile == 3 (Info_***_reportSummaryMap_LS.txt)
+      
+      file[ifile] >> run[ifile][irun] >> decision[ifile][irun] >> nbLS[irun];
 
-	if(nbLS[irun] == 1) file[ifile] >> list_LS_min[irun][0] >> list_LS_max[irun][0];
+      if(nbLS[irun] == 1) file[ifile] >> list_LS_min[irun][0] >> list_LS_max[irun][0];
 
-	if(nbLS[irun] == 2) file[ifile] >> list_LS_min[irun][0] >> list_LS_max[irun][0] 
-					>> list_LS_min[irun][1] >> list_LS_max[irun][1];
+      if(nbLS[irun] == 2) file[ifile] >> list_LS_min[irun][0] >> list_LS_max[irun][0] 
+				      >> list_LS_min[irun][1] >> list_LS_max[irun][1];
 
-	if(nbLS[irun] == 3) file[ifile] >> list_LS_min[irun][0] >> list_LS_max[irun][0] 
-					>> list_LS_min[irun][1] >> list_LS_max[irun][1]
-	                                >> list_LS_min[irun][2] >> list_LS_max[irun][2];
+      if(nbLS[irun] == 3) file[ifile] >> list_LS_min[irun][0] >> list_LS_max[irun][0] 
+				      >> list_LS_min[irun][1] >> list_LS_max[irun][1]
+				      >> list_LS_min[irun][2] >> list_LS_max[irun][2];
 
-	if(nbLS[irun] > 3) cout<<"problem: there is "<<nbLS[irun]<<" Lumi Section for run "<<irun<<endl;
-      }
-    }
-  }
- 
+      if(nbLS[irun] > 3) cout<<"problem: there is "<<nbLS[irun]<<" Lumi Section for run "<<irun<<endl;
+      if(nbLS[irun] > 3) getchar();
+
+      if(run[ifile][irun] <= 138429) decision[ifile][irun] = 1; //-- HV selection can not be applied before 2010-06-23
+	
+    } //-- end loop over irun
+  } //-- end loop over ifile
+   
   //-- some debug 
 
   if(debug) {
@@ -101,7 +130,10 @@ int main(int argc, char *argv[]) {
 
   int final_decision[nbrun];
   FILE* file_Castor_final_decision;
-  file_Castor_final_decision = fopen("Decision/Castor_final_decision.txt","w+");
+
+  if(dataset == 1) file_Castor_final_decision = fopen("Decision/Castor_Commissioning10_final_decision.txt","w+");
+  if(dataset == 2) file_Castor_final_decision = fopen("Decision/Castor_Run2010A_final_decision.txt","w+");
+  if(dataset == 3) file_Castor_final_decision = fopen("Decision/Castor_Run2010B_final_decision.txt","w+");
 
   for(int irun = 0; irun < nbrun; ++irun) {
 

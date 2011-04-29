@@ -50,7 +50,7 @@ void CastorTree::GetCastorTower(const edm::Event& iEvent, vector<MyCastorTower>&
       mycastortower.depth = castortower.depth();
       mycastortower.fhot = castortower.fhot();
 
-      mycastortower.ncell = castortower.rechitsSize();
+      mycastortower.ncell = castortower.cellsSize();
 
       CastorTowerVector.push_back(mycastortower);
     

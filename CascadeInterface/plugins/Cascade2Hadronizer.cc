@@ -427,6 +427,19 @@ namespace gen {
    return true;
   }
 
+  bool Cascade2Hadronizer::readSettings(int key) {
+
+    //-- grab Py6 instance
+    Pythia6Service::InstanceWrapper guard(fPy6Service); 
+    
+    fPy6Service->setGeneralParams();
+    
+    // if (key == 0) fPy6Service->setCSAParams();
+    // fPy6Service->setSLHAParams();
+    
+    return true;
+  }
+
   bool Cascade2Hadronizer::initializeForExternalPartons(){
     return false;
   }

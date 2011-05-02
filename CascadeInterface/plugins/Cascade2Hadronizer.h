@@ -38,7 +38,8 @@ namespace gen {
 
     Cascade2Hadronizer(edm::ParameterSet const& ps);
     ~Cascade2Hadronizer();
-    
+
+    bool readSettings(int);
     bool initializeForExternalPartons(); //-- initializer for the LHE input
     bool initializeForInternalPartons();
     

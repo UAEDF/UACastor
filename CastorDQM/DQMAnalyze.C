@@ -116,6 +116,15 @@ int main(int argc, char *argv[]) {
     if(choice == 3) file_Castor_AllDigiValues = fopen("Decision/Castor_Commissioning10_AllDigiValues.txt","w+");
     if(choice == 4) file_Info_reportSummaryMap = fopen("Decision/Info_Commissioning10_reportSummaryMap.txt","w+");
     if(choice == 4) file_Info_reportSummaryMap_LS = fopen("Decision/Info_Commissioning10_reportSummaryMap_LS.txt","w+");
+
+    if(choice == 1) fprintf(file_Castor_reportSummaryMap,"%d  %d\n",135149,1);
+    if(choice == 1) fprintf(file_Castor_reportSummaryMap,"%d  %d\n",135445,1);
+
+    if(choice == 2) fprintf(file_Castor_ChannelSummaryMap,"%d  %d\n",135149,1);
+    if(choice == 2) fprintf(file_Castor_ChannelSummaryMap,"%d  %d\n",135445,1);
+
+    if(choice == 3) fprintf(file_Castor_AllDigiValues,"%d  %d\n",135149,1);
+    if(choice == 3) fprintf(file_Castor_AllDigiValues,"%d  %d\n",135445,1);      
   }
   
   if(dataset == 2) { 
@@ -143,7 +152,7 @@ int main(int argc, char *argv[]) {
   //-- loop over the DQM files
 
   cout<<""<<endl;
-  cout<<"Retrieve "<<nbfile<<endl; // " DQM files ("<<nbfile/2<<" Castor and "<<nbfile/2<<" Info)"<<endl;
+  cout<<"Retrieve "<<nbfile<<endl;
   cout<<"Start to loop over them\n"<<endl;
 
   TIter next(fileList); 
@@ -162,8 +171,9 @@ int main(int argc, char *argv[]) {
   Bool_t is_histo3 = false;
   Bool_t is_histo4 = false;
 
-  Int_t idfile=0;
-  
+  Int_t idfile_castor=0;
+  Int_t idfile_info=0;
+
   while(fn = (TObjString*) next()) { 
     
     //-- retrieve the DQM files
@@ -181,9 +191,9 @@ int main(int argc, char *argv[]) {
 
     if ((TString(fn->GetString())).Index(regexp_Castor) != kNPOS && DQMCastor == true) {
 
-      idfile++;
+      idfile_castor++;
       cout<<""<<endl;
-      cout <<"open the file: "<<fn->GetString()<<" ("<<idfile<<"/"<<nbfile<<") "<<endl;
+      cout<<"open the file: "<<fn->GetString()<<" ("<<idfile_castor<<"/"<<nbfile<<") "<<endl;
       cout<<"run: "<<atoi(run.Data())<<"\n"<<endl;
 
       TString histoname = "DQMData/Run " + run + "/Castor/Run summary/";
@@ -358,8 +368,9 @@ int main(int argc, char *argv[]) {
     
     if ((TString(fn->GetString())).Index(regexp_Info) != kNPOS && DQMInfo == true) {
       
+      idfile_info++;
       cout<<""<<endl;
-      cout <<"open the file"<<fn->GetString()<<endl;
+      cout<<"open the file: "<<fn->GetString()<<" ("<<idfile_info<<"/"<<nbfile<<") "<<endl;
       cout<<"run: "<<atoi(run.Data())<<"\n"<<endl;
       
       TString histoname = "DQMData/Run " + run + "/Info/Run summary/";
@@ -399,7 +410,7 @@ int main(int argc, char *argv[]) {
       preDrawInfoTH2(pad,histo4);
       histo4->Draw();
 
-      GetDecision_HVBeamStatus(histo4,list_LS_min,list_LS_max,decision4);
+      GetDecision_HVBeamStatus(histo4,list_LS_min,list_LS_max,atoi(run),decision4);
       fprintf(file_Info_reportSummaryMap,"%d  %d\n",atoi(run),decision4);
       
       fprintf(file_Info_reportSummaryMap_LS,"%d  %d  %d",atoi(run),decision4,int (list_LS_min.size()));

@@ -295,9 +295,12 @@ void GetDecision_AllDigiValues(TH1F* histo,Double_t& mean,Int_t& decision) {
   if(debug) cout<<endl;
 }
 
-void GetDecision_HVBeamStatus(TH2F* histo,vector<Int_t>& list_LS_min,vector<Int_t>& list_LS_max,Int_t& decision) {
+void GetDecision_HVBeamStatus(TH2F* histo,vector<Int_t>& list_LS_min,vector<Int_t>& list_LS_max,Int_t run,Int_t& decision) {
+
+  Int_t END = 10000;
 
   Int_t debug = 0;
+  Int_t debug_summary = 0;
 
   Int_t nbinx = histo->GetNbinsX();
   Int_t topBin = histo->GetNbinsY();
@@ -331,7 +334,7 @@ void GetDecision_HVBeamStatus(TH2F* histo,vector<Int_t>& list_LS_min,vector<Int_
   if(debug) cout<<"last good LS + one: "<<maxRange<<endl;
   if(debug) cout<<""<<endl;
 
-  //-- retrieve the good LS intervals
+  //-- retrieve good LS blocks
 
   Bool_t current_min = false;
   Int_t LS_min  = 0;
@@ -355,12 +358,13 @@ void GetDecision_HVBeamStatus(TH2F* histo,vector<Int_t>& list_LS_min,vector<Int_
     }
 
     //-- bad LS
-    if(histo->GetBinContent(i,CastorBin) < 0.5 && current_min == true) { // to avoid to read multiple time when several consecutive bad LS 
+    if(histo->GetBinContent(i,CastorBin) < 0.5 && current_min == true) { 
+      // to avoid to read multiple time when several consecutive bad LS 
       list_LS_min.push_back(LS_min);
       list_LS_max.push_back(LS_max);
       current_min = false;
     }
-  }
+  } //--  end loop retrieve good LS blocks
   
   //-- if no good LS at all
   if(LS_min == 0 && LS_max == 0) {
@@ -368,10 +372,311 @@ void GetDecision_HVBeamStatus(TH2F* histo,vector<Int_t>& list_LS_min,vector<Int_
     list_LS_max.push_back(LS_max);
   }
 
-  if(debug) {
+  //-- if maxRange = nbinx + 1 
+  if(maxRange == nbinx+1) {
+    list_LS_min.push_back(LS_min);
+    list_LS_max.push_back(LS_max);
+  }
+
+  //-- special treatment for the runs taken before 20.06.2010 
+  //-- Castor DCS bit was not sent to central DCS before 20.06.2010. (Ekaterina)
+  //-- HV selection can not be taken from DQM plots before 20.06.2010 
+
+  //-- Commissioning10 
+
+  //-- these runs have to be rejected because of wrong timing
+  if(run >= 132440 && run <= 132606) {
+    decision = 0;
+    LS_min = 0;
+    LS_max = 0;
+  }
+
+  //-- HV status of these runs should stay BAD (was not able to check HV status)
+  if(run >= 132646 && run <= 133928) {
+    decision = 0;
+    LS_min = 0;
+    LS_max = 0;
+  }
+
+  //-- was able to check these runs
+  if( run == 134721) {
+    decision = 1;
+    LS_min = 589;
+    LS_max = END;
+  }
+
+  if(run == 134725) {
+    decision = 1; 
+    LS_min = 1;
+    LS_max = 1305;
+  }
+
+  if(run == 135059) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 135149) {
+    decision = 1;
+    LS_min = 669;
+    LS_max = END;
+  }
+
+  if(run == 135175) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 135445) {
+    decision = 1;
+    LS_min = 353;
+    LS_max = END;
+  }
+
+  if(run == 135521) {
+    decision = 1;
+    LS_min = 95;
+    LS_max = END;
+  }
+
+  if(run == 135523) {
+    decision = 1;
+    LS_min = 116;
+    LS_max = END;
+  }
+
+  if(run == 135525) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 135528) {
+    decision = 1;
+    LS_min = 1; 
+    LS_max = END;
+  }
+
+  if(run == 135534) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 135535) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 135537) {
+    decision = 1;
+    LS_min = 1; 
+    LS_max = END;
+  }
+
+  if(run == 135538) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 135573) {
+    decision = 1; 
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 135575) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 135735) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  //-- Run2010A
+
+  //-- was able to check these runs
+  if(run == 136033) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 136035) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 136066) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 136080) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 136082) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 136087) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 136088) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = 263; //-- wrong HV AFTER 263
+  }
+
+  if(run == 136097) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 136098) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 136100) {
+    decision = 1;
+    LS_min = 314;
+    LS_max = END;
+  }
+
+  if(run == 136119) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 136290) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 136294) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 136297) {
+    decision = 1;
+    LS_min = 1;
+    LS_max = END;
+  }
+
+  if(run == 137027) {
+    decision = 0; //-- too many channels are off
+    LS_min = 0;
+    LS_max = 0;
+  }
+
+  if(run == 137028) {
+    decision = 0; //-- too many channels are off
+    LS_min = 0;
+    LS_max = 0;
+  }
+
+  if(run == 138560) {
+    decision = 0; //-- too many channels are off
+    LS_min = 0;
+    LS_max = 0;
+  }
+
+  if(run == 138562) {
+    decision = 0; //-- far side HV off
+    LS_min = 0;
+    LS_max = 0;
+  }
+
+  if(run == 138563) {
+    decision = 0; //-- far side HV off
+    LS_min = 0;
+    LS_max = 0;
+  }
+
+  if(run == 138564) {
+    decision = 0; //-- far side HV off
+    LS_min = 0;
+    LS_max = 0;
+  }
+
+  if(run == 138565) {
+    decision = 0; //-- far side HV off
+    LS_min = 0;
+    LS_max = 0;
+  }
+
+  if(run == 138570) { 
+    decision = 0;  //-- far side HV off
+    LS_min = 0;
+    LS_max = 0;
+  }
+
+  if(run == 138571) { 
+    decision = 0; //-- far side HV off
+    LS_min = 0;
+    LS_max = 0; 
+  }
+
+  if(run == 138572) { 
+    decision = 0; //-- far side HV off
+    LS_min = 0;
+    LS_max = 0; 
+  }
+
+  //-- conflict between HV DQM Plot and online HV interface
+
+  if(run == 141874) {
+    decision = 0; //-- near side, far side: all HV off (or page 216: HV status GOOD??)
+    LS_min = 0;
+    LS_max = 0;
+  }
+
+  if(run == 141876) {
+    decision = 0; //-- near side, far side: all HV off (or page 166: HV status GOOD??)
+    LS_min = 0;
+    LS_max = 0;
+  }
+
+  //-- special treatment for the runs taken before 20.06.2010 + far side HV off
+
+  if(run >= 132440 && run <=  138572) {
+    list_LS_min.clear();
+    list_LS_max.clear();
+
+    list_LS_min.push_back(LS_min);
+    list_LS_max.push_back(LS_max);
+  }
+
+  if(debug_summary) {
     cout<<""<<endl;
+    cout<<"run: "<<run<<endl;
     cout<<"decision: "<<decision<<endl;
-    cout<<"selected good LS: ";
+    cout<<list_LS_min.size()<<" blocks of good LS: ";
     for(int i = 0; i < list_LS_min.size(); i++) {
       cout<<" "<<list_LS_min.at(i)<<" - "<<list_LS_max.at(i);
       if(i != list_LS_min.size() -1) cout<<" , ";

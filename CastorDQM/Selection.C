@@ -10,7 +10,7 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
 
-  int debug = 1;
+  int debug = 0;
 
   if (argc != 3) {
     cout<<"This program was called with "<<argv[0]<<endl;
@@ -99,11 +99,54 @@ int main(int argc, char *argv[]) {
 				      >> list_LS_min[irun][1] >> list_LS_max[irun][1]
 				      >> list_LS_min[irun][2] >> list_LS_max[irun][2];
 
-      if(nbLS[irun] > 3) cout<<"problem: there is "<<nbLS[irun]<<" Lumi Section for run "<<irun<<endl;
-      if(nbLS[irun] > 3) getchar();
+      if(nbLS[irun] == 4) file[ifile] >> list_LS_min[irun][0] >> list_LS_max[irun][0] 
+				      >> list_LS_min[irun][1] >> list_LS_max[irun][1]
+				      >> list_LS_min[irun][2] >> list_LS_max[irun][2]
+				      >> list_LS_min[irun][3] >> list_LS_max[irun][3];
 
-      if(run[ifile][irun] <= 138429) decision[ifile][irun] = 1; //-- HV selection can not be applied before 2010-06-23
-	
+      if(nbLS[irun] == 5) file[ifile] >> list_LS_min[irun][0] >> list_LS_max[irun][0] 
+				      >> list_LS_min[irun][1] >> list_LS_max[irun][1]
+				      >> list_LS_min[irun][2] >> list_LS_max[irun][2]
+				      >> list_LS_min[irun][3] >> list_LS_max[irun][3]
+				      >> list_LS_min[irun][4] >> list_LS_max[irun][4];
+
+      if(nbLS[irun] == 6) file[ifile] >> list_LS_min[irun][0] >> list_LS_max[irun][0] 
+				      >> list_LS_min[irun][1] >> list_LS_max[irun][1]
+				      >> list_LS_min[irun][2] >> list_LS_max[irun][2]
+				      >> list_LS_min[irun][3] >> list_LS_max[irun][3]
+				      >> list_LS_min[irun][4] >> list_LS_max[irun][4]
+				      >> list_LS_min[irun][5] >> list_LS_max[irun][5];
+      
+      if(nbLS[irun] == 7) file[ifile] >> list_LS_min[irun][0] >> list_LS_max[irun][0] 
+				      >> list_LS_min[irun][1] >> list_LS_max[irun][1]
+				      >> list_LS_min[irun][2] >> list_LS_max[irun][2]
+				      >> list_LS_min[irun][3] >> list_LS_max[irun][3]
+				      >> list_LS_min[irun][4] >> list_LS_max[irun][4]
+				      >> list_LS_min[irun][5] >> list_LS_max[irun][5]
+				      >> list_LS_min[irun][6] >> list_LS_max[irun][6];
+
+      if(nbLS[irun] == 8) file[ifile] >> list_LS_min[irun][0] >> list_LS_max[irun][0] 
+				      >> list_LS_min[irun][1] >> list_LS_max[irun][1]
+				      >> list_LS_min[irun][2] >> list_LS_max[irun][2]
+				      >> list_LS_min[irun][3] >> list_LS_max[irun][3]
+				      >> list_LS_min[irun][4] >> list_LS_max[irun][4]
+				      >> list_LS_min[irun][5] >> list_LS_max[irun][5]
+				      >> list_LS_min[irun][6] >> list_LS_max[irun][6]
+				      >> list_LS_min[irun][7] >> list_LS_max[irun][7];
+
+      if(nbLS[irun] == 9) file[ifile] >> list_LS_min[irun][0] >> list_LS_max[irun][0] 
+				      >> list_LS_min[irun][1] >> list_LS_max[irun][1]
+				      >> list_LS_min[irun][2] >> list_LS_max[irun][2]
+				      >> list_LS_min[irun][3] >> list_LS_max[irun][3]
+				      >> list_LS_min[irun][4] >> list_LS_max[irun][4]
+				      >> list_LS_min[irun][5] >> list_LS_max[irun][5]
+				      >> list_LS_min[irun][6] >> list_LS_max[irun][6]
+				      >> list_LS_min[irun][7] >> list_LS_max[irun][7]
+				      >> list_LS_min[irun][8] >> list_LS_max[irun][8];
+
+      if(nbLS[irun] > 9) cout<<"problem: there are "<<nbLS[irun]<<" blocks of LS for run "<<irun<<endl;
+      if(nbLS[irun] > 9) getchar();
+  	
     } //-- end loop over irun
   } //-- end loop over ifile
    

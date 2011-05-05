@@ -1,5 +1,5 @@
 
-#include "UACastor/CastorTree/interface/MyCastorJet.h"
+#include "./MyCastorJet.h"
 #include <iostream>
 
 using namespace std;

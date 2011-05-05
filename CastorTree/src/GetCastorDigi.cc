@@ -22,7 +22,7 @@
 #include "CalibFormats/CastorObjects/interface/CastorDbService.h"
 #include "CalibFormats/CastorObjects/interface/CastorDbRecord.h"
 
-#include "UACastor/CastorTree/interface/CastorTree.h"
+#include "./CastorTree.h"
 
 bool CastorDigiDebug = true;
 

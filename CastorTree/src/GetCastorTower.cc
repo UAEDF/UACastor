@@ -14,7 +14,7 @@
 //-- Castor Tower
 #include "DataFormats/CastorReco/interface/CastorTower.h"
 
-#include "UACastor/CastorTree/interface/CastorTree.h"
+#include "./CastorTree.h"
 
 bool CastorTowerDebug = false;
 

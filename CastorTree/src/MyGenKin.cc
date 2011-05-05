@@ -1,5 +1,5 @@
 
-#include "UACastor/CastorTree/interface/MyGenKin.h"
+#include "./MyGenKin.h"
 #include <iostream>
 
 using namespace std;

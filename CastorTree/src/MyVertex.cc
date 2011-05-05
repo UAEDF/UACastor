@@ -1,5 +1,5 @@
 
-#include "UACastor/CastorTree/interface/MyVertex.h"
+#include "./MyVertex.h"
 #include <iostream>
 
 using namespace std;

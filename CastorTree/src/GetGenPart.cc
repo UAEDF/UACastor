@@ -20,7 +20,7 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "SimGeneral/HepPDTRecord/interface/ParticleDataTable.h"
 
-#include "UACastor/CastorTree/interface/CastorTree.h"
+#include "./CastorTree.h"
 
 bool GenPartDebug = true;
 

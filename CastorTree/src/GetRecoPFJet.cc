@@ -24,8 +24,8 @@
 #include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 
-#include "UACastor/CastorTree/interface/CastorTree.h"
-#include "UACastor/CastorTree/interface/MyJetPtSorter.h"
+#include "./CastorTree.h"
+#include "./MyJetPtSorter.h"
 
 bool PFJetDebug = true;
 

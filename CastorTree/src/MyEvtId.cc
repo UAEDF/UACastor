@@ -1,5 +1,5 @@
 
-#include "UACastor/CastorTree/interface/MyEvtId.h"
+#include "./MyEvtId.h"
 #include <iostream>
 
 using namespace std;

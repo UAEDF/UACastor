@@ -20,7 +20,7 @@
 
 #include "DataFormats/EcalDetId/interface/EcalSubdetector.h"
 
-#include "UACastor/CastorTree/interface/CastorTree.h"
+#include "./CastorTree.h"
 
 Bool_t CaloTowerDebug = false;
 

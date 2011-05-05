@@ -1,4 +1,4 @@
-#include "UACastor/CastorTree/interface/MyCaloTower.h"
+#include "./MyCaloTower.h"
 #include <iostream>
 
 ClassImp(MyCaloTower)

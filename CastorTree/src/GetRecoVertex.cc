@@ -15,7 +15,7 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
-#include "UACastor/CastorTree/interface/CastorTree.h"
+#include "./CastorTree.h"
 
 bool RecoVtxDebug = true;
 

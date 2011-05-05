@@ -16,7 +16,7 @@
 #include "DataFormats/JetReco/interface/CastorJetID.h"
 #include "DataFormats/Common/interface/ValueMap.h"
 
-#include "UACastor/CastorTree/interface/CastorTree.h"
+#include "./CastorTree.h"
 
 bool CastorJetDebug = true;
 

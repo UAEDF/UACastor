@@ -1,4 +1,4 @@
-#include "UACastor/CastorTree/interface/MyPart.h"
+#include "./MyPart.h"
 #include <iostream>
 using namespace std;
 

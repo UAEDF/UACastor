@@ -13,7 +13,7 @@
 
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
 
-#include "UACastor/CastorTree/interface/CastorTree.h"
+#include "./CastorTree.h"
 
 //c int nEvtCut_ALL      = 0 ;
 //c int nEvtCut_L1Common = 0 ;

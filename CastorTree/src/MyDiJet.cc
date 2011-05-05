@@ -1,5 +1,5 @@
 
-#include "UACastor/CastorTree/interface/MyDiJet.h"
+#include "./MyDiJet.h"
 #include <iostream>
 
 using namespace std;

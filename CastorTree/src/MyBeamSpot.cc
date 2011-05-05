@@ -1,5 +1,5 @@
 
-#include "UACastor/CastorTree/interface/MyBeamSpot.h"
+#include "./MyBeamSpot.h"
 #include <iostream>
 
 using namespace std;

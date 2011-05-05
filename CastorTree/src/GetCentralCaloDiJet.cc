@@ -17,7 +17,7 @@
 
 #include "DataFormats/Math/interface/deltaPhi.h"
 
-#include "UACastor/CastorTree/interface/CastorTree.h"
+#include "./CastorTree.h"
 
 bool CentralCaloDiJetDebug = true;
 

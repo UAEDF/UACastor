@@ -1,5 +1,5 @@
 
-#include "../interface/MyL1Trig.h"
+#include "UACastor/CastorTree/interface/MyL1Trig.h"
 #include <iostream>
 
 using namespace std;

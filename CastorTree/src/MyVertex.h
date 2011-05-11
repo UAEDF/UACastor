@@ -11,12 +11,16 @@ class MyVertex : public TObject {
 
     void Print();
 
-    Double_t x,y,z;
-    Double_t ex,ey,ez;    
+    Double_t x,y,z,rho;
+    Double_t ex,ey,ez,erho;    
 
     Bool_t validity;  
     Bool_t fake;
+
     Double_t chi2n;
+    Double_t ndof; 
+
+    Bool_t isGoodVertex;
    
     Int_t  ntracks;  
 

@@ -156,8 +156,6 @@ class CastorTree : public edm::EDAnalyzer {
 
   edm::InputTag CaloTower_;
 
-  //c    edm::InputTag l1GtTML_;
-
   //-- HLT triggers requested by user
   vector<string> hlt_bits;
 

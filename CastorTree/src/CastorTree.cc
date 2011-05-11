@@ -15,15 +15,6 @@
 
 #include "./CastorTree.h"
 
-//c int nEvtCut_ALL      = 0 ;
-//c int nEvtCut_L1Common = 0 ;
-//c int nEvtCut_L1Mult   = 0 ;
-//c int nEvtCut_HLTMult  = 0 ;
-//c int nEvtCut_HF       = 0 ;
-//c int nEvtCut_VTX      = 0 ;
-//c int nEvtCut_Ntracks  = 0 ;
-
-
 CastorTree::CastorTree(const edm::ParameterSet& iConfig) {
   
   //-- do what ever initialization is needed
@@ -119,63 +110,16 @@ void CastorTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
   //-- CaloTower Information
   GetCaloTower(iEvent,caloTower);
- 
-  /* benoit
-     
-   // Event Selection (DATA ONLY) 
-   bool badEvent = false;
-   if ( EvtId.IsData ) { 
-
-     ++nEvtCut_ALL;
-
-     // ... Common Trigger selection: VETO + PhysBit
-      if( ! (    !L1Trig.TechTrigWord[36]
-              && !L1Trig.TechTrigWord[37]
-              && !L1Trig.TechTrigWord[38]
-              && !L1Trig.TechTrigWord[39] ) )  badEvent = true; 
-//            &&  L1Trig.TechTrigWord[0]  ) )  badEvent = true;
-
-     if ( ! badEvent ) ++nEvtCut_L1Common;
-
-     // L1 Multiplicity
-     if ( ! ( L1Trig.PhysTrigWord[124] || L1Trig.PhysTrigWord[63] ) ) badEvent = true;
-
-     if ( ! badEvent ) ++nEvtCut_L1Mult;
-
-     // HLT Multiplicity
-     if ( ! (    HLTrig.HLTmap["HLT_L1_BscMinBiasOR_BptxPlusORMinus"] 
-              || HLTrig.HLTmap["HLT_PixelTracks_Multiplicity40"]
-              || HLTrig.HLTmap["HLT_PixelTracks_Multiplicity70"]
-              || HLTrig.HLTmap["HLT_PixelTracks_Multiplicity85"]
-	      || HLTrig.HLTmap["HLT_MinBiasPixel_SingleTrack"]    ) ) badEvent = true;
   
-     if ( ! badEvent ) ++nEvtCut_HLTMult;
-
-     // Vertex Cut
-     bool goodVtx = false ;
-     double vtxz_cut = 30.;
-     for(vector<MyVertex>::iterator itvtx=primaryVertex.begin();itvtx!=primaryVertex.end();++itvtx){
-       if(itvtx->validity && fabs(itvtx->z)<vtxz_cut && itvtx->ntracks>0 ) goodVtx = true;
-     }
-
-     if ( ! goodVtx ) badEvent = true;
-
-     if ( ! badEvent ) ++nEvtCut_VTX;
-
-   } // End of Event Selection 
-
-   if ( ! badEvent ) tree->Fill();
-   // tree->Fill(); 
-   */ // benoit
-   tree->Fill();
+  //-- Filling of the tree
+  //-- Add here some event selection if needed 
+  tree->Fill();
 }
 
 //-- method called once each job just before starting the event loop 
 void CastorTree::beginJob() {
 
   tree = fs->make<TTree>("CastorTree","CastorTree");
-
-  //c add store flag in front of tree branch
 
   //-- General Information
   tree->Branch("EvtId",&EvtId);
@@ -192,8 +136,8 @@ void CastorTree::beginJob() {
   tree->Branch("primaryVertex",&primaryVertex);  
 
   //-- Castor Information
-  tree->Branch("castorDigi",&castorDigi);
-  tree->Branch("castorRecHit",&castorRecHit);
+  if(StoreCastorDigi) tree->Branch("castorDigi",&castorDigi);
+  if(StoreCastorJet) tree->Branch("castorRecHit",&castorRecHit);
   tree->Branch("castorTower",&castorTower);
   tree->Branch("castorJet",&castorJet);
  
@@ -222,17 +166,6 @@ void CastorTree::beginRun(edm::Run const & iRun, edm::EventSetup const& iSetup){
 
 //-- method called once each job just after ending the event loop
 void CastorTree::endJob() {
-
-  //c  cout << " Events Passing cuts: "   << endl;
-  //c  cout << " ******************** "   << endl;
-  //c  cout << " ALL      = " << nEvtCut_ALL      << endl;
-  //c  cout << " L1Common = " << nEvtCut_L1Common << endl;
-  //c  cout << " L1Mult   = " << nEvtCut_L1Mult   << endl;
-  //c  cout << " HLTMult  = " << nEvtCut_HLTMult  << endl;
-  //c  cout << " VTX      = " << nEvtCut_VTX      << endl;
-
-  //c fout->Write() ;
-  //c fout->Close() ;
 
 }
 

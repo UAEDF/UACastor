@@ -493,8 +493,8 @@ namespace gen {
       } //-- end loop over all the parameters
     } //-- end loop over the different sets
 
-    cainpu.plepin = fComEnergy/2; 
-    cainpu.ppin = -fComEnergy/2;
+    cainpu.plepin = -fComEnergy/2; 
+    cainpu.ppin = fComEnergy/2;
 
     if(debug) cascadePrintParameters();
     if(debug) getchar();

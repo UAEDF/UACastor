@@ -2,37 +2,29 @@
 
 #include "GeneratorInterface/Core/interface/RNDMEngineAccess.h"
 
-#include "HepMC/GenEvent.h"          //-- event()
+#include "HepMC/GenEvent.h" //-- event()
 #include "HepMC/PdfInfo.h"
 #include "HepMC/PythiaWrapper6_2.h"  //-- /afs/cern.ch/sw/lcg/external/HepMC/2.05.01/x86_64-slc5-gcc44-opt/include/HepMC
-#include "GeneratorInterface/CascadeInterface/plugins/CascadeWrapper.h"          //-- should be put in HepMC like the Pythia6 Wrapper (/afs/cern.ch/sw/lcg/external/HepMC)
+#include "GeneratorInterface/CascadeInterface/plugins/CascadeWrapper.h"   //-- should be put in HepMC like the Pythia6 Wrapper (/afs/cern.ch/sw/lcg/external/HepMC)
 
 #include "HepMC/HEPEVT_Wrapper.h"
 #include "HepMC/IO_HEPEVT.h"
 #include "HepMC/IO_GenEvent.h"
-#include "HepMC/GenEvent.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "GeneratorInterface/Core/interface/FortranCallback.h"
-//-- JetMatching is there to veto on double counting between PS and ME -> for LHE workflow -> not needed for Cascade
+//-- JetMatching is there to veto on double counting between PS and ME (for LHE workflow: not needed for Cascade)
  
 HepMC::IO_HEPEVT hepevtio;
 
 #include "HepPID/ParticleIDTranslations.hh"
 
-// NOTE: here a number of Pythia6 routines are declared,
-// plus some functionalities to pass around Pythia6 params
+//-- Pythia6 routines and functionalities to pass around Pythia6 params
 
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Utilities/interface/RandomNumberGenerator.h"
 #include "GeneratorInterface/Pythia6Interface/interface/Pythia6Service.h"
 #include "GeneratorInterface/Pythia6Interface/interface/Pythia6Declarations.h"
-
-#include "CLHEP/Random/RandomEngine.h"
-#include "CLHEP/Random/RanluxEngine.h"
-#include "CLHEP/Random/RandFlat.h"
-
-// #include "GeneratorInterface/CascadeInterface/plugins/CascadeRandomEngine.h"
 
 using namespace edm;
 using namespace std;
@@ -49,10 +41,11 @@ extern "C" {
 
     edm::Service<edm::RandomNumberGenerator> rng;
     fRandomEngine = &(rng->getEngine());
+    double rdm_nb = fRandomEngine->flat();     
+
+    if(debug && ++call < 100) cout<<"dcasrn from c++, call: "<<call<<" , seed: "<<rng->mySeed()<<" random number: "<<rdm_nb<<endl;
     
-    if(debug && ++call < 100) cout<<"dcasrn from c++, call: "<<call<<" , seed: "<<rng->mySeed()<<endl;
-    
-    return fRandomEngine->flat();
+    return rdm_nb;
   }
 }
   
@@ -248,9 +241,6 @@ namespace gen {
     Pythia6Service::InstanceWrapper guard(fPy6Service);
     
     FortranCallback::getInstance()->resetIterationsPerEvent();
-    
-    //-- generate event with Pythia6
-    //call_pyevnt();
     
     //-- skip event if py6 considers it bad
     if(pyint1.mint[50] != 0 ){

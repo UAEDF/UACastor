@@ -2,10 +2,10 @@
 
 #include "GeneratorInterface/Core/interface/RNDMEngineAccess.h"
 
-#include "HepMC/GenEvent.h" //-- event()
+#include "HepMC/GenEvent.h" 
 #include "HepMC/PdfInfo.h"
-#include "HepMC/PythiaWrapper6_2.h"  //-- /afs/cern.ch/sw/lcg/external/HepMC/2.05.01/x86_64-slc5-gcc44-opt/include/HepMC
-#include "GeneratorInterface/CascadeInterface/plugins/CascadeWrapper.h"   //-- should be put in HepMC like the Pythia6 Wrapper (/afs/cern.ch/sw/lcg/external/HepMC)
+#include "HepMC/PythiaWrapper6_2.h"  
+#include "GeneratorInterface/CascadeInterface/plugins/CascadeWrapper.h"   
 
 #include "HepMC/HEPEVT_Wrapper.h"
 #include "HepMC/IO_HEPEVT.h"
@@ -13,8 +13,7 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "GeneratorInterface/Core/interface/FortranCallback.h"
-//-- JetMatching is there to veto on double counting between PS and ME (for LHE workflow: not needed for Cascade)
- 
+
 HepMC::IO_HEPEVT hepevtio;
 
 #include "HepPID/ParticleIDTranslations.hh"
@@ -89,7 +88,6 @@ namespace gen {
       //-- { edm::Service<edm::RandomNumberGenerator> rng;
       //--  return rng->getEngine(); }
 
-      
       fComEnergy(pset.getParameter<double>("comEnergy")),
       fCrossSection(pset.getUntrackedParameter<double>("crossSection",-1.)),
       fFilterEfficiency(pset.getUntrackedParameter<double>("filterEfficiency",-1.)),
@@ -278,8 +276,8 @@ namespace gen {
     int barcode = NPartsAfterDecays;
       
     // JVY: well, in principle, it's not a 100% fair to go up to NPartsBeforeDecays,
-    // because Photos will attach gamma's to existing vertexes, i.e. in the middle
-    // of the event rather than at the end; but this will only shift poiters down,
+    // because Photos will attach gamma's to existing vertices, i.e. in the middle
+    // of the event rather than at the end; but this will only shift pointers down,
     // so we'll be going again over a few "original" particle...
     // in the alternative, we may go all the way up to the beginning of the event
     // and re-check if anything remains to decay, that's fine even if it'll take
@@ -305,13 +303,16 @@ namespace gen {
       if(part->momentum().t() <= part->generated_mass()){
 	continue ; // e == m -> 0-momentum, nothing to decay...
       }
+    
       else{
 	pyjets.n = 0;
+	
 	for(int i=0; i<5; i++){
 	  pyjets.k[i][0] = 0;
 	  pyjets.p[i][0] = 0.;
 	  pyjets.v[i][0] = 0.;
 	}
+	
 	pyjets.k[0][0] = 1;
 	pyjets.k[1][0] = py6id;
 	pyjets.p[4][0] = part->generated_mass();

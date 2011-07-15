@@ -25,6 +25,7 @@
 <use   name="CondFormats/CastorObjects"/>
 <use   name="CondFormats/JetMETObjects"/>
 <use   name="CalibFormats/CastorObjects"/>
+<use   name="DataFormats/Luminosity"/>
 <export>
   <lib   name="1"/>
 </export>

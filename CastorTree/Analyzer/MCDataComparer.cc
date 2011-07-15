@@ -5,6 +5,7 @@
 #include "TCanvas.h"
 #include <TStyle.h>
 #include <TF1.h>
+#include <TFile.h>
 
 #include <iostream>
 #include <fstream>
@@ -30,10 +31,16 @@ void MCDataComparer::doCompare(std::vector<TH1F*> data_histos, std::vector<TH1F*
 	
 	// make MC/data ratios
 	TH1F *hRatios = new TH1F("hRatios","MC/data ratio for each channel",80,1,81);
-	TH1F *hRatios_dist = new TH1F("hRatios_dist","Distribution of MC/data ratios",100,-5,5);
+	TH1F *hRatios_dist = new TH1F("hRatios_dist","Distribution of MC/data ratios",100,-5,10);
 	
 	TH1F *hdata_eflow_channels = NULL;
 	TH1F *hmc_eflow_channels = NULL;
+	
+	TH1F *hdata_eflow_modules_IntNorm = NULL;
+	TH1F *hmc_eflow_modules_IntNorm = NULL;
+	TH1F *hdata_eflow_sectors_IntNorm = NULL;
+	TH1F *hmc_eflow_sectors_IntNorm = NULL;
+	TH1F *hRatios_modules = new TH1F("hRatios_modules","MC/data ratio per module",5,1,6);
 	
 	for (unsigned int i=0; i<data_histos.size();i++) {
 		TString dataname(data_histos[i]->GetName());
@@ -56,8 +63,7 @@ void MCDataComparer::doCompare(std::vector<TH1F*> data_histos, std::vector<TH1F*
 				for (unsigned int ig=0;ig<gains.size();ig++) {
 					if ( gains[ig][0] == sector &&  gains[ig][1] == module) {
 						std::cout << " sector = " << gains[ig][0] << " module = " << gains[ig][1] << " gain = " << gains[ig][2] << " +- " << gainwidths[ig][2] << std::endl;
-						if (gains[ig][2] != 0) hdata_eflow_channels->SetBinError(ibin+1,getMultiError(hdata_eflow_channels->GetBinContent(ibin+1)/gains[ig][2],gains[ig][2],
-																									 hdata_eflow_channels->GetBinError(ibin+1),gainwidths[ig][2]));
+						if (gains[ig][2] != 0) hdata_eflow_channels->SetBinError(ibin+1,getMultiError(hdata_eflow_channels->GetBinContent(ibin+1)/gains[ig][2],gains[ig][2],hdata_eflow_channels->GetBinError(ibin+1),gainwidths[ig][2]));
 					}
 				}
 				if (counter == 16) {module++; counter = 0;}
@@ -70,10 +76,22 @@ void MCDataComparer::doCompare(std::vector<TH1F*> data_histos, std::vector<TH1F*
 				{hRatios->SetBinError(ibin+1,getRatioError(hmc_eflow_channels->GetBinContent(ibin+1),hdata_eflow_channels->GetBinContent(ibin+1),hmc_eflow_channels->GetBinError(ibin+1),hdata_eflow_channels->GetBinError(ibin+1)));}
 			}
 		}
+		// get the original module and sector profiles
+		if (dataname.Contains("eflow_modules") && mcname.Contains("eflow_modules")) {
+			data_histos[i]->Scale(1./data_histos[i]->Integral());
+			mc_histos[i]->Scale(1./mc_histos[i]->Integral());
+			hdata_eflow_modules_IntNorm = data_histos[i];
+			hmc_eflow_modules_IntNorm = mc_histos[i];
+			for (int ibin=0;ibin<5;ibin++) {
+				if (data_histos[i]->GetBinContent(ibin+1) != 0) hRatios_modules->SetBinContent(ibin+1,mc_histos[i]->GetBinContent(ibin+1)/data_histos[i]->GetBinContent(ibin+1));
+				if (data_histos[i]->GetBinContent(ibin+1) != 0) hRatios_modules->SetBinError(ibin+1,getRatioError(mc_histos[i]->GetBinContent(ibin+1),data_histos[i]->GetBinContent(ibin+1),mc_histos[i]->GetBinError(ibin+1),data_histos[i]->GetBinError(ibin+1)));
+			}
+		}
 	}
 	
+	// fill distribution of ratios
 	for (unsigned int ibin=0;ibin<80;ibin++) {
-		hRatios_dist->Fill(hRatios->GetBinContent(ibin+1));
+		if (hRatios->GetBinContent(ibin+1) != 0) hRatios_dist->Fill(hRatios->GetBinContent(ibin+1));
 	}
 	
 	// draw them
@@ -83,7 +101,7 @@ void MCDataComparer::doCompare(std::vector<TH1F*> data_histos, std::vector<TH1F*
 	hRatios->Draw();
 	c->cd(2);
 	hRatios_dist->Draw();
-	hRatios_dist->Fit("gaus","EM","",-5,5);
+	hRatios_dist->Fit("gaus","EM","",-5,10);
 	TF1 *myfit = hRatios_dist->GetFunction("gaus");
 	std::cout << "Mean of the fit = " << myfit->GetParameter(1) << std::endl;
 	std::cout << "Sigma of the fit = " << myfit->GetParameter(2) << std::endl;
@@ -99,11 +117,26 @@ void MCDataComparer::doCompare(std::vector<TH1F*> data_histos, std::vector<TH1F*
 	// draw corrected MC with data
 	TCanvas *cChannels = new TCanvas("cChannels","Channel profile");
 	cChannels->cd(1);
+	/*
+	// normalize to first channel
+	TH1F *heflow_channels_corrMC_norm = new TH1F(*heflow_channels_corrMC);
+	TH1F *hdata_eflow_channels_norm = new TH1F(*hdata_eflow_channels);
+	for (unsigned int ibin=0;ibin<80;ibin++) {
+		if (heflow_channels_corrMC->GetBinContent(ibin+1) != 0) heflow_channels_corrMC_norm->SetBinContent(ibin+1,heflow_channels_corrMC->GetBinContent(ibin+1)/heflow_channels_corrMC->GetBinContent(1));
+		if (heflow_channels_corrMC->GetBinContent(ibin+1) != 0) heflow_channels_corrMC_norm->SetBinError(ibin+1,getRatioError(heflow_channels_corrMC->GetBinContent(ibin+1),heflow_channels_corrMC->GetBinContent(1),
+									 heflow_channels_corrMC->GetBinError(ibin+1),heflow_channels_corrMC->GetBinError(1)));
+	}
+	for (unsigned int ibin=0;ibin<80;ibin++) {
+		if (hdata_eflow_channels->GetBinContent(ibin+1) != 0) hdata_eflow_channels_norm->SetBinContent(ibin+1,hdata_eflow_channels->GetBinContent(ibin+1)/hdata_eflow_channels->GetBinContent(1));
+		if (hdata_eflow_channels->GetBinContent(ibin+1) != 0) hdata_eflow_channels_norm->SetBinError(ibin+1,getRatioError(hdata_eflow_channels->GetBinContent(ibin+1),hdata_eflow_channels->GetBinContent(1),
+									 hdata_eflow_channels->GetBinError(ibin+1),hdata_eflow_channels->GetBinError(1)));
+	}
+	*/
 	heflow_channels_corrMC->SetFillColor(kGray);
 	heflow_channels_corrMC->Draw("HIST");
 	hdata_eflow_channels->Draw("same");
 	
-	// make corrected modules profile
+	// make corrected modules profile - corr is for the moment NOT corrected but norm.
 	TH1F *hdata_eflow_modules = new TH1F("hdata_eflow_modules","module profile from data",5,1,6);
 	TH1F *hmc_eflow_modules_corr = new TH1F("hmc_eflow_modules_corr","modules profile from MC corrected",5,1,6);
 	for (unsigned int ibin=0;ibin<5;ibin++) {
@@ -115,20 +148,22 @@ void MCDataComparer::doCompare(std::vector<TH1F*> data_histos, std::vector<TH1F*
 		}
 		hdata_eflow_modules->SetBinContent(ibin+1,average/16);
 		if (ibin == 0) hdata_eflow_modules->SetBinContent(ibin+1,average/14);
-		hdata_eflow_modules->SetBinError(ibin+1,sqrt(error));
+		hdata_eflow_modules->SetBinError(ibin+1,sqrt(error)/16);
+		if (ibin == 0) hdata_eflow_modules->SetBinError(ibin+1,sqrt(error)/14);
 		// and now for MC
 		average = 0;
 		error = 0;
-		for (unsigned int icha=0+ibin*16;icha<16+ibin*16;icha++) {
-			average += heflow_channels_corrMC->GetBinContent(icha+1);
-			error += heflow_channels_corrMC->GetBinError(icha+1)*heflow_channels_corrMC->GetBinError(icha+1);
+		for (unsigned int icha=0+ibin*16;icha<16+ibin*16;icha++) { // take it currently from non-corrected channels
+			average += hmc_eflow_channels->GetBinContent(icha+1);
+			error += hmc_eflow_channels->GetBinError(icha+1)*hmc_eflow_channels->GetBinError(icha+1);
 		}
 		hmc_eflow_modules_corr->SetBinContent(ibin+1,average/16);
 		if (ibin == 0) hmc_eflow_modules_corr->SetBinContent(ibin+1,average/14);
-		hmc_eflow_modules_corr->SetBinError(ibin+1,sqrt(error));
+		hmc_eflow_modules_corr->SetBinError(ibin+1,sqrt(error)/16);
+		if (ibin == 0) hmc_eflow_modules_corr->SetBinError(ibin+1,sqrt(error)/14);
 	}
 	
-	// make corrected sectors profile
+	// make corrected sectors profile - corr is for the moment NOT corrected but norm.
 	TH1F *hdata_eflow_sectors = new TH1F("hdata_eflow_sectors","sectors profile from data",16,1,17);
 	TH1F *hmc_eflow_sectors_corr = new TH1F("hmc_eflow_sectors_corr","sectors profile from MC corrected",16,1,17);
 	for (unsigned int ibin=0;ibin<16;ibin++) {
@@ -139,18 +174,18 @@ void MCDataComparer::doCompare(std::vector<TH1F*> data_histos, std::vector<TH1F*
 			error += hdata_eflow_channels->GetBinError(icha+1)*hdata_eflow_channels->GetBinError(icha+1);
 		}
 		hdata_eflow_sectors->SetBinContent(ibin+1,average/5);
-		hdata_eflow_sectors->SetBinError(ibin+1,sqrt(error));
+		hdata_eflow_sectors->SetBinError(ibin+1,sqrt(error)/5);
 		if (ibin == 4 || ibin==5) hdata_eflow_sectors->SetBinContent(ibin+1,0);
 		if (ibin == 4 || ibin==5) hdata_eflow_sectors->SetBinError(ibin+1,0);
 		// and now for MC
 		average = 0;
 		error = 0;
-		for (unsigned int icha=ibin;icha<80;icha+=16) {
-			average += heflow_channels_corrMC->GetBinContent(icha+1);
-			error += heflow_channels_corrMC->GetBinError(icha+1)*heflow_channels_corrMC->GetBinError(icha+1);
+		for (unsigned int icha=ibin;icha<80;icha+=16) { // take it currently from non-corrected channels
+			average += hmc_eflow_channels->GetBinContent(icha+1);
+			error += hmc_eflow_channels->GetBinError(icha+1)*hmc_eflow_channels->GetBinError(icha+1);
 		}
 		hmc_eflow_sectors_corr->SetBinContent(ibin+1,average/5);
-		hmc_eflow_sectors_corr->SetBinError(ibin+1,sqrt(error));
+		hmc_eflow_sectors_corr->SetBinError(ibin+1,sqrt(error)/5);
 		if (ibin == 4 || ibin==5) hmc_eflow_sectors_corr->SetBinContent(ibin+1,0);
 		if (ibin == 4 || ibin==5) hmc_eflow_sectors_corr->SetBinError(ibin+1,0);
 	}
@@ -158,13 +193,78 @@ void MCDataComparer::doCompare(std::vector<TH1F*> data_histos, std::vector<TH1F*
 	TCanvas *cModules = new TCanvas("cModules","Modules and Sectors");
 	cModules->Divide(2,1);
 	cModules->cd(1);
+	/*
+	// normalize to first channel
+	TH1F *hmc_eflow_modules_corr_norm = new TH1F(*hmc_eflow_modules_corr);
+	TH1F *hdata_eflow_modules_norm = new TH1F(*hdata_eflow_modules);
+	for (unsigned int ibin=0;ibin<80;ibin++) {
+		if (hmc_eflow_modules_corr->GetBinContent(ibin+1) != 0) hmc_eflow_modules_corr_norm->SetBinContent(ibin+1,hmc_eflow_modules_corr->GetBinContent(ibin+1)/hmc_eflow_modules_corr->GetBinContent(1));
+		if (hmc_eflow_modules_corr->GetBinContent(ibin+1) != 0) hmc_eflow_modules_corr_norm->SetBinError(ibin+1,getRatioError(hmc_eflow_modules_corr->GetBinContent(ibin+1),hmc_eflow_modules_corr->GetBinContent(1),
+									 hmc_eflow_modules_corr->GetBinError(ibin+1),hmc_eflow_modules_corr->GetBinError(1)));
+	}
+	for (unsigned int ibin=0;ibin<80;ibin++) {
+		if (hdata_eflow_modules->GetBinContent(ibin+1) != 0) hdata_eflow_modules_norm->SetBinContent(ibin+1,hdata_eflow_modules->GetBinContent(ibin+1)/hdata_eflow_modules->GetBinContent(1));
+		if (hdata_eflow_modules->GetBinContent(ibin+1) != 0) hdata_eflow_modules_norm->SetBinError(ibin+1,getRatioError(hdata_eflow_modules->GetBinContent(ibin+1),hdata_eflow_modules->GetBinContent(1),
+									 hdata_eflow_modules->GetBinError(ibin+1),hdata_eflow_modules->GetBinError(1)));
+	}
+	*/
+	hmc_eflow_modules_corr->Scale(1./hmc_eflow_modules_corr->Integral());
 	hmc_eflow_modules_corr->SetFillColor(kGray);
 	hmc_eflow_modules_corr->Draw("HIST");
+	hdata_eflow_modules->Scale(1./hdata_eflow_modules->Integral());
 	hdata_eflow_modules->Draw("same");
 	cModules->cd(2);
+	/*
+	// normalize to first channel
+	TH1F *hmc_eflow_sectors_corr_norm = new TH1F(*hmc_eflow_sectors_corr);
+	TH1F *hdata_eflow_sectors_norm = new TH1F(*hdata_eflow_sectors);
+	for (unsigned int ibin=0;ibin<80;ibin++) {
+		if (hmc_eflow_sectors_corr->GetBinContent(ibin+1) != 0) hmc_eflow_sectors_corr_norm->SetBinContent(ibin+1,hmc_eflow_sectors_corr->GetBinContent(ibin+1)/hmc_eflow_sectors_corr->GetBinContent(1));
+		if (hmc_eflow_sectors_corr->GetBinContent(ibin+1) != 0) hmc_eflow_sectors_corr_norm->SetBinError(ibin+1,getRatioError(hmc_eflow_sectors_corr->GetBinContent(ibin+1),hmc_eflow_sectors_corr->GetBinContent(1),
+									 hmc_eflow_sectors_corr->GetBinError(ibin+1),hmc_eflow_sectors_corr->GetBinError(1)));
+	}
+	for (unsigned int ibin=0;ibin<80;ibin++) {
+		if (hdata_eflow_sectors->GetBinContent(ibin+1) != 0) hdata_eflow_sectors_norm->SetBinContent(ibin+1,hdata_eflow_sectors->GetBinContent(ibin+1)/hdata_eflow_sectors->GetBinContent(1));
+		if (hdata_eflow_sectors->GetBinContent(ibin+1) != 0) hdata_eflow_sectors_norm->SetBinError(ibin+1,getRatioError(hdata_eflow_sectors->GetBinContent(ibin+1),hdata_eflow_sectors->GetBinContent(1),
+									 hdata_eflow_sectors->GetBinError(ibin+1),hdata_eflow_sectors->GetBinError(1)));
+	}
+	*/
+	hmc_eflow_sectors_corr->Scale(1./hmc_eflow_sectors_corr->Integral());
 	hmc_eflow_sectors_corr->SetFillColor(kGray);
 	hmc_eflow_sectors_corr->Draw("HIST");
+	hdata_eflow_sectors->Scale(1./hdata_eflow_sectors->Integral());
 	hdata_eflow_sectors->Draw("same");
+	
+	
+	// module ratios
+	TCanvas *cRatios_modules = new TCanvas("cRatios_modules","Ratios MC/data per module");
+	cRatios_modules->Divide(1,2);
+	cRatios_modules->cd(1);
+	hmc_eflow_modules_IntNorm->SetFillColor(kGray);
+	hmc_eflow_modules_IntNorm->Draw("HIST");
+	hdata_eflow_modules_IntNorm->Draw("same");
+	cRatios_modules->cd(2);
+	hRatios_modules->Draw();
+	
+	// save all histos in a root file
+	string filename;
+	getline(cin, filename);
+        std::cout << "You entered: " << filename << endl << endl;
+	const char * tfilename = filename.c_str();
+	TFile* output = new TFile(tfilename,"RECREATE");
+	output->cd();
+	
+	hdata_eflow_channels->Write();
+	hmc_eflow_channels->Write();
+	hdata_eflow_modules->Write();
+	hdata_eflow_sectors->Write();
+	hmc_eflow_modules_corr->Write();
+	hmc_eflow_sectors_corr->Write();
+	heflow_channels_corrMC->Write();
+	hRatios->Write();
+	hRatios_dist->Write();
+	
+	output->Close();
 	
 
 }

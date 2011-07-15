@@ -90,39 +90,115 @@ void TreeAnalyzer::Loop(TString inputdir, TObjArray* filelist) {
 	TH1F *hJet_width = new TH1F("hJet_width","Jet width",100,0,1);
 	TH1F *hJet_sigmaz = new TH1F("hJet_sigmaz","Jet sigmaz",100,0,700);
 	
-	// eflow histograms
-	double min = -2000; // -2000 for data and MC
-	double max = 60000; // 60000 for data and MC
-	double channelmin = -200; // -200 for data and MC
-	double channelmax = 30000; // 30000 for data and MC
+	TH2F *hLS = new TH2F("hLS","LS distribution",303,193,496,224,1,225);
+	TH2F *hLSWeighted = new TH2F("hLSWeighted","LS distribution weighted with energy",303,193,496,224,1,225);
 	
+	// eflow histograms
+	
+	// ranges for different CMS energies & data-MC
+	
+	/*
+	// ranges for 900 GeV - use this
+	// data
+	double min = -2000;
+	double max = 60000;
+	double channelmin = -200;
+	double channelmax = 40000;
+	double nBins = 124;
+	*/
+
+        /*
+        // ranges for 900 GeV
+        // MC
+        double min = -2000;
+        double max = 40000;
+        double channelmin = -200;
+        double channelmax = 25000;
+        */
+
+        
+        // ranges for 2760 GeV - use this
+        // data
+        double min = -2000;
+        double max = 2000; // was 100000
+        double channelmin = -200;
+        double channelmax = 60000;
+        double nBins = 200; // was 204
+	
+
+	/*
+        // ranges for 2760 GeV
+        // MC
+        double min = -2000;
+        double max = 100000;
+        double channelmin = -200;
+        double channelmax = 40000;
+        */
+
+        /*
+        // ranges for 7 TeV - use this
+        // data
+        double min = -2000;
+        double max = 250000;
+        double channelmin = -200;
+        double channelmax = 120000;
+	double nBins = 252;
+        */
+
+        /*
+        // ranges for 7 TeV
+        // MC
+        double min = -2000;
+        double max = 200000;
+        double channelmin = -200;
+        double channelmax = 40000;
+        */
+	
+        // default energy flow histos - using 5 modules
 	TH1F *heflow_DijetRatio = new TH1F("heflow_DijetRatio","Dijet Ratio",1,0,1);
-	TH1F *heflow = new TH1F("heflow","total rechit GeV distribution",100,min,max); // for data -2000,60000
-	TH1F *heflow_dijet = new TH1F("heflow_dijet","total rechit GeV distribution for dijet events",100,min,max); // for mc -40,600
-	TH2F *h2eflow_grid = new TH2F("h2eflow_grid","energy weighted module vs sector distribution",16,1,17,14,1,15);
+	TH1F *heflow = new TH1F("heflow","total rechit GeV distribution",nBins,min,max); // for data -2000,60000
+	TH1F *heflow_dijet = new TH1F("heflow_dijet","total rechit GeV distribution for dijet events",nBins,min,max); // for mc -40,600
+	
+        // energy flow histos using 6 modules
+        TH1F *heflow_DijetRatio_6m = new TH1F("heflow_DijetRatio_6m","Dijet Ratio using 6 modules",1,0,1);
+        TH1F *heflow_6m = new TH1F("heflow_6m","total rechit GeV distribution (6 modules)",nBins,min,max);
+        TH1F *heflow_dijet_6m = new TH1F("heflow_dijet_6m","total rechit GeV distribution for dijet events (6 modules)",nBins,min,max);
+        
+        // energy flow histos using all modules
+        TH1F *heflow_DijetRatio_14m = new TH1F("heflow_DijetRatio_14m","Dijet Ratio using all modules",1,0,1);
+        TH1F *heflow_14m = new TH1F("heflow_14m","total rechit GeV distribution (all modules)",nBins,min,max);                        
+       	TH1F *heflow_dijet_14m = new TH1F("heflow_dijet_14m","total rechit GeV distribution for dijet events (all modules)",nBins,min,max);
+
+        // energy flow histos with no number of vertex conditions
+        TH1F *heflow_DijetRatio_AllV = new TH1F("heflow_DijetRatio_AllV","Dijet Ratio with no # vertices condition",1,0,1);
+        TH1F *heflow_AllV = new TH1F("heflow_AllV","total rechit GeV distribution (all # vertices)",nBins,min,max);
+        TH1F *heflow_dijet_AllV = new TH1F("heflow_dijet_AllV","total rechit GeV distribution for dijet events (all # vertices)",nBins,min,max);
+        
+        TH2F *h2eflow_grid = new TH2F("h2eflow_grid","energy weighted module vs sector distribution",16,1,17,14,1,15);
 	TH2F *h2eflow_map = new TH2F("h2eflow_map","used channels map",16,1,17,14,1,15);
 	TH1F *heflow_modules = new TH1F("heflow_modules","average energy in used modules",14,1,15);
 	TH1F *heflow_sectors = new TH1F("heflow_sectors","average energy in used sectors",16,1,17);
 	TH1F *heflow_usedchannels = new TH1F("heflow_usedchannels","number of used channels to compute eflow",224,1,225);
 	TH1F *heflow_channels = new TH1F("heflow_channels","average energy in used channels",80,1,81);
-	TH1F *heflow_outoftime = new TH1F("heflow_outoftime","total rechit distribution for out of time rechits",100,min,max);
+	TH1F *heflow_outoftime = new TH1F("heflow_outoftime","total rechit distribution for out of time rechits",nBins,min,max);
+	TH1F *heflow_averagePU = new TH1F("heflow_averagePU","Distribution of # vertices per event",10,0,10);
 	
-	TH1F *heflow_channel[80];
+	TH1F *heflow_channel[224];
 	char name [50];
 	char title [50];
-	for (int i=0;i<80;i++) {
+	for (int i=0;i<224;i++) {
 		sprintf(name,"heflow_channel_%d",i+1);
 		sprintf(title,"Energy distribution for channel %d",i+1);
 		heflow_channel[i] = new TH1F(name,title,100,channelmin,channelmax); // for data -200,30000, for mc -4,400
 		heflow_channel[i]->Sumw2();
 	}
 	
-	int maxVertices = 5;
+	int maxVertices = 3;
 	TH1F *heflow_pileup[maxVertices];
 	for (int i=0;i<maxVertices;i++) {
 		sprintf(name,"heflow_pileup_%d",i+1);
 		sprintf(title,"Energy flow distribution for %d vertex events",i+1);
-		heflow_pileup[i] = new TH1F(name,title,100,min,max); // for data -2000,60000, for mc -4,400
+		heflow_pileup[i] = new TH1F(name,title,nBins,min,max); // for data -2000,60000, for mc -4,400
 		heflow_pileup[i]->Sumw2();
 	}
 	
@@ -140,6 +216,8 @@ void TreeAnalyzer::Loop(TString inputdir, TObjArray* filelist) {
 	TString currentfile = "";
 	
 	bool isMC = false;
+
+        double IntegratedLumi = 0;
 	
 	// start file loop
 	while((fn = (TObjString*)next())) { 
@@ -199,12 +277,14 @@ void TreeAnalyzer::Loop(TString inputdir, TObjArray* filelist) {
 			// only fill the histograms when there's 1 vertex (filter out pile-up)
 			b_vertices->GetEntry(i);
 			//std::cout << " number of primary vertices = " << Vertices->size() << std::endl;
+			heflow_averagePU->Fill(Vertices->size());
 			if (Vertices->size() == 1) {
 			
 				b_evtid->GetEntry(i);
 				// get event id stuff
 				if( ((i+1) % 1000) == 0) cout << " run " << evtid->Run << " isData = " << evtid->IsData << " lumiblock " << evtid->LumiBlock << " event " << evtid->Evt << endl; 
 				if (!evtid->IsData) isMC = true;
+				IntegratedLumi += evtid->IstLumiPerBX;
 				
 				// fill castor digi stuff
 				b_castordigis->GetEntry(i);
@@ -243,25 +323,37 @@ void TreeAnalyzer::Loop(TString inputdir, TObjArray* filelist) {
 					if (rechit.time > 15 && rechit.time < 35) hRecHit_energy_clean->Fill(rechit.energy);
 					h2RecHit_EvsT->Fill(rechit.time,rechit.fC);
 					hRecHit_WeightedTime->Fill(rechit.time,rechit.fC);
+					hLS->Fill(evtid->LumiBlock,rechit.cha);
+					hLSWeighted->Fill(evtid->LumiBlock,rechit.cha,rechit.energy);
 				}
 				hRecHit_totalenergy->Fill(totalrechitenergy);
 				
+				// fill LS histogram with total rechit energy
+				//hLS->Fill(evtid->LumiBlock);
+				//hLSWeighted->Fill(evtid->LumiBlock,totalrechitenergy);
+				
 				// fill eflow and dijet histograms
 				double eflow = 0;
+				double eflow_m6 = 0;
+				double eflow_m14 = 0;
 				int usedchannels = 0;
 				double outoftime_eflow = 0;
 				for (unsigned int j=0;j<CastorRecHits->size();j++) {
 					MyCastorRecHit rechit = (*CastorRecHits)[j];
 					h2eflow_map->Fill(rechit.sec,rechit.mod,1);
-					if (rechit.cha < 81 && rechit.cha != 5 && rechit.cha != 6) { // for data 15,35,81,5,6
+					if (rechit.cha != 5 && rechit.cha != 6) { // for data 15,35,81,5,6
 						if (evtid->IsData) { // for data, energy is intercalibrated fC
 							heflow_channel[rechit.cha-1]->Fill(rechit.energy);
-							eflow += rechit.energy;
+							if (rechit.cha <= 80) eflow += rechit.energy;
+							if (rechit.cha <= 96) eflow_m6 += rechit.energy;
+							eflow_m14 += rechit.energy;
 							usedchannels++;
 							h2eflow_grid->Fill(rechit.sec,rechit.mod,rechit.energy);
 						} else { // for MC take fC
 							heflow_channel[rechit.cha-1]->Fill(rechit.fC);
-							eflow += rechit.fC;
+							if (rechit.cha <= 80) eflow += rechit.fC;
+							if (rechit.cha <= 96) eflow_m6 += rechit.fC;
+							eflow_m14 += rechit.fC;
 							usedchannels++;
 							h2eflow_grid->Fill(rechit.sec,rechit.mod,rechit.fC);
 						}
@@ -269,12 +361,18 @@ void TreeAnalyzer::Loop(TString inputdir, TObjArray* filelist) {
 					if ((rechit.time < 15 || rechit.time > 35) && rechit.cha < 81 && rechit.cha != 5 && rechit.cha != 6) outoftime_eflow += rechit.energy;
 				}
 				heflow->Fill(eflow);
+				heflow_6m->Fill(eflow_m6);
+				heflow_14m->Fill(eflow_m14);
+				heflow_AllV->Fill(eflow);
 				heflow_usedchannels->Fill(usedchannels);
 				heflow_outoftime->Fill(outoftime_eflow);
 				heflow_pileup[Vertices->size()-1]->Fill(eflow);
 				
 				b_dijet->GetEntry(i);
 				if (dijet->isDiJet) heflow_dijet->Fill(eflow);
+				if (dijet->isDiJet) heflow_dijet_AllV->Fill(eflow);
+				if (dijet->isDiJet) heflow_dijet_6m->Fill(eflow_m6);
+				if (dijet->isDiJet) heflow_dijet_14m->Fill(eflow_m14);
 
 				// do some more rechit stuff
 				//if (CastorRecHits->size() < 224) std::cout << "this event has only " << CastorRecHits->size() << " rechits " << " run " << evtid->Run << " isData = " << evtid->IsData << " lumiblock " << evtid->LumiBlock << " event " << evtid->Evt << std::endl;
@@ -332,6 +430,8 @@ void TreeAnalyzer::Loop(TString inputdir, TObjArray* filelist) {
 					}
 				}
 				if ((int)Vertices->size() <= maxVertices) heflow_pileup[Vertices->size()-1]->Fill(pileup_eflow);
+				if (dijet->isDiJet) heflow_dijet_AllV->Fill(pileup_eflow);
+				heflow_AllV->Fill(pileup_eflow);
 			} // end if statement for more than 1 vertex
 			
 		} // end event loop
@@ -348,7 +448,7 @@ void TreeAnalyzer::Loop(TString inputdir, TObjArray* filelist) {
 	std::cout << "starting eflow calculations" << std::endl;
 	
 	// check distribution of each channel on under or overflow
-	for (int icha=0;icha<80;icha++) {
+	for (int icha=0;icha<224;icha++) {
 		if (heflow_channel[icha]->GetBinContent(heflow_channel[icha]->GetNbinsX()+1) !=0) std::cout << "!!WARNING!! channel " << icha << " has overflow" << std::endl;
 		if (heflow_channel[icha]->GetBinContent(0) !=0) std::cout << "!!WARNING!! channel " << icha << " has underflow" << std::endl;
 	}
@@ -364,12 +464,29 @@ void TreeAnalyzer::Loop(TString inputdir, TObjArray* filelist) {
 	if (heflow->GetBinContent(0) !=0) std::cout << "!!WARNING!! minbias eflow has underflow" << std::endl;
 	if (heflow_dijet->GetBinContent(heflow_dijet->GetNbinsX()+1) !=0) std::cout << "!!WARNING!! dijet eflow has overflow" << std::endl;
 	if (heflow_dijet->GetBinContent(0) !=0) std::cout << "!!WARNING!! dijet eflow has underflow" << std::endl;
+
+        if (heflow_6m->GetBinContent(heflow_6m->GetNbinsX()+1) !=0) std::cout << "!!WARNING!! minbias eflow using 6 modules has overflow" << std::endl;
+        if (heflow_6m->GetBinContent(0) !=0) std::cout << "!!WARNING!! minbias eflow using 6 modules has underflow" << std::endl;
+        if (heflow_dijet_6m->GetBinContent(heflow_dijet_6m->GetNbinsX()+1) !=0) std::cout << "!!WARNING!! dijet eflow using 6 modules has overflow" << std::endl;
+        if (heflow_dijet_6m->GetBinContent(0) !=0) std::cout << "!!WARNING!! dijet eflow using 6 modules has underflow" << std::endl;
 	
+	if (heflow_14m->GetBinContent(heflow_14m->GetNbinsX()+1) !=0) std::cout << "!!WARNING!! minbias eflow using all modules has overflow" << std::endl;
+        if (heflow_14m->GetBinContent(0) !=0) std::cout << "!!WARNING!! minbias eflow using all modules has underflow" << std::endl;
+        if (heflow_dijet_14m->GetBinContent(heflow_dijet_14m->GetNbinsX()+1) !=0) std::cout << "!!WARNING!! dijet eflow using all modules has overflow" << std::endl;
+       	if (heflow_dijet_14m->GetBinContent(0) !=0) std::cout << "!!WARNING!! dijet eflow using all modules has underflow" << std::endl;
+
+	if (heflow_AllV->GetBinContent(heflow_AllV->GetNbinsX()+1) !=0) std::cout << "!!WARNING!! minbias eflow with no # vertices condition has overflow" << std::endl;
+        if (heflow_AllV->GetBinContent(0) !=0) std::cout << "!!WARNING!! minbias eflow with no # vertices condition has underflow" << std::endl;
+        if (heflow_dijet_AllV->GetBinContent(heflow_dijet_AllV->GetNbinsX()+1) !=0) std::cout << "!!WARNING!! dijet eflow with no # vertices condition has overflow" << std::endl;
+       	if (heflow_dijet_AllV->GetBinContent(0) !=0) std::cout << "!!WARNING!! dijet eflow with no # vertices condition has underflow" << std::endl;
+
 	// get mean and error's from all channels and put it in one histo
 	for (int icha=0;icha<80;icha++) {
-		if (icha<32 && isMC) { heflow_channels->SetBinContent(icha+1,2*heflow_channel[icha]->GetMean());} else {heflow_channels->SetBinContent(icha+1,heflow_channel[icha]->GetMean());}
-		if (icha<32 && isMC) { heflow_channels->SetBinError(icha+1,2*heflow_channel[icha]->GetMeanError());} else {heflow_channels->SetBinError(icha+1,heflow_channel[icha]->GetMeanError());}
+		if (icha<32 && !isMC) { heflow_channels->SetBinContent(icha+1,heflow_channel[icha]->GetMean());} else {heflow_channels->SetBinContent(icha+1,heflow_channel[icha]->GetMean());}
+		if (icha<32 && !isMC) { heflow_channels->SetBinError(icha+1,heflow_channel[icha]->GetMeanError());} else {heflow_channels->SetBinError(icha+1,heflow_channel[icha]->GetMeanError());}
 	}
+	
+	//heflow_channels->Scale(1./heflow_channels->Integral());
 	
 	/*
 	// normalize heflow_channels histo to first bin
@@ -388,16 +505,20 @@ void TreeAnalyzer::Loop(TString inputdir, TObjArray* filelist) {
 		double average = 0;
 		double error = 0;
 		for (int j=0;j<16;j++) {
-			if (i<2 && isMC) {average += heflow_channel[j+(i*16)]->GetMean()*2;} else {average += heflow_channel[j+(i*16)]->GetMean();}
-			if (i<2 && isMC) {error += 2*heflow_channel[j+(i*16)]->GetMeanError()*heflow_channel[j+(i*16)]->GetMeanError();} else {
+			if (i<2 && !isMC) {average += heflow_channel[j+(i*16)]->GetMean();} else {average += heflow_channel[j+(i*16)]->GetMean();}
+			if (i<2 && !isMC) {error += heflow_channel[j+(i*16)]->GetMeanError()*heflow_channel[j+(i*16)]->GetMeanError();} else {
 				error += heflow_channel[j+(i*16)]->GetMeanError()*heflow_channel[j+(i*16)]->GetMeanError();
 			}
 		}
-		average = average/16;
+		if (i==0) average = average/14;
+		if (i > 0) average = average/16;
 		error = sqrt(error);
 		heflow_modules->SetBinContent(i+1,average);
 		heflow_modules->SetBinError(i+1,error);
 	}
+	
+	// normalize to integral
+	//heflow_modules->Scale(1./heflow_modules->Integral());
 	
 	/*
 	// normalize average module profile to first bin
@@ -416,8 +537,8 @@ void TreeAnalyzer::Loop(TString inputdir, TObjArray* filelist) {
 		double average = 0;
 		double error = 0;
 		for (int j=0;j<5;j++) {
-			if (j<2 && isMC) {average += heflow_channel[i+(j*16)]->GetMean()*2;} else {average += heflow_channel[i+(j*16)]->GetMean();}
-			if (j<2 && isMC) {error += 2*heflow_channel[i+(j*16)]->GetMeanError()*heflow_channel[i+(j*16)]->GetMeanError();} else {
+			if (j<2 && !isMC) {average += heflow_channel[i+(j*16)]->GetMean();} else {average += heflow_channel[i+(j*16)]->GetMean();}
+			if (j<2 && !isMC) {error += heflow_channel[i+(j*16)]->GetMeanError()*heflow_channel[i+(j*16)]->GetMeanError();} else {
 				error += heflow_channel[i+(j*16)]->GetMeanError()*heflow_channel[i+(j*16)]->GetMeanError();
 			}
 		}
@@ -428,6 +549,8 @@ void TreeAnalyzer::Loop(TString inputdir, TObjArray* filelist) {
 		heflow_sectors->SetBinError(i+1,error);
 	}
 	
+	//heflow_sectors->Scale(1./heflow_sectors->Integral());
+	
 	// do eflow ratio stuff
 	double dijetratio = heflow_dijet->GetMean()/heflow->GetMean();
 	double dijetratio_error = getRatioError(heflow,heflow_dijet);
@@ -435,15 +558,53 @@ void TreeAnalyzer::Loop(TString inputdir, TObjArray* filelist) {
 	heflow_DijetRatio->SetBinContent(1,dijetratio);
 	heflow_DijetRatio->SetBinError(1,dijetratio_error);
 	
+        double dijetratio_6m = heflow_dijet_6m->GetMean()/heflow_6m->GetMean();
+        double dijetratio_error_6m = getRatioError(heflow_6m,heflow_dijet_6m);
+
+        heflow_DijetRatio_6m->SetBinContent(1,dijetratio_6m);
+        heflow_DijetRatio_6m->SetBinError(1,dijetratio_error_6m);
+
+        double dijetratio_14m = heflow_dijet_14m->GetMean()/heflow_14m->GetMean();
+        double dijetratio_error_14m = getRatioError(heflow_14m,heflow_dijet_14m);
+
+        heflow_DijetRatio_14m->SetBinContent(1,dijetratio_14m);
+        heflow_DijetRatio_14m->SetBinError(1,dijetratio_error_14m);
+
+        double dijetratio_AllV = heflow_dijet_AllV->GetMean()/heflow_AllV->GetMean();
+        double dijetratio_error_AllV = getRatioError(heflow_AllV,heflow_dijet_AllV);
+
+        heflow_DijetRatio_AllV->SetBinContent(1,dijetratio_AllV);
+        heflow_DijetRatio_AllV->SetBinError(1,dijetratio_error_AllV);
+
+        // now print all the dijet ratio's and their errors  
+	std::cout << "Dijet ratio (default) = " << dijetratio << " +- " << dijetratio_error << std::endl;
+	std::cout << "Dijet ratio (6 modules) = " << dijetratio_6m << " +- "	<< dijetratio_error_6m << std::endl;
+	std::cout << "Dijet ratio (all modules) = " << dijetratio_14m << " +- "	<< dijetratio_error_14m << std::endl;
+	std::cout << "Dijet ratio (no # vertices condition) = " << dijetratio_AllV << " +- "	<< dijetratio_error_AllV << std::endl;
 	
+	std::cout << "shower containment systematic = " << (dijetratio_14m - dijetratio)/dijetratio << std::endl;
+	std::cout << "vertex condition systematic = " << (dijetratio_AllV - dijetratio)/dijetratio << std::endl;
+	std::cout << "mean PU distribution = " << heflow_averagePU->GetMean() << std::endl;
+
 	// make a pile up plot
 	TH1F *heflow_vs_pileup = new TH1F("heflow_vs_pileup","Mean eflow vs number of vertices",maxVertices,0,maxVertices);
 	for (int i=0;i<maxVertices;i++) {
 		heflow_vs_pileup->SetBinContent(i+1,heflow_pileup[i]->GetMean());
 		heflow_vs_pileup->SetBinError(i+1,heflow_pileup[i]->GetMeanError());
 	}
+
+	std::cout << "Integrated Luminosity = " << IntegratedLumi << std::endl;
 	
 	//////////////////////////////////////////////////
+	
+	TH2F *hLSMeanE = new TH2F("hLSMeanE","Mean energy per channel per LS",303,193,496,224,1,225);
+	for (int i=0;i<303;i++) {
+		for (int j=0;j<224;j++) {
+			if (hLS->GetBinContent(i+1,j+1) != 0) hLSMeanE->SetBinContent(i+1,j+1,hLSWeighted->GetBinContent(i+1,j+1)/hLS->GetBinContent(i+1,j+1));
+			if (hLS->GetBinContent(i+1,j+1) != 0)
+			hLSMeanE->SetBinError(i+1,j+1,getRatioError(hLSWeighted->GetBinContent(i+1,j+1),hLS->GetBinContent(i+1,j+1),hLSWeighted->GetBinError(i+1,j+1),hLS->GetBinError(i+1,j+1)));
+		}
+	}
 	
 	/*
 	heflow->Sumw2();
@@ -516,16 +677,33 @@ void TreeAnalyzer::Loop(TString inputdir, TObjArray* filelist) {
 	hJet_width->Write();
 	hJet_sigmaz->Write();
 	
+	hLS->Write();
+	hLSWeighted->Write();
+	hLSMeanE->Write();
+	
 	// eflow histos
 	heflow->Write();
 	heflow_dijet->Write();
 	heflow_DijetRatio->Write();
+	
+        heflow_6m->Write();
+	heflow_dijet_6m->Write();
+	heflow_DijetRatio_6m->Write();
+
+	heflow_14m->Write();
+	heflow_dijet_14m->Write();
+	heflow_DijetRatio_14m->Write();
+
+	heflow_AllV->Write();
+	heflow_dijet_AllV->Write();
+	heflow_DijetRatio_AllV->Write();	
+	
 	h2eflow_grid->Write();
 	h2eflow_map->Write();
 	heflow_usedchannels->Write();
 	heflow_sectors->Write();
 	heflow_modules->Write();
-	for (int icha=0;icha<80;icha++) {
+	for (int icha=0;icha<224;icha++) {
 		heflow_channel[icha]->Write();
 	}
 	heflow_channels->Write();
@@ -536,6 +714,7 @@ void TreeAnalyzer::Loop(TString inputdir, TObjArray* filelist) {
 		heflow_pileup[icha]->Write();
 	}
 	heflow_vs_pileup->Write();
+	heflow_averagePU->Write();
 	
 	output->Close();
 	std::cout << "file " << filename << " created." << std::endl;

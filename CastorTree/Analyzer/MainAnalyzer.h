@@ -20,6 +20,7 @@ class MainAnalyzer {
 		void plotHistos(TString inputdir, TString regexpstr, TString selectname);
 		void compareMCData(TString inputdir,TString regexpstr, TString selectname);
 		void saveAllCanvas(TString inputdir, TString name);
+		void setCMSStyle(); 
 
 	private:
 		FileReader reader_;

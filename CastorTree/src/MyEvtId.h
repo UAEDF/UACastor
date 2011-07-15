@@ -21,7 +21,10 @@ class MyEvtId : public TObject {
   Bool_t       IsData;
   UInt_t       ExpType;
   Int_t        Bunch;
-  Int_t        Orbit;   
+  Int_t        Orbit;
+  Float_t      IstLumi;
+  Float_t      IstLumiErr;
+  Float_t      IstLumiPerBX;   
   
  private:
   

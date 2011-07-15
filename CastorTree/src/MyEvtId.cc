@@ -19,6 +19,9 @@ void MyEvtId::Reset() {
   ExpType  = 0;
   Bunch    = -1;
   Orbit    = -1;
+  IstLumi  = -1;
+  IstLumiErr = -1;
+  IstLumiPerBX = -1;
 }
 
 void MyEvtId::Print() {
@@ -31,4 +34,7 @@ void MyEvtId::Print() {
   cout<<"Exp Type: "<<this->ExpType<<endl;
   cout<<"Bx: "<<this->Bunch<<endl;
   cout<<"Orbit: "<<this->Orbit<<endl;
+  cout << "IstLumi: " << this->IstLumi << endl;
+  cout << "IstLumiErr: " << this->IstLumiErr << endl;
+  cout << "IstLumiPerBX: " << this->IstLumiPerBX << endl;
 }

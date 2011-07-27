@@ -158,10 +158,14 @@ class CastorTree : public edm::EDAnalyzer {
 
   //-- HLT triggers requested by user
   vector<string> hlt_bits;
+  vector<string> filter_bits;
 
   //-- needed to retrieve HLT triggers
   HLTConfigProvider hltConfig;
   bool isValidHLTConfig_;
+
+  //-- collection to read Filter results
+  edm::InputTag FilterResults_;
 
   //-- Tree & File
 

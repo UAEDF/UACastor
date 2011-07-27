@@ -64,8 +64,14 @@ CastorTree::CastorTree(const edm::ParameterSet& iConfig) {
   //-- HLT triggers requested by user
   hlt_bits = iConfig.getParameter<vector<string> >("requested_hlt_bits");
 
+  //-- filter triggers requested by user
+  filter_bits = iConfig.getParameter<vector<string> >("requested_filter_bits");
+
   //-- needed to retrieve HLT triggers
   isValidHLTConfig_ = false;
+
+  //-- needed to read Filter results
+  FilterResults_ = iConfig.getParameter<edm::InputTag>("FilterResults");
 }
 
 

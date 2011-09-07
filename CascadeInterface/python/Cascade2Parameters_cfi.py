@@ -23,12 +23,11 @@ Cascade2Parameters = cms.PSet(
                                   'IRPB = 0 ! switch to select QCD process g* g -> g g via IRPB = 1',
                                   'IRPC = 0 ! switch to select QCD process g* q -> g q via IRPC = 1',
                                   'ICCFM = 1 ! select CCFM or DGLAP mode (=1 CCFM, =0 DGLAP)',
-                                  'IGLU = 5 ! select uPDF (1010 = set A, default)',
+                                  'IGLU = 1010 ! select uPDF (1010 = set A, default)',
                                   'IRspl = 4 ! switch for p-remnant treatment',
                                   'PT2CUT = 0.0 ! pt2 cut in ME for massless partons',
                                   'ACC1 = 1.0 ! accurary requested for grid optimisation step (BASES)',
                                   'ACC2 = 0.5 ! accuracy requested for integration step (BASES)',
                                   'SCALFA = 1.0 ! scale factor for scale in alphas',
                                   'SCALFAF = 1.0 ! scale factor for final state parton shower scale',
-                                  # 'PDFPATH =/afs/cern.ch/sw/lcg/external/MCGenerators/cascade/2.2.0/share/data/')) # path where updf grid files are stored
-                                  'PDFPATH =/afs/cern.ch/cms/slc5_ia32_gcc434/external/cascade/2.2.0/share')) # path where updf grid files are stored
+                                  'PDFPATH =/afs/cern.ch/cms/slc5_ia32_gcc434/external/cascade/2.2.0/share ')) # path where updf grid files are stored

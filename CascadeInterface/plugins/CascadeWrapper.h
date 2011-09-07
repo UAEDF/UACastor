@@ -112,7 +112,7 @@ extern "C" {
 
 extern "C" {
   extern struct {
-    const char* pdfpath;
+    char pdfpath[512];
   } caspdf_;
 }
 #define caspdf caspdf_

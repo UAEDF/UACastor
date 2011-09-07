@@ -450,22 +450,21 @@ namespace gen {
     //-- mstu(8) is set to NMXHEP in this dummy call (version >=6.404)
     call_pyhepc(1);
 
-    //-- initialise random number generator (should be changed to be CMSSW compliant)   
-    //-- dcasrn overloaded -> not needed anymore
-    // call_rluxgo(4,314159265,0,0);
-    // if(debug) cout<<"dcasrn: "<<call_dcasrn()<<endl;
-    // if(debug) getchar();
+    //-- initialise random number generator: has been changed to be CMSSW compliant    
+    //-- dcasrn overloaded: call to rluxgo not needed anymore
+    //-- call_rluxgo(4,314159265,0,0);
     
-    //--initialise CASCADE parameters
+    //-- initialise CASCADE parameters (default values)
     call_casini();
 
     //-- Read the parameters and pass them to the common blocks
     //-- call_steer();
 
-    if(debug) cout<<"retrieve cascade parameters from python configuration file"<<endl;
-    if(debug) getchar();
+    cout<<"retrieve cascade parameters from python configuration file"<<endl;
 
-    //-- retrieve all the different sets
+    //-- initialise CASCADE parameters (user values)
+
+    //-- retrieve all the different sets 
     vector<string> AllSets = fParameters.getParameter<vector<string> >("parameterSets");
 
     //-- loop over the different sets
@@ -487,9 +486,8 @@ namespace gen {
     cainpu.plepin = -fComEnergy/2; 
     cainpu.ppin = fComEnergy/2;
 
-    if(debug) cascadePrintParameters();
-    if(debug) getchar();
-
+    cascadePrintParameters();
+   
     //-- change standard parameters of CASCADE
     call_cascha();
     
@@ -707,7 +705,7 @@ namespace gen {
       scalf.scalfa = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"PDFPATH",7))
-      caspdf.pdfpath = &ParameterString[strcspn(ParameterString.c_str(),"=")+1];
+      strcpy(caspdf.pdfpath,&ParameterString[strcspn(ParameterString.c_str(),"=")+1]); 
 
     else accepted = 0;
     

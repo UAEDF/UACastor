@@ -1,1 +1,2 @@
-cmsDriver.py GeneratorInterface/CascadeInterface/python/Cascade2_example_test_cff.py -s GEN --conditions START43_V2::All --datatier GEN-SIM-RAW --eventcontent RAWSIM -n 10 --no_exec
+cmsDriver.py GeneratorInterface/CascadeInterface/python/Cascade2_example_test_cff.py -s GEN --conditions START43_V2::All --datatier GEN-SIM-RAW --eventcontent RAWSIM -n 100 --no_exec
+process.RandomNumberGeneratorService.generator.initialSeed = 222222222

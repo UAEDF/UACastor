@@ -3,8 +3,6 @@
 
 #include <memory>
 
-#include <boost/shared_ptr.hpp>
-
 #include "FWCore/ParameterSet/interface/ParameterSetfwd.h"
 #include "GeneratorInterface/Core/interface/ParameterCollector.h"
 #include "GeneratorInterface/Core/interface/BaseHadronizer.h"
@@ -15,18 +13,9 @@ namespace HepMC {
   class GenEvent;
 }
 
-
-/*
 namespace CLHEP {
-  class HepRandomEngine;
+  class RandFlat;
 }
-*/
-
-/*
-extern "C" {
-  double dcasrn_(int* idummy);
-}
-*/
 
 namespace gen {
   
@@ -73,10 +62,8 @@ namespace gen {
     
     Pythia6Service* fPy6Service;
  
-    // CLHEP::HepRandomEngine* fRandomEngine;   
-    // CLHEP::RanluxEngine*    fRanLuxEngine;
-    // CLHEP::RandFlat*        fRandomGenerator;
-    
+    CLHEP::RandFlat* fFlat;
+
     double fComEnergy ;  //-- irrelevant for setting py6 as hadronizer (or if anything, it should be picked up from LHERunInfoProduct)
     double fCrossSection;
     double fFilterEfficiency;

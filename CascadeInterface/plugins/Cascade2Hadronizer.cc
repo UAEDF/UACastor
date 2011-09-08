@@ -2,6 +2,7 @@
 
 #include "GeneratorInterface/Core/interface/RNDMEngineAccess.h"
 
+
 #include "HepMC/GenEvent.h" 
 #include "HepMC/PdfInfo.h"
 #include "HepMC/PythiaWrapper6_2.h"  
@@ -18,10 +19,13 @@ HepMC::IO_HEPEVT hepevtio;
 
 #include "HepPID/ParticleIDTranslations.hh"
 
-//-- Pythia6 routines and functionalities to pass around Pythia6 params
-
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Utilities/interface/RandomNumberGenerator.h"
+#include "CLHEP/Random/RandFlat.h"
+#include "FWCore/Utilities/interface/Exception.h"
+
+//-- Pythia6 routines and functionalities to pass around Pythia6 params
+
 #include "GeneratorInterface/Pythia6Interface/interface/Pythia6Service.h"
 #include "GeneratorInterface/Pythia6Interface/interface/Pythia6Declarations.h"
 
@@ -30,7 +34,7 @@ using namespace std;
 
 #define debug 1
 
-CLHEP::HepRandomEngine* fRandomEngine;
+CLHEP::RandFlat* fFlat_extern;
 
 extern "C" {
     
@@ -38,16 +42,15 @@ extern "C" {
 
     static int call = 0;
 
-    edm::Service<edm::RandomNumberGenerator> rng;
-    fRandomEngine = &(rng->getEngine());
-    double rdm_nb = fRandomEngine->flat();     
+    double rdm_nb = fFlat_extern->fire();
 
-    if(debug && ++call < 100) cout<<"dcasrn from c++, call: "<<call<<" , seed: "<<rng->mySeed()<<" random number: "<<rdm_nb<<endl;
-    
+    if(debug && ++call < 100) cout<<"dcasrn from c++, call: "<<call<<" random number: "<<rdm_nb<<endl;
+
     return rdm_nb;
   }
 }
   
+
 namespace gen {
   
   class Pythia6ServiceWithCallback : public Pythia6Service {
@@ -100,6 +103,12 @@ namespace gen {
       fDisplayPythiaCards(pset.getUntrackedParameter<bool>("displayPythiaCards",false)){
 
     fParameters = pset.getParameter<ParameterSet>("Cascade2Parameters");
+
+    edm::Service<edm::RandomNumberGenerator> rng;
+    if(debug) cout<<"seed: "<<rng->mySeed()<<endl;
+    CLHEP::HepRandomEngine& engine = rng->getEngine();
+    fFlat = new CLHEP::RandFlat(engine);
+    fFlat_extern = fFlat;
 
     fConvertToPDG = false;
     if(pset.exists("doPDGConvert"))

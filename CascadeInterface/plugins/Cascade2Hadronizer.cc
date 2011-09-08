@@ -434,8 +434,8 @@ namespace gen {
     
     fPy6Service->setGeneralParams();
     
-    // if (key == 0) fPy6Service->setCSAParams();
-    // fPy6Service->setSLHAParams();
+    if (key == 0) fPy6Service->setCSAParams();
+    fPy6Service->setSLHAParams();
     
     return true;
   }
@@ -452,9 +452,9 @@ namespace gen {
     //-- change standard parameters of JETSET/PYTHIA - replace call_pytcha()
     fPy6Service->setGeneralParams();   
 
-    // fPy6Service->setCSAParams();
-    // fPy6Service->setSLHAParams();
-    // fPy6Service->setPYUPDAParams(false);
+    fPy6Service->setCSAParams();
+    fPy6Service->setSLHAParams();
+    fPy6Service->setPYUPDAParams(false);
     
     //-- mstu(8) is set to NMXHEP in this dummy call (version >=6.404)
     call_pyhepc(1);
@@ -509,9 +509,9 @@ namespace gen {
     //-- print cross-section result from integration
     call_caend(1);
  
-    //fPy6Service->setPYUPDAParams(true);
+    fPy6Service->setPYUPDAParams(true);
     
-    //fPy6Service->closeSLHA();
+    fPy6Service->closeSLHA();
     
     return true;
   }

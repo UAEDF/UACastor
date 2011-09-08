@@ -7,6 +7,7 @@
 
   TH1F* heta = new TH1F("heta","eta gen part",100,-15,15);
   TH1F* hphi = new TH1F("hphi","phi gen part",100,-3.14,3.14);
+  hphi->SetMinimum(0);
   TH1F* hpt = new TH1F("hpt","pt gen part",100,0,12);
   TH1F* henergy = new TH1F("henergy","energy gen part",100,0,3500);
 

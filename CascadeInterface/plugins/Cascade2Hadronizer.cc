@@ -32,7 +32,7 @@ HepMC::IO_HEPEVT hepevtio;
 using namespace edm;
 using namespace std;
 
-#define debug 1
+#define debug 0
 
 CLHEP::RandFlat* fFlat_extern;
 

@@ -29,10 +29,10 @@ MainAnalyzer::~MainAnalyzer() {
 
 }
 
-void MainAnalyzer::makeHistos(TString inputdir, TString regexpstr) {
+void MainAnalyzer::makeHistos(TString inputdir, TString regexpstr, bool isData, double cmenergy) {
 
 	TObjArray *files = reader_.getFileList(inputdir,regexpstr);
-	treeanalyzer_.Loop(inputdir,files);
+	treeanalyzer_.Loop(inputdir,files, isData, cmenergy);
 
 }
 
@@ -221,7 +221,7 @@ void MainAnalyzer::saveAllCanvas(TString inputdir, TString name) {
 
 void MainAnalyzer::setCMSStyle(){
 	
-	cout << "CMS Style Loaded" << endl;
+	std::cout << "CMS Style Loaded" << std::endl;
 	
 	TStyle *tdrStyle = new TStyle("tdrStyle","Style for P-TDR");
 	

@@ -14,6 +14,10 @@
 
 #include <iostream>
 #include <fstream>
+#include <math.h>
+#include <string>
+#include <cstdlib>
+using std::string;
 
 EflowPlotter::EflowPlotter() {
 
@@ -41,12 +45,12 @@ void EflowPlotter::plotRatios() {
 	TFile *f2760GeVMC = new TFile();
 	TFile *f7TeVdata = new TFile();
 	TFile *f7TeVMC = new TFile();
-	std::cout << "debug 1" << std::endl;
+	
 	// get list of all files in this directory
 	FileReader reader;
 	TString inputdir = "./";
 	TObjArray *files = reader.getFileList(inputdir,"output_all_");
-	std::cout << "debug 2" << std::endl;
+	
 	// process list of files
 	TIter       next(files);
 	TObjString* fn = 0;
@@ -68,7 +72,7 @@ void EflowPlotter::plotRatios() {
 		// do what ever
 		std::cout << "opened " << fn->GetString() << std::endl;     
 	}
-	std::cout << "debug 3" << std::endl;
+	
 	// graph for data
 	Double_t y1data = 0;
 	Double_t y2data = 0;
@@ -123,7 +127,7 @@ void EflowPlotter::plotRatios() {
 	graph_MC->Draw("AP");
 	graph_data->SetMarkerStyle(20);
 	graph_data->Draw("sameP");
-	graph_data->Fit("pol1","","",900,7000);
+	//graph_data->Fit("pol1","","",900,7000);
 	
 	graph_MC->SetTitle("MC");
 	graph_data->SetTitle("data");
@@ -136,7 +140,7 @@ void EflowPlotter::plotRatios() {
 
 }
 
-void EflowPlotter::plotEflow(TString name ) {
+void EflowPlotter::plotEflow(TString name ) { // give histo name as input
 	
 	// set plot styles
 	gStyle->SetOptStat(111111);
@@ -154,12 +158,12 @@ void EflowPlotter::plotEflow(TString name ) {
 	TFile *f2760GeVMC = new TFile();
 	TFile *f7TeVdata = new TFile();
 	TFile *f7TeVMC = new TFile();
-	std::cout << "debug 1" << std::endl;
+	
 	// get list of all files in this directory
 	FileReader reader;
 	TString inputdir = "./";
 	TObjArray *files = reader.getFileList(inputdir,"output_all_");
-	std::cout << "debug 2" << std::endl;
+	
 	// process list of files
 	TIter       next(files);
 	TObjString* fn = 0;
@@ -181,7 +185,7 @@ void EflowPlotter::plotEflow(TString name ) {
 		// do what ever
 		std::cout << "opened " << fn->GetString() << std::endl;     
 	}
-	std::cout << "debug 3" << std::endl;
+	
 	
 	// graph for data
 	Double_t y1data = 0;
@@ -215,7 +219,7 @@ void EflowPlotter::plotEflow(TString name ) {
 	Double_t xdata[3] = {900,2760,7000};
 	Double_t xdata_error[3] = {0,0,0};
 	TGraphErrors *graph_data;
-	if (y2data == 0 && y2MC != 0){
+	if (y1data != 0){
 		Double_t ydata[3] = {y1data/y1data, y2data/y1data , y3data/y1data };
 		Double_t ydata_error[3] = {getRatioError(y1data,y1data,y1data_error,y1data_error),getRatioError(y2data,y1data,y2data_error,y1data_error) ,getRatioError(y3data,y1data,y3data_error,y1data_error) };
 		graph_data = new TGraphErrors(3,xdata,ydata ,xdata_error,ydata_error);
@@ -228,7 +232,7 @@ void EflowPlotter::plotEflow(TString name ) {
 	Double_t xMC[3] = {900,2760,7000};
 	Double_t xMC_error[3] = {0,0,0};
 	TGraphErrors *graph_MC;
-	if (y2data == 0 && y2MC != 0){
+	if (y1MC != 0){
 		Double_t yMC[3] = {y1MC/y1MC, y2MC/y1MC , y3MC/y1MC };
 		Double_t yMC_error[3] = {getRatioError(y1MC,y1MC,y1MC_error,y1MC_error),getRatioError(y2MC,y1MC,y2MC_error,y1MC_error) ,getRatioError(y3MC,y1MC,y3MC_error,y1MC_error) };
 		graph_MC = new TGraphErrors(3,xMC,yMC ,xMC_error,yMC_error);
@@ -252,7 +256,7 @@ void EflowPlotter::plotEflow(TString name ) {
 	graph_MC->Draw("AP");
 	graph_data->SetMarkerStyle(20);
 	graph_data->Draw("sameP");
-	graph_data->Fit("pol1","","",900,7000);
+	//graph_data->Fit("pol1","","",900,7000);
 	
 	graph_MC->SetTitle("MC");
 	graph_data->SetTitle("data");
@@ -260,6 +264,126 @@ void EflowPlotter::plotEflow(TString name ) {
 	c->BuildLegend();
 	
 	graph_MC->SetTitle("Energy flow in CASTOR");
+	
+	
+}
+
+void EflowPlotter::plotRatiosPt() {
+	
+	// set plot styles
+	gStyle->SetOptStat(111111);
+	gStyle->SetCanvasBorderMode(0);
+	gStyle->SetCanvasColor(kWhite);
+	gStyle->SetPadBorderMode(0);
+	gStyle->SetPadColor(kWhite);
+	gStyle->SetTitleFillColor(kWhite);
+	gStyle->SetStatColor(kWhite);
+	
+	// define wanted files
+	TFile *f900GeVdata = new TFile();
+	TFile *f900GeVMC = new TFile();
+	TFile *f2760GeVdata = new TFile();
+	TFile *f2760GeVMC = new TFile();
+	TFile *f7TeVdata = new TFile();
+	TFile *f7TeVMC = new TFile();
+	
+	// get list of all files in this directory
+	FileReader reader;
+	TString inputdir = "./";
+	TObjArray *files = reader.getFileList(inputdir,"output_all_");
+	
+	// process list of files
+	TIter       next(files);
+	TObjString* fn = 0;
+	TString currentfile = "";
+	while((fn = (TObjString*)next())) {
+        
+		currentfile.Clear();
+		currentfile = fn->GetString();
+        
+		if (currentfile.Contains("900") && currentfile.Contains("data")) f900GeVdata = TFile::Open(inputdir+fn->GetString(),"READ");
+		if (currentfile.Contains("900") && currentfile.Contains("MC")) f900GeVMC = TFile::Open(inputdir+fn->GetString(),"READ");
+		
+		if (currentfile.Contains("2760") && currentfile.Contains("data")) f2760GeVdata = TFile::Open(inputdir+fn->GetString(),"READ");
+		if (currentfile.Contains("2760") && currentfile.Contains("MC")) f2760GeVMC = TFile::Open(inputdir+fn->GetString(),"READ");
+		
+		if (currentfile.Contains("7TeV") && currentfile.Contains("data")) f7TeVdata = TFile::Open(inputdir+fn->GetString(),"READ");
+		if (currentfile.Contains("7TeV") && currentfile.Contains("MC")) f7TeVMC = TFile::Open(inputdir+fn->GetString(),"READ");
+		
+		// do what ever
+		std::cout << "opened " << fn->GetString() << std::endl;     
+	}
+	
+	TH1F *h900data, *h2760data, *h7000data;
+	TH1F *h900MC, *h2760MC, *h7000MC;
+	
+	if (f900GeVdata->GetSize() > 0) h900data  = getHisto(f900GeVdata,"hDijetRatios_vs_pt");
+	if (f2760GeVdata->GetSize() > 0) h2760data = getHisto(f2760GeVdata,"hDijetRatios_vs_pt");
+	if (f7TeVdata->GetSize() > 0) h7000data = getHisto(f7TeVdata,"hDijetRatios_vs_pt");
+	if (f900GeVMC->GetSize() > 0) h900MC  = getHisto(f900GeVMC,"hDijetRatios_vs_pt");
+	if (f2760GeVMC->GetSize() > 0) h2760MC = getHisto(f2760GeVMC,"hDijetRatios_vs_pt");
+	if (f7TeVMC->GetSize() > 0) h7000MC = getHisto(f7TeVMC,"hDijetRatios_vs_pt");
+	
+	TCanvas *c = new TCanvas("c","Canvas");
+	c->Divide(3,1); // 3,1 is correct
+        
+	c->cd(1);
+	h900data->SetStats(0);
+	h900MC->SetStats(0);
+	h900data->SetTitle("Data");
+	h900MC->SetTitle("MC");
+	h900MC->GetXaxis()->SetTitle("Dijet pT cut (GeV)");
+	h900MC->GetYaxis()->SetTitle("Dijet ratio in CASTOR");
+	h900MC->SetMarkerStyle(7);
+	//graph_MC->SetMarkerColor(kBlack);
+	//graph_MC->SetFillColor(kAzure+1);
+	//graph_MC->Draw("AP3");
+	//graph_MC->Draw("psame");
+	h900MC->Draw();
+	h900data->SetMarkerStyle(20);
+	h900data->Draw("same");
+	//graph_data->Fit("pol1","","",900,7000);
+	//c->BuildLegend();
+	
+	c->cd(2);
+	h2760data->SetStats(0);
+	h2760MC->SetStats(0);
+	h2760data->SetTitle("Data");
+	h2760MC->SetTitle("MC");
+	h2760MC->GetXaxis()->SetTitle("Dijet pT cut (GeV)");
+	h2760MC->GetYaxis()->SetTitle("Dijet ratio in CASTOR");
+	h2760MC->SetMarkerStyle(7);
+	//graph_MC->SetMarkerColor(kBlack);
+	//graph_MC->SetFillColor(kAzure+1);
+	//graph_MC->Draw("AP3");
+	//graph_MC->Draw("psame");
+	h2760MC->Draw();
+	h2760data->SetMarkerStyle(20);
+	h2760data->Draw("same");
+	//graph_data->Fit("pol1","","",2760,7000);
+	//c->BuildLegend();
+	
+	c->cd(3);
+	h7000data->SetStats(0);
+	h7000MC->SetStats(0);
+	h7000data->SetTitle("Data");
+	h7000MC->SetTitle("MC");
+	h7000MC->GetXaxis()->SetTitle("Dijet pT cut (GeV)");
+	h7000MC->GetYaxis()->SetTitle("Dijet ratio in CASTOR");
+	h7000MC->SetMarkerStyle(7);
+	//graph_MC->SetMarkerColor(kBlack);
+	//graph_MC->SetFillColor(kAzure+1);
+	//graph_MC->Draw("AP3");
+	//graph_MC->Draw("psame");
+	h7000MC->Draw();
+	h7000data->SetMarkerStyle(20);
+	h7000data->Draw("same");
+	//graph_data->Fit("pol1","","",7000,7000);
+	
+	//c->BuildLegend();
+	h900MC->SetTitle("Dijet ratio vs pt cut at 900GeV");
+	h2760MC->SetTitle("Dijet ratio vs pt cut at 2760GeV");
+	h7000MC->SetTitle("Dijet ratio vs pt cut at 7TeV");
 	
 	
 }
@@ -346,10 +470,8 @@ std::vector<std::string> EflowPlotter::splitString (const std::string& fLine) {
 }
 
 TH1F* EflowPlotter::getHisto(TFile* file, TString name) {
-	std::cout << "debug 1-1" << std::endl;
-	TList *list = file->GetListOfKeys();
 	
-	std::cout << "debug 1-2" << std::endl;
+	TList *list = file->GetListOfKeys();
 	
 	TH1F *output;
 	
@@ -360,11 +482,3 @@ TH1F* EflowPlotter::getHisto(TFile* file, TString name) {
 	}
 	return output;
 }
-
-/*
-m.makeHistos("dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/hvanhaev/AllPhysics2760/CastorTree_data_AllPhysics2760_Run2011A-PromptReco-v2_RECOwithCorrector_Run161366/2f213423cfb2070ca412e387d66127e3/","CastorTree_data_AllPhysics2760_Run2011A-PromptReco-v2_RECOwithCorrector_")
-m.makeHistos("dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/hvanhaev/MinimumBias/CastorTree_data_Commissioning10-398patch2_900GeV-v1_RECOwithCorrector_Run134721/7bbb562cf75d816f94e942c1f7800c1e/","CastorTree_data_Commissioning10-398patch2_900GeV-v1_RECOwithCorrector_")
-m.makeHistos("dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/hvanhaev/MinimumBias/CastorTree_data_Commissioning10-398patch2_7TeV-v1_RECOwithCorrector_Run132959-132961/2f213423cfb2070ca412e387d66127e3/","CastorTree_data_Commissioning10-398patch2_7TeV-v1_RECOwithCorrector_")
-m.makeHistos("dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/hvanhaev/Step1_MinBias7TeV_PythiaD6T_3100_Default_v1_100k_1/CastorTree_MC_7TeV_PythiaD6T_3100_Default_v1_1/6f254b9e8eae0fa3deac30f9b8c6fad2/","CastorTree_MC_7TeV_3100_Default")
-m.makeHistos("dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/hvanhaev/Step1_MinBias900GeV_PythiaD6T_3100_Default_v1_250k_1/CastorTree_MC_900GeV_PythiaD6T_3100_Default_v1_1/ab8792ebd11566ddc4df12681cd233d9/","CastorTree_MC_900GeV_3100_Default_")
-*/

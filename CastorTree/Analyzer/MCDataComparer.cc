@@ -9,6 +9,11 @@
 
 #include <iostream>
 #include <fstream>
+#include <math.h>
+#include <string>
+#include <cstdlib>
+using std::string;
+using namespace std;
 
 MCDataComparer::MCDataComparer() {
 

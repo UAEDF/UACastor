@@ -13,6 +13,7 @@ class EflowPlotter {
 		virtual ~EflowPlotter();
         void plotRatios();
 		void plotEflow(TString name);
+		void plotRatiosPt();
 		Double_t getRatioError(TH1F * hMB, TH1F * hQCD);	
         Double_t getRatioError(double a, double b, double errora, double errorb);
 		Double_t getMultiError(double a, double b, double errora, double errorb);

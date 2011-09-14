@@ -15,7 +15,7 @@ class MainAnalyzer {
 	public:
         MainAnalyzer();
 		virtual ~MainAnalyzer();
-        void makeHistos(TString inputdir, TString regexpstr);
+        void makeHistos(TString inputdir, TString regexpstr, bool isData, double cmenergy);
 		void plotSingleHistos(TString outputfile, TString selectname);
 		void plotHistos(TString inputdir, TString regexpstr, TString selectname);
 		void compareMCData(TString inputdir,TString regexpstr, TString selectname);

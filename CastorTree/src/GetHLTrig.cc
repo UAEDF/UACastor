@@ -47,13 +47,8 @@ void CastorTree::GetHLTrig(const edm::Event& iEvent, const edm::EventSetup& iSet
  
   edm::Handle<edm::TriggerResults> trigResults;
   iEvent.getByLabel(srcTriggerResults_,trigResults);
-	
-	// fetch the collection for the filter results
-	edm::Handle<edm::TriggerResults> filterResults;
-	iEvent.getByLabel(FilterResults_,filterResults);
  
   const edm::TriggerNames& trigNames = iEvent.triggerNames(*trigResults);
-  const edm::TriggerNames& filterNames = iEvent.triggerNames(*filterResults);
  
   //-- Loop on triggers requested by user (config file)
 
@@ -65,13 +60,26 @@ void CastorTree::GetHLTrig(const edm::Event& iEvent, const edm::EventSetup& iSet
     if(HLTDebug) cout<<(*hlt_name).c_str()<<" = "<<hasFired(*hlt_name,trigNames,*trigResults)<<endl;
   }
 	
-  // loop again on the Trigger results collection from the filters
-	for(vector<string>::iterator filter_name = filter_bits.begin(); filter_name != filter_bits.end(); filter_name++) {
+	
+	// fetch the collection for the filter results
+	edm::Handle<edm::TriggerResults> filterResults;
+	try {
+		iEvent.getByLabel(FilterResults_,filterResults);
 		
-		HLTrig.HLTmap[*filter_name]= hasFired(*filter_name,filterNames,*filterResults);
-		HLTrig.HLTprescale[*filter_name]= hltConfig.prescaleValue(iEvent,iSetup,*filter_name);
+		const edm::TriggerNames& filterNames = iEvent.triggerNames(*filterResults);
 		
-		if(HLTDebug) cout<<(*filter_name).c_str()<<" = "<<hasFired(*filter_name,filterNames,*filterResults)<<endl;
+		// Loop on filter results requested by user (config file)
+		for(vector<string>::iterator filter_name = filter_bits.begin(); filter_name != filter_bits.end(); filter_name++) {
+			
+			HLTrig.HLTmap[*filter_name]= hasFired(*filter_name,filterNames,*filterResults);
+			HLTrig.HLTprescale[*filter_name]= hltConfig.prescaleValue(iEvent,iSetup,*filter_name);
+			
+			if(HLTDebug) cout<<(*filter_name).c_str()<<" = "<<hasFired(*filter_name,filterNames,*filterResults)<<endl;
+		}
+		
+	}
+	catch (cms::Exception& ex) {
+		std::cout << "GetHLTTrig module: Input tag " << FilterResults_ << " not found";
 	}
 	
 	

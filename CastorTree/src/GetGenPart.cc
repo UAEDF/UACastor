@@ -22,7 +22,7 @@
 
 #include "./CastorTree.h"
 
-bool GenPartDebug = true;
+bool GenPartDebug = false;
 
 void CastorTree::GetGenPart(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {

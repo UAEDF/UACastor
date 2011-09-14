@@ -24,7 +24,7 @@
 
 #include "./CastorTree.h"
 
-bool CastorDigiDebug = true;
+bool CastorDigiDebug = false;
 
 void CastorTree::GetCastorDigi(const edm::Event& iEvent, const edm::EventSetup& iSetup, vector<MyCastorDigi>& CastorDigiVector) {
   

@@ -16,7 +16,7 @@
 
 #include "./CastorTree.h"
 
-bool BeamSpotDebug = true;
+bool BeamSpotDebug = false;
 
 void CastorTree::GetBeamSpot(const edm::Event& iEvent) {
 

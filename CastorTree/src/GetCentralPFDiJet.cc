@@ -19,7 +19,7 @@
 
 #include "./CastorTree.h"
 
-bool CentralPFDiJetDebug = true;
+bool CentralPFDiJetDebug = false;
 
 void CastorTree::GetCentralPFDiJet(const vector<MyJet>& JetVector, MyDiJet& dijet) {
 

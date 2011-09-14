@@ -29,7 +29,7 @@
 
 #include "./CastorTree.h"
 
-bool L1TrigDebug = true;
+bool L1TrigDebug = false;
 
 void CastorTree::GetL1Trig(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
@@ -40,14 +40,14 @@ void CastorTree::GetL1Trig(const edm::Event& iEvent, const edm::EventSetup& iSet
 
    //-- L1 Global Trigger Utility
 
-  L1GtUtils L1GTUtility;
-  L1GTUtility.retrieveL1EventSetup(iSetup);
+  L1GtUtils *L1GTUtility = new L1GtUtils();
+  L1GTUtility->retrieveL1EventSetup(iSetup);
 
   //-- input tag for L1GtTriggerMenuLite retrieved from provenance
-  if (L1GT_TrigMenuLite_Prov_) L1GTUtility.retrieveL1GtTriggerMenuLite(iEvent);
+  if (L1GT_TrigMenuLite_Prov_) L1GTUtility->retrieveL1GtTriggerMenuLite(iEvent);
 
   //-- input tag for L1GtTriggerMenuLite explicitly given
-  else L1GTUtility.retrieveL1GtTriggerMenuLite(iEvent,L1GT_TrigMenuLite_);
+  else L1GTUtility->retrieveL1GtTriggerMenuLite(iEvent,L1GT_TrigMenuLite_);
 
   ESHandle< L1GtTriggerMenu > L1GTTM;
   iSetup.get< L1GtTriggerMenuRcd >().get(L1GTTM);
@@ -67,7 +67,7 @@ void CastorTree::GetL1Trig(const edm::Event& iEvent, const edm::EventSetup& iSet
     L1GtUtils::TriggerCategory category;
     int bit;
 
-    if (!L1GTUtility.l1AlgoTechTrigBitNumber(iphys->second.algoName(),category,bit)) {
+    if (!L1GTUtility->l1AlgoTechTrigBitNumber(iphys->second.algoName(),category,bit)) {
       cout<<"error L1 Physical Trigger "<<iphys->second.algoName()<<" not found in the L1 menu \n"<<"Skipping";
       continue;
     }
@@ -78,7 +78,7 @@ void CastorTree::GetL1Trig(const edm::Event& iEvent, const edm::EventSetup& iSet
     int  mask;
     int errorcode = -1;
 
-    errorcode = L1GTUtility.l1Results(iEvent,iphys->second.algoName(),decisionBeforeMask,decisionAfterMask,prescale,mask);
+    errorcode = L1GTUtility->l1Results(iEvent,iphys->second.algoName(),decisionBeforeMask,decisionAfterMask,prescale,mask);
     if (errorcode) {
       cout<<"error L1 Physical Trigger " <<iphys->second.algoName()<<" decision has error code "<<errorcode<<" from L1GtUtils \n"<<"Skipping";
       continue;
@@ -99,7 +99,7 @@ void CastorTree::GetL1Trig(const edm::Event& iEvent, const edm::EventSetup& iSet
     L1GtUtils::TriggerCategory category;
     int bit;
 
-    if (!L1GTUtility.l1AlgoTechTrigBitNumber(itech->second.algoName(),category,bit)) {
+    if (!L1GTUtility->l1AlgoTechTrigBitNumber(itech->second.algoName(),category,bit)) {
       cout<<"error L1 Technical Trigger "<<itech->second.algoName()<<" not found in the L1 menu \n"<<"Skipping";
       continue;
     }
@@ -110,7 +110,7 @@ void CastorTree::GetL1Trig(const edm::Event& iEvent, const edm::EventSetup& iSet
     int  mask;
     int errorcode = -1;
 
-    errorcode = L1GTUtility.l1Results(iEvent,itech->second.algoName(),decisionBeforeMask,decisionAfterMask,prescale,mask);
+    errorcode = L1GTUtility->l1Results(iEvent,itech->second.algoName(),decisionBeforeMask,decisionAfterMask,prescale,mask);
     if (errorcode) {
       cout<<"error L1 Technical Trigger " <<itech->second.algoName()<<" decision has error code "<<errorcode<<" from L1GtUtils \n"<<"Skipping";
       continue;
@@ -120,6 +120,8 @@ void CastorTree::GetL1Trig(const edm::Event& iEvent, const edm::EventSetup& iSet
   }
 
   if(L1TrigDebug) L1Trig.Print();
+	
+	delete L1GTUtility;
 
 }
 

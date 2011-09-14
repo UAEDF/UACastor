@@ -18,7 +18,7 @@
 
 #include "./CastorTree.h"
 
-bool CastorJetDebug = true;
+bool CastorJetDebug = false;
 
 void CastorTree::GetCastorJet(const edm::Event& iEvent, vector<MyCastorJet>& CastorJetVector) {
   

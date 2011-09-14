@@ -9,7 +9,8 @@ class MyL1Trig : public TObject {
   
   typedef map<string,unsigned> TrigMap;  //-- string name, unsigned bit
 
- private:
+  //private:
+  public:
 
   const static unsigned bit_max = 500;
 
@@ -33,7 +34,7 @@ class MyL1Trig : public TObject {
   unsigned fTechPrescale[64];
   string fTechAlias[64];
   
- public :
+ //public :
  
   MyL1Trig();
   virtual ~MyL1Trig();

@@ -17,7 +17,7 @@
 
 #include "./CastorTree.h"
 
-bool CastorRecHitDebug = true;
+bool CastorRecHitDebug = false;
 
 void CastorTree::GetCastorRecHit(const edm::Event& iEvent, vector<MyCastorRecHit>& CastorRecHitVector) {
   
@@ -70,4 +70,5 @@ void CastorTree::GetCastorRecHit(const edm::Event& iEvent, vector<MyCastorRecHit
       if (CastorRecHitDebug) mycastorrechit.Print();   
     }
   }
+	delete rnd;
 }

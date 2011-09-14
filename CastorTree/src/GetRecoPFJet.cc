@@ -27,7 +27,7 @@
 #include "./CastorTree.h"
 #include "./MyJetPtSorter.h"
 
-bool PFJetDebug = true;
+bool PFJetDebug = false;
 
 void CastorTree::GetRecoPFJet(const edm::Event& iEvent, const edm::EventSetup& iSetup, vector<MyJet>& JetVector) {
   
@@ -154,6 +154,8 @@ void CastorTree::GetRecoPFJet(const edm::Event& iEvent, const edm::EventSetup& i
     cout<<"sorted jets collection (pt_cal): "<<endl;
     CheckPtSorting(JetVector);
   }
+	
+	delete PFJetCorUnc;
 
 }
 

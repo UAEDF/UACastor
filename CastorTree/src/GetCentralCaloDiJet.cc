@@ -19,7 +19,7 @@
 
 #include "./CastorTree.h"
 
-bool CentralCaloDiJetDebug = true;
+bool CentralCaloDiJetDebug = false;
 
 void CastorTree::GetCentralCaloDiJet(const vector<MyJet>& JetVector, MyDiJet& dijet) {
 

@@ -17,7 +17,7 @@
 
 #include "./CastorTree.h"
 
-bool RecoVtxDebug = true;
+bool RecoVtxDebug = false;
 
 void CastorTree::GetRecoVertex(const edm::Event& iEvent, const char VertexCollName[60], vector<MyVertex>& VertexVector) {
 

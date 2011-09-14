@@ -30,7 +30,7 @@
 #include "./CastorTree.h"
 #include "./MyJetPtSorter.h"
 
-bool CaloJetDebug = true;
+bool CaloJetDebug = false;
 
 void CastorTree::GetRecoCaloJet(const edm::Event& iEvent, const edm::EventSetup& iSetup, vector<MyJet>& JetVector) {
   
@@ -161,6 +161,8 @@ void CastorTree::GetRecoCaloJet(const edm::Event& iEvent, const edm::EventSetup&
     cout<<"sorted jets collection (pt_cal): "<<endl;
     CheckPtSorting(JetVector);
   }
+	
+	delete CaloJetCorUnc;
 
 }
 

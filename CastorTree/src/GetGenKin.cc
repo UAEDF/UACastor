@@ -24,7 +24,7 @@
 #include "DataFormats/METReco/interface/GenMET.h"
 #include "DataFormats/METReco/interface/GenMETCollection.h"
 
-bool GenKinDebug = true;
+bool GenKinDebug = false;
 
 void CastorTree::GetGenKin(const edm::Event& iEvent) {
 

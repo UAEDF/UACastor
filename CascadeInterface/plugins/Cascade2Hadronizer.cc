@@ -194,13 +194,19 @@ namespace gen {
  
    event()->set_pdf_info(pdf) ;
 
+   if(debug) {
+     cout<<"standard Py6 event weight: pyint1.vint[96]: "<<pyint1.vint[96]<<endl;
+     cout<<"event weight returned by PYEVWT: 1./(pyint1.vint[98]): "<<1./(pyint1.vint[98])<<endl;
+   }
+     
    //-- this is "standard" Py6 event weight (corresponds to PYINT1/VINT(97))
- 
-   event()->weights().push_back(pyint1.vint[96]);
+   // event()->weights().push_back(pyint1.vint[96]);
  
    //-- this is event weight as 1./VINT(99) (PYINT1/VINT(99) is returned by the PYEVWT) 
- 
-   event()->weights().push_back(1./(pyint1.vint[98]));
+   // event()->weights().push_back(1./(pyint1.vint[98]));
+
+   //-- all cascade events have weight = 1
+   event()->weights().push_back(1.);
 
    //-- now create the GenEventInfo product from the GenEvent and fill the missing pieces
 

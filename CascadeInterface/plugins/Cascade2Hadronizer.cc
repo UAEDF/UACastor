@@ -705,7 +705,7 @@ namespace gen {
       casprre.irspl = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"PT2CUT",6))
-      captcut.pt2cut[capar1.ipro] = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+      captcut.pt2cut[capar1.ipro-1] = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"ACC1",4))
       integr.acc1 = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
@@ -753,7 +753,7 @@ namespace gen {
     cout<<"switch for p-remnant treatment: "<<casprre.irspl<<endl;  
     cout<<"pz of incoming beam 1: "<<cainpu.plepin<<endl; 
     cout<<"pz of incoming beam 2: "<<cainpu.ppin<<endl;  
-    cout<<"pt2 cut in ME for massless partons: "<<captcut.pt2cut[capar1.ipro]<<endl; 
+    cout<<"pt2 cut in ME for massless partons: "<<captcut.pt2cut[capar1.ipro-1]<<endl; 
     cout<<"accurary requested for grid optimisation step (BASES): "<<integr.acc1<<endl;  
     cout<<"accuracy requested for integration step (BASES): "<<integr.acc2<<endl; 
     cout<<"scale factor for scale in alphas: "<<scalf.scalfa<<endl; 

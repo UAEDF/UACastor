@@ -14,6 +14,7 @@ extern "C" {
     int ke,kp,keb,kph,kgl,kpa,nflav;
     } caluco_;
   }
+
 #define caluco caluco_
 
 extern "C" {
@@ -21,6 +22,7 @@ extern "C" {
     int lst[30],ires[2];
   } capar6_;
 }
+
 #define capar6 capar6_
 
 extern "C" {
@@ -29,6 +31,7 @@ extern "C" {
     int nfrag,ilepto,ifps,ihf,inter,isemih,ifinal;
   } cainpu_;
 }
+
 #define cainpu cainpu_
 
 extern "C" {
@@ -36,6 +39,7 @@ extern "C" {
     int ipst;
   } cashower_;
 }
+
 #define cashower cashower_
 
 extern "C" {
@@ -44,6 +48,7 @@ extern "C" {
     //-- int i23s;  //-- from version 2.2.03 on 
   } jpsi_;
 }
+
 #define jpsi jpsi_
 
 extern "C" {
@@ -51,6 +56,7 @@ extern "C" {
     int iorder,itimshr,iccfm;
   } casshwr_;
 }
+
 #define casshwr casshwr_
 
 extern "C" {
@@ -58,6 +64,7 @@ extern "C" {
     int ipro,iruna,iq2,irunaem;
   } capar1_;
 }
+
 #define capar1 capar1_
 
 extern "C" {
@@ -65,6 +72,7 @@ extern "C" {
     int ihfla,kpsi,kchi;
   } cahflav_;
 }
+
 #define cahflav cahflav_
 
 extern "C" {
@@ -72,6 +80,7 @@ extern "C" {
     int icolora,irespro,irpa,irpb,irpc,irpd,irpe,irpf,irpg;
   } cascol_;
 }
+
 #define cascol cascol_
 
 extern "C" {
@@ -79,6 +88,7 @@ extern "C" {
     int iglu;
   } cagluon_;
 }
+
 #define cagluon cagluon_
 
 extern "C" {
@@ -86,6 +96,7 @@ extern "C" {
     int irspl;
   } casprre_;
 }
+
 #define casprre casprre_
 
 extern "C" {
@@ -93,6 +104,7 @@ extern "C" {
     double pt2cut[1000];
   } captcut_;
 }
+
 #define captcut captcut_
 
 extern "C" {
@@ -101,6 +113,7 @@ extern "C" {
     int iint,ncb;
   } integr_;
 }
+
 #define integr integr_
 
 extern "C" {
@@ -108,6 +121,7 @@ extern "C" {
     double scalfa,scalfaf;
   } scalf_;
 }
+
 #define scalf scalf_
 
 extern "C" {
@@ -115,7 +129,17 @@ extern "C" {
     char pdfpath[512];
   } caspdf_;
 }
+
 #define caspdf caspdf_
+
+extern "C" {
+  extern struct {
+    double avgi,sd;
+    int nin,nout;
+  } caeffic_;
+}
+
+#define caeffic caeffic_
 
 //-- CASCADE routines declarations
 

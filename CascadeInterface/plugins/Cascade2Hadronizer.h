@@ -8,7 +8,6 @@
 #include "GeneratorInterface/Core/interface/BaseHadronizer.h"
 #include "CLHEP/Random/RandomEngine.h"
 
-
 namespace HepMC {
   class GenEvent;
 }
@@ -65,7 +64,8 @@ namespace gen {
     CLHEP::RandFlat* fFlat;
 
     double fComEnergy ;  //-- irrelevant for setting py6 as hadronizer (or if anything, it should be picked up from LHERunInfoProduct)
-    double fCrossSection;
+    double fextCrossSection;
+    double fextCrossSectionError;
     double fFilterEfficiency;
     
     unsigned int    fMaxEventsToPrint ;

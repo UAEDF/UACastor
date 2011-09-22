@@ -29,6 +29,8 @@ HepMC::IO_HEPEVT hepevtio;
 #include "GeneratorInterface/Pythia6Interface/interface/Pythia6Service.h"
 #include "GeneratorInterface/Pythia6Interface/interface/Pythia6Declarations.h"
 
+#include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
+
 using namespace edm;
 using namespace std;
 
@@ -92,7 +94,8 @@ namespace gen {
       //--  return rng->getEngine(); }
 
       fComEnergy(pset.getParameter<double>("comEnergy")),
-      fCrossSection(pset.getUntrackedParameter<double>("crossSection",-1.)),
+      fextCrossSection(pset.getUntrackedParameter<double>("crossSection",-1.)),
+      fextCrossSectionError(pset.getUntrackedParameter<double>("crossSectionError",-1.)),
       fFilterEfficiency(pset.getUntrackedParameter<double>("filterEfficiency",-1.)),
       
       fMaxEventsToPrint(pset.getUntrackedParameter<int>("maxEventsToPrint",0)),
@@ -609,13 +612,14 @@ namespace gen {
 
   void Cascade2Hadronizer::statistics(){
 
+    runInfo().setExternalXSecLO(GenRunInfoProduct::XSec(fextCrossSection,fextCrossSectionError));
+    
+    runInfo().setExternalXSecNLO(GenRunInfoProduct::XSec(-1.,-1.));   
+
     if(!runInfo().internalXSec()){
-  
-      // set xsec if not already done (e.g. from LHE cross section collector)
-      double cs = pypars.pari[0]; // cross section in mb
-      cs *= 1.0e9; // translate to pb (CMS/Gen "convention" as of May 2009)
-      runInfo().setInternalXSec( cs );
-      // FIXME: can we get the xsec statistical error somewhere?
+      double sigma_CMS = 0.001 * caeffic.avgi;
+      double error_CMS = 0.001 * caeffic.sd;
+      runInfo().setInternalXSec(GenRunInfoProduct::XSec(sigma_CMS,error_CMS));
     }
 
     //--  print out generated event summary
@@ -759,6 +763,11 @@ namespace gen {
     cout<<"scale factor for scale in alphas: "<<scalf.scalfa<<endl; 
     cout<<"scale factor for final state parton shower scale: "<<scalf.scalfaf<<endl;
     cout<<"path where updf grid files are stored: "<<caspdf.pdfpath<<endl;
+
+    cout<<""<<endl;
+    cout<<"center of mas energy: "<<fComEnergy<<" GeV"<<endl;
+    cout<<"external LO cross section: "<<fextCrossSection<<" +/- "<<fextCrossSectionError<<" pb"<<endl;
+    cout<<"filter efficiency: "<<fFilterEfficiency<<endl;
   }
 
 } //-- namespace gen

@@ -459,11 +459,14 @@ namespace gen {
     Pythia6Service::InstanceWrapper guard(fPy6Service);
   
     //-- change standard parameters of JETSET/PYTHIA - replace call_pytcha()
+  
     fPy6Service->setGeneralParams();   
 
     fPy6Service->setCSAParams();
     fPy6Service->setSLHAParams();
     fPy6Service->setPYUPDAParams(false);
+
+    pythia6PrintParameters();
     
     //-- mstu(8) is set to NMXHEP in this dummy call (version >=6.404)
     call_pyhepc(1);
@@ -477,8 +480,6 @@ namespace gen {
 
     //-- Read the parameters and pass them to the common blocks
     //-- call_steer();
-
-    cout<<"retrieve cascade parameters from python configuration file"<<endl;
 
     //-- initialise CASCADE parameters (user values)
 
@@ -675,6 +676,9 @@ namespace gen {
     else if(!strncmp(ParameterString.c_str(),"IRUNAEM",7))
       capar1.irunaem = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
+    else if(!strncmp(ParameterString.c_str(),"IRUNA",5))
+      capar1.iruna = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
     else if(!strncmp(ParameterString.c_str(),"IQ2",3))
       capar1.iq2 = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
@@ -701,6 +705,9 @@ namespace gen {
 
     else if(!strncmp(ParameterString.c_str(),"ICCFM",5))
       casshwr.iccfm = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
+    else if(!strncmp(ParameterString.c_str(),"IFINAL",6))
+      cainpu.ifinal = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
     else if(!strncmp(ParameterString.c_str(),"IGLU",4))
       cagluon.iglu = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
@@ -732,42 +739,89 @@ namespace gen {
   }
   
   void Cascade2Hadronizer::cascadePrintParameters() {
-   
-    cout<<"flavour code of beam1: "<<caluco.ke<<endl; 
-    cout<<"direct or resolved particle 1: "<<capar6.ires[0]<<endl; 
-    cout<<"flavour code of beam2: "<<caluco.kp<<endl;    
-    cout<<"direct or resolved particle 2: "<<capar6.ires[1]<<endl;  
-    cout<<"fragmentation: "<<cainpu.nfrag<<endl;  
-    cout<<"keep track of intermediate state in PS: "<<cashower.ipst<<endl;  
-    cout<<"polarisation for J/psi: "<<jpsi.ipsipol<<endl;
-    // cout<<"select state for vector meson: "<<jpsi.i23s<<endl;
-    cout<<"parton shower: "<<cainpu.ifps<<endl;   
-    cout<<"switch for time-like shower in initial state cascade: "<<casshwr.itimshr<<endl;
-    cout<<"switch for running alphas: "<<capar1.irunaem<<endl;  
-    cout<<"scale for alphas: "<<capar1.iq2<<endl;   
-    cout<<"process number: "<<capar1.ipro<<endl;  
-    cout<<"number of flavors in pdfs: "<<caluco.nflav<<endl;   
-    cout<<"mode of interaction for ep: "<<cainpu.inter<<endl; 
-    cout<<"flavor code for heavy flavor (IPRO = 11), for VM (IPRO = 2,3): "<<cahflav.ihfla<<endl; 
-    cout<<"switch to select QCD process g* g* -> q qbar: "<<cascol.irpa<<endl;   
-    cout<<"switch to select QCD process g* g -> g g: "<<cascol.irpb<<endl; 
-    cout<<"switch to select QCD process g* q -> g q: "<<cascol.irpc<<endl;   
-    cout<<"select CCFM or DGLAP mode: "<<casshwr.iccfm<<endl; 
-    cout<<"select uPDF: "<<cagluon.iglu<<endl;  
-    cout<<"switch for p-remnant treatment: "<<casprre.irspl<<endl;  
-    cout<<"pz of incoming beam 1: "<<cainpu.plepin<<endl; 
-    cout<<"pz of incoming beam 2: "<<cainpu.ppin<<endl;  
-    cout<<"pt2 cut in ME for massless partons: "<<captcut.pt2cut[capar1.ipro-1]<<endl; 
-    cout<<"accurary requested for grid optimisation step (BASES): "<<integr.acc1<<endl;  
-    cout<<"accuracy requested for integration step (BASES): "<<integr.acc2<<endl; 
-    cout<<"scale factor for scale in alphas: "<<scalf.scalfa<<endl; 
-    cout<<"scale factor for final state parton shower scale: "<<scalf.scalfaf<<endl;
-    cout<<"path where updf grid files are stored: "<<caspdf.pdfpath<<endl;
 
     cout<<""<<endl;
-    cout<<"center of mas energy: "<<fComEnergy<<" GeV"<<endl;
+    cout<<"----------------------------------"<<endl;
+    cout<<"----    Cascade Parameters    ----"<<endl;
+    cout<<"----------------------------------"<<endl;
+    cout<<""<<endl;
+
+    cout<<"compution switch: "<<endl;
+    cout<<"relative precision for grid optimisation: "<<integr.acc1<<" %"<<endl;
+    cout<<"relative precision for integration: "<<integr.acc2<<" %"<<endl;
+    cout<<""<<endl;
+
+    cout<<"kinematics: "<<endl;
+    cout<<"flavour code of beam 1: "<<caluco.ke<<endl; 
+    cout<<"direct or resolved particle 1: "<<capar6.ires[0]<<endl; 
+    cout<<"pz of incoming beam 1: "<<cainpu.plepin<<" GeV"<<endl;
+    cout<<"flavour code of beam 2: "<<caluco.kp<<endl;    
+    cout<<"direct or resolved particle 2: "<<capar6.ires[1]<<endl;  
+    cout<<"pz of incoming beam 2: "<<cainpu.ppin<<" GeV"<<endl;
+    cout<<"number of active flavors: "<<caluco.nflav<<endl;
+    cout<<""<<endl;
+
+    cout<<"hard subprocess selection: "<<endl;
+    cout<<"hard subprocess number (IPRO): "<<capar1.ipro<<endl;
+    cout<<"IPRO = 10, switch to select QCD process g* g* -> q qbar: "<<cascol.irpa<<endl;
+    cout<<"IPRO = 10, switch to select QCD process g* g -> g g: "<<cascol.irpb<<endl;
+    cout<<"IPRO = 10, switch to select QCD process g* q -> g q: "<<cascol.irpc<<endl;
+    cout<<"flavor of heavy quark produced (IPRO = 11, 504, 514): "<<cahflav.ihfla<<endl;
+    // cout<<"select vector meson state: "<<jpsi.i23s<<endl;
+    cout<<"use matrix element including J/psi (Upsilon) polarisation: "<<jpsi.ipsipol<<endl;
+    cout<<"pt2 cut in matrix element for massless partons: "<<captcut.pt2cut[capar1.ipro-1]<<" GeV^2"<<endl;
+    cout<<""<<endl;
+
+    cout<<"parton shower and fragmentation: "<<endl;
+    cout<<"switch for fragmentation: "<<cainpu.nfrag<<endl;
+    cout<<"switch for parton shower (0 off - 1 initial state - 2 final state - 3 initial & final state): "<<cainpu.ifps<<endl;
+    cout<<"switch for time like parton shower in initial state: "<<casshwr.itimshr<<endl;
+    cout<<"select CCFM (1) or DGLAP (0) evolution: "<<casshwr.iccfm<<endl;
+    cout<<"scale switch for final state parton shower: "<<cainpu.ifinal<<endl;
+    cout<<"scale factor for final state parton shower: "<<scalf.scalfaf<<endl;
+    cout<<"switch for proton remnant treatment: "<<casprre.irspl<<endl;
+    cout<<"keep track of intermediate state in parton shower: "<<cashower.ipst<<endl;
+    cout<<"mode of interaction for e p: "<<cainpu.inter<<endl;
+    cout<<""<<endl;
+
+    cout<<"pdfs, couplings and scales: "<<endl;
+    cout<<"switch for running alphaem: "<<capar1.irunaem<<endl;
+    cout<<"switch for running alphas: "<<capar1.iruna<<endl;
+    cout<<"scale in alphas: "<<capar1.iq2<<endl;
+    cout<<"scale factor for scale in alphas: "<<scalf.scalfa<<endl;
+    cout<<"unintegrated pdf: "<<cagluon.iglu<<endl;
+    cout<<"path where updf are stored: "<<caspdf.pdfpath<<endl;
+    cout<<""<<endl;
+
+    cout<<"center of mass energy, cross section, filter efficiency: "<<endl;
+    cout<<"center of mass energy: "<<fComEnergy<<" GeV"<<endl;
     cout<<"external LO cross section: "<<fextCrossSection<<" +/- "<<fextCrossSectionError<<" pb"<<endl;
     cout<<"filter efficiency: "<<fFilterEfficiency<<endl;
+    cout<<""<<endl;
+  }
+
+  void Cascade2Hadronizer::pythia6PrintParameters() {
+
+    cout<<""<<endl;
+    cout<<"----------------------------------"<<endl;
+    cout<<"----    Pythia6 Parameters    ----"<<endl;
+    cout<<"----------------------------------"<<endl;
+    cout<<""<<endl;
+
+    cout<<"charm mass: "<<pydat2.pmas[0][3]<<" GeV (default value =  1.5 GeV)"<<endl;
+    cout<<"bottom mass: "<<pydat2.pmas[0][4]<<" GeV (default value = 4.8 GeV)"<<endl;
+    cout<<"Higgs mass: "<<pydat2.pmas[0][24]<<" GeV (default value = 115 GeV)"<<endl;
+
+    cout<<"lambda QCD: "<<pydat1.paru[111]<<" GeV (default value = 0.25 GeV)"<<endl;
+
+    cout<<"alphas behaviour: "<<pydat1.mstu[110]<<" (default value = 1)"<<endl;
+    cout<<"nr of flavours wrt lambda QCD: "<<pydat1.mstu[111]<<" (default value = 5)"<<endl;
+    cout<<"min nr of flavours for alphas: "<<pydat1.mstu[112]<<" (default value = 3)"<<endl;
+    cout<<"max nr of flavours for alphas: "<<pydat1.mstu[113]<<" (default value = 5)"<<endl;
+
+    cout<<"maximum angle settings: "<<pydat1.mstj[47]<<" (default value = 0)"<<endl;
+
+    cout<<""<<endl;
   }
 
 } //-- namespace gen

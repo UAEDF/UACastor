@@ -718,6 +718,9 @@ namespace gen {
     else if(!strncmp(ParameterString.c_str(),"PT2CUT",6))
       captcut.pt2cut[capar1.ipro-1] = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
+    else if(!strncmp(ParameterString.c_str(),"NCB",3))
+      integr.ncb = atoi(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
+
     else if(!strncmp(ParameterString.c_str(),"ACC1",4))
       integr.acc1 = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
 
@@ -746,7 +749,8 @@ namespace gen {
     cout<<"----------------------------------"<<endl;
     cout<<""<<endl;
 
-    cout<<"compution switch: "<<endl;
+    cout<<"computation switch: "<<endl;
+    cout<<"number of calls per iteration for bases: "<<integr.ncb<<endl;
     cout<<"relative precision for grid optimisation: "<<integr.acc1<<" %"<<endl;
     cout<<"relative precision for integration: "<<integr.acc2<<" %"<<endl;
     cout<<""<<endl;

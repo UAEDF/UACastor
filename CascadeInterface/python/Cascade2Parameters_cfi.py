@@ -3,7 +3,8 @@ import FWCore.ParameterSet.Config as cms
                          
 Cascade2Parameters = cms.PSet(
     parameterSets = cms.vstring('CascadeSettings'),
-    CascadeSettings = cms.vstring('ACC1 = 1.0    ! relative precision for grid optimisation',
+    CascadeSettings = cms.vstring('NCB = 50000   ! number of calls per iteration for bases',
+                                  'ACC1 = 1.0    ! relative precision for grid optimisation',
                                   'ACC2 = 0.5    ! relative precision for integration',
                                   'KE = 2212     ! flavour code of beam1',
                                   'IRES(1) = 1   ! direct or resolved particle 1',

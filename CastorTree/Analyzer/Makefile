@@ -1,6 +1,8 @@
 SHELL = /bin/bash
 COMPILER = g++ -g
 COMPILERSO = g++ -g +a1 -b
+#LIBDIR = /user/hvanhaev/Analysis/Eflow/CMSSW_4_2_7/src/UACastor/CastorTree/Analyzer
+#TREEDIR = /user/hvanhaev/Analysis/Eflow/CMSSW_4_2_7/src/UACastor/CastorTree/src
 LIBDIR = /user/roland/EflowAnalysis/CMSSW_4_2_7/src/UACastor/CastorTree/Analyzer
 TREEDIR = /user/roland/EflowAnalysis/CMSSW_4_2_7/src/UACastor/CastorTree/src
 CFLAGS = $(shell root-config --cflags)

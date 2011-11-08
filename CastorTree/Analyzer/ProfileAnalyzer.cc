@@ -56,6 +56,11 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
   int nb_data_sel = 0;
   int nb_moca_reco_sel = 0;
   int nb_moca_gen_sel = 0;
+  int nb_moca_gen_non_zero_eflow = 0;
+
+  double E_gen_max = -100;
+  double E_gen_elm_max = -100;
+  double E_gen_had_max = -100;
 
   //---------------------------//
   //-- Define all histograms --//
@@ -74,7 +79,7 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
   for (int icha = 0; icha < 80;icha++) {
     sprintf(hlabel,"energy distibution in channel %d",icha+1);
     sprintf(hname,"hchannel_channel%d",icha+1);
-    hchannel[icha] = new TH1D(hname,hlabel,100,100,100);
+    hchannel[icha] = new TH1D(hname,hlabel,460,-10,450);
     hchannel[icha]->SetMinimum(0);
   }
 
@@ -133,51 +138,74 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
     }
   }
   
-  Int_t nbin, bin_min, bin_max;
+  Int_t nbin_eflow, bin_eflow_min, bin_eflow_max;
+  Int_t nbin_en, bin_en_min, bin_en_max;
   double ptcut;
 
   if(cmenergy == 900) {
-    nbin = 186;
-    bin_min = -30;
-    bin_max = 900;
+
+    nbin_eflow = 186;
+    bin_eflow_min = -30;
+    bin_eflow_max = 900;
+
+    nbin_en = 300;
+    bin_en_min = 0;
+    bin_en_max = 1500;
+
     ptcut = 8;
+
   } else if (cmenergy == 2760) {
-    nbin = 366;
-    bin_min = -30;
-    bin_max = 1800; 
+
+    nbin_eflow = 366;
+    bin_eflow_min = -30;
+    bin_eflow_max = 1800; 
+
+    nbin_en = 300;
+    bin_en_min = 0;
+    bin_en_max = 1500;
+
     ptcut = 12;
+
   } else if (cmenergy == 7000) {
-    nbin = 756; 
-    bin_min = -30;
-    bin_max = 3750;
+
+    nbin_eflow = 756; 
+    bin_eflow_min = -30;
+    bin_eflow_max = 3750;
+
+    nbin_en = 300;
+    bin_en_min = 0;
+    bin_en_max = 1500;
+
     ptcut = 20;
   }
   
-  TH1D *hEflow = new TH1D("hEflow","energy flow",nbin,bin_min,bin_max); 
+  TH1D *hEflow = new TH1D("hEflow","energy flow",nbin_eflow,bin_eflow_min,bin_eflow_max); 
   hEflow->Sumw2();
-  TH1D *hEflow_dijet = new TH1D("hEflow_dijet","energy flow dijet",nbin,bin_min,bin_max);
+  TH1D *hEflow_dijet = new TH1D("hEflow_dijet","energy flow dijet",nbin_eflow,bin_eflow_min,bin_eflow_max);
   hEflow_dijet->Sumw2();
-  TH1D *hEflow_gen = new TH1D("hEflow_gen","energy flow gen",nbin,bin_min,bin_max);
+  TH1D *hEflow_gen = new TH1D("hEflow_gen","energy flow gen",nbin_eflow,bin_eflow_min,bin_eflow_max);
   hEflow_gen->Sumw2();
 
-  TH1D *hgen_energy = new TH1D("hgen_energy","generated energy",500,0,500);
+  TH1D *hgen_energy = new TH1D("hgen_energy","generated energy",nbin_en,bin_en_min,bin_en_max);
   TH1D *hgen_eta  = new TH1D("hgen_eta","generated eta",56,-6.6,-5.2);
   TH1D *hgen_phi = new TH1D("hgen_phi","generated phi",100,-M_PI,M_PI);
   hgen_phi->SetMinimum(0);
 
-  TH1D *hgen_elm_energy = new TH1D("hgen_elm_energy","generated elm energy",500,0,500);
+  TH1D *hgen_elm_energy = new TH1D("hgen_elm_energy","generated elm energy",nbin_en,bin_en_min,bin_en_max);
   TH1D *hgen_elm_eta = new TH1D("hgen_elm_eta","generated elm eta",56,-6.6,-5.2);
   TH1D *hgen_elm_phi = new TH1D("hgen_elm_phi","generated elm phi",100,-M_PI,M_PI);
   hgen_elm_phi->SetMinimum(0);
-  TH1D *hEflow_gen_elm = new TH1D("hEflow_gen_elm","energy flow gen elm",nbin,bin_min,bin_max);
-  TH1D *hEflow_gen_elm_fraction = new TH1D("hEflow_gen_elm_fraction","generated elm energy fraction",100,0,1);
+  TH1D *hEflow_gen_elm = new TH1D("hEflow_gen_elm","energy flow gen elm",nbin_eflow,bin_eflow_min,bin_eflow_max);
+  TH1D *hEflow_gen_elm_fraction = new TH1D("hEflow_gen_elm_fraction","generated elm energy fraction",102,-0.01,1.01);
+  hEflow_gen_elm_fraction->Sumw2();
 
-  TH1D *hgen_had_energy = new TH1D("hgen_had_energy","generated had energy",500,0,500);
+  TH1D *hgen_had_energy = new TH1D("hgen_had_energy","generated had energy",nbin_en,bin_en_min,bin_en_max);
   TH1D *hgen_had_eta = new TH1D("hgen_had_eta","generated had eta",56,-6.6,-5.2);
   TH1D *hgen_had_phi = new TH1D("hgen_had_phi","generated had phi",100,-M_PI,M_PI);
   hgen_had_phi->SetMinimum(0);
-  TH1D *hEflow_gen_had = new TH1D("hEflow_gen_had","energy flow gen had",nbin,bin_min,bin_max);
-  TH1D *hEflow_gen_had_fraction = new TH1D("hEflow_gen_had_fraction","generated had energy fraction",100,0,1);
+  TH1D *hEflow_gen_had = new TH1D("hEflow_gen_had","energy flow gen had",nbin_eflow,bin_eflow_min,bin_eflow_max);
+  TH1D *hEflow_gen_had_fraction = new TH1D("hEflow_gen_had_fraction","generated had energy fraction",102,-0.01,1.01);
+  hEflow_gen_had_fraction->Sumw2();
 
   TH1D *hTriggerBefore[7]; //-- [0] 0 - [1] 36 - [2] 37 - [3] 38 - [4] 39 - [5] 40 - [6] 41
   TH1D *hTriggerAfter[7];  //-- [0] 0 - [1] 36 - [2] 37 - [3] 38 - [4] 39 - [5] 40 - [6] 41
@@ -575,32 +603,35 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
 	  int part_id = abs(particle.pdgId);
 	  if (part_id == 12 || part_id == 14 || part_id == 16) continue; //-- do not take into account neutrinos 
 	  if (part_id == 13) continue; //-- do not take into account muons
-
+	  
+	  if(particle.E() > E_gen_max) E_gen_max = particle.E();
 	  hgen_energy->Fill(particle.E());
           hgen_eta->Fill(particle.Eta());
           hgen_phi->Fill(particle.Phi());
+	  eflow_gen+=particle.E();
 
 	  if(part_id == 11 || part_id == 22) {
+	    if(particle.E() > E_gen_elm_max) E_gen_elm_max = particle.E();
 	    hgen_elm_energy->Fill(particle.E());
 	    hgen_elm_eta->Fill(particle.Eta());
 	    hgen_elm_phi->Fill(particle.Phi());
 	    eflow_gen_elm+=particle.E();
 	  } else {
+	    if(particle.E() > E_gen_had_max) E_gen_had_max = particle.E();
             hgen_had_energy->Fill(particle.E());
             hgen_had_eta->Fill(particle.Eta());
             hgen_had_phi->Fill(particle.Phi());
             eflow_gen_had+=particle.E();
           }
-
-	  eflow_gen+=particle.E();
 	}
 
 	hEflow_gen->Fill(eflow_gen);
 	hEflow_gen_elm->Fill(eflow_gen_elm);
 	hEflow_gen_had->Fill(eflow_gen_had);
 
-	hEflow_gen_elm_fraction->Fill(eflow_gen_elm/eflow_gen);
-	hEflow_gen_had_fraction->Fill(eflow_gen_had/eflow_gen);
+	if(eflow_gen != 0) nb_moca_gen_non_zero_eflow++;
+	if(eflow_gen != 0) hEflow_gen_elm_fraction->Fill(eflow_gen_elm/eflow_gen);
+	if(eflow_gen != 0) hEflow_gen_had_fraction->Fill(eflow_gen_had/eflow_gen);
       }
 
     } //-- end event loop
@@ -614,8 +645,10 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
   //-- normalize histograms --//
   //--------------------------//
 
-  hEflow_gen_elm->Scale(100./nb_moca_gen_sel);
-  hEflow_gen_had->Scale(100./nb_moca_gen_sel);
+  if(nb_moca_gen_non_zero_eflow!=0) {
+    hEflow_gen_elm_fraction->Scale(100./nb_moca_gen_non_zero_eflow);
+    hEflow_gen_had_fraction->Scale(100./nb_moca_gen_non_zero_eflow);
+  }
 
   for (int isec = 0; isec < 16; isec++) {
     for (int imod = 0; imod < 5; imod++) {
@@ -682,7 +715,13 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
   cout<<nb_data_sel<<" selected events in data"<<endl;
   cout<<nb_moca_reco_sel<<" selected events in mc at reco level"<<endl;
   cout<<nb_moca_gen_sel<<" selected events in mc at generated level"<<endl<<endl;
-  
+
+  if(!isData) {
+    cout<<"E gen max: "<<E_gen_max<<endl;
+    cout<<"E gen elm max: "<<E_gen_elm_max<<endl;
+    cout<<"E gen had max: "<<E_gen_had_max<<endl<<endl;
+  }
+
   Char_t output_filename[200];
   const char* part = filename.Data();
   sprintf(output_filename,"../Result/output_profile_%s",part);

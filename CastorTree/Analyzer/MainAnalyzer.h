@@ -9,13 +9,15 @@
 #include "FileReader.h"
 #include "HistoRetriever.h"
 #include "TreeAnalyzer.h"
+#include "ProfileAnalyzer.h"
 #include "MCDataComparer.h"
 
 class MainAnalyzer {
 	public:
         MainAnalyzer();
 		virtual ~MainAnalyzer();
-        void makeHistos(TString inputdir, TString regexpstr, bool isData, double cmenergy);
+		void makeHistos(TString inputdir, TString regexpstr, bool isData, double cmenergy);
+                void makeHistoProfile(TString inputdir, TString regexpstr, bool isData, double cmenergy);
 		void plotSingleHistos(TString outputfile, TString selectname);
 		void plotHistos(TString inputdir, TString regexpstr, TString selectname);
 		void compareMCData(TString inputdir,TString regexpstr, TString selectname);
@@ -26,6 +28,7 @@ class MainAnalyzer {
 		FileReader reader_;
 		HistoRetriever histogetter_;
 		TreeAnalyzer treeanalyzer_;
+                ProfileAnalyzer profileanalyzer_;
 		std::vector<TCanvas*> canvasvector_;
 };
 

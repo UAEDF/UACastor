@@ -29,6 +29,16 @@ MainAnalyzer::~MainAnalyzer() {
 
 }
 
+
+void MainAnalyzer::makeHistoProfile(TString inputdir, TString regexpstr, bool isData, double cmenergy) {
+
+  TObjArray *files = reader_.getFileList(inputdir,regexpstr);
+  profileanalyzer_.Loop(inputdir,files,isData,cmenergy);
+
+}
+
+
+
 void MainAnalyzer::makeHistos(TString inputdir, TString regexpstr, bool isData, double cmenergy) {
 
 	TObjArray *files = reader_.getFileList(inputdir,regexpstr);

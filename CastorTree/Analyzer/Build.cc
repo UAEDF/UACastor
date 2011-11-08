@@ -19,6 +19,7 @@
   gROOT->ProcessLine(".L ./FileReader.cc+");
   gROOT->ProcessLine(".L ./HistoRetriever.cc+");
   gROOT->ProcessLine(".L ./TreeAnalyzer.cc+");
+  gROOT->ProcessLine(".L ./ProfileAnalyzer.cc+");
   gROOT->ProcessLine(".L ./MCDataComparer.cc+");
   gROOT->ProcessLine(".L ./EflowPlotter.cc+");
   gROOT->ProcessLine(".L ./MainAnalyzer.cc+");

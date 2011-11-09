@@ -12,8 +12,13 @@ ROOT = /sandbox/cmss/slc5_amd64_gcc434/cms/cmssw/CMSSW_4_2_7/external/slc5_amd64
 
 .SUFFIXES: .cc .o
 
+all : Run Plot
+
 Run : Run.cc MainAnalyzer.o MainAnalyzer_cc.so TreeAnalyzer.o TreeAnalyzer_cc.so ProfileAnalyzer.o ProfileAnalyzer_cc.so EflowPlotter.o EflowPlotter_cc.so FileReader.o FileReader_cc.so HistoRetriever.o HistoRetriever_cc.so MCDataComparer.o MCDataComparer_cc.so ${TREEDIR}/*.so
 	${COMPILER} Run.cc -o $@ MainAnalyzer.o MainAnalyzer_cc.so TreeAnalyzer.o TreeAnalyzer_cc.so ProfileAnalyzer.o ProfileAnalyzer_cc.so EflowPlotter.o EflowPlotter_cc.so FileReader.o FileReader_cc.so HistoRetriever.o HistoRetriever_cc.so MCDataComparer.o MCDataComparer_cc.so ${TREEDIR}/*.so ${CFLAGS} ${LIBS}
+
+Plot : Plot.cc MainAnalyzer.o MainAnalyzer_cc.so TreeAnalyzer.o TreeAnalyzer_cc.so ProfileAnalyzer.o ProfileAnalyzer_cc.so EflowPlotter.o EflowPlotter_cc.so FileReader.o FileReader_cc.so HistoRetriever.o HistoRetriever_cc.so MCDataComparer.o MCDataComparer_cc.so ${TREEDIR}/*.so
+	${COMPILER} Plot.cc -o $@ MainAnalyzer.o MainAnalyzer_cc.so TreeAnalyzer.o TreeAnalyzer_cc.so ProfileAnalyzer.o ProfileAnalyzer_cc.so EflowPlotter.o EflowPlotter_cc.so FileReader.o FileReader_cc.so HistoRetriever.o HistoRetriever_cc.so MCDataComparer.o MCDataComparer_cc.so ${TREEDIR}/*.so ${CFLAGS} ${LIBS}
 
 MainAnalyzer_cc.so :
 	${ROOT} Build.cc+
@@ -40,4 +45,4 @@ MCDataComparer.o : MCDataComparer.cc MCDataComparer.h
 	${COMPILER} -c MCDataComparer.cc ${CFLAGS}
 
 clean :
-	rm *.o *.so *_cc.d Run 
+	rm *.o *.so *_cc.d Run Plot

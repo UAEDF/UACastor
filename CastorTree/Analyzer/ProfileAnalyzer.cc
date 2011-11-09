@@ -51,7 +51,7 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
   
   int file_nb = 0;    
   int nb_evt_tot = 0;
-  int nb_file_max = 1;
+  int nb_file_max = 2;
 
   int nb_data_sel = 0;
   int nb_moca_reco_sel = 0;
@@ -62,30 +62,73 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
   double E_gen_elm_max = -100;
   double E_gen_had_max = -100;
 
-  //---------------------------//
-  //-- Define all histograms --//
-  //---------------------------//
+  //------------------------//
+  //-- Define histograms  --//
+  //------------------------//
+
+  //--  Selection   
 
   TH1D *hselection_data = new TH1D("hselection_data","Event Selection Data",7,0.5,7.5); 
   TH1D *hselection_moca_reco = new TH1D("hselection_moca_reco","Event Selection MC reco",4,0.5,4.5);
   TH1D *hselection_moca_gen = new TH1D("hselection_moca_gen","Event Selection MC gen",3,0.5,3.5);
 
-  TH1D *hrechit_energy = new TH1D("hrechit_energy","RecHit energy",505,-5,500);
-  TH1D *hrechit_used = new TH1D("hrechit_used","number of used channels to compute eflow",80,0.5,80.5);
+  //-- energy distribution 
+
+  TH1D *hchannel_energy = new TH1D("hchannel_energy","channel energy",505,-5,500);
+  TH1D *hchannel_used = new TH1D("hchannel_used","number of used channels to compute eflow",80,0.5,80.5);
 
   Char_t hlabel[200],hname[50];
+
+  TH1D *hchannel[16][5];
+  for (int isec = 0; isec < 16;isec++) {
+    for (int imod = 0; imod < 5;imod++) {
+      int icha = 16*imod+isec;
+      sprintf(hlabel,"energy distibution in channel %d (module %d sector %d)",icha+1,imod+1,isec+1);
+      sprintf(hname,"hchannel_%d",icha+1);
+      hchannel[isec][imod] = new TH1D(hname,hlabel,230,-10,450);
+      hchannel[isec][imod]->SetMinimum(0);
+      hchannel[isec][imod]->Sumw2();
+    }
+  }
   
-  TH1D *hchannel[80];
-  for (int icha = 0; icha < 80;icha++) {
-    sprintf(hlabel,"energy distibution in channel %d",icha+1);
-    sprintf(hname,"hchannel_channel%d",icha+1);
-    hchannel[icha] = new TH1D(hname,hlabel,460,-10,450);
-    hchannel[icha]->SetMinimum(0);
+  TH1D *hmodule[5];
+  for (int imod = 0; imod < 5;imod++) {
+    sprintf(hlabel,"energy distibution in module %d",imod+1);
+    sprintf(hname,"hmodule_%d",imod+1);
+    hmodule[imod] = new TH1D(hname,hlabel,520,-40,1000);
+    hmodule[imod]->SetMinimum(0);
+    hmodule[imod]->Sumw2();
+  }
+  
+  TH1D *hmodule_sector_used[5];
+  for (int imod = 0; imod < 5;imod++) {
+    sprintf(hlabel,"number of sectors used in module %d",imod+1);
+    sprintf(hname,"hmodule_%d_sector_used",imod+1);
+    hmodule_sector_used[imod] = new TH1D(hname,hlabel,16,0.5,16.5);
+    hmodule_sector_used[imod]->SetMinimum(0);
+    hmodule_sector_used[imod]->Sumw2();
   }
 
 
-  TH1D *hzprofile_mean = new TH1D("hzprofile_mean","z profile averaged over all sectors",5,0.5,5.5);
-  hzprofile_mean->SetMinimum(0);
+  TH1D *hsector[16];
+  for (int isec = 0; isec < 16;isec++) {
+    sprintf(hlabel,"energy distibution in sector %d",isec+1);
+    sprintf(hname,"hsector_%d",isec+1);
+    hsector[isec] = new TH1D(hname,hlabel,520,-40,1000);
+    hsector[isec]->SetMinimum(0);
+    hsector[isec]->Sumw2();
+  }
+
+  TH1D *hsector_module_used[16];
+  for (int isec = 0; isec < 16;isec++) {
+    sprintf(hlabel,"number of modules used in sector %d",isec+1);
+    sprintf(hname,"hsector_%d_module_used",isec+1);
+    hsector_module_used[isec] = new TH1D(hname,hlabel,5,0.5,5.5);
+    hsector_module_used[isec]->SetMinimum(0);
+    hsector_module_used[isec]->Sumw2();
+  }
+
+  //-- z profile and phi profile 
 
   TH1D *hzprofile[16]; 
   for (int isec = 0; isec < 16;isec++) {
@@ -95,9 +138,6 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
     hzprofile[isec]->SetMinimum(0);
   }
 
-  TH1D *hphiprofile_mean = new TH1D("hphiprofile_mean","phi profile averaged over all modules",16,0.5,16.5);
-  hphiprofile_mean->SetMinimum(0);
-
   TH1D *hphiprofile[5];
   for (int imod = 0; imod < 5;imod++) {
     sprintf(hlabel,"phi profile in module %d",imod+1);
@@ -106,38 +146,14 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
     hphiprofile[imod]->SetMinimum(0);
   }
 
-  Double_t Nzprofile_mean[5];
-  Double_t Valuezprofile_mean[5];
+  TH1D *hphiprofile_mean = new TH1D("hphiprofile_mean","phi profile averaged over all modules",16,0.5,16.5);
+  hphiprofile_mean->SetMinimum(0);
 
-  for (int imod = 0; imod < 5; imod++) {
-    Nzprofile_mean[imod] = 0;
-    Valuezprofile_mean[imod] = 0;
-  }
+  TH1D *hzprofile_mean = new TH1D("hzprofile_mean","z profile averaged over all sectors",5,0.5,5.5);
+  hzprofile_mean->SetMinimum(0);
 
-  Double_t Nphiprofile_mean[16];
-  Double_t Valuephiprofile_mean[16];
+  //-- eflow
 
-  for (int isec = 0; isec < 16; isec++) {
-    Nphiprofile_mean[isec] = 0;
-    Valuephiprofile_mean[isec] = 0;
-  }
-
-  Double_t Nzprofile[16][5];   
-  Double_t Valuezprofile[16][5];
-
-  Double_t Nphiprofile[5][16];
-  Double_t Valuephiprofile[5][16];
-
-  for (int isec = 0; isec < 16; isec++) {
-    for (int imod = 0; imod < 5; imod++) {
-      Nzprofile[isec][imod] = 0;
-      Valuezprofile[isec][imod] = 0;
-
-      Nphiprofile[imod][isec] = 0;
-      Valuephiprofile[imod][isec] = 0;
-    }
-  }
-  
   Int_t nbin_eflow, bin_eflow_min, bin_eflow_max;
   Int_t nbin_en, bin_en_min, bin_en_max;
   double ptcut;
@@ -186,6 +202,8 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
   TH1D *hEflow_gen = new TH1D("hEflow_gen","energy flow gen",nbin_eflow,bin_eflow_min,bin_eflow_max);
   hEflow_gen->Sumw2();
 
+  //-- generated information
+
   TH1D *hgen_energy = new TH1D("hgen_energy","generated energy",nbin_en,bin_en_min,bin_en_max);
   TH1D *hgen_eta  = new TH1D("hgen_eta","generated eta",56,-6.6,-5.2);
   TH1D *hgen_phi = new TH1D("hgen_phi","generated phi",100,-M_PI,M_PI);
@@ -206,6 +224,8 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
   TH1D *hEflow_gen_had = new TH1D("hEflow_gen_had","energy flow gen had",nbin_eflow,bin_eflow_min,bin_eflow_max);
   TH1D *hEflow_gen_had_fraction = new TH1D("hEflow_gen_had_fraction","generated had energy fraction",102,-0.01,1.01);
   hEflow_gen_had_fraction->Sumw2();
+
+  //-- trigger information
 
   TH1D *hTriggerBefore[7]; //-- [0] 0 - [1] 36 - [2] 37 - [3] 38 - [4] 39 - [5] 40 - [6] 41
   TH1D *hTriggerAfter[7];  //-- [0] 0 - [1] 36 - [2] 37 - [3] 38 - [4] 39 - [5] 40 - [6] 41
@@ -336,9 +356,9 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
       if (!evtid->IsData) b_genParts->GetEntry(ievt);
 
       nb_evt_tot++;
-      hselection_data->Fill(1,1);
-      hselection_moca_reco->Fill(1,1);
-      hselection_moca_gen->Fill(1,1);
+      if(evtid->IsData) hselection_data->Fill(1,1);
+      if(!evtid->IsData) hselection_moca_reco->Fill(1,1);
+      if(!evtid->IsData) hselection_moca_gen->Fill(1,1);
 
       if((ievt+1)%5000 == 0) cout<<endl<<"number of events done in file "<<file_nb<<" = "<<ievt+1<<endl;
       if((ievt+1)%5000 == 0) cout<<"total number of events done = "<<nb_evt_tot<<" ("<<100*nb_evt_tot/nb_evt_all_files<<"%)"<<endl;
@@ -537,61 +557,71 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
 	if(evtid->IsData) hselection_data->Fill(7,1);
 	if(!evtid->IsData) hselection_moca_reco->Fill(4,1); 
 	
-	bool used_cha = false;
 	double rechit_energy = 0;
-	
+
+	double module_energy[5];
+	double sector_energy[16];
+	for (int imod = 0; imod < 5;imod++) module_energy[imod] = 0;	
+	for (int isec = 0; isec < 16;isec++) sector_energy[isec] = 0;
+
+	double module_sector_used[5];
+	double sector_module_used[16];
+	for (int imod = 0; imod < 5;imod++) module_sector_used[imod] = 0;
+	for (int isec = 0; isec < 16;isec++) sector_module_used[isec] = 0;
+
 	double eflow = 0;
 	int usedchannels = 0;
-	
+
 	for (unsigned int irec = 0;irec < CastorRecHits->size();irec++) {
 	  
 	  MyCastorRecHit rechit = (*CastorRecHits)[irec];
 	  
-	  used_cha = false;
+	  bool used_cha = false;
 	  if(rechit.cha != 5 && rechit.cha != 6 && rechit.cha <= 80) used_cha = true; //-- for data 15,35,81,5,6
-	  
+	  if(used_cha == false) continue;
+
 	  rechit_energy = 0;
 	  if (evtid->IsData)  rechit_energy = rechit.energy*fac_data;  //-- for data, energy is intercalibrated fC
 	  if (!evtid->IsData) rechit_energy = rechit.energy*fac_moca;
 	  
-	  if(used_cha == false) continue;
+	  module_energy[rechit.mod-1]+=rechit_energy;
+	  sector_energy[rechit.sec-1]+=rechit_energy;
 	  
-	  hrechit_energy->Fill(rechit_energy);
-	  hzprofile[rechit.sec-1]->Fill(rechit.mod,rechit_energy);
-	  hphiprofile[rechit.mod-1]->Fill(rechit.sec,rechit_energy);
-	  hchannel[rechit.cha-1]->Fill(rechit_energy);
+	  module_sector_used[rechit.mod-1]++;
+	  sector_module_used[rechit.sec-1]++;
 
-	  hzprofile_mean->Fill(rechit.mod,rechit_energy);
-	  hphiprofile_mean->Fill(rechit.sec,rechit_energy);
-	  
-	  Nzprofile[rechit.sec-1][rechit.mod-1]++;
-	  Nphiprofile[rechit.mod-1][rechit.sec-1]++;
-
-	  Nzprofile_mean[rechit.mod-1]++;
-	  Nphiprofile_mean[rechit.sec-1]++;
+	  hchannel_energy->Fill(rechit_energy);	 
+	  hchannel[rechit.sec-1][rechit.mod-1]->Fill(rechit_energy);
 
 	  eflow+=rechit_energy;
 	  usedchannels++;
 	}
 	
 	hEflow->Fill(eflow);
-	hrechit_used->Fill(usedchannels);
-       	
+	hchannel_used->Fill(usedchannels);
+
+	for (int imod = 0; imod < 5;imod++) hmodule[imod]->Fill(module_energy[imod]);
+	for (int isec = 0; isec < 16;isec++) hsector[isec]->Fill(sector_energy[isec]);
+	
+	for (int imod = 0; imod < 5;imod++) hmodule_sector_used[imod]->Fill(module_sector_used[imod]);
+	for (int isec = 0; isec < 16;isec++) hsector_module_used[isec]->Fill(sector_module_used[isec]);
+
+
 	if (dijet->isDiJet) 
 	  if ((*PFJets)[dijet->posJet1].pt_cal >= ptcut && (*PFJets)[dijet->posJet2].pt_cal >= ptcut) hEflow_dijet->Fill(eflow);
-			
-      } 
-
+								 
+      }
+      
       //-------------------------------------------//
       //--              moca_gen_sel             --//
       //-------------------------------------------//
-
+      
       if (!evtid->IsData && moca_gen_sel) {
 	
 	double eflow_gen = 0;
 	double eflow_gen_elm = 0;
 	double eflow_gen_had = 0;
-
+	
 	for (int ipart = 0;ipart<genParts->size();ipart++) {
 	  
 	  MyGenPart particle = (*genParts)[ipart];
@@ -599,7 +629,7 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
 	  if (particle.status != 1) continue;
 	  
 	  if (!(particle.Eta() < -5.2 && particle.Eta() > -6.6 && particle.E() > 0.)) continue;
-
+	  
 	  int part_id = abs(particle.pdgId);
 	  if (part_id == 12 || part_id == 14 || part_id == 16) continue; //-- do not take into account neutrinos 
 	  if (part_id == 13) continue; //-- do not take into account muons
@@ -609,7 +639,7 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
           hgen_eta->Fill(particle.Eta());
           hgen_phi->Fill(particle.Phi());
 	  eflow_gen+=particle.E();
-
+	  
 	  if(part_id == 11 || part_id == 22) {
 	    if(particle.E() > E_gen_elm_max) E_gen_elm_max = particle.E();
 	    hgen_elm_energy->Fill(particle.E());
@@ -624,72 +654,126 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
             eflow_gen_had+=particle.E();
           }
 	}
-
+	
 	hEflow_gen->Fill(eflow_gen);
 	hEflow_gen_elm->Fill(eflow_gen_elm);
 	hEflow_gen_had->Fill(eflow_gen_had);
-
+	
 	if(eflow_gen != 0) nb_moca_gen_non_zero_eflow++;
 	if(eflow_gen != 0) hEflow_gen_elm_fraction->Fill(eflow_gen_elm/eflow_gen);
 	if(eflow_gen != 0) hEflow_gen_had_fraction->Fill(eflow_gen_had/eflow_gen);
       }
-
+      
     } //-- end event loop
-		
+    
     delete tree;
     file->Close();
     
   } //-- end file loop
-	
+  
   //--------------------------//
   //-- normalize histograms --//
   //--------------------------//
-
-  if(nb_moca_gen_non_zero_eflow!=0) {
-    hEflow_gen_elm_fraction->Scale(100./nb_moca_gen_non_zero_eflow);
-    hEflow_gen_had_fraction->Scale(100./nb_moca_gen_non_zero_eflow);
-  }
-
+  
+  double mean_channel[16][5];
+  double error_channel[16][5];
+  
   for (int isec = 0; isec < 16; isec++) {
     for (int imod = 0; imod < 5; imod++) {
-      Valuezprofile[isec][imod] = hzprofile[isec]->GetBinContent(imod+1);
-      Valuephiprofile[imod][isec] = hphiprofile[imod]->GetBinContent(isec+1);
+      
+      mean_channel[isec][imod] = 0;
+      error_channel[isec][imod] = 0;
+      
+      int icha = 16*imod+isec;
+      if(icha+1 == 5 || icha+1 == 6) continue;
+      
+      mean_channel[isec][imod] = hchannel[isec][imod]->GetMean();
+      error_channel[isec][imod] = hchannel[isec][imod]->GetMeanError();    
 
-      if(Nzprofile[isec][imod] == 0) Nzprofile[isec][imod] = 1;
-      if(Nphiprofile[imod][isec] == 0) Nphiprofile[imod][isec] = 1;
-        
-      hzprofile[isec]->SetBinContent(imod+1,Valuezprofile[isec][imod]/Nzprofile[isec][imod]);
-      hphiprofile[imod]->SetBinContent(isec+1,Valuephiprofile[imod][isec]/Nphiprofile[imod][isec]);
+      hzprofile[isec]->SetBinContent(imod+1,mean_channel[isec][imod]);
+      hzprofile[isec]->SetBinError(imod+1,error_channel[isec][imod]);
+
+      hphiprofile[imod]->SetBinContent(isec+1,mean_channel[isec][imod]);
+      hphiprofile[imod]->SetBinError(isec+1,error_channel[isec][imod]);
+    
     }
   }
+  
+  double mean_module[5];
+  double error_module[5];
+  double mean_module_sector_used[5];
 
-  for (int imod = 0; imod < 5; imod++) {
-    Valuezprofile_mean[imod] = hzprofile_mean->GetBinContent(imod+1);
-    if(Nzprofile_mean[imod] == 0) Nzprofile_mean[imod] = 1;
-    hzprofile_mean->SetBinContent(imod+1,Valuezprofile_mean[imod]/Nzprofile_mean[imod]);
+  for (int imod = 0; imod < 5;imod++) {
+    mean_module[imod] = hmodule[imod]->GetMean();
+    error_module[imod] = hmodule[imod]->GetMeanError();
+    
+    mean_module_sector_used[imod] = hmodule_sector_used[imod]->GetMean();
+    
+    mean_module[imod]/=mean_module_sector_used[imod];
+    error_module[imod]/=mean_module_sector_used[imod];
+
+    hzprofile_mean->SetBinContent(imod+1,mean_module[imod]);
+    hzprofile_mean->SetBinError(imod+1,error_module[imod]);
   }
 
-  for (int isec = 0; isec < 16; isec++) {
-    Valuephiprofile_mean[isec] = hphiprofile_mean->GetBinContent(isec+1);
-    if(Nphiprofile_mean[isec] == 0) Nphiprofile_mean[isec] = 1;
-    hphiprofile_mean->SetBinContent(isec+1,Valuephiprofile_mean[isec]/Nphiprofile_mean[isec]);
+  double mean_sector[16];
+  double error_sector[16];
+  double mean_sector_module_used[16];  
+
+  for (int isec = 0; isec < 16;isec++) {
+    mean_sector[isec] = hsector[isec]->GetMean();
+    error_sector[isec] = hsector[isec]->GetMeanError();
+    
+    mean_sector_module_used[isec] = hsector_module_used[isec]->GetMean();
+
+    mean_sector[isec]/=mean_sector_module_used[isec];
+    error_sector[isec]/=mean_sector_module_used[isec];
+
+    hphiprofile_mean->SetBinContent(isec+1,mean_sector[isec]);
+    hphiprofile_mean->SetBinError(isec+1,error_sector[isec]);
   }
- 
+
   //------------------------------------//
   //-- check for underflow - overflow  -//
   //------------------------------------//
 
-  CheckHisto(hrechit_energy);
+  //--  Selection
+
+  if(isData) CheckHisto(hselection_data);
+  if(!isData) CheckHisto(hselection_moca_reco);
+  if(!isData) CheckHisto(hselection_moca_gen);
+
+  //-- energy distribution
+
+  CheckHisto(hchannel_energy);
+  CheckHisto(hchannel_used);
+  
+  for (int isec = 0; isec < 16;isec++) {
+    for (int imod = 0; imod < 5;imod++) {
+      CheckHisto(hchannel[isec][imod]);
+    }
+  }
+
+  for (int imod = 0; imod < 5;imod++) CheckHisto(hmodule[imod]);
+  for (int imod = 0; imod < 5;imod++) CheckHisto(hmodule_sector_used[imod]);
+  for (int isec = 0; isec < 16;isec++) CheckHisto(hsector[isec]);
+  for (int isec = 0; isec < 16;isec++) CheckHisto(hsector_module_used[isec]);
+
+  //-- z profile and phi profile
+
   for (int isec = 0; isec < 16;isec++) CheckHisto(hzprofile[isec]);
   for (int imod = 0; imod < 5;imod++) CheckHisto(hphiprofile[imod]);
-  for (int icha = 0; icha < 80;icha++) CheckHisto(hchannel[icha]);
 
   CheckHisto(hzprofile_mean);
   CheckHisto(hphiprofile_mean);
 
+  //-- eflow
+
   CheckHisto(hEflow);
   CheckHisto(hEflow_dijet);
   CheckHisto(hEflow_gen);
+
+  //-- generated information
 
   CheckHisto(hgen_energy);
   CheckHisto(hgen_eta);
@@ -706,11 +790,19 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
   CheckHisto(hgen_had_phi);
   CheckHisto(hEflow_gen_had);
   CheckHisto(hEflow_gen_had_fraction);
-
+  
+  //--  trigger information
+  
+  for (int itrig = 1; itrig < 7;itrig++) {
+    CheckHisto(hTriggerBefore[itrig]);
+    CheckHisto(hTriggerAfter[itrig]);
+    CheckHisto(hTriggerMask[itrig]);
+  }
+  
   //-------------------------------------//
   //-- write histo to output root file --//
   //-------------------------------------//
-
+  
   cout<<endl<<"total number of events: "<<nb_evt_tot<<" from "<<file_nb<<" file(s)"<<endl;
   cout<<nb_data_sel<<" selected events in data"<<endl;
   cout<<nb_moca_reco_sel<<" selected events in mc at reco level"<<endl;
@@ -727,24 +819,44 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
   sprintf(output_filename,"../Result/output_profile_%s",part);
   TFile* foutput = new TFile(output_filename,"RECREATE");
   foutput->cd();
+
+  //--  Selection
 	
   hselection_data->Write();
   hselection_moca_reco->Write();
   hselection_moca_gen->Write();
 
-  hrechit_energy->Write();
-  hrechit_used->Write();
+  //-- energy distribution
+
+  hchannel_energy->Write();
+  hchannel_used->Write();
+
+  for (int imod = 0; imod < 5;imod++) {
+    for (int isec = 0; isec < 16;isec++) {
+      hchannel[isec][imod]->Write();
+    }
+  }
+  
+  for (int imod = 0; imod < 5;imod++) hmodule[imod]->Write();
+  for (int imod = 0; imod < 5;imod++) hmodule_sector_used[imod]->Write();
+  for (int isec = 0; isec < 16;isec++) hsector[isec]->Write();
+  for (int isec = 0; isec < 16;isec++) hsector_module_used[isec]->Write();
+
+  //-- z profile and phi profile
 
   for (int isec = 0; isec < 16;isec++) hzprofile[isec]->Write();
   for (int imod = 0; imod < 5;imod++) hphiprofile[imod]->Write();
-  for (int icha = 0; icha < 80;icha++) hchannel[icha]->Write();
 
   hzprofile_mean->Write();
   hphiprofile_mean->Write();
 
+  //-- eflow
+
   hEflow->Write();
   hEflow_dijet->Write();
   hEflow_gen->Write();
+
+  //-- generated information
 
   hgen_energy->Write();
   hgen_eta->Write();
@@ -761,6 +873,8 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
   hgen_had_phi->Write();
   hEflow_gen_had->Write();
   hEflow_gen_had_fraction->Write();
+
+  //--  trigger information
 
   for (int itrig = 0; itrig < 7;itrig++) {
     hTriggerBefore[itrig]->Write();
@@ -800,7 +914,7 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
 
     for(int isec = 0; isec < 16; isec++) {
       c_channel[imod]->cd(isec+1);
-      if(imod*16+isec+1 != 5 && imod*16+isec+1 != 6) hchannel[imod*16+isec]->Draw();
+      if(imod*16+isec+1 != 5 && imod*16+isec+1 != 6) hchannel[isec][imod]->Draw();
     }
   }
 
@@ -822,26 +936,42 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
   if(isData) {
     cout<<endl<<"data at "<<cmenergy<<" GeV"<<endl;
     cout<<"mean E flow MB: "<<hEflow->GetMean()<<" GeV"<<endl;
-    cout<<"mean E flow dijet: "<<hEflow_dijet->GetMean()<<" GeV"<<endl;
+    cout<<"mean E flow dijet: "<<hEflow_dijet->GetMean()<<" GeV"<<endl<<endl;
   }
 
   if(!isData) {
     cout<<endl<<"moca at "<<cmenergy<<" GeV"<<endl;
     cout<<"mean E flow MB: "<<hEflow->GetMean()<<" GeV"<<endl;
     cout<<"mean E flow dijet: "<<hEflow_dijet->GetMean()<<" GeV"<<endl;
-    cout<<"mean E flow generated: "<<hEflow_gen->GetMean()<<" GeV"<<endl;
+    cout<<"mean E flow generated: "<<hEflow_gen->GetMean()<<" GeV"<<endl<<endl;
+  }
+
+  cout<<"mean E flow MB from module mean = ";
+  double E_flow_module_check = 0;
+  for (int imod = 0; imod < 5; imod++) {
+    E_flow_module_check+=mean_module_sector_used[imod]*mean_module[imod];
+    cout<<mean_module_sector_used[imod]<<"*"<<mean_module[imod];
+    if(imod < 4) cout<<"+";
+    if(imod == 4) cout<<endl<<"mean E flow MB from module mean = "<<E_flow_module_check<<endl<<endl;
+  }
+
+  cout<<"mean E flow MB from sector mean = ";
+  double E_flow_sector_check = 0;
+  for (int isec = 0; isec < 16; isec++) {
+    E_flow_sector_check+=mean_sector_module_used[isec]*mean_sector[isec];
+    cout<<mean_sector_module_used[isec]<<"*"<<mean_sector[isec];
+    if(isec < 15) cout<<"+";
+    if(isec == 15) cout<<endl<<"mean E flow MB from sector mean = "<<E_flow_sector_check<<endl<<endl;
   }
 
   cout<<endl<<"spread of intercalibrated factors"<<endl;
   
-  double mean_module[5];
   double sigma2_module[5];
   double sigma_module[5];
   double sigma_mu_ratio[5];
   int N_module[5];
 
   for (int imod = 0; imod < 5; imod++) {
-    mean_module[imod] = 0;
     sigma2_module[imod] = 0;
     sigma_module[imod] = 0;
     sigma_mu_ratio[imod] = 0;
@@ -850,13 +980,10 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
 
   for (int imod = 0; imod < 5; imod++) {
 
-    mean_module[imod] = hzprofile_mean->GetBinContent(imod+1);
-    
     for(int isec = 0; isec < 16; isec++) {
-      if(imod*16+isec+1 != 5 && imod*16+isec+1 != 6) {
-	sigma2_module[imod]+=TMath::Power(hchannel[imod*16+isec]->GetMean()-mean_module[imod],2);
-	N_module[imod]++;
-      }
+      if(imod*16+isec+1 == 5 || imod*16+isec+1 == 6) continue;
+      sigma2_module[imod]+=TMath::Power(mean_channel[isec][imod] - mean_module[imod],2);
+      N_module[imod]++;
     }
     
     sigma2_module[imod]/=N_module[imod];
@@ -864,6 +991,11 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
     sigma_mu_ratio[imod] = 100*sigma_module[imod]/mean_module[imod];
     cout<<"module "<<imod+1<<": mean averaged over all sectors: "<<mean_module[imod]<<", sigma : "<<sigma_module[imod]<<", sigma/mean: "<<sigma_mu_ratio[imod]<<" %"<<endl;    
   }
+
+  cout<<endl;
+  for (int imod = 0; imod < 5; imod++) cout<<"module "<<imod+1<<": mean number of sectors used: "<<mean_module_sector_used[imod]<<endl;
+  cout<<endl;
+  for(int isec = 0; isec < 16; isec++) cout<<"sector "<<isec+1<<": mean number of modules used: "<<mean_sector_module_used[isec]<<endl;
 
 }
 

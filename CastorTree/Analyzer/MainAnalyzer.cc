@@ -15,6 +15,8 @@
 
 #include <iostream>
 
+using namespace std;
+
 MainAnalyzer::MainAnalyzer() {
 	
 	// initialize helper classes
@@ -102,7 +104,7 @@ void MainAnalyzer::plotHistos(TString inputdir,TString regexpstr, TString select
 		selectedhistos.clear();
 		
 		for (unsigned int i=0;i<histovector.size();i++) {
-			TString name = histovector[i]->GetName();
+			TString name = histovector[i]->GetTitle();
 			if (name.Contains(selectname)) selectedhistos.push_back(histovector[i]);
 		}
 		
@@ -125,8 +127,8 @@ void MainAnalyzer::plotHistos(TString inputdir,TString regexpstr, TString select
 	// plot everything
 	for (unsigned int i=0;i<allhistovector[0].size();i++) { // loop over number of histos
 		
-		double max = 1;
-		double min = 0.1;
+		double max = 0;
+		double min = 10000000;
 		for (unsigned int j=0;j<allhistovector.size();j++) { // loop over number of files
 			// calculate min and max ranges
 			double tempmax = allhistovector[j][i]->GetBinContent(allhistovector[j][i]->GetMaximumBin());
@@ -134,7 +136,10 @@ void MainAnalyzer::plotHistos(TString inputdir,TString regexpstr, TString select
 			if (tempmax >= max) max = tempmax;
 			if (tempmin <= min) min = tempmin;
 		}
-		if (min == 0) min = 0.1;
+
+		if (max-min > 1000 && min == 0) min = 0.001;
+		if (max-min < 1000) min = 0;
+
 		//std::cout << "min = " << min << " max = " << max << std::endl;
 		
 		Char_t cname[50];
@@ -143,10 +148,10 @@ void MainAnalyzer::plotHistos(TString inputdir,TString regexpstr, TString select
 		c[i]->Divide(1,2);
 		TPad *p1 = (TPad*)c[i]->cd(1);
 		p1->SetPad(0.0,0.2,1,1);
-		if (max-min > 1000. && min > 0) p1->SetLogy();
+		if (max-min > 1000) p1->SetLogy();
 		
 		for (unsigned int j=0;j<allhistovector.size();j++) { // loop over number of files
-			allhistovector[j][i]->GetYaxis()->SetRangeUser(min-(min/5),max+(max/5));
+			allhistovector[j][i]->GetYaxis()->SetRangeUser(min,max*1.2);
 			allhistovector[j][i]->SetLineColor(j+1);
 			if (j==0) allhistovector[j][i]->SetLineWidth(3);
 			if (j==0) allhistovector[j][i]->Draw("elp");
@@ -172,8 +177,9 @@ void MainAnalyzer::plotHistos(TString inputdir,TString regexpstr, TString select
 		
 		// set back initial title to first histogram
 		allhistovector[0][i]->SetTitle(initial_title);
-		
+
 		canvasvector_.push_back(c[i]);
+		if(i == allhistovector[0].size() - 1) c[i]->WaitPrimitive();
 	}
 	
 }
@@ -214,19 +220,28 @@ void MainAnalyzer::compareMCData(TString inputdir,TString regexpstr, TString sel
 	
 }
 
-void MainAnalyzer::saveAllCanvas(TString inputdir, TString name) {
-	
-	for (unsigned int i=0;i<canvasvector_.size();i++) {
-		TCanvas *c = canvasvector_[i];
-		TString cname;
-		cname.Append(inputdir);
-		cname.Append(c->GetName());
-		cname.Append("_");
-		cname.Append(name);
-		cname.Append(".pdf");
-		c->SaveAs(cname);
-	}
-	
+void MainAnalyzer::saveAllCanvas(TString inputdir,TString name) {
+  
+  cout<<"begin to save canvas"<<endl;
+
+  TString file_pdf = TString(inputdir) + TString("plot_") + TString(name) + TString(".pdf");
+  
+  canvasvector_[0]->Print(TString(TString(file_pdf)+TString("[")).Data());
+
+  for (unsigned int i=0;i<canvasvector_.size();i++) {
+    TCanvas *c = canvasvector_[i];
+    canvasvector_[i]->Print(file_pdf.Data());
+    TString cname;
+    cname.Append(inputdir);
+    cname.Append(c->GetName());
+    cname.Append("_");
+    cname.Append(name);
+    cname.Append(".png");
+    c->SaveAs(cname);
+  }
+
+  canvasvector_[0]->Print(TString(TString(file_pdf)+TString("]")).Data());
+  cout<<"canvas saved !"<<endl;
 }
 
 void MainAnalyzer::setCMSStyle(){

@@ -51,7 +51,7 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
   
   int file_nb = 0;    
   int nb_evt_tot = 0;
-  int nb_file_max = 2;
+  int nb_file_max = 15;
 
   int nb_data_sel = 0;
   int nb_moca_reco_sel = 0;
@@ -884,50 +884,6 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
 	
   foutput->Close();
   cout<<"file "<<output_filename<<" created"<<endl;
-
-  //------------------------//
-  //-- print some results --//
-  //------------------------//
-
-  Char_t clabel[200],cname[50];
-
-  TCanvas* c_zprofile = new TCanvas("z profile","z profile in the different sectors");
-  c_zprofile->Divide(4,4);
-  for (int isec = 0; isec < 16;isec++) {
-    c_zprofile->cd(isec+1);
-    hzprofile[isec]->Draw();
-  }
-
-  TCanvas* c_zprofile_mean = new TCanvas("z profile mean","z profile averaged over all sectors");
-  c_zprofile_mean->Divide(1,1);
-  hzprofile_mean->Draw();
-
-  TCanvas* c_channel[5];
-
-  for (int imod = 0; imod < 5; imod++) {
-
-    sprintf(clabel,"energy distibution in module %d",imod+1);
-    sprintf(cname,"energy_distibution_in_module_%d",imod+1);
-
-    c_channel[imod] = new TCanvas(clabel,cname);  
-    c_channel[imod]->Divide(4,4);
-
-    for(int isec = 0; isec < 16; isec++) {
-      c_channel[imod]->cd(isec+1);
-      if(imod*16+isec+1 != 5 && imod*16+isec+1 != 6) hchannel[isec][imod]->Draw();
-    }
-  }
-
-  TString file_pdf = TString("../Result/result_") + TString(filename); //  - TString("root") + TString("pdf"));
-  file_pdf.Replace(file_pdf.Sizeof()-5,4,"pdf",3);
-  
-  c_zprofile->Print(TString(TString(file_pdf)+TString("[")).Data());
-
-  c_zprofile->Print(file_pdf.Data());
-  c_zprofile_mean->Print(file_pdf.Data());
-  for (int imod = 0; imod < 5;imod++) c_channel[imod]->Print(file_pdf.Data());
-	    
-  c_zprofile->Print(TString(TString(file_pdf)+TString("]")).Data());
 
   //-----------------------------------//
   //-- compute some means and sigmas --//

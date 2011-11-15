@@ -32,5 +32,4 @@ Cascade2Parameters = cms.PSet(
                                   'IRUNA = 1     ! switch for running alphas (0 = off,1 = on)', 
                                   'IQ2 = 3       ! scale in alphas',
                                   'SCALFA = 1.0  ! scale factor for scale in alphas',
-                                  'IGLU = 1010   ! select uPDF',
-                                  'PDFPATH =/afs/cern.ch/cms/slc5_ia32_gcc434/external/cascade/2.2.0/share ')) 
+                                  'IGLU = 1010   ! select uPDF')) 

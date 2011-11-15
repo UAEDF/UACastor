@@ -5,7 +5,7 @@
 
 #include "HepMC/GenEvent.h" 
 #include "HepMC/PdfInfo.h"
-#include "HepMC/PythiaWrapper6_2.h"  
+#include "HepMC/PythiaWrapper6_4.h"
 #include "GeneratorInterface/CascadeInterface/plugins/CascadeWrapper.h"   
 
 #include "HepMC/HEPEVT_Wrapper.h"
@@ -732,10 +732,7 @@ namespace gen {
 
     else if(!strncmp(ParameterString.c_str(),"SCALFA",6))
       scalf.scalfa = atof(&ParameterString[strcspn(ParameterString.c_str(),"=")+1]);
-
-    else if(!strncmp(ParameterString.c_str(),"PDFPATH",7))
-      strcpy(caspdf.pdfpath,&ParameterString[strcspn(ParameterString.c_str(),"=")+1]); 
-
+    
     else accepted = 0;
     
     return accepted;
@@ -794,7 +791,6 @@ namespace gen {
     cout<<"scale in alphas: "<<capar1.iq2<<endl;
     cout<<"scale factor for scale in alphas: "<<scalf.scalfa<<endl;
     cout<<"unintegrated pdf: "<<cagluon.iglu<<endl;
-    cout<<"path where updf are stored: "<<caspdf.pdfpath<<endl;
     cout<<""<<endl;
 
     cout<<"center of mass energy, cross section, filter efficiency: "<<endl;

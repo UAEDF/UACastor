@@ -37,6 +37,7 @@ extern void G__set_cpp_environmenteventdict();
 #include "./MyGenKin.h"
 #include "./MyPart.h"
 #include "./MyGenPart.h"
+#include "./MyGenJet.h"
 #include "./MyVertex.h"
 #include "./MySimVertex.h"
 #include "./MyBeamSpot.h"
@@ -93,6 +94,10 @@ extern G__linked_taginfo G__eventdictLN_TMatrixTSparseDiaglEfloatgR;
 extern G__linked_taginfo G__eventdictLN_TLorentzVector;
 extern G__linked_taginfo G__eventdictLN_MyPart;
 extern G__linked_taginfo G__eventdictLN_MyGenPart;
+extern G__linked_taginfo G__eventdictLN_MyGenJet;
+extern G__linked_taginfo G__eventdictLN_vectorlEMyGenPartcOallocatorlEMyGenPartgRsPgR;
+extern G__linked_taginfo G__eventdictLN_vectorlEMyGenPartcOallocatorlEMyGenPartgRsPgRcLcLiterator;
+extern G__linked_taginfo G__eventdictLN_reverse_iteratorlEvectorlEMyGenPartcOallocatorlEMyGenPartgRsPgRcLcLiteratorgR;
 extern G__linked_taginfo G__eventdictLN_MyVertex;
 extern G__linked_taginfo G__eventdictLN_MySimVertex;
 extern G__linked_taginfo G__eventdictLN_MyBeamSpot;
@@ -103,9 +108,9 @@ extern G__linked_taginfo G__eventdictLN_MyCastorJet;
 extern G__linked_taginfo G__eventdictLN_MyJet;
 extern G__linked_taginfo G__eventdictLN_MyDiJet;
 extern G__linked_taginfo G__eventdictLN_MyCaloTower;
-extern G__linked_taginfo G__eventdictLN_vectorlEMyGenPartcOallocatorlEMyGenPartgRsPgR;
-extern G__linked_taginfo G__eventdictLN_vectorlEMyGenPartcOallocatorlEMyGenPartgRsPgRcLcLiterator;
-extern G__linked_taginfo G__eventdictLN_reverse_iteratorlEvectorlEMyGenPartcOallocatorlEMyGenPartgRsPgRcLcLiteratorgR;
+extern G__linked_taginfo G__eventdictLN_vectorlEMyGenJetcOallocatorlEMyGenJetgRsPgR;
+extern G__linked_taginfo G__eventdictLN_vectorlEMyGenJetcOallocatorlEMyGenJetgRsPgRcLcLiterator;
+extern G__linked_taginfo G__eventdictLN_reverse_iteratorlEvectorlEMyGenJetcOallocatorlEMyGenJetgRsPgRcLcLiteratorgR;
 extern G__linked_taginfo G__eventdictLN_vectorlEMyVertexcOallocatorlEMyVertexgRsPgR;
 extern G__linked_taginfo G__eventdictLN_vectorlEMyVertexcOallocatorlEMyVertexgRsPgRcLcLiterator;
 extern G__linked_taginfo G__eventdictLN_reverse_iteratorlEvectorlEMyVertexcOallocatorlEMyVertexgRsPgRcLcLiteratorgR;
@@ -130,6 +135,7 @@ extern G__linked_taginfo G__eventdictLN_reverse_iteratorlEvectorlEMyCaloTowercOa
 
 /* STUB derived class for protected member access */
 typedef vector<MyGenPart,allocator<MyGenPart> > G__vectorlEMyGenPartcOallocatorlEMyGenPartgRsPgR;
+typedef vector<MyGenJet,allocator<MyGenJet> > G__vectorlEMyGenJetcOallocatorlEMyGenJetgRsPgR;
 typedef vector<MyVertex,allocator<MyVertex> > G__vectorlEMyVertexcOallocatorlEMyVertexgRsPgR;
 typedef vector<MyCastorDigi,allocator<MyCastorDigi> > G__vectorlEMyCastorDigicOallocatorlEMyCastorDigigRsPgR;
 typedef vector<MyCastorRecHit,allocator<MyCastorRecHit> > G__vectorlEMyCastorRecHitcOallocatorlEMyCastorRecHitgRsPgR;

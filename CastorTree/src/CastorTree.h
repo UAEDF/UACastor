@@ -27,6 +27,8 @@ using namespace std;
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+
 //-- Trigger
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "DataFormats/HLTReco/interface/TriggerEvent.h"
@@ -43,6 +45,7 @@ using namespace std;
 //-- Gen Objects
 #include "./MyGenKin.h"
 #include "./MyGenPart.h"
+#include "./MyGenJet.h"
 
 //-- vertex
 #include "./MyBeamSpot.h"
@@ -88,13 +91,16 @@ class CastorTree : public edm::EDAnalyzer {
   virtual void GetL1Trig(const edm::Event&, const edm::EventSetup&);
   virtual void GetHLTrig(const edm::Event&, const edm::EventSetup&);
   bool hasFired(const std::string& triggerName, const edm::TriggerNames& triggerNames, const edm::TriggerResults& triggerResults) const;
-
+  
   virtual void GetGenKin(const edm::Event&);
   virtual void GetGenPart(const edm::Event&, const edm::EventSetup&);      
+  virtual void FillGenPart(const reco::GenParticle&, MyGenPart&);
+  virtual void GetGenJet(const edm::Event&, const edm::InputTag&, vector<MyGenJet>&);
+  virtual void GetAllGenJet(const edm::Event&);
   
   virtual void GetRecoVertex(const edm::Event&, const char[60], vector<MyVertex>&); 
   virtual void GetBeamSpot(const edm::Event&);
-
+  
   virtual void GetCastorDigi(const edm::Event&, const edm::EventSetup&, vector<MyCastorDigi>&);
   virtual void GetCastorRecHit(const edm::Event&, vector<MyCastorRecHit>&);
   virtual void GetCastorTower(const edm::Event&, vector<MyCastorTower>&);
@@ -117,6 +123,7 @@ class CastorTree : public edm::EDAnalyzer {
 
   bool StoreGenKine;
   bool StoreGenPart;
+  bool StoreGenJet;
   bool StoreCastorDigi;
   bool StoreCastorJet;
 
@@ -138,6 +145,7 @@ class CastorTree : public edm::EDAnalyzer {
   edm::InputTag PFJetColl_;
   edm::InputTag CaloJetColl_;
   edm::InputTag CaloJetId_;
+  vector<edm::InputTag> GenJetColl_;
 
   //-- needed to retrieve JEC
   std::string PFJetJEC_;
@@ -181,6 +189,7 @@ class CastorTree : public edm::EDAnalyzer {
   MyGenKin GenKin;
   vector<MyGenPart> GenPart;
   MySimVertex simVertex;
+  map<string,vector<MyGenJet> > AllGenJet;
 
   //-- Reco Vertex Information
   MyBeamSpot beamSpot;

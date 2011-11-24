@@ -22,6 +22,7 @@ CastorTree::CastorTree(const edm::ParameterSet& iConfig) {
   //-- Modules to execute 
   StoreGenKine = iConfig.getParameter<bool>("StoreGenKine");
   StoreGenPart = iConfig.getParameter<bool>("StoreGenPart");
+  StoreGenJet = iConfig.getParameter<bool>("StoreGenJet");
   StoreCastorDigi = iConfig.getParameter<bool>("StoreCastorDigi");
   StoreCastorJet = iConfig.getParameter<bool>("StoreCastorJet");
 
@@ -42,6 +43,7 @@ CastorTree::CastorTree(const edm::ParameterSet& iConfig) {
   PFJetColl_ = iConfig.getParameter<edm::InputTag>("PFJetColl");
   CaloJetColl_ = iConfig.getParameter<edm::InputTag>("CaloJetColl");
   CaloJetId_ = iConfig.getParameter<edm::InputTag>("CaloJetId");
+  GenJetColl_  = iConfig.getUntrackedParameter<vector<edm::InputTag> >("GenJetColl");
 
   //-- needed to retrieve JEC
   PFJetJEC_ = iConfig.getParameter<string>("PFJetJEC");
@@ -96,6 +98,7 @@ void CastorTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   //-- MC Information
   if(StoreGenKine) GetGenKin(iEvent);
   if(StoreGenPart) GetGenPart(iEvent,iSetup);
+  if(StoreGenJet) GetAllGenJet(iEvent);
 
   //-- Reco Vertex Information
   GetBeamSpot(iEvent);

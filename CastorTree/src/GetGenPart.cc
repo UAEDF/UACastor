@@ -63,9 +63,11 @@ void CastorTree::GetGenPart(const edm::Event& iEvent, const edm::EventSetup& iSe
      int st = p->status();
      MyGenPart genpart;
 
+     //-- filling inherited from MyPart
      genpart.SetPxPyPzE(p->px(),p->py(),p->pz(),p->energy());
      genpart.charge  = p->charge();
 
+     //-- extra properties
      genpart.pdgId   = p->pdgId();
      genpart.status  = p->status();
      genpart.name    = (pdt->particle(p->pdgId()))->name();
@@ -74,5 +76,19 @@ void CastorTree::GetGenPart(const edm::Event& iEvent, const edm::EventSetup& iSe
      if(st==1) GenPart.push_back(genpart);
      if(st==1 && GenPartDebug) genpart.Print();
    }
+}
+
+void CastorTree::FillGenPart(const reco::GenParticle& ingp, MyGenPart& outgp){
+
+  //-- filling inherited from MyPart
+  outgp.SetPxPyPzE( ingp.px() , ingp.py() , ingp.pz() , ingp.energy() );
+  outgp.charge  = ingp.charge();
+
+  //-- extra properties
+  outgp.pdgId   = ingp.pdgId();
+  outgp.status  = ingp.status();
+  //outgp.name    = (pdt->particle(ingp.pdgId()))->name(); //-- FIXME: crashes the code ...
+  outgp.name = "dummy";
+
 }
 

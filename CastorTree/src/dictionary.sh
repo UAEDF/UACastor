@@ -7,6 +7,7 @@ rootcint -f eventdict.cc -c -I${PWD}/../../.. \
             ./MyGenKin.h \
             ./MyPart.h \
             ./MyGenPart.h \
+            ./MyGenJet.h \
             ./MyVertex.h \
             ./MySimVertex.h \
             ./MyBeamSpot.h \

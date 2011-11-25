@@ -8,6 +8,7 @@
 #include "./MyEvtId.h"
 #include "./MyGenKin.h"
 #include "./MyGenPart.h"
+#include "./MyGenJet.h"
 #include "./MyHLTrig.h"
 #include "./MyJet.h"
 #include "./MyJetPtSorter.h"

@@ -9,6 +9,7 @@
   gROOT->ProcessLine(".L ../src/MyCastorDigi.cc+");
   gROOT->ProcessLine(".L ../src/MyCastorJet.cc+");
   gROOT->ProcessLine(".L ../src/MyCastorRecHit.cc+");
+  gROOT->ProcessLine(".L ../src/MyCaloTower.cc+");
   gROOT->ProcessLine(".L ../src/MyCastorTower.cc+");
   gROOT->ProcessLine(".L ../src/MyDiJet.cc+");
   gROOT->ProcessLine(".L ../src/MyJet.cc+");
@@ -20,6 +21,7 @@
   gROOT->ProcessLine(".L ./HistoRetriever.cc+");
   gROOT->ProcessLine(".L ./TreeAnalyzer.cc+");
   gROOT->ProcessLine(".L ./ProfileAnalyzer.cc+");
+  gROOT->ProcessLine(".L ./CalibAnalyzer.cc+");
   gROOT->ProcessLine(".L ./MCDataComparer.cc+");
   gROOT->ProcessLine(".L ./EflowPlotter.cc+");
   gROOT->ProcessLine(".L ./MainAnalyzer.cc+");

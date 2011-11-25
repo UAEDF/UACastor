@@ -8,9 +8,10 @@
 #include "MainAnalyzer.h"
 
 int main(int argc, char *argv[]) {
-	
+
   bool ana = false;
   bool profile = true;
+  bool calib = false;
 
   using namespace std;
 
@@ -34,6 +35,10 @@ int main(int argc, char *argv[]) {
 			    "CastorTree_data_MinBias_Commissioning10-07JunReReco_900GeV_RECOwithCorrector_",true,900);
       if(profile) m->makeHistoProfile("dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/hvanhaev/MinimumBias/CastorTree_data_MinBias_Commissioning10-07JunReReco_900GeV_RECOwithCorrector_v4/34791f187daa558f06237b658f1118e2/",
 				      "CastorTree_data_MinBias_Commissioning10-07JunReReco_900GeV_RECOwithCorrector_",true,900);
+
+      if(calib) m->makeHistoCalib("dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/hvanhaev/MinimumBias/CastorTree_data_MinBias_Commissioning10-07JunReReco_900GeV_RECOwithCorrector_v4/34791f187daa558f06237b658f1118e2/",
+				  "CastorTree_data_MinBias_Commissioning10-07JunReReco_900GeV_RECOwithCorrector_",900);
+
     }
     
     //-- data 2760 GeV
@@ -53,6 +58,11 @@ int main(int argc, char *argv[]) {
       if(profile) 
 	m->makeHistoProfile("dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/hvanhaev/AllPhysics2760/CastorTree_data_AllPhysics2760_Run2011A-16Jul2011-v1_2760GeV_RECOwithCorrector_v4/efe35410948a53c459b6a053694a1ebb/",
 			    "CastorTree_data_AllPhysics2760_Run2011A-16Jul2011-v1_2760GeV_RECOwithCorrector_95_1_TFt.root",true,2760);
+      
+      if(calib)
+        m->makeHistoCalib("dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/hvanhaev/AllPhysics2760/CastorTree_data_AllPhysics2760_Run2011A-16Jul2011-v1_2760GeV_RECOwithCorrector_v4/efe35410948a53c459b6a053694a1ebb/",
+			  "CastorTree_data_AllPhysics2760_Run2011A-16Jul2011-v1_2760GeV_RECOwithCorrector_95_1_TFt.root",2760);
+      
     }
     
 	
@@ -63,10 +73,14 @@ int main(int argc, char *argv[]) {
       cout<<"We'll process the 7 TeV data tree now"<<endl;
       
       if(ana) m->makeHistos("dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/hvanhaev/MinimumBias/CastorTree_data_MinBias_Commissioning10-May19ReReco-v1_7TeV_RECOwithCorrector_v2/93a55823df2f97b4536fc20146386276/",
-			    "CastorTree_data_MinBias_Commissioning10-May19ReReco-v1_7TeV_RECOwithCorrector_9",true,7000);
+			    "CastorTree_data_MinBias_Commissioning10-May19ReReco-v1_7TeV_RECOwithCorrector",true,7000);
       
       if(profile) m->makeHistoProfile("dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/hvanhaev/MinimumBias/CastorTree_data_MinBias_Commissioning10-May19ReReco-v1_7TeV_RECOwithCorrector_v2/93a55823df2f97b4536fc20146386276/",
-				      "CastorTree_data_MinBias_Commissioning10-May19ReReco-v1_7TeV_RECOwithCorrector_9",true,7000);
+				      "CastorTree_data_MinBias_Commissioning10-May19ReReco-v1_7TeV_RECOwithCorrector_7",true,7000);
+      
+      if(calib) m->makeHistoCalib("dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/hvanhaev/MinimumBias/CastorTree_data_MinBias_Commissioning10-May19ReReco-v1_7TeV_RECOwithCorrector_v2/93a55823df2f97b4536fc20146386276/",
+				  "CastorTree_data_MinBias_Commissioning10-May19ReReco-v1_7TeV_RECOwithCorrector_7",7000);
+
     }	
   }
 	
@@ -97,7 +111,9 @@ int main(int argc, char *argv[]) {
 
       cout<<"We'll process the 7 TeV MC tree now"<<endl;
       if(ana)  m->makeHistos("/user/hvanhaev/Analysis/Eflow/CMSSW_4_2_7/src/UACastor/CastorTree/python/goodcfg/","CastorTree_MC_7TeV_42X_Pythia6_D6T.root",false,7000);
-      if(profile) m->makeHistoProfile("/user/hvanhaev/Analysis/Eflow/CMSSW_4_2_7/src/UACastor/CastorTree/python/goodcfg/","CastorTree_MC_7TeV_42X_Pythia6_D6T.root",false,7000);
+      if(profile) m->makeHistoProfile("/user/hvanhaev/Analysis/Eflow/CMSSW_4_2_7/src/UACastor/CastorTree/python/goodcfg/","CastorTree_MC_7TeV_42X_Pythia6_D6T_old.root",false,7000);
+      //-- if(profile) m->makeHistoProfile("/user/hvanhaev/Analysis/Eflow/CMSSW_4_2_7/src/UACastor/CastorTree/python/goodcfg/","CastorTree_MC_7TeV_42X_Pythia6_D6T_onlyEM.root",false,7000);
+      //-- if(profile) m->makeHistoProfile("/user/hvanhaev/Analysis/Eflow/CMSSW_4_2_7/src/UACastor/CastorTree/python/goodcfg/","CastorTree_MC_7TeV_42X_Pythia6_D6T_onlyHAD.root",false,7000);
     }	
   }
 	

@@ -4,6 +4,7 @@
   gROOT->ProcessLine(".L ../src/MyGenKin.cc+");
   gROOT->ProcessLine(".L ../src/MyPart.cc+");
   gROOT->ProcessLine(".L ../src/MyGenPart.cc+");
+  gROOT->ProcessLine(".L ../src/MyGenJet.cc+");
   gROOT->ProcessLine(".L ../src/MyVertex.cc+");
   gROOT->ProcessLine(".L ../src/MyBeamSpot.cc+");
   gROOT->ProcessLine(".L ../src/MyCastorDigi.cc+");

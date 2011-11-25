@@ -18,6 +18,11 @@ int main(int argc, char *argv[]) {
     k++;
   }
 
+  if(argc < 4) {
+    cout<<"example usage: "<<"./Plot \"output_profile_CastorTree_7TeV\" \"MB z profile\" \"7TeV_MB_z_profile\" "<<endl;
+    return(0);
+  }
+
   TString rootfile = argv[1];
   TString title = argv[2];
   TString globalname = argv[3];

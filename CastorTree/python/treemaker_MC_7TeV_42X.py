@@ -11,8 +11,8 @@ process = cms.Process("Analysis")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
-#process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(70000))
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(5000))
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(True))
 
 process.source = cms.Source("PoolSource",
@@ -92,7 +92,7 @@ process.castortree = cms.EDAnalyzer('CastorTree',
    CaloJetJEC = cms.string('ak5CaloL2L3Residual'), # L2L3Residual JEC should be applied to data only 
    CaloJetJECunc = cms.string('AK5Calo'),
 
-   GenJetColl = cms.untracked.VInputTag('ak5GenJets'),
+   GenJetColl = cms.InputTag('ak5GenJets','','HLT'),
                                     
    CaloTowerColl = cms.InputTag('towerMaker','','RECO'),
                                     

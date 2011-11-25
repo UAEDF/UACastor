@@ -43,7 +43,7 @@ CastorTree::CastorTree(const edm::ParameterSet& iConfig) {
   PFJetColl_ = iConfig.getParameter<edm::InputTag>("PFJetColl");
   CaloJetColl_ = iConfig.getParameter<edm::InputTag>("CaloJetColl");
   CaloJetId_ = iConfig.getParameter<edm::InputTag>("CaloJetId");
-  GenJetColl_  = iConfig.getUntrackedParameter<vector<edm::InputTag> >("GenJetColl");
+  GenJetColl_  = iConfig.getParameter<edm::InputTag>("GenJetColl");
 
   //-- needed to retrieve JEC
   PFJetJEC_ = iConfig.getParameter<string>("PFJetJEC");
@@ -98,7 +98,7 @@ void CastorTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   //-- MC Information
   if(StoreGenKine) GetGenKin(iEvent);
   if(StoreGenPart) GetGenPart(iEvent,iSetup);
-  if(StoreGenJet) GetAllGenJet(iEvent);
+  if(StoreGenJet) GetGenJet(iEvent,GenJetColl_,GenJet);
 
   //-- Reco Vertex Information
   GetBeamSpot(iEvent);
@@ -139,6 +139,7 @@ void CastorTree::beginJob() {
   if(StoreGenKine) tree->Branch("GenKin",&GenKin);
   if(StoreGenPart) tree->Branch("GenPart",&GenPart);
   if(StoreGenPart) tree->Branch("simVertex",&simVertex);
+  if(StoreGenJet) tree->Branch("GenJet",&GenJet);
 
   //-- Reco Vertex Information
   tree->Branch("beamSpot",&beamSpot);

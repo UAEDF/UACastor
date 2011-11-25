@@ -46,12 +46,3 @@ void CastorTree::GetGenJet(const edm::Event& iEvent, const edm::InputTag& genjet
 }
 
 
-void CastorTree::GetAllGenJet(const edm::Event& iEvent) {
-  
-  using namespace std;
-  using namespace edm;
-  using namespace reco;
-
-  for(vector<InputTag>::iterator icoll = GenJetColl_.begin() ; icoll!= GenJetColl_.end() ; ++icoll)
-    this->GetGenJet(iEvent,*icoll,AllGenJet[icoll->label()]);
-}

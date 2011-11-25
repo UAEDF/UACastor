@@ -96,7 +96,6 @@ class CastorTree : public edm::EDAnalyzer {
   virtual void GetGenPart(const edm::Event&, const edm::EventSetup&);      
   virtual void FillGenPart(const reco::GenParticle&, MyGenPart&);
   virtual void GetGenJet(const edm::Event&, const edm::InputTag&, vector<MyGenJet>&);
-  virtual void GetAllGenJet(const edm::Event&);
   
   virtual void GetRecoVertex(const edm::Event&, const char[60], vector<MyVertex>&); 
   virtual void GetBeamSpot(const edm::Event&);
@@ -145,7 +144,7 @@ class CastorTree : public edm::EDAnalyzer {
   edm::InputTag PFJetColl_;
   edm::InputTag CaloJetColl_;
   edm::InputTag CaloJetId_;
-  vector<edm::InputTag> GenJetColl_;
+  edm::InputTag GenJetColl_;
 
   //-- needed to retrieve JEC
   std::string PFJetJEC_;
@@ -189,7 +188,7 @@ class CastorTree : public edm::EDAnalyzer {
   MyGenKin GenKin;
   vector<MyGenPart> GenPart;
   MySimVertex simVertex;
-  map<string,vector<MyGenJet> > AllGenJet;
+  vector<MyGenJet> GenJet;
 
   //-- Reco Vertex Information
   MyBeamSpot beamSpot;

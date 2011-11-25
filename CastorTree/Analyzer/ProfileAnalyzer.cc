@@ -34,6 +34,7 @@
 #include "../src/MyHLTrig.h"
 #include "../src/MyL1Trig.h"
 #include "../src/MyJet.h"
+#include "../src/MyCaloTower.h"
 #include "../src/MyGenPart.h"
 
 #define verbose 1
@@ -51,7 +52,7 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
   
   int file_nb = 0;    
   int nb_evt_tot = 0;
-  int nb_file_max = 5;
+  int nb_file_max = 1;
 
   int nb_data_sel = 0;
   int nb_moca_reco_sel = 0;
@@ -184,7 +185,6 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
     ptcut = 20;
   }
   
-  
   TH1D *hMBEflow = MakeHisto("hMBEflow","MB energy flow","Eflow [GeV]","N evts",nbin_eflow,bin_eflow_min,bin_eflow_max); 
   TH1D *hDJEflow = MakeHisto("hDJEflow","DJ energy flow","Eflow [GeV]","N evts",nbin_eflow,bin_eflow_min,bin_eflow_max);
   TH1D *hEflow_gen = MakeHisto("hEflow_gen","gen energy flow","Eflow [GeV]","N evts",nbin_eflow,bin_eflow_min,bin_eflow_max);
@@ -277,7 +277,6 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
     filename.Clear();
     filename = itfile->GetString();
     
-    
     cout<<endl<<"open file "<<file_nb<<" with name: "<<itfile->GetString()<<endl;
     
     TFile* file = TFile::Open(inputdir+itfile->GetString(),"READ");
@@ -302,8 +301,9 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
     vector<MyCastorRecHit> *CastorRecHits = NULL;
     // vector<MyCastorDigi> *CastorDigis = NULL;
     vector<MyJet> *PFJets = NULL;
+    std::vector<MyCaloTower> *caloTowers = NULL;
     vector<MyGenPart> *genParts = NULL;
-    
+
     TBranch *b_evtid = tree->GetBranch("EvtId");
     TBranch *b_dijet = tree->GetBranch("pfDiJet");
     TBranch *b_HLTrig = tree->GetBranch("HLTrig");
@@ -312,6 +312,7 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
     TBranch *b_castorrechits = tree->GetBranch("castorRecHit");
     // TBranch *b_castordigis = tree->GetBranch("castorDigi");
     TBranch *b_PFJets = tree->GetBranch("pfJet");
+    TBranch *b_caloTowers = tree->GetBranch("caloTower");
     TBranch *b_genParts; 
     if(!isData) b_genParts = tree->GetBranch("GenPart");
     
@@ -323,6 +324,7 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
     b_castorrechits->SetAddress(&CastorRecHits);
     // b_castordigis->SetAddress(&CastorDigis);
     b_PFJets->SetAddress(&PFJets);
+    b_caloTowers->SetAddress(&caloTowers);
     if(!isData) b_genParts->SetAddress(&genParts);
 
     int Nevents = tree->GetEntriesFast();
@@ -340,6 +342,7 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
       b_HLTrig->GetEntry(ievt);
       b_L1Trig->GetEntry(ievt);
       b_vertices->GetEntry(ievt);
+      b_caloTowers->GetEntry(ievt);
       if (!evtid->IsData) b_genParts->GetEntry(ievt);
 
       nb_evt_tot++;
@@ -417,17 +420,30 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
 	bool L1_BX = L1Trig->fTechDecisionBefore[0];
 	bool L1_Veto = !L1Trig->fTechDecisionBefore[36] && !L1Trig->fTechDecisionBefore[37] && !L1Trig->fTechDecisionBefore[38] && !L1Trig->fTechDecisionBefore[39];
 	
-	bool L1_BSC = L1Trig->fTechDecisionBefore[40] || L1Trig->fTechDecisionBefore[41]; // default value for 900 GeV or 7000 GeV 
-	if (cmenergy == 2760) L1_BSC = L1Trig->fPhysDecisionBefore[126];
-
-	bool HF_Activity = true; // default value for 900 GeV or 7000 GeV
-	if (cmenergy == 2760) HF_Activity = true; // to be updated with real HF condition... 
-
-	bool HLT_BSC = true; // default value for 900 GeV or 7000 GeV (do we need an HLT here?)
-	if (cmenergy == 2760) HLT_BSC = HLTrig->HLTmap["HLT_L1BscMinBiasORBptxPlusANDMinus_v1"];
-
-	bool TriggerSelection = L1_BX && L1_Veto && L1_BSC && HF_Activity && HLT_BSC;
+	bool L1_BSC = L1Trig->fTechDecisionBefore[40] || L1Trig->fTechDecisionBefore[41]; // value for 900 GeV and 7 TeV 
+	if (cmenergy == 2760) L1_BSC = L1Trig->fPhysDecisionBefore[126];  // value for 2.76 TeV
 	
+	bool HF_Activity = true; // default value is true for all energies
+	
+	if (cmenergy == 2760) {
+	  
+	  bool HFplus = false;
+	  bool HFminus = false;
+	  
+	  for (int itow=0;itow<caloTowers->size();itow++) {
+	    MyCaloTower mytow = (*caloTowers)[itow];
+	    if (mytow.hasHF && mytow.Energy() > 4. && mytow.zside == 1 && mytow.Eta() > 3.23 && mytow.Eta() < 4.65) HFplus = true;
+	    if (mytow.hasHF && mytow.Energy() > 4. && mytow.zside == -1 && mytow.Eta() < -3.23 && mytow.Eta() > -4.65) HFminus = true;
+	  }
+	  
+	  if(!(HFplus == true && HFminus == true)) HF_Activity = false; // value can only become false for 2.76 TeV   
+	}
+	
+	bool HLT_BSC = true;  // default value is true for all energies (do we need an HLT at 900 GeV and 7 TeV?)
+	if (cmenergy == 2760) HLT_BSC = HLTrig->HLTmap["HLT_L1BscMinBiasORBptxPlusANDMinus_v1"];  // value can only become false for 2.76 TeV
+       
+	bool TriggerSelection = L1_BX && L1_Veto && L1_BSC && HF_Activity && HLT_BSC;
+
 	if (TriggerSelection == false) continue;
 	hselection_data->Fill(5,1);
 	
@@ -437,7 +453,6 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
 	hselection_data->Fill(6,1);
 
 	data_sel = true;
-	nb_data_sel++;
       } 
 
       //--------------------------------//
@@ -450,11 +465,24 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
 	
 	//-- filter on triggers moca
 	
-	bool L1_BSC = L1Trig->fTechDecisionAfter[40] || L1Trig->fTechDecisionAfter[41]; // default value for 900 GeV or 7000 GeV
-        if (cmenergy == 2760) L1_BSC = L1Trig->fTechDecisionBefore[34];
+	bool L1_BSC = L1Trig->fTechDecisionAfter[40] || L1Trig->fTechDecisionAfter[41]; // value for 900 GeV and 7 TeV
+        if (cmenergy == 2760) L1_BSC = L1Trig->fTechDecisionBefore[34]; // value for 2.76 TeV
 	
-	bool HF_Activity = true; // default value for 900 GeV or 7000 GeV
-	if (cmenergy == 2760) HF_Activity = true; // to be updated with real HF condition...
+	bool HF_Activity = true; // default value is true for all energies
+
+	if (cmenergy == 2760) {
+	  
+          bool HFplus = false;
+          bool HFminus = false;
+	  
+          for (int itow=0;itow<caloTowers->size();itow++) {
+            MyCaloTower mytow = (*caloTowers)[itow];
+            if (mytow.hasHF && mytow.Energy() > 4. && mytow.zside == 1 && mytow.Eta() > 3.23 && mytow.Eta() < 4.65) HFplus = true;
+            if (mytow.hasHF && mytow.Energy() > 4. && mytow.zside == -1 && mytow.Eta() < -3.23 && mytow.Eta() > -4.65) HFminus = true;
+          }
+	  
+          if(!(HFplus == true && HFminus == true)) HF_Activity = false; // value can only become false for 2.76 TeV
+        }
 
 	bool TriggerSelection = L1_BSC && HF_Activity;
 
@@ -467,7 +495,6 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
 	hselection_moca_reco->Fill(3,1);	
 
 	moca_reco_sel = true;
-      	nb_moca_reco_sel++;
       }
       
       //-------------------------------------//
@@ -543,7 +570,9 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
 	if (Vertices->size() != 1) continue;
 	if(evtid->IsData) hselection_data->Fill(7,1);
 	if(!evtid->IsData) hselection_moca_reco->Fill(4,1); 
-	
+	if(evtid->IsData) nb_data_sel++;
+	if(!evtid->IsData) nb_moca_reco_sel++;
+
 	double rechit_energy = 0;
 
 	double module_energy[5];
@@ -927,13 +956,15 @@ void ProfileAnalyzer::Loop(TString inputdir, TObjArray* filelist, bool isData, d
   if(isData) {
     cout<<endl<<"data at "<<cmenergy<<" GeV"<<endl;
     cout<<"mean E flow MB: "<<hMBEflow->GetMean()<<" GeV"<<endl;
-    cout<<"mean E flow dijet: "<<hDJEflow->GetMean()<<" GeV"<<endl<<endl;
+    cout<<"mean E flow dijet: "<<hDJEflow->GetMean()<<" GeV"<<endl;
+    cout<<"ratio dijet/MB: "<<hDJEflow->GetMean()/hMBEflow->GetMean()<<endl<<endl;
   }
 
   if(!isData) {
     cout<<endl<<"moca at "<<cmenergy<<" GeV"<<endl;
     cout<<"mean E flow MB: "<<hMBEflow->GetMean()<<" GeV"<<endl;
     cout<<"mean E flow dijet: "<<hDJEflow->GetMean()<<" GeV"<<endl;
+    cout<<"ratio dijet/MB: "<<hDJEflow->GetMean()/hMBEflow->GetMean()<<endl;
     cout<<"mean E flow generated: "<<hEflow_gen->GetMean()<<" GeV"<<endl<<endl;
   }
 

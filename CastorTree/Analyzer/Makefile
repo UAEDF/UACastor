@@ -14,11 +14,11 @@ ROOT = /sandbox/cmss/slc5_amd64_gcc434/cms/cmssw/CMSSW_4_2_7/external/slc5_amd64
 
 all : Run Plot
 
-Run : Run.cc MainAnalyzer.o MainAnalyzer_cc.so TreeAnalyzer.o TreeAnalyzer_cc.so ProfileAnalyzer.o ProfileAnalyzer_cc.so EflowPlotter.o EflowPlotter_cc.so FileReader.o FileReader_cc.so HistoRetriever.o HistoRetriever_cc.so MCDataComparer.o MCDataComparer_cc.so ${TREEDIR}/*.so
-	${COMPILER} Run.cc -o $@ MainAnalyzer.o MainAnalyzer_cc.so TreeAnalyzer.o TreeAnalyzer_cc.so ProfileAnalyzer.o ProfileAnalyzer_cc.so EflowPlotter.o EflowPlotter_cc.so FileReader.o FileReader_cc.so HistoRetriever.o HistoRetriever_cc.so MCDataComparer.o MCDataComparer_cc.so ${TREEDIR}/*.so ${CFLAGS} ${LIBS}
+Run : Run.cc MainAnalyzer.o MainAnalyzer_cc.so TreeAnalyzer.o TreeAnalyzer_cc.so ProfileAnalyzer.o ProfileAnalyzer_cc.so CalibAnalyzer.o CalibAnalyzer_cc.so EflowPlotter.o EflowPlotter_cc.so FileReader.o FileReader_cc.so HistoRetriever.o HistoRetriever_cc.so MCDataComparer.o MCDataComparer_cc.so ${TREEDIR}/*.so
+	${COMPILER} Run.cc -o $@ MainAnalyzer.o MainAnalyzer_cc.so TreeAnalyzer.o TreeAnalyzer_cc.so ProfileAnalyzer.o ProfileAnalyzer_cc.so CalibAnalyzer.o CalibAnalyzer_cc.so EflowPlotter.o EflowPlotter_cc.so FileReader.o FileReader_cc.so HistoRetriever.o HistoRetriever_cc.so MCDataComparer.o MCDataComparer_cc.so ${TREEDIR}/*.so ${CFLAGS} ${LIBS}
 
-Plot : Plot.cc MainAnalyzer.o MainAnalyzer_cc.so TreeAnalyzer.o TreeAnalyzer_cc.so ProfileAnalyzer.o ProfileAnalyzer_cc.so EflowPlotter.o EflowPlotter_cc.so FileReader.o FileReader_cc.so HistoRetriever.o HistoRetriever_cc.so MCDataComparer.o MCDataComparer_cc.so ${TREEDIR}/*.so
-	${COMPILER} Plot.cc -o $@ MainAnalyzer.o MainAnalyzer_cc.so TreeAnalyzer.o TreeAnalyzer_cc.so ProfileAnalyzer.o ProfileAnalyzer_cc.so EflowPlotter.o EflowPlotter_cc.so FileReader.o FileReader_cc.so HistoRetriever.o HistoRetriever_cc.so MCDataComparer.o MCDataComparer_cc.so ${TREEDIR}/*.so ${CFLAGS} ${LIBS}
+Plot : Plot.cc MainAnalyzer.o MainAnalyzer_cc.so TreeAnalyzer.o TreeAnalyzer_cc.so ProfileAnalyzer.o ProfileAnalyzer_cc.so CalibAnalyzer.o CalibAnalyzer_cc.so EflowPlotter.o EflowPlotter_cc.so FileReader.o FileReader_cc.so HistoRetriever.o HistoRetriever_cc.so MCDataComparer.o MCDataComparer_cc.so ${TREEDIR}/*.so
+	${COMPILER} Plot.cc -o $@ MainAnalyzer.o MainAnalyzer_cc.so TreeAnalyzer.o TreeAnalyzer_cc.so ProfileAnalyzer.o ProfileAnalyzer_cc.so CalibAnalyzer.o CalibAnalyzer_cc.so EflowPlotter.o EflowPlotter_cc.so FileReader.o FileReader_cc.so HistoRetriever.o HistoRetriever_cc.so MCDataComparer.o MCDataComparer_cc.so ${TREEDIR}/*.so ${CFLAGS} ${LIBS}
 
 MainAnalyzer_cc.so :
 	${ROOT} Build.cc+
@@ -31,6 +31,9 @@ TreeAnalyzer.o : TreeAnalyzer.cc TreeAnalyzer.h
 
 ProfileAnalyzer.o : ProfileAnalyzer.cc ProfileAnalyzer.h
 	${COMPILER} -c ProfileAnalyzer.cc ${CFLAGS}
+
+CalibAnalyzer.o : CalibAnalyzer.cc CalibAnalyzer.h
+	${COMPILER} -c CalibAnalyzer.cc ${CFLAGS}
 
 EflowPlotter.o : EflowPlotter.cc EflowPlotter.h
 	${COMPILER} -c EflowPlotter.cc ${CFLAGS}

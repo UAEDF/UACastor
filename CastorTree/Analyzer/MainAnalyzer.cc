@@ -39,6 +39,12 @@ void MainAnalyzer::makeHistoProfile(TString inputdir, TString regexpstr, bool is
 
 }
 
+void MainAnalyzer::makeHistoCalib(TString inputdir, TString regexpstr, double cmenergy) {
+
+  TObjArray *files = reader_.getFileList(inputdir,regexpstr);
+  calibanalyzer_.Loop(inputdir,files,cmenergy);
+
+}
 
 
 void MainAnalyzer::makeHistos(TString inputdir, TString regexpstr, bool isData, double cmenergy) {
@@ -85,103 +91,257 @@ void MainAnalyzer::plotSingleHistos(TString outputfile, TString selectname) {
 	}
 }
 
+
+void MainAnalyzer::plotScaleHisto(TString inputdir,TString regexpstr,TString selectname) {
+  
+  //-- reset canvas vector
+  canvasvector_.clear();
+  
+  TObjArray* filelist = reader_.getFileList(inputdir,regexpstr);	
+  TIter next(filelist);
+  TObjString* itfile = 0;
+  
+  std::vector<TString> filenamelist;
+  std::vector<std::vector<TH1F*> > histolist;
+  std::vector<std::vector<double> > entrylist;
+
+  //-- loop over files
+  while((itfile = (TObjString*)next())) {
+    
+    std::vector<TH1F*> histo = histogetter_.getHistos(inputdir+itfile->GetString());
+    
+    std::vector<TH1F*> selhisto;
+    selhisto.clear();
+    
+    std::vector<double> nentry;
+    nentry.clear();
+    
+    //-- loop to get selected histos
+    for (unsigned int i = 0; i < histo.size(); i++) {
+      
+      TString name = histo[i]->GetTitle();
+      
+      if (!name.Contains(selectname)) continue;
+      
+      selhisto.push_back(histo[i]);
+      nentry.push_back(histo[i]->GetEntries());
+    }
+    
+    histolist.push_back(selhisto);
+    entrylist.push_back(nentry);
+    filenamelist.push_back(itfile->GetString());
+  }
+
+  //-- compute the weight
+
+  unsigned int ifile_data;
+  std::vector<std::vector<double> > weightlist;
+
+  for (unsigned int ifile = 0; ifile <histolist.size(); ifile++) {
+    if(filenamelist[ifile].Contains("data")) ifile_data = ifile;
+  }
+
+  for (unsigned int ifile = 0; ifile <histolist.size(); ifile++) {
+    
+    std::vector<double> weight;
+    weight.clear();
+    
+    for (unsigned int ihisto = 0; ihisto < histolist[0].size(); ihisto++) {
+      weight.push_back(entrylist[ifile_data][ihisto] / entrylist[ifile][ihisto]);
+    }
+
+    weightlist.push_back(weight);
+  }
+
+  //-- print some information
+
+  for (unsigned int ifile = 0; ifile <histolist.size(); ifile++) {
+
+    cout<<endl<<"file: "<<filenamelist[ifile].Data()<<endl;
+
+    for (unsigned int ihisto = 0; ihisto < histolist[0].size(); ihisto++) {
+
+      cout<<"histo : "<<histolist[ifile][ihisto]->GetTitle()<<" entries: "<<entrylist[ifile][ihisto]<<" weight: "<<weightlist[ifile][ihisto]<<endl;
+    }
+  }
+  
+  //-- scale histograms
+
+  for (unsigned int ifile = 0; ifile <histolist.size(); ifile++) {
+
+    for (unsigned int ihisto = 0; ihisto < histolist[0].size(); ihisto++) {
+
+      histolist[ifile][ihisto]->Scale(weightlist[ifile][ihisto]);
+
+    }
+  }
+
+  //-- plot everything
+
+  TCanvas *c[histolist[0].size()];
+  setPlotStyle();
+  
+  //-- loop over histos
+  for (unsigned int ihisto = 0; ihisto < histolist[0].size(); ihisto++) { 
+    
+    double max = 0;
+    double min = 10000000;
+    
+    //-- loop over files to calculate min and max in y
+    for (unsigned int ifile = 0; ifile <histolist.size(); ifile++) { 
+      double tempmax = histolist[ifile][ihisto]->GetBinContent(histolist[ifile][ihisto]->GetMaximumBin());
+      double tempmin = histolist[ifile][ihisto]->GetBinContent(histolist[ifile][ihisto]->GetMinimumBin());
+      if (tempmax >= max) max = tempmax;
+      if (tempmin <= min) min = tempmin;
+    }
+	  
+    if (max-min > 1000 && min == 0) min = 0.001;
+    if (max-min < 1000) min = 0;
+    
+    // std::cout << "min = " << min << " max = " << max << std::endl;
+    
+    Char_t cname[50];
+    sprintf(cname,"%s",histolist[0][ihisto]->GetName());
+    
+    c[ihisto] = new TCanvas(cname,histolist[0][ihisto]->GetTitle());
+    c[ihisto]->Divide(1,2);
+    
+    TPad *p1 = (TPad*)c[ihisto]->cd(1);
+    p1->SetPad(0.0,0.2,1,1);
+    if (max-min > 1000) p1->SetLogy();
+	
+    //-- loop over files to plot them
+    for (unsigned int ifile = 0; ifile < histolist.size(); ifile++) { 
+      
+      histolist[ifile][ihisto]->GetYaxis()->SetRangeUser(min,max*1.2);
+      histolist[ifile][ihisto]->SetLineColor(ifile+1);
+      if (ifile==0) histolist[ifile][ihisto]->SetLineWidth(3);
+      if (ifile==0) histolist[ifile][ihisto]->Draw("elp");
+      if (ifile!=0) histolist[ifile][ihisto]->Draw("elpsame");
+    }
+		
+    //-- get info for legend
+
+    std::vector<TString> initial_title;
+    
+    //-- loop over files to retrieve initial title
+    for (unsigned int ifile = 0; ifile < histolist.size(); ifile++)
+      initial_title.push_back(histolist[ifile][ihisto]->GetTitle());
+    
+    //-- loop over files to set file title to the histo
+    for (unsigned int ifile = 0; ifile < histolist.size(); ifile++) 
+      histolist[ifile][ihisto]->SetTitle(filenamelist[ifile]);
+    
+    TPad *p2 = (TPad*)c[ihisto]->cd(2);
+    p2->SetPad(0.0,0.0,1,0.2);	
+    TLegend *legend = new TLegend(0.1,0.1,0.90,0.90);
+    legend->SetMargin(0.1);
+    legend->SetFillColor(kWhite);
+    
+    //-- loop over files to plot the legends
+    for (unsigned int ifile = 0; ifile < histolist.size(); ifile++)  
+      legend->AddEntry(histolist[ifile][ihisto],histolist[ifile][ihisto]->GetTitle(),"lpf");
+    
+    legend->Draw();
+    
+    //-- loop over files to set back initial title
+    for (unsigned int ifile = 0; ifile < histolist.size(); ifile++)
+      histolist[ifile][ihisto]->SetTitle(initial_title[ifile]);
+    
+    canvasvector_.push_back(c[ihisto]);
+    if(ihisto == histolist[0].size() - 1) c[ihisto]->WaitPrimitive();
+  }
+  
+}
+
 void MainAnalyzer::plotHistos(TString inputdir,TString regexpstr, TString selectname) {
-	
-	// reset canvas vector
-	canvasvector_.clear();
-	
-	TObjArray *files = reader_.getFileList(inputdir,regexpstr);
-	
-	std::vector<std::vector<TH1F*> > allhistovector;
-	
-	TIter       next(files); 
-	TObjString* fn = 0;
-	std::vector<TString> files_string;
-	
-	while((fn = (TObjString*)next())) {
-		std::vector<TH1F*> histovector = histogetter_.getHistos(inputdir+fn->GetString());
-		std::vector<TH1F*> selectedhistos;
-		selectedhistos.clear();
-		
-		for (unsigned int i=0;i<histovector.size();i++) {
-			TString name = histovector[i]->GetTitle();
-			if (name.Contains(selectname)) selectedhistos.push_back(histovector[i]);
-		}
-		
-		allhistovector.push_back(selectedhistos);
-		files_string.push_back(fn->GetString());
-	}
-	
-	
-	TCanvas *c[allhistovector[0].size()];
-	
-	// set plot styles
-	gStyle->SetOptStat(111111);
-	gStyle->SetCanvasBorderMode(0);
-	gStyle->SetCanvasColor(kWhite);
-	gStyle->SetPadBorderMode(0);
-	gStyle->SetPadColor(kWhite);
-	gStyle->SetTitleFillColor(kWhite);
-	gStyle->SetStatColor(kWhite);
-	
-	// plot everything
-	for (unsigned int i=0;i<allhistovector[0].size();i++) { // loop over number of histos
-		
-		double max = 0;
-		double min = 10000000;
-		for (unsigned int j=0;j<allhistovector.size();j++) { // loop over number of files
-			// calculate min and max ranges
-			double tempmax = allhistovector[j][i]->GetBinContent(allhistovector[j][i]->GetMaximumBin());
-			double tempmin = allhistovector[j][i]->GetBinContent(allhistovector[j][i]->GetMinimumBin());
-			if (tempmax >= max) max = tempmax;
-			if (tempmin <= min) min = tempmin;
-		}
+  
+  // reset canvas vector
+  canvasvector_.clear();
+  
+  TObjArray *files = reader_.getFileList(inputdir,regexpstr);
+  
+  std::vector<std::vector<TH1F*> > allhistovector;
+  
+  TIter       next(files); 
+  TObjString* fn = 0;
+  std::vector<TString> files_string;
+  
+  while((fn = (TObjString*)next())) {
+    std::vector<TH1F*> histovector = histogetter_.getHistos(inputdir+fn->GetString());
+    std::vector<TH1F*> selectedhistos;
+    selectedhistos.clear();
+    
+    for (unsigned int i=0;i<histovector.size();i++) {
+      TString name = histovector[i]->GetTitle();
+      if (name.Contains(selectname)) selectedhistos.push_back(histovector[i]);
+    }
+    
+    allhistovector.push_back(selectedhistos);
+    files_string.push_back(fn->GetString());
+  }
+  
+  
+  TCanvas *c[allhistovector[0].size()];
+  setPlotStyle(); // set plot style
 
-		if (max-min > 1000 && min == 0) min = 0.001;
-		if (max-min < 1000) min = 0;
-
-		//std::cout << "min = " << min << " max = " << max << std::endl;
-		
-		Char_t cname[50];
-		sprintf(cname,"c_%s",allhistovector[0][i]->GetName());
-		c[i] = new TCanvas(cname,allhistovector[0][i]->GetTitle());
-		c[i]->Divide(1,2);
-		TPad *p1 = (TPad*)c[i]->cd(1);
-		p1->SetPad(0.0,0.2,1,1);
-		if (max-min > 1000) p1->SetLogy();
-		
-		for (unsigned int j=0;j<allhistovector.size();j++) { // loop over number of files
-			allhistovector[j][i]->GetYaxis()->SetRangeUser(min,max*1.2);
-			allhistovector[j][i]->SetLineColor(j+1);
-			if (j==0) allhistovector[j][i]->SetLineWidth(3);
-			if (j==0) allhistovector[j][i]->Draw("elp");
-			if (j!=0) allhistovector[j][i]->Draw("elpsame");
-		}
-		
-		// get info for legend
-		TString initial_title = allhistovector[0][i]->GetTitle();
-		for (unsigned int j=0;j<allhistovector.size();j++) { // loop over number of files
-			allhistovector[j][i]->SetTitle(files_string[j]);
-		}
-		
-		TPad *p2 = (TPad*)c[i]->cd(2);
-		p2->SetPad(0.0,0.0,1,0.2);	
-		TLegend *legend = new TLegend(0.1,0.1,0.90,0.90);
-		legend->SetMargin(0.1);
-		legend->SetFillColor(kWhite);
-		
-		for (unsigned int j=0;j<allhistovector.size();j++) { // loop over number of files
-			legend->AddEntry(allhistovector[j][i],allhistovector[j][i]->GetTitle(),"lpf");
-		}
-		legend->Draw();
-		
-		// set back initial title to first histogram
-		allhistovector[0][i]->SetTitle(initial_title);
-
-		canvasvector_.push_back(c[i]);
-		if(i == allhistovector[0].size() - 1) c[i]->WaitPrimitive();
-	}
-	
+  // plot everything
+  for (unsigned int i=0;i<allhistovector[0].size();i++) { // loop over number of histos
+    
+    double max = 0;
+    double min = 10000000;
+    for (unsigned int j=0;j<allhistovector.size();j++) { // loop over number of files
+      // calculate min and max ranges
+      double tempmax = allhistovector[j][i]->GetBinContent(allhistovector[j][i]->GetMaximumBin());
+      double tempmin = allhistovector[j][i]->GetBinContent(allhistovector[j][i]->GetMinimumBin());
+      if (tempmax >= max) max = tempmax;
+      if (tempmin <= min) min = tempmin;
+    }
+    
+    if (max-min > 1000 && min == 0) min = 0.001;
+    if (max-min < 1000) min = 0;
+    
+    //std::cout << "min = " << min << " max = " << max << std::endl;
+    
+    Char_t cname[50];
+    sprintf(cname,"c_%s",allhistovector[0][i]->GetName());
+    c[i] = new TCanvas(cname,allhistovector[0][i]->GetTitle());
+    c[i]->Divide(1,2);
+    TPad *p1 = (TPad*)c[i]->cd(1);
+    p1->SetPad(0.0,0.2,1,1);
+    if (max-min > 1000) p1->SetLogy();
+    
+    for (unsigned int j=0;j<allhistovector.size();j++) { // loop over number of files
+      allhistovector[j][i]->GetYaxis()->SetRangeUser(min,max*1.2);
+      allhistovector[j][i]->SetLineColor(j+1);
+      if (j==0) allhistovector[j][i]->SetLineWidth(3);
+      if (j==0) allhistovector[j][i]->Draw("elp");
+      if (j!=0) allhistovector[j][i]->Draw("elpsame");
+    }
+    
+    // get info for legend
+    TString initial_title = allhistovector[0][i]->GetTitle();
+    for (unsigned int j=0;j<allhistovector.size();j++) { // loop over number of files
+      allhistovector[j][i]->SetTitle(files_string[j]);
+    }
+    
+    TPad *p2 = (TPad*)c[i]->cd(2);
+    p2->SetPad(0.0,0.0,1,0.2);
+    TLegend *legend = new TLegend(0.1,0.1,0.90,0.90);
+    legend->SetMargin(0.1);
+    legend->SetFillColor(kWhite);
+    
+    for (unsigned int j=0;j<allhistovector.size();j++) { // loop over number of files
+      legend->AddEntry(allhistovector[j][i],allhistovector[j][i]->GetTitle(),"lpf");
+    }
+    legend->Draw();
+    
+    // set back initial title to first histogram
+    allhistovector[0][i]->SetTitle(initial_title);
+    
+    canvasvector_.push_back(c[i]);
+    if(i == allhistovector[0].size() - 1) c[i]->WaitPrimitive();
+  }
 }
 
 void MainAnalyzer::compareMCData(TString inputdir,TString regexpstr, TString selectname) {
@@ -220,10 +380,10 @@ void MainAnalyzer::compareMCData(TString inputdir,TString regexpstr, TString sel
 	
 }
 
-void MainAnalyzer::saveAllCanvas(TString inputdir,TString name) {
+void MainAnalyzer::saveAllCanvasPDF(TString inputdir,TString name) {
   
-  cout<<"begin to save canvas"<<endl;
-
+  cout<<endl<<"begin to save canvas"<<endl;
+  
   TString file_pdf = TString(inputdir) + TString("plot_") + TString(name) + TString(".pdf");
   
   canvasvector_[0]->Print(TString(TString(file_pdf)+TString("[")).Data());
@@ -239,10 +399,47 @@ void MainAnalyzer::saveAllCanvas(TString inputdir,TString name) {
     cname.Append(".png");
     c->SaveAs(cname);
   }
-
+  
   canvasvector_[0]->Print(TString(TString(file_pdf)+TString("]")).Data());
   cout<<"canvas saved !"<<endl;
 }
+
+void MainAnalyzer::saveAllCanvas(TString inputdir,TString name) {
+  
+  cout<<"begin to save canvas"<<endl;
+  
+  TString file_pdf = TString(inputdir) + TString("plot_") + TString(name) + TString(".pdf");
+  
+  canvasvector_[0]->Print(TString(TString(file_pdf)+TString("[")).Data());
+  
+  for (unsigned int i=0;i<canvasvector_.size();i++) {
+    TCanvas *c = canvasvector_[i];
+    canvasvector_[i]->Print(file_pdf.Data());
+    TString cname;
+    cname.Append(inputdir);
+    cname.Append(c->GetName());
+    cname.Append("_");
+    cname.Append(name);
+    cname.Append(".png");
+    c->SaveAs(cname);
+  }
+  
+  canvasvector_[0]->Print(TString(TString(file_pdf)+TString("]")).Data());
+  cout<<"canvas saved !"<<endl;
+}
+
+void MainAnalyzer::setPlotStyle() {
+
+  //-- set plot styles
+  gStyle->SetOptStat(111111);
+  gStyle->SetCanvasBorderMode(0);
+  gStyle->SetCanvasColor(kWhite);
+  gStyle->SetPadBorderMode(0);
+  gStyle->SetPadColor(kWhite);
+  gStyle->SetTitleFillColor(kWhite);
+  gStyle->SetStatColor(kWhite);
+}
+
 
 void MainAnalyzer::setCMSStyle(){
 	

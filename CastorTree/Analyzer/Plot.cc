@@ -34,8 +34,8 @@ int main(int argc, char *argv[]) {
 
   MainAnalyzer* m = new MainAnalyzer();
 
-  m->plotHistos("../Result/",rootfile,title);
-  m->saveAllCanvas("../Plot/",globalname);
+  m->plotScaleHisto("../Result/",rootfile,title);
+  m->saveAllCanvasPDF("../Plot/",globalname);
 
   delete m;
   

@@ -38,6 +38,9 @@
 #pragma link C++ class MyJet+;
 #pragma link C++ class vector<MyJet>+;
 
+#pragma link C++ class MyTrackJet+;
+#pragma link C++ class vector<MyTrackJet>+;
+
 #pragma link C++ class MyDiJet+;
 
 #pragma link C++ class MyCaloTower+;

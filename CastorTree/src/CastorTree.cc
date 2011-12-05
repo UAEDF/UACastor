@@ -44,6 +44,8 @@ CastorTree::CastorTree(const edm::ParameterSet& iConfig) {
   CaloJetColl_ = iConfig.getParameter<edm::InputTag>("CaloJetColl");
   CaloJetId_ = iConfig.getParameter<edm::InputTag>("CaloJetId");
   GenJetColl_  = iConfig.getParameter<edm::InputTag>("GenJetColl");
+  ChargedGenJetColl_  = iConfig.getParameter<edm::InputTag>("ChargedGenJetColl");
+  TrackJetColl_  = iConfig.getParameter<edm::InputTag>("TrackJetColl");
 
   //-- needed to retrieve JEC
   PFJetJEC_ = iConfig.getParameter<string>("PFJetJEC");
@@ -99,6 +101,7 @@ void CastorTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   if(StoreGenKine) GetGenKin(iEvent);
   if(StoreGenPart) GetGenPart(iEvent,iSetup);
   if(StoreGenJet) GetGenJet(iEvent,GenJetColl_,GenJet);
+  if(StoreGenJet) GetGenJet(iEvent,ChargedGenJetColl_,ChargedGenJet);
 
   //-- Reco Vertex Information
   GetBeamSpot(iEvent);
@@ -113,10 +116,12 @@ void CastorTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   //-- Central Jet Information
   GetRecoPFJet(iEvent,iSetup,pfJet);
   GetCentralPFDiJet(pfJet,pfDiJet);
-
+  
   GetRecoCaloJet(iEvent,iSetup,caloJet);
   GetCentralCaloDiJet(caloJet,caloDiJet);
 
+  GetRecoTrackJet(iEvent,trackJet);
+  
   //-- CaloTower Information
   GetCaloTower(iEvent,caloTower);
   
@@ -140,6 +145,7 @@ void CastorTree::beginJob() {
   if(StoreGenPart) tree->Branch("GenPart",&GenPart);
   if(StoreGenPart) tree->Branch("simVertex",&simVertex);
   if(StoreGenJet) tree->Branch("GenJet",&GenJet);
+  if(StoreGenJet) tree->Branch("ChargedGenJet",&ChargedGenJet);
 
   //-- Reco Vertex Information
   tree->Branch("beamSpot",&beamSpot);
@@ -154,6 +160,7 @@ void CastorTree::beginJob() {
   //-- Central Jet Information 
   tree->Branch("pfJet",&pfJet);
   tree->Branch("caloJet",&caloJet);
+  tree->Branch("trackJet",&trackJet);
 
   tree->Branch("pfDiJet",&pfDiJet);
   tree->Branch("caloDiJet",&caloDiJet);

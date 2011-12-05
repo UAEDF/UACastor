@@ -1,4 +1,3 @@
-
 import FWCore.ParameterSet.Config as cms
 
 # use 7TeV PFJetID cuts
@@ -20,7 +19,6 @@ process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
     # take json from grid
     )
-
 )
 
 # magnetic field
@@ -60,14 +58,27 @@ process.CastorTowerReco.inputprocess = "rechitcorrector"
 
 process.castorInvalidDataFilter = cms.EDFilter("CastorInvalidDataFilter")
 
+#  track jet
+process.load('UACastor.CastorTree.UEAnalysisTracks_cfi')
+process.load('UACastor.CastorTree.UEAnalysisJetsSISCone_cfi')
+process.load("QCDAnalysis.UEAnalysis.UEAnalysisParticles_cfi")
+
+#print "DzTrVtxMax = ",process.SisCone5TracksJet500.DzTrVtxMax
+#print "DxyTrVtxMax = ",process.SisCone5TracksJet500.DxyTrVtxMax
+
+process.SisCone5TracksJet500.DzTrVtxMax = cms.double(1000)
+process.SisCone5TracksJet500.DxyTrVtxMax = cms.double(1000)
+process.chargeParticles.cut = cms.string('charge != 0 & pt > 0.5 & status = 1')
+
 # Final Tree
 process.TFileService = cms.Service("TFileService",fileName = cms.string("CastorTree_data_MinBias_Commissioning10-May19ReReco-v1_7TeV_RECOwithCorrector.root"))
 
-# Event Reconstruction (need to be updated)
+# Event Reconstruction 
 process.castortree = cms.EDAnalyzer('CastorTree',
 
    StoreGenKine = cms.bool(False),                                 
    StoreGenPart = cms.bool(False),
+   StoreGenJet = cms.bool(False),
    StoreCastorDigi = cms.bool(False),
    StoreCastorJet = cms.bool(True),                                
 
@@ -96,6 +107,11 @@ process.castortree = cms.EDAnalyzer('CastorTree',
    CaloJetJEC = cms.string('ak5CaloL2L3Residual'), # L2L3Residual JEC should be applied to data only 
    CaloJetJECunc = cms.string('AK5Calo'),
 
+   GenJetColl = cms.InputTag('ak5GenJets'),
+                                    
+   TrackJetColl = cms.InputTag('SisCone5TracksJet500'),
+   ChargedGenJetColl = cms.InputTag('SisCone5ChgGenJet500'),                                 
+                                    
    CaloTowerColl = cms.InputTag('towerMaker','','RECO'),
                                     
    TightPFJetID_Parameters = TightPFJetID_Parameters7TeV_Ref,
@@ -113,6 +129,6 @@ process.castortree = cms.EDAnalyzer('CastorTree',
 process.physDeclpath = cms.Path(process.physDecl)
 process.noscrapingpath = cms.Path(process.noscraping)
 process.castorInvalidDataFilterpath = cms.Path(process.castorInvalidDataFilter)
-
+process.recotrackjet = cms.Path(process.UEAnalysisTracks*process.SisCone5TracksJet500)
 process.recopath = cms.Path(process.rechitcorrector*process.CastorFullReco)
 process.tree = cms.EndPath(process.castortree)

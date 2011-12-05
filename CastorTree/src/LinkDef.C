@@ -11,6 +11,7 @@
 #include "./MyGenJet.h"
 #include "./MyHLTrig.h"
 #include "./MyJet.h"
+#include "./MyTrackJet.h"
 #include "./MyJetPtSorter.h"
 #include "./MyL1Trig.h"
 #include "./MyPart.h"
@@ -57,6 +58,9 @@
 
 #pragma link C++ class MyJet+;
 #pragma link C++ class vector<MyJet>+;
+
+#pragma link C++ class MyTrackJet+;
+#pragma link C++ class vector<MyTrackJet>+;
 
 #pragma link C++ class MyDiJet+;
 

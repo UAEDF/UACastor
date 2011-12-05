@@ -16,6 +16,7 @@ rootcint -f eventdict.cc -c -I${PWD}/../../.. \
 	    ./MyCastorTower.h \
             ./MyCastorJet.h \
             ./MyJet.h \
+            ./MyTrackJet.h \
             ./MyDiJet.h \
             ./MyCaloTower.h \
             ../interface/LinkDef.h

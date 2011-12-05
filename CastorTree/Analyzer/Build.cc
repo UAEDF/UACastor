@@ -14,6 +14,7 @@
   gROOT->ProcessLine(".L ../src/MyCastorTower.cc+");
   gROOT->ProcessLine(".L ../src/MyDiJet.cc+");
   gROOT->ProcessLine(".L ../src/MyJet.cc+");
+  gROOT->ProcessLine(".L ../src/MyTrackJet.cc+");
   //gROOT->ProcessLine(".L ../src/MyJetPtSorter.cc+");
   gROOT->ProcessLine(".L ../src/MySimVertex.cc+");
   gROOT->ProcessLine(".L ../src/MyHLTrig.cc+"); 
@@ -23,6 +24,7 @@
   gROOT->ProcessLine(".L ./TreeAnalyzer.cc+");
   gROOT->ProcessLine(".L ./ProfileAnalyzer.cc+");
   gROOT->ProcessLine(".L ./CalibAnalyzer.cc+");
+  gROOT->ProcessLine(".L ./ModulationAnalyzer.cc+");
   gROOT->ProcessLine(".L ./MCDataComparer.cc+");
   gROOT->ProcessLine(".L ./EflowPlotter.cc+");
   gROOT->ProcessLine(".L ./MainAnalyzer.cc+");

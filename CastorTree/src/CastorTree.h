@@ -56,6 +56,7 @@ using namespace std;
 #include "DataFormats/JetReco/interface/Jet.h"
 #include "DataFormats/JetReco/interface/PFJet.h"
 #include "./MyJet.h"
+#include "./MyTrackJet.h"
 #include "./MyDiJet.h"
 
 //-- Castor 
@@ -114,6 +115,8 @@ class CastorTree : public edm::EDAnalyzer {
   Bool_t GetTightCaloJetId(const MyJet&);
   void GetCentralCaloDiJet(const vector<MyJet>&, MyDiJet&);
 
+  virtual void GetRecoTrackJet(const edm::Event&, vector<MyTrackJet>&);
+
   void GetCaloTower(const edm::Event&, vector<MyCaloTower>&);
 
   void CheckPtSorting(vector<MyJet>&);
@@ -145,6 +148,9 @@ class CastorTree : public edm::EDAnalyzer {
   edm::InputTag CaloJetColl_;
   edm::InputTag CaloJetId_;
   edm::InputTag GenJetColl_;
+  
+  edm::InputTag TrackJetColl_;
+  edm::InputTag ChargedGenJetColl_;
 
   //-- needed to retrieve JEC
   std::string PFJetJEC_;
@@ -189,6 +195,7 @@ class CastorTree : public edm::EDAnalyzer {
   vector<MyGenPart> GenPart;
   MySimVertex simVertex;
   vector<MyGenJet> GenJet;
+  vector<MyGenJet> ChargedGenJet;
 
   //-- Reco Vertex Information
   MyBeamSpot beamSpot;
@@ -203,8 +210,10 @@ class CastorTree : public edm::EDAnalyzer {
   //-- Central Jet Information
   vector<MyJet> pfJet;
   vector<MyJet> caloJet;
+  vector<MyTrackJet> trackJet;
   MyDiJet pfDiJet;
   MyDiJet caloDiJet;
+
 
   //-- CaloTower Information
   vector<MyCaloTower> caloTower;

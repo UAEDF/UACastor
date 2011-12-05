@@ -46,6 +46,7 @@ extern void G__set_cpp_environmenteventdict();
 #include "./MyCastorTower.h"
 #include "./MyCastorJet.h"
 #include "./MyJet.h"
+#include "./MyTrackJet.h"
 #include "./MyDiJet.h"
 #include "./MyCaloTower.h"
 #include <algorithm>
@@ -106,6 +107,7 @@ extern G__linked_taginfo G__eventdictLN_MyCastorRecHit;
 extern G__linked_taginfo G__eventdictLN_MyCastorTower;
 extern G__linked_taginfo G__eventdictLN_MyCastorJet;
 extern G__linked_taginfo G__eventdictLN_MyJet;
+extern G__linked_taginfo G__eventdictLN_MyTrackJet;
 extern G__linked_taginfo G__eventdictLN_MyDiJet;
 extern G__linked_taginfo G__eventdictLN_MyCaloTower;
 extern G__linked_taginfo G__eventdictLN_vectorlEMyGenJetcOallocatorlEMyGenJetgRsPgR;
@@ -129,6 +131,9 @@ extern G__linked_taginfo G__eventdictLN_reverse_iteratorlEvectorlEMyCastorJetcOa
 extern G__linked_taginfo G__eventdictLN_vectorlEMyJetcOallocatorlEMyJetgRsPgR;
 extern G__linked_taginfo G__eventdictLN_vectorlEMyJetcOallocatorlEMyJetgRsPgRcLcLiterator;
 extern G__linked_taginfo G__eventdictLN_reverse_iteratorlEvectorlEMyJetcOallocatorlEMyJetgRsPgRcLcLiteratorgR;
+extern G__linked_taginfo G__eventdictLN_vectorlEMyTrackJetcOallocatorlEMyTrackJetgRsPgR;
+extern G__linked_taginfo G__eventdictLN_vectorlEMyTrackJetcOallocatorlEMyTrackJetgRsPgRcLcLiterator;
+extern G__linked_taginfo G__eventdictLN_reverse_iteratorlEvectorlEMyTrackJetcOallocatorlEMyTrackJetgRsPgRcLcLiteratorgR;
 extern G__linked_taginfo G__eventdictLN_vectorlEMyCaloTowercOallocatorlEMyCaloTowergRsPgR;
 extern G__linked_taginfo G__eventdictLN_vectorlEMyCaloTowercOallocatorlEMyCaloTowergRsPgRcLcLiterator;
 extern G__linked_taginfo G__eventdictLN_reverse_iteratorlEvectorlEMyCaloTowercOallocatorlEMyCaloTowergRsPgRcLcLiteratorgR;
@@ -142,4 +147,5 @@ typedef vector<MyCastorRecHit,allocator<MyCastorRecHit> > G__vectorlEMyCastorRec
 typedef vector<MyCastorTower,allocator<MyCastorTower> > G__vectorlEMyCastorTowercOallocatorlEMyCastorTowergRsPgR;
 typedef vector<MyCastorJet,allocator<MyCastorJet> > G__vectorlEMyCastorJetcOallocatorlEMyCastorJetgRsPgR;
 typedef vector<MyJet,allocator<MyJet> > G__vectorlEMyJetcOallocatorlEMyJetgRsPgR;
+typedef vector<MyTrackJet,allocator<MyTrackJet> > G__vectorlEMyTrackJetcOallocatorlEMyTrackJetgRsPgR;
 typedef vector<MyCaloTower,allocator<MyCaloTower> > G__vectorlEMyCaloTowercOallocatorlEMyCaloTowergRsPgR;

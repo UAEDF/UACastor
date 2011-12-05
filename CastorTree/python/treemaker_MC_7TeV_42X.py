@@ -19,24 +19,17 @@ process.source = cms.Source("PoolSource",
     duplicateCheckMode = cms.untracked.string("checkEachRealDataFile"),
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
- 
-
-'/store/user/hvanhaev/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_onlyEM_v1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_onlyEM_v1/be8c3cd8213bbe72824c2261376ee6b3/STEP2_RAW2DIGI_L1Reco_RECO_10_1_hsD.root',  
-'/store/user/hvanhaev/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_onlyEM_v1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_onlyEM_v1/be8c3cd8213bbe72824c2261376ee6b3/STEP2_RAW2DIGI_L1Reco_RECO_14_1_62I.root',  
-'/store/user/hvanhaev/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_onlyEM_v1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_onlyEM_v1/be8c3cd8213bbe72824c2261376ee6b3/STEP2_RAW2DIGI_L1Reco_RECO_2_1_Cju.root',  
-'/store/user/hvanhaev/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_onlyEM_v1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_onlyEM_v1/be8c3cd8213bbe72824c2261376ee6b3/STEP2_RAW2DIGI_L1Reco_RECO_6_1_6UA.root',
-'/store/user/hvanhaev/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_onlyEM_v1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_onlyEM_v1/be8c3cd8213bbe72824c2261376ee6b3/STEP2_RAW2DIGI_L1Reco_RECO_11_1_CfW.root',  
-'/store/user/hvanhaev/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_onlyEM_v1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_onlyEM_v1/be8c3cd8213bbe72824c2261376ee6b3/STEP2_RAW2DIGI_L1Reco_RECO_15_1_zwZ.root',  
-'/store/user/hvanhaev/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_onlyEM_v1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_onlyEM_v1/be8c3cd8213bbe72824c2261376ee6b3/STEP2_RAW2DIGI_L1Reco_RECO_3_1_7Dp.root',  
-'/store/user/hvanhaev/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_onlyEM_v1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_onlyEM_v1/be8c3cd8213bbe72824c2261376ee6b3/STEP2_RAW2DIGI_L1Reco_RECO_7_1_Q7e.root',
-'/store/user/hvanhaev/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_onlyEM_v1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_onlyEM_v1/be8c3cd8213bbe72824c2261376ee6b3/STEP2_RAW2DIGI_L1Reco_RECO_12_1_Ny3.root',  
-'/store/user/hvanhaev/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_onlyEM_v1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_onlyEM_v1/be8c3cd8213bbe72824c2261376ee6b3/STEP2_RAW2DIGI_L1Reco_RECO_16_1_CkH.root',  
-'/store/user/hvanhaev/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_onlyEM_v1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_onlyEM_v1/be8c3cd8213bbe72824c2261376ee6b3/STEP2_RAW2DIGI_L1Reco_RECO_4_1_BVo.root',  
-'/store/user/hvanhaev/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_onlyEM_v1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_onlyEM_v1/be8c3cd8213bbe72824c2261376ee6b3/STEP2_RAW2DIGI_L1Reco_RECO_8_1_EFd.root',
-'/store/user/hvanhaev/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_onlyEM_v1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_onlyEM_v1/be8c3cd8213bbe72824c2261376ee6b3/STEP2_RAW2DIGI_L1Reco_RECO_13_1_Nwn.root',  
-'/store/user/hvanhaev/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_onlyEM_v1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_onlyEM_v1/be8c3cd8213bbe72824c2261376ee6b3/STEP2_RAW2DIGI_L1Reco_RECO_1_1_fRJ.root',   
-'/store/user/hvanhaev/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_onlyEM_v1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_onlyEM_v1/be8c3cd8213bbe72824c2261376ee6b3/STEP2_RAW2DIGI_L1Reco_RECO_5_1_5jx.root',  
-'/store/user/hvanhaev/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_onlyEM_v1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_onlyEM_v1/be8c3cd8213bbe72824c2261376ee6b3/STEP2_RAW2DIGI_L1Reco_RECO_9_1_m8w.root',
+    
+    '/store/user/roland/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_goodbeamspot_step1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_step3/8d8cbcc1587a8af4059aaf45490c7623/STEP2_RAW2DIGI_L1Reco_RECO_10_1_JEu.root',
+    '/store/user/roland/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_goodbeamspot_step1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_step3/8d8cbcc1587a8af4059aaf45490c7623/STEP2_RAW2DIGI_L1Reco_RECO_11_1_3lB.root',
+    '/store/user/roland/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_goodbeamspot_step1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_step3/8d8cbcc1587a8af4059aaf45490c7623/STEP2_RAW2DIGI_L1Reco_RECO_1_1_XaV.root',
+    '/store/user/roland/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_goodbeamspot_step1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_step3/8d8cbcc1587a8af4059aaf45490c7623/STEP2_RAW2DIGI_L1Reco_RECO_12_1_P8i.root',
+    '/store/user/roland/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_goodbeamspot_step1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_step3/8d8cbcc1587a8af4059aaf45490c7623/STEP2_RAW2DIGI_L1Reco_RECO_13_1_Pmo.root',
+    '/store/user/roland/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_goodbeamspot_step1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_step3/8d8cbcc1587a8af4059aaf45490c7623/STEP2_RAW2DIGI_L1Reco_RECO_14_1_GRA.root',
+    '/store/user/roland/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_goodbeamspot_step1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_step3/8d8cbcc1587a8af4059aaf45490c7623/STEP2_RAW2DIGI_L1Reco_RECO_15_1_PwV.root',
+    '/store/user/roland/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_goodbeamspot_step1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_step3/8d8cbcc1587a8af4059aaf45490c7623/STEP2_RAW2DIGI_L1Reco_RECO_16_1_sdJ.root',
+    '/store/user/roland/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_goodbeamspot_step1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_step3/8d8cbcc1587a8af4059aaf45490c7623/STEP2_RAW2DIGI_L1Reco_RECO_17_1_YYL.root',
+    '/store/user/roland/MinBias_TuneD6T_7TeV_pythia6_cff_py_GEN_SIM_START311_V2_goodbeamspot_step1/MinBias_TuneD6T_7TeV_pythia6_cff_py_Step3_START42_V11_step3/8d8cbcc1587a8af4059aaf45490c7623/STEP2_RAW2DIGI_L1Reco_RECO_18_1_bmd.root',
     ))
 
 # magnetic field
@@ -55,10 +48,22 @@ process.load('JetMETCorrections.Configuration.DefaultJEC_cff')
 
 process.load("Configuration.StandardSequences.RawToDigi_cff")
 
+# track jet
+process.load('UACastor.CastorTree.UEAnalysisTracks_cfi')
+process.load('UACastor.CastorTree.UEAnalysisJetsSISCone_cfi')
+process.load("QCDAnalysis.UEAnalysis.UEAnalysisParticles_cfi")
+
+#print "DzTrVtxMax = ",process.SisCone5TracksJet500.DzTrVtxMax
+#print "DxyTrVtxMax = ",process.SisCone5TracksJet500.DxyTrVtxMax
+
+process.SisCone5TracksJet500.DzTrVtxMax = cms.double(1000)
+process.SisCone5TracksJet500.DxyTrVtxMax = cms.double(1000)
+process.chargeParticles.cut = cms.string('charge != 0 & pt > 0.5 & status = 1')
+
 # Final Tree
 process.TFileService = cms.Service("TFileService",fileName = cms.string("CastorTree_MC_7TeV_42X_Pythia6_D6T_onlyEM.root"))
 
-# Event Reconstruction (need to be updated)
+# Event Reconstruction 
 process.castortree = cms.EDAnalyzer('CastorTree',
 
    StoreGenKine = cms.bool(True),                                 
@@ -93,6 +98,9 @@ process.castortree = cms.EDAnalyzer('CastorTree',
    CaloJetJECunc = cms.string('AK5Calo'),
 
    GenJetColl = cms.InputTag('ak5GenJets','','HLT'),
+
+   TrackJetColl = cms.InputTag('SisCone5TracksJet500'),
+   ChargedGenJetColl = cms.InputTag('SisCone5ChgGenJet500'),
                                     
    CaloTowerColl = cms.InputTag('towerMaker','','RECO'),
                                     
@@ -109,6 +117,7 @@ process.castortree = cms.EDAnalyzer('CastorTree',
 
 # list of processes
 process.physDeclpath = cms.Path(process.physDecl)
-
+process.recotrackjet = cms.Path(process.UEAnalysisTracks*process.SisCone5TracksJet500)
+process.chargedgenjet = cms.Path(process.UEAnalysisParticles*process.SisCone5ChgGenJet500)
 process.tree = cms.EndPath(process.castortree)
 

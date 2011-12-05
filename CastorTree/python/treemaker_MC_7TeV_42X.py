@@ -61,7 +61,7 @@ process.SisCone5TracksJet500.DxyTrVtxMax = cms.double(1000)
 process.chargeParticles.cut = cms.string('charge != 0 & pt > 0.5 & status = 1')
 
 # Final Tree
-process.TFileService = cms.Service("TFileService",fileName = cms.string("CastorTree_MC_7TeV_42X_Pythia6_D6T_onlyEM.root"))
+process.TFileService = cms.Service("TFileService",fileName = cms.string("CastorTree_MC_7TeV_42X_Pythia6_D6T_beamtilt.root"))
 
 # Event Reconstruction 
 process.castortree = cms.EDAnalyzer('CastorTree',

@@ -150,7 +150,8 @@ void CastorTree::GetRecoCaloJet(const edm::Event& iEvent, const edm::EventSetup&
   }
 
   if(CaloJetDebug) {
-    cout<<"unsorted jets collection: "<<endl;
+    cout<<endl<<"unsorted jets collection: "<<endl;
+    cout<<"number of jets: "<<JetVector.size()<<endl<<endl;
     CheckPtSorting(JetVector);
   }  
 
@@ -158,7 +159,8 @@ void CastorTree::GetRecoCaloJet(const edm::Event& iEvent, const edm::EventSetup&
   stable_sort(JetVector.begin(),JetVector.end(),MyJetPtSorter());
 
   if(CaloJetDebug) {
-    cout<<"sorted jets collection (pt_cal): "<<endl;
+    cout<<endl<<"sorted jets collection (pt_cal): "<<endl;
+    cout<<"number of jets: "<<JetVector.size()<<endl<<endl;
     CheckPtSorting(JetVector);
   }
 	
@@ -248,7 +250,7 @@ Bool_t CastorTree::GetTightCaloJetId(const MyJet& myjet) {
 }
 
 void CastorTree::CheckPtSorting(vector<MyJet>& JetVector) {
-  int ijet = 1;
+  int ijet = 0;
   for (vector<MyJet>::const_iterator jet = JetVector.begin(); jet != JetVector.end(); jet++)
     cout<<"jet: "<<++ijet<<" pt cal: "<<jet->pt_cal<<" e cal: "<<jet->e_cal<<endl;
 }

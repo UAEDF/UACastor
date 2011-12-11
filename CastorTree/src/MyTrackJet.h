@@ -3,7 +3,7 @@
 
 #include "MyPart.h"
 
-class MyTrackJet : public MyPart {
+class MyTrackJet : public TObject {
 
  public :
   MyTrackJet();
@@ -11,6 +11,15 @@ class MyTrackJet : public MyPart {
 
   virtual void Print();
   virtual void Reset();
+
+  //-- raw jet variables
+  Double_t e_raw,pt_raw,eta_raw,phi_raw,px_raw,py_raw,pz_raw;
+
+  //-- correction - uncertainty
+  Double_t jec, jec_unc;
+
+  //-- corrected jet variables
+  Double_t e_cal,pt_cal,eta_cal,phi_cal,px_cal,py_cal,pz_cal;
 
   //-- number of tracks
   Int_t ntrack;

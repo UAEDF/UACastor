@@ -50,14 +50,14 @@ process.load("Configuration.StandardSequences.RawToDigi_cff")
 
 # track jet
 process.load('UACastor.CastorTree.UEAnalysisTracks_cfi')
-process.load('UACastor.CastorTree.UEAnalysisJetsSISCone_cfi')
+process.load('UACastor.CastorTree.UEAnalysisJetsAntiKt_cfi')
 process.load("QCDAnalysis.UEAnalysis.UEAnalysisParticles_cfi")
 
-#print "DzTrVtxMax = ",process.SisCone5TracksJet500.DzTrVtxMax
-#print "DxyTrVtxMax = ",process.SisCone5TracksJet500.DxyTrVtxMax
+#print "DzTrVtxMax = ",process.ak5TrackJets500.DzTrVtxMax
+#print "DxyTrVtxMax = ",process.ak5TrackJets500.DxyTrVtxMax
 
-process.SisCone5TracksJet500.DzTrVtxMax = cms.double(1000)
-process.SisCone5TracksJet500.DxyTrVtxMax = cms.double(1000)
+process.ak5TrackJets500.DzTrVtxMax = cms.double(1000)
+process.ak5TrackJets500.DxyTrVtxMax = cms.double(1000)
 process.chargeParticles.cut = cms.string('charge != 0 & pt > 0.5 & status = 1')
 
 # Final Tree
@@ -89,18 +89,21 @@ process.castortree = cms.EDAnalyzer('CastorTree',
    CastorJetID = cms.InputTag('ak7CastorJetID','','RECO'), 
 
    PFJetColl = cms.InputTag('ak5PFJets', '', 'RECO'),
-   PFJetJEC = cms.string('ak5PFL2L3Residual'),    # L2L3Residual JEC should be applied to data only
+   PFJetJEC = cms.string('ak5PFL2L3'),    # L2L3Residual JEC should be applied to data only
    PFJetJECunc = cms.string('AK5PF'),
                                     
    CaloJetColl = cms.InputTag('ak5CaloJets','','RECO'),
    CaloJetId = cms.InputTag('ak5JetID','','RECO'),
-   CaloJetJEC = cms.string('ak5CaloL2L3Residual'), # L2L3Residual JEC should be applied to data only 
+   CaloJetJEC = cms.string('ak5CaloL2L3'), # L2L3Residual JEC should be applied to data only 
    CaloJetJECunc = cms.string('AK5Calo'),
 
    GenJetColl = cms.InputTag('ak5GenJets','','HLT'),
 
-   TrackJetColl = cms.InputTag('SisCone5TracksJet500'),
-   ChargedGenJetColl = cms.InputTag('SisCone5ChgGenJet500'),
+   TrackJetColl = cms.InputTag('ak5TrackJets500'),
+   TrackJetJEC = cms.string('ak5TrackL2L3'),    # L2L3Residual JEC should be applied to data only
+   TrackJetJECunc = cms.string('AK5JPT'),
+                                   
+   ChargedGenJetColl = cms.InputTag('ak5ChgGenJets500'),
                                     
    CaloTowerColl = cms.InputTag('towerMaker','','RECO'),
                                     
@@ -117,7 +120,7 @@ process.castortree = cms.EDAnalyzer('CastorTree',
 
 # list of processes
 process.physDeclpath = cms.Path(process.physDecl)
-process.recotrackjet = cms.Path(process.UEAnalysisTracks*process.SisCone5TracksJet500)
-process.chargedgenjet = cms.Path(process.UEAnalysisParticles*process.SisCone5ChgGenJet500)
+process.recotrackjet = cms.Path(process.UEAnalysisTracks*process.ak5TrackJets500)
+process.chargedgenjet = cms.Path(process.UEAnalysisParticles*process.ak5ChgGenJets500)
 process.tree = cms.EndPath(process.castortree)
 

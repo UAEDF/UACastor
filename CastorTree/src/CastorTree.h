@@ -115,11 +115,12 @@ class CastorTree : public edm::EDAnalyzer {
   Bool_t GetTightCaloJetId(const MyJet&);
   void GetCentralCaloDiJet(const vector<MyJet>&, MyDiJet&);
 
-  virtual void GetRecoTrackJet(const edm::Event&, vector<MyTrackJet>&);
+  virtual void GetRecoTrackJet(const edm::Event&, const edm::EventSetup&, vector<MyTrackJet>&);
 
   void GetCaloTower(const edm::Event&, vector<MyCaloTower>&);
 
   void CheckPtSorting(vector<MyJet>&);
+  void CheckPtSorting(vector<MyTrackJet>&);
 
   //-- Modules to execute
 
@@ -155,10 +156,12 @@ class CastorTree : public edm::EDAnalyzer {
   //-- needed to retrieve JEC
   std::string PFJetJEC_;
   std::string CaloJetJEC_;
+  std::string TrackJetJEC_;
 
   //-- needed to retrieve JEC uncertainty
   std::string PFJetJECunc_;
   std::string CaloJetJECunc_;
+  std::string TrackJetJECunc_;
 
   //-- central jet selection
   edm::ParameterSet ParaSetTightPFJetID_;

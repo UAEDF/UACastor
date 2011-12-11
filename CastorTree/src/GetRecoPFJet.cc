@@ -143,7 +143,8 @@ void CastorTree::GetRecoPFJet(const edm::Event& iEvent, const edm::EventSetup& i
   }
 
   if(PFJetDebug) {
-    cout<<"unsorted jets collection: "<<endl;
+    cout<<endl<<"unsorted jets collection: "<<endl;
+    cout<<"number of jets: "<<JetVector.size()<<endl<<endl;
     CheckPtSorting(JetVector);
   }
 
@@ -151,7 +152,8 @@ void CastorTree::GetRecoPFJet(const edm::Event& iEvent, const edm::EventSetup& i
   stable_sort(JetVector.begin(),JetVector.end(),MyJetPtSorter());
 
   if(PFJetDebug) {
-    cout<<"sorted jets collection (pt_cal): "<<endl;
+    cout<<endl<<"sorted jets collection (pt_cal): "<<endl;
+    cout<<"number of jets: "<<JetVector.size()<<endl<<endl;
     CheckPtSorting(JetVector);
   }
 	

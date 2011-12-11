@@ -12,7 +12,7 @@ MyJet::~MyJet() { }
 
 void MyJet::Print() {
 
-  cout<<"central jet information: "<<endl;
+  cout<<endl<<"central jet information: "<<endl;
 
   cout<<"raw jet variables: "<<endl;
   cout<<"energy: "<<this->e_raw<<endl;

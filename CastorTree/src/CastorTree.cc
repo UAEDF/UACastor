@@ -43,17 +43,20 @@ CastorTree::CastorTree(const edm::ParameterSet& iConfig) {
   PFJetColl_ = iConfig.getParameter<edm::InputTag>("PFJetColl");
   CaloJetColl_ = iConfig.getParameter<edm::InputTag>("CaloJetColl");
   CaloJetId_ = iConfig.getParameter<edm::InputTag>("CaloJetId");
+  TrackJetColl_  = iConfig.getParameter<edm::InputTag>("TrackJetColl");
+
   GenJetColl_  = iConfig.getParameter<edm::InputTag>("GenJetColl");
   ChargedGenJetColl_  = iConfig.getParameter<edm::InputTag>("ChargedGenJetColl");
-  TrackJetColl_  = iConfig.getParameter<edm::InputTag>("TrackJetColl");
 
   //-- needed to retrieve JEC
   PFJetJEC_ = iConfig.getParameter<string>("PFJetJEC");
   CaloJetJEC_ = iConfig.getParameter<string>("CaloJetJEC");
+  TrackJetJEC_ = iConfig.getParameter<string>("TrackJetJEC");
 
   //-- needed to retrieve JEC uncertainty
   PFJetJECunc_ = iConfig.getParameter<string>("PFJetJECunc");
   CaloJetJECunc_ = iConfig.getParameter<string>("CaloJetJECunc");
+  TrackJetJECunc_ = iConfig.getParameter<string>("TrackJetJECunc");
 
   //-- central jet selection
   ParaSetTightPFJetID_ = iConfig.getParameter<edm::ParameterSet>("TightPFJetID_Parameters");
@@ -120,7 +123,7 @@ void CastorTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   GetRecoCaloJet(iEvent,iSetup,caloJet);
   GetCentralCaloDiJet(caloJet,caloDiJet);
 
-  GetRecoTrackJet(iEvent,trackJet);
+  GetRecoTrackJet(iEvent,iSetup,trackJet);
   
   //-- CaloTower Information
   GetCaloTower(iEvent,caloTower);

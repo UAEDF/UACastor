@@ -13,6 +13,7 @@
 #include "./MyJet.h"
 #include "./MyTrackJet.h"
 #include "./MyJetPtSorter.h"
+#include "./MyTrackJetPtSorter.h"
 #include "./MyL1Trig.h"
 #include "./MyPart.h"
 #include "./MySimVertex.h"

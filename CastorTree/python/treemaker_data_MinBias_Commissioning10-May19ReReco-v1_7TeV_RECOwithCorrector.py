@@ -60,14 +60,14 @@ process.castorInvalidDataFilter = cms.EDFilter("CastorInvalidDataFilter")
 
 #  track jet
 process.load('UACastor.CastorTree.UEAnalysisTracks_cfi')
-process.load('UACastor.CastorTree.UEAnalysisJetsSISCone_cfi')
+process.load('UACastor.CastorTree.UEAnalysisJetsAntiKt_cfi')
 process.load("QCDAnalysis.UEAnalysis.UEAnalysisParticles_cfi")
 
 #print "DzTrVtxMax = ",process.SisCone5TracksJet500.DzTrVtxMax
 #print "DxyTrVtxMax = ",process.SisCone5TracksJet500.DxyTrVtxMax
 
-process.SisCone5TracksJet500.DzTrVtxMax = cms.double(1000)
-process.SisCone5TracksJet500.DxyTrVtxMax = cms.double(1000)
+process.ak5TrackJets500.DzTrVtxMax = cms.double(1000)
+process.ak5TrackJets500.DxyTrVtxMax = cms.double(1000)
 process.chargeParticles.cut = cms.string('charge != 0 & pt > 0.5 & status = 1')
 
 # Final Tree
@@ -107,10 +107,13 @@ process.castortree = cms.EDAnalyzer('CastorTree',
    CaloJetJEC = cms.string('ak5CaloL2L3Residual'), # L2L3Residual JEC should be applied to data only 
    CaloJetJECunc = cms.string('AK5Calo'),
 
-   GenJetColl = cms.InputTag('ak5GenJets'),
+   GenJetColl = cms.InputTag('ak5GenJets','','HLT'),
                                     
-   TrackJetColl = cms.InputTag('SisCone5TracksJet500'),
-   ChargedGenJetColl = cms.InputTag('SisCone5ChgGenJet500'),                                 
+   TrackJetColl = cms.InputTag('ak5TrackJets500'),
+   TrackJetJEC = cms.string('ak5TrackL2L3Residual'),    # L2L3Residual JEC should be applied to data only
+   TrackJetJECunc = cms.string('AK5JPT'),
+      
+   ChargedGenJetColl = cms.InputTag('ak5ChgGenJets500'),                                 
                                     
    CaloTowerColl = cms.InputTag('towerMaker','','RECO'),
                                     
@@ -129,6 +132,6 @@ process.castortree = cms.EDAnalyzer('CastorTree',
 process.physDeclpath = cms.Path(process.physDecl)
 process.noscrapingpath = cms.Path(process.noscraping)
 process.castorInvalidDataFilterpath = cms.Path(process.castorInvalidDataFilter)
-process.recotrackjet = cms.Path(process.UEAnalysisTracks*process.SisCone5TracksJet500)
+process.recotrackjet = cms.Path(process.UEAnalysisTracks*process.ak5TrackJets500)
 process.recopath = cms.Path(process.rechitcorrector*process.CastorFullReco)
 process.tree = cms.EndPath(process.castortree)

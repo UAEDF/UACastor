@@ -17,8 +17,8 @@ FastjetWithAreaPU = cms.PSet(
 
 ak5ChgGenJets500 = ak5GenJets.clone( 
 src = cms.InputTag("chargeParticles"),
-jetPtMin       = cms.double(1.0),
-inputEtMin     = cms.double(0.5)
+jetPtMin       = cms.double(0.3),
+inputEtMin     = cms.double(0.3)
 )
 
 
@@ -26,8 +26,8 @@ inputEtMin     = cms.double(0.5)
 
 ak5TrackJets500 = ak5TrackJets.clone(
 src = cms.InputTag("goodTracks"),
-jetPtMin       = cms.double(1.0),
-inputEtMin     = cms.double(0.5)
+jetPtMin       = cms.double(0.3),
+inputEtMin     = cms.double(0.3)
 )
 
 UEAnalysisNeededJets = cms.Sequence(ak5ChgGenJets500*ak5TrackJets500)

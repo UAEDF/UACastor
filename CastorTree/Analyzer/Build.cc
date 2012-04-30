@@ -23,8 +23,15 @@
   gROOT->ProcessLine(".L ./HistoRetriever.cc+");
   gROOT->ProcessLine(".L ./TreeAnalyzer.cc+");
   gROOT->ProcessLine(".L ./ProfileAnalyzer.cc+");
+  gROOT->ProcessLine(".L ./EflowAnalyzer.cc+");
+  gROOT->ProcessLine(".L ./GeometryAnalyzer.cc+");
+  gROOT->ProcessLine(".L ./ShowerAnalyzer.cc+");
+  gROOT->ProcessLine(".L ./SignalCutAnalyzer.cc+");
   gROOT->ProcessLine(".L ./CalibAnalyzer.cc+");
   gROOT->ProcessLine(".L ./ModulationAnalyzer.cc+");
+  gROOT->ProcessLine(".L ./TriggerAnalyzer.cc+");
+  gROOT->ProcessLine(".L ./ThresholdAnalyzer.cc+");
+  gROOT->ProcessLine(".L ./CutHadronLevelAnalyzer.cc+");
   gROOT->ProcessLine(".L ./MCDataComparer.cc+");
   gROOT->ProcessLine(".L ./EflowPlotter.cc+");
   gROOT->ProcessLine(".L ./MainAnalyzer.cc+");

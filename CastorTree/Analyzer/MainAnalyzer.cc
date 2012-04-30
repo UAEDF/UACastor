@@ -34,8 +34,33 @@ MainAnalyzer::~MainAnalyzer() {
 
 void MainAnalyzer::makeHistoProfile(TString inputdir, TString regexpstr, bool isData, double cmenergy) {
 
+
   TObjArray *files = reader_.getFileList(inputdir,regexpstr);
   profileanalyzer_.Loop(inputdir,files,isData,cmenergy);
+
+}
+
+void MainAnalyzer::makeHistoEflow(TString inputdir, TString regexpstr, TString type, double cmenergy, bool dosubsample) {
+
+
+  TObjArray *files = reader_.getFileList(inputdir,regexpstr);
+  eflowanalyzer_.Loop(inputdir,files,type,cmenergy,dosubsample);
+
+}
+
+void MainAnalyzer::makeHistoGeometry(TString inputdir, TString regexpstr, TString type, double cmenergy) {
+
+
+  TObjArray *files = reader_.getFileList(inputdir,regexpstr);
+  geometryanalyzer_.Loop(inputdir,files,type,cmenergy);
+
+}
+
+void MainAnalyzer::makeHistoShower(TString inputdir, TString regexpstr, TString type, double cmenergy) {
+
+
+  TObjArray *files = reader_.getFileList(inputdir,regexpstr);
+  showeranalyzer_.Loop(inputdir,files,type,cmenergy);
 
 }
 
@@ -46,6 +71,40 @@ void MainAnalyzer::makeHistoCalib(TString inputdir, TString regexpstr, double cm
 
 }
 
+void MainAnalyzer::makeHistoModulation(TString inputdir, TString regexpstr, double cmenergy) {
+
+  TObjArray *files = reader_.getFileList(inputdir,regexpstr);
+  modanalyzer_.Loop(inputdir,files,cmenergy);
+
+}
+
+void MainAnalyzer::makeHistoTrigger(TString inputdir, TString regexpstr, bool isData, double cmenergy, int subsample) {
+
+
+  TObjArray *files = reader_.getFileList(inputdir,regexpstr);
+  triggeranalyzer_.Loop(inputdir,files,isData,cmenergy,subsample);
+}
+
+void MainAnalyzer::makeHistoThreshold(TString inputdir, TString regexpstr, bool isData, double cmenergy) {
+
+
+  TObjArray *files = reader_.getFileList(inputdir,regexpstr);
+  thresholdanalyzer_.Loop(inputdir,files,isData,cmenergy);
+}
+
+void MainAnalyzer::makeHistoSignalCut(TString inputdir, TString regexpstr, bool isData, double cmenergy) {
+
+
+  TObjArray *files = reader_.getFileList(inputdir,regexpstr);
+  signalcutanalyzer_.Loop(inputdir,files,isData,cmenergy);
+}
+
+void MainAnalyzer::makeHistoCutHadronLevel(TString inputdir, TString regexpstr, double cmenergy) {
+
+
+  TObjArray *files = reader_.getFileList(inputdir,regexpstr);
+  cuthadronlevelanalyzer_.Loop(inputdir,files,cmenergy);
+}
 
 void MainAnalyzer::makeHistos(TString inputdir, TString regexpstr, bool isData, double cmenergy) {
 
@@ -92,7 +151,7 @@ void MainAnalyzer::plotSingleHistos(TString outputfile, TString selectname) {
 }
 
 
-void MainAnalyzer::plotScaleHisto(TString inputdir,TString regexpstr,TString selectname) {
+void MainAnalyzer::plotScaleHisto(TString inputdir,TString regexpstr,TString selectname,double weight_manual) {
   
   //-- reset canvas vector
   canvasvector_.clear();
@@ -134,7 +193,7 @@ void MainAnalyzer::plotScaleHisto(TString inputdir,TString regexpstr,TString sel
 
   //-- compute the weight
 
-  unsigned int ifile_data;
+  unsigned int ifile_data = -999;
   std::vector<std::vector<double> > weightlist;
 
   for (unsigned int ifile = 0; ifile <histolist.size(); ifile++) {
@@ -147,7 +206,17 @@ void MainAnalyzer::plotScaleHisto(TString inputdir,TString regexpstr,TString sel
     weight.clear();
     
     for (unsigned int ihisto = 0; ihisto < histolist[0].size(); ihisto++) {
-      weight.push_back(entrylist[ifile_data][ihisto] / entrylist[ifile][ihisto]);
+      
+      if(weight_manual == 0) {
+	if(ifile_data!= -999 && entrylist[ifile][ihisto] != 0) weight.push_back(entrylist[ifile_data][ihisto] / entrylist[ifile][ihisto]);
+	else weight.push_back(1.);
+      }
+      else {
+	double weight_tmp;
+	if(ifile == ifile_data) weight_tmp = 1;
+	else weight_tmp = weight_manual;
+	weight.push_back(weight_tmp);
+      }
     }
 
     weightlist.push_back(weight);
@@ -161,7 +230,10 @@ void MainAnalyzer::plotScaleHisto(TString inputdir,TString regexpstr,TString sel
 
     for (unsigned int ihisto = 0; ihisto < histolist[0].size(); ihisto++) {
 
-      cout<<"histo : "<<histolist[ifile][ihisto]->GetTitle()<<" entries: "<<entrylist[ifile][ihisto]<<" weight: "<<weightlist[ifile][ihisto]<<endl;
+      if(weight_manual == 0) 
+	cout<<"histo : "<<histolist[ifile][ihisto]->GetTitle()<<" entries: "<<entrylist[ifile][ihisto]<<" weight: "<<weightlist[ifile][ihisto]<<endl;
+      else
+	cout<<"histo : "<<histolist[ifile][ihisto]->GetTitle()<<" entries: "<<entrylist[ifile][ihisto]<<" manual weight: "<<weightlist[ifile][ihisto]<<endl;
     }
   }
   
@@ -194,11 +266,17 @@ void MainAnalyzer::plotScaleHisto(TString inputdir,TString regexpstr,TString sel
       if (tempmax >= max) max = tempmax;
       if (tempmin <= min) min = tempmin;
     }
-	  
-    if (max-min > 1000 && min == 0) min = 0.001;
-    if (max-min < 1000) min = 0;
-    
-    // std::cout << "min = " << min << " max = " << max << std::endl;
+	
+    bool log_scale = false;
+
+    if (max-min > 1000) {
+      log_scale = true;
+      if(min == 0) min = 0.001;
+    }
+
+    if(!log_scale) min = 0; 
+
+    //-- std::cout << "min = " << min << " max = " << max << std::endl;
     
     Char_t cname[50];
     sprintf(cname,"%s",histolist[0][ihisto]->GetName());
@@ -208,14 +286,20 @@ void MainAnalyzer::plotScaleHisto(TString inputdir,TString regexpstr,TString sel
     
     TPad *p1 = (TPad*)c[ihisto]->cd(1);
     p1->SetPad(0.0,0.2,1,1);
-    if (max-min > 1000) p1->SetLogy();
+    if (log_scale) p1->SetLogy();
 	
+    int icolor = 0;
+
     //-- loop over files to plot them
     for (unsigned int ifile = 0; ifile < histolist.size(); ifile++) { 
       
       histolist[ifile][ihisto]->GetYaxis()->SetRangeUser(min,max*1.2);
-      histolist[ifile][ihisto]->SetLineColor(ifile+1);
-      if (ifile==0) histolist[ifile][ihisto]->SetLineWidth(3);
+      icolor = ifile+1;
+      if(icolor == 3) icolor = 9;
+      histolist[ifile][ihisto]->SetLineColor(icolor);
+      // if (ifile==0) histolist[ifile][ihisto]->SetLineWidth(3);
+
+      histolist[ifile][ihisto]->SetLineWidth(2);
       if (ifile==0) histolist[ifile][ihisto]->Draw("elp");
       if (ifile!=0) histolist[ifile][ihisto]->Draw("elpsame");
     }

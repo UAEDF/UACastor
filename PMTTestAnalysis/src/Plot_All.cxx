@@ -8,8 +8,7 @@
 #include <TCanvas.h>
 #include <TGraphErrors.h>
 using namespace std;
-
-void Plot_All(string filename="ExampleFiles/cpt_sf_CA1579_2012_05_13_09_56_20.cpt", int color=kBlue, string points="p"){
+void Plot_All(string filename="ExampleFiles/cpt_sf_CA1579_2012_05_13_09_56_20_mod.cpt", int color=kBlue, string points="p"){
   FILE *f = fopen(filename.c_str(), "r");
   if(f==NULL) {
     std::cout << "can't find file\n";
@@ -17,23 +16,24 @@ void Plot_All(string filename="ExampleFiles/cpt_sf_CA1579_2012_05_13_09_56_20.cp
   };
   int imin = 0;
   int imax = 0;
-//  float time, tmp;
+  //  float time, tmp;
   float measure_time, time, hv, cath, adut, aref;
-    bool stop = false;
+
+  bool stop = false;
   while(!feof(f) && !stop){
-//    fscanf(f, "%f %E %E %E", &time, &tmp, &tmp, &tmp);
+    //    fscanf(f, "%f %E %E %E", &time, &tmp, &tmp, &tmp);
     fscanf(f,"%19s %f %f %f %f %f", &measure_time, &time, &hv, &cath, &adut, &aref);
     if(time > 0){imin++;}
-//    if(time > 1000){stop = true;}
+    //    if(time > 1000){stop = true;}
     imax++;
-   };
-   imax-=2;
+  };
+  imax-=2;
 
   int count = imin;
-//  int count = imax-imin;
-  std::cout << "count"  << count 
-	    << "; min " << imin 
-	    << "; max " << imax << std::endl;
+  //  int count = imax-imin;
+  std::cout << "count"  << count
+            << "; min " << imin
+            << "; max " << imax << std::endl;
   if(count<1) exit(1);
 
   float * arrmeasure_time   = new float[count];
@@ -42,36 +42,36 @@ void Plot_All(string filename="ExampleFiles/cpt_sf_CA1579_2012_05_13_09_56_20.cp
   float * arrcath           = new float[count];
   float * arradut           = new float[count];
   float * arraref           = new float[count];
-  const float errcath = 0.05E-5; // 0.5 uV  
+  const float errcath = 0.05E-5; // 0.5 uV
   fseek(f,0,SEEK_SET);
 
-/*  int i = 0;
-  while(i<imin){
-    fscanf(f,"%19s %f %f %f %f %f", &measure_time, &time, &hv, &cath, &adut, &aref);
-    i++;
-  };
+  /*  int i = 0;
+      while(i<imin){
+      fscanf(f,"%19s %f %f %f %f %f", &measure_time, &time, &hv, &cath, &adut, &aref);
+      i++;
+      };
 
 
-  TH1F         * h = new TH1F("h","h", 500, 0.70e-3, 0.74e-3);
+      TH1F         * h = new TH1F("h","h", 500, 0.70e-3, 0.74e-3);
 
-  for(i=imin; i<imax; i++){
-    int pos = i-imin;
-    if ( pos < count ){
+      for(i=imin; i<imax; i++){
+      int pos = i-imin;
+      if ( pos < count ){
       fscanf(f, "%f %E %E %E", arrtime+pos, arranode+pos, arrref+pos, arrcath+pos);
-      if(*(arrcath+pos)>1.0) *(arrcath+pos)=0; 
-      if(*(arrcath+pos)<-1.0) *(arrcath+pos)=0; 
+      if(*(arrcath+pos)>1.0) *(arrcath+pos)=0;
+      if(*(arrcath+pos)<-1.0) *(arrcath+pos)=0;
       arrcatherr[pos] = errcath;
       h->Fill(*(arrcath+pos));
-    };
-  };
-*/
+      };
+      };
+  */
   for(int i=0; i<imax; i++){
     int pos = i;
-   fscanf(f,"%19s %f %f %f %f %f", arrmeasure_time+pos, arrtime+pos, arrhv+pos, arrcath+pos, arradut+pos, arraref+pos);
+    fscanf(f,"%19s %f %f %f %f %f", arrmeasure_time+pos, arrtime+pos, arrhv+pos, arrcath+pos, arradut+pos, arraref+pos);
   };
 
   fclose(f);
-  
+
   TGraphErrors * ghv = new TGraphErrors(count, arrtime, arrhv,  0, 0);
   ghv->SetTitle("High voltage"); ghv->SetMarkerColor(color);
   TGraphErrors * gcath = new TGraphErrors(count, arrtime, arrcath, 0, 0);

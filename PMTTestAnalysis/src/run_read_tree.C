@@ -5,5 +5,5 @@ gROOT -> ProcessLine(".L read_tree.C++");
 
 string tree_in = "test_tree.root";
 
-Read_tree(tree_in);
+read_tree(tree_in);
 }

@@ -12,17 +12,35 @@ TFile f(tree_in.c_str());
 TTree *tree = (TTree*)f.Get("Castor_PMT_Caracterization_2012");
 
 //declaring variables
-float cath_800V_led1_up;
+TString pmt;
+float cath_800V_led1_up, cath_800V_led1_down;
+
+float cath_800V_led2_up, cath_800V_led2_down;
+
+float cath_800V_led3_up, cath_800V_led3_down;
+
+float cath_800V_led4_up, cath_800V_led4_down;
 
 //setting the branches
-TBranch *cath_800V_led1_up = tree.GetBranch("Cath_800V_led1_up");
+tree->SetBranchAddress("PMT",&pmt); 
+tree->SetBranchAddress("Cath_800V_led1_up",&cath_800V_led1_up); 
+tree->SetBranchAddress("Cath_800V_led1_down",&cath_800V_led1_down); 
+tree->SetBranchAddress("Cath_800V_led2_up",&cath_800V_led2_up); 
+tree->SetBranchAddress("Cath_800V_led2_down",&cath_800V_led2_down); 
+tree->SetBranchAddress("Cath_800V_led3_up",&cath_800V_led3_up); 
+tree->SetBranchAddress("Cath_800V_led3_down",&cath_800V_led3_down);
+tree->SetBranchAddress("Cath_800V_led4_up",&cath_800V_led4_up); 
+tree->SetBranchAddress("Cath_800V_led4_down",&cath_800V_led4_down); 
 
 //loop over the measurements
 int tests = tree->GetEntries();
 for (int i = 0; i < tests ;i++)
 {
-cout<<i+1<<endl;
-
+cout<<pmt<<endl;
+tree->GetEvent(i);
+cout<<"800V"<<endl;
+cout<<cath_800V_led1_up<<" "<<cath_800V_led2_up<<" "<<cath_800V_led3_up<<" "<<cath_800V_led3_up<<endl;
+cout<<cath_800V_led1_down<<" "<<cath_800V_led2_down<<" "<<cath_800V_led3_up<<" "<<cath_800V_led3_up<<endl;
 }
 
 

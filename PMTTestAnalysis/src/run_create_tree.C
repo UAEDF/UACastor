@@ -1,6 +1,7 @@
 void run_create_tree()
 {
 gROOT -> Reset();
+gROOT -> ProcessLine(".L LeakageSubtractor.cc++");
 gROOT -> ProcessLine(".L create_tree.C++");
 
 string files_in[6];

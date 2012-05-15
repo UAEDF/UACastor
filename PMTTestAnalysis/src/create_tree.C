@@ -3,6 +3,9 @@
 #include "TTree.h"
 #include "TFile.h"
 
+//user
+#include "LeakageSubtractor.h"
+
 void calc_dif(size_t cent_val, std::vector<int> *vec_hv, std::vector<float> *vec_cath, std::vector<float> *vec_adut, std::vector<float> *vec_aref, std::vector<int> *vec_led, float& cath, float& anode, float& ref)
 {
 

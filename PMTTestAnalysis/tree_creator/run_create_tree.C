@@ -15,5 +15,5 @@ int n_files = 6;
 
 string tree_out = "test_tree.root";
 
-Create_tree(files_in, n_files, tree_out);
+create_tree(files_in, n_files, tree_out);
 }

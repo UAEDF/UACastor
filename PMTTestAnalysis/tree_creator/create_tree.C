@@ -43,7 +43,7 @@ ref = vec_aref->at(cent_val+5) - vec_aref->at(cent_val-6);
 
 }
 
-void Create_tree(string *files_in, int n_files, string tree_out){
+void create_tree(string *files_in, int n_files, string tree_out){
 //variable declaration
 float cath, adut, aref;
 int entries, time, hv, led;

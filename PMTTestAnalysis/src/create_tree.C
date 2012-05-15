@@ -24,17 +24,51 @@ if (cent_val > 0)
 //cout<<"led begin = "<<vec_led->at(cent_val-5)<<endl;
 //cout<<"led end = "<<vec_led->at(cent_val+6)<<endl;
 
+float ave_cath_before = 0, ave_cath_after = 0;
+float ave_anode_before = 0, ave_anode_after = 0;
+float ave_ref_before = 0, ave_ref_after = 0;
+
+for (int i = 1; i <= 5; i++)
+{
+ave_cath_before = ave_cath_before + vec_cath->at(cent_val-1-i);
+//cout<<i<<" cath A = "<<vec_cath->at(cent_val-1-i)<<endl;
+ave_cath_after = ave_cath_after + vec_cath->at(cent_val+5+i);
+//cout<<i<<" cath B = "<<vec_cath->at(cent_val+5+i)<<endl;
+ave_anode_before = ave_anode_before + vec_adut->at(cent_val-1-i);
+//cout<<i<<" anode A = "<<vec_adut->at(cent_val-1-i)<<endl;
+ave_anode_after = ave_anode_after + vec_adut->at(cent_val+5+i);
+//cout<<i<<" anode B = "<<vec_adut->at(cent_val+5+i)<<endl;
+ave_ref_before = ave_ref_before + vec_aref->at(cent_val-1-i);
+cout<<i<<" ref A = "<<vec_aref->at(cent_val-1-i)<<endl;
+ave_ref_after = ave_ref_after + vec_aref->at(cent_val+5+i);
+//cout<<i<<" ref B = "<<vec_aref->at(cent_val+5+i)<<endl;
+}
+
+ave_cath_before = ave_cath_before/5.0;
+ave_cath_after = ave_cath_after/5.0;
+ave_anode_before = ave_anode_before/5.0;
+ave_anode_after = ave_anode_after/5.0;
+ave_ref_before = ave_ref_before/5.0;
+ave_ref_after = ave_ref_after/5.0;
+
+//cout<<"cath before = "<<ave_cath_before<<endl;
+//cout<<"cath after = "<<ave_cath_after<<endl;
+//cout<<"anode before = "<<ave_anode_before<<endl;
+//cout<<"anode after = "<<ave_anode_after<<endl;
+cout<<"ref before = "<<ave_ref_before<<endl;
+cout<<"ref after = "<<ave_ref_after<<endl;
+
 //calculate the gain
 if (vec_led->at(cent_val-1) == 0)
 {
-cath = vec_cath->at(cent_val-6) - vec_cath->at(cent_val+5);
-anode = vec_adut->at(cent_val-6) - vec_adut->at(cent_val+5);
+cath = ave_cath_after - ave_cath_before;
+anode = ave_anode_before - ave_anode_after;
 ref = vec_aref->at(cent_val-6) - vec_aref->at(cent_val+5);
 }
 if (vec_led->at(cent_val-1) > 0)
 {
-cath = vec_cath->at(cent_val+5) - vec_cath->at(cent_val-6);
-anode = vec_adut->at(cent_val+5) - vec_adut->at(cent_val-6);
+cath = ave_cath_before - ave_cath_after;
+anode = ave_anode_after - ave_anode_before;
 ref = vec_aref->at(cent_val+5) - vec_aref->at(cent_val-6);
 }
 

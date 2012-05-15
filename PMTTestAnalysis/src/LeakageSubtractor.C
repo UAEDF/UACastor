@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <iostream>
 
-LeakageSubtractor::LeakageSubtractor(std::vector<double> &current, const std::vector<double> &high_V, const std::vector<double> &time, const std::vector<double> &led, const double error=2.) : fVerbosity(1), fSize(-1), fX(time), fY(current), fHigh_V(high_V), fLed(led)
+LeakageSubtractor::LeakageSubtractor(const std::vector<double> &time, std::vector<double> &current, const std::vector<double> &high_V, const std::vector<double> &led, const double error) : fVerbosity(1), fSize(-1), fX(time), fY(current), fHigh_V(high_V), fLed(led)
 {
   //gSystem->Load("libMinuit2");
 

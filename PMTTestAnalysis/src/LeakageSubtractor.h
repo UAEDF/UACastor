@@ -1,8 +1,7 @@
 #ifndef LEAKAGE_SUBTRACTOR__H__
 #define LEAKAGE_SUBTRACTOR__H__
 
-#include <Minuit2/FCNBase.h>
-#include "Minuit2/FunctionMinimum.h"
+#include "Minuit2/FCNBase.h"
 #include "Minuit2/MnUserParameters.h"
 
 #include <vector>
@@ -25,7 +24,7 @@ class LeakageSubtractor
   void SetStartParameters();
 
  public:
-  LeakageSubtractor(std::vector<double> &current, const std::vector<double> &high_V, const std::vector<double> &time, const std::vector<double> &led, const double error);///Consgtructor. Add reference to the current. This will be modified. Also needed: time, the high voltage, and led.
+  LeakageSubtractor(const std::vector<double> &time, std::vector<double> &current, const std::vector<double> &high_V, const std::vector<double> &led, const double error=2.);///Constructor. Add reference to the current. This will be modified. Also needed: time, the high voltage, and led.
   ~LeakageSubtractor()
     {
     }///Destructor

@@ -3,6 +3,7 @@
 
 #include "Minuit2/FCNBase.h"
 #include "Minuit2/MnUserParameters.h"
+#include "TF1.h"
 
 #include <vector>
 #include <stdexcept>
@@ -13,18 +14,16 @@ class LeakageSubtractor
 
  private:
   int fVerbosity;
-  int fSize;
+ int fSize;
   ROOT::Minuit2::MnUserParameters theStartingValues;
-  const std::vector<double> &fX;
-  std::vector<double> &fY;
-  std::vector<double> fYe;
-  const std::vector<double> &fHigh_V;
-  const std::vector<double> &fLed;
-
-  void SetStartParameters();
+  const std::vector<int> &fX;
+  std::vector<float> &fY;
+  std::vector<float> fYe;
+  const std::vector<int> &fHigh_V;
+  const std::vector<int> &fLed;
 
  public:
-  LeakageSubtractor(const std::vector<double> &time, std::vector<double> &current, const std::vector<double> &high_V, const std::vector<double> &led, const double error=2.);///Constructor. Add reference to the current. This will be modified. Also needed: time, the high voltage, and led.
+  LeakageSubtractor(const std::vector<int> &time, std::vector<float> &current, const std::vector<int> &high_V, const std::vector<int> &led, const float error=3.e-12);///Constructor. Add reference to the current. This will be modified. Also needed: time, the high voltage, and led.
   ~LeakageSubtractor()
     {
     }///Destructor
@@ -33,23 +32,30 @@ class LeakageSubtractor
 };
 ///Fits and subtracts the exponential decay in kathode current. Peaks of LED light turned on are isolated by this. Set required voltage.
 
+
+
 class MyFCN : public ROOT::Minuit2::FCNBase
 {
 
  public:
 
- MyFCN(const std::vector<double>& x, const std::vector<double>& y, const std::vector<double>& ye, double a = 60., double tau = 450., double c = 80.) : fX(x), fY(y), fYe(ye), fA(a), fTau(tau), fC(c) {}
+ MyFCN(const std::vector<int>& x, const std::vector<float>& y, const std::vector<float>& ye, double a = 60., double tau = 450., double c = 80.) : fX(x), fY(y), fYe(ye), fA(a), fTau(tau), fC(c) {}
 
   double operator() (const std::vector<double> & parameters) const
   {
-    assert(parameters.size() % 3 == 0); //writes error if notes
+    assert(parameters.size() == 2); //writes error if notes
+    int size = int(fY.size());
+    assert(int(fX.size()) == size);
+    assert(int(fYe.size()) == size);
+    TF1 calculate("a","[0]+[1]/TMath::Power(x,2.)"); //copy because operator needs to be const
+    calculate.SetParameters(parameters[0],parameters[1]);
     double chi2 = 0.;
-    for(unsigned int n = 0; n < fX.size(); n++)
+    for(int n = 0; n < size; n++)
       {
         // Propagation of uncertainty. no correlation taken into account.
         // var= (sigma_meas² + sigma_usp1² + sigma_usp2² +...)
-        double resid = fY[n] - parameters[0] * exp(-fX[n]/parameters[1]) + parameters[2];
-        double var = fYe[n] * fYe[n];
+        double resid = double(fY[n]) - calculate(double(fX[n]));
+        double var = double(fYe[n]) * double(fYe[n]);
         if (var != 0)
           chi2 += resid * resid / var;
         else
@@ -65,9 +71,9 @@ class MyFCN : public ROOT::Minuit2::FCNBase
 
  private:
 
-  const std::vector<double>& fX;
-  const std::vector<double>& fY;
-  const std::vector<double>& fYe;
+  const std::vector<int>& fX;
+  const std::vector<float>& fY;
+  const std::vector<float>& fYe;
   double fA;
   double fTau;
   double fC;

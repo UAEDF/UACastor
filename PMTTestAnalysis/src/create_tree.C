@@ -39,7 +39,7 @@ ave_anode_before = ave_anode_before + vec_adut->at(cent_val-1-i);
 ave_anode_after = ave_anode_after + vec_adut->at(cent_val+5+i);
 //cout<<i<<" anode B = "<<vec_adut->at(cent_val+5+i)<<endl;
 ave_ref_before = ave_ref_before + vec_aref->at(cent_val-1-i);
-cout<<i<<" ref A = "<<vec_aref->at(cent_val-1-i)<<endl;
+//cout<<i<<" ref A = "<<vec_aref->at(cent_val-1-i)<<endl;
 ave_ref_after = ave_ref_after + vec_aref->at(cent_val+5+i);
 //cout<<i<<" ref B = "<<vec_aref->at(cent_val+5+i)<<endl;
 }
@@ -55,21 +55,21 @@ ave_ref_after = ave_ref_after/5.0;
 //cout<<"cath after = "<<ave_cath_after<<endl;
 //cout<<"anode before = "<<ave_anode_before<<endl;
 //cout<<"anode after = "<<ave_anode_after<<endl;
-cout<<"ref before = "<<ave_ref_before<<endl;
-cout<<"ref after = "<<ave_ref_after<<endl;
+//cout<<"ref before = "<<ave_ref_before<<endl;
+//cout<<"ref after = "<<ave_ref_after<<endl;
 
 //calculate the gain
 if (vec_led->at(cent_val-1) == 0)
 {
 cath = ave_cath_after - ave_cath_before;
 anode = ave_anode_before - ave_anode_after;
-ref = vec_aref->at(cent_val-6) - vec_aref->at(cent_val+5);
+ref = ave_ref_before - ave_ref_after;
 }
 if (vec_led->at(cent_val-1) > 0)
 {
 cath = ave_cath_before - ave_cath_after;
 anode = ave_anode_after - ave_anode_before;
-ref = vec_aref->at(cent_val+5) - vec_aref->at(cent_val-6);
+ref = ave_ref_after - ave_ref_before;
 }
 
 //check if it was correctly calculated

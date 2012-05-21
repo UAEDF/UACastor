@@ -117,6 +117,7 @@ int index_800V_led1_up, index_800V_led1_down;
 int index_800V_led2_up, index_800V_led2_down;
 int index_800V_led3_up, index_800V_led3_down;
 int index_800V_led4_up, index_800V_led4_down;
+int index_900V_led1_up, index_900V_led1_down;
 int index_1000V_led1_up, index_1000V_led1_down;
 int index_1200V_led1_up, index_1200V_led1_down;
 int index_1200V_led2_up, index_1200V_led2_down;
@@ -129,6 +130,7 @@ float cath_800V_led1_up, cath_800V_led1_down;
 float cath_800V_led2_up, cath_800V_led2_down;
 float cath_800V_led3_up, cath_800V_led3_down;
 float cath_800V_led4_up, cath_800V_led4_down;
+float cath_900V_led1_up, cath_900V_led1_down;
 float cath_1000V_led1_up, cath_1000V_led1_down;
 float cath_1200V_led1_up, cath_1200V_led1_down;
 float cath_1200V_led2_up, cath_1200V_led2_down;
@@ -141,6 +143,7 @@ float anode_800V_led1_up, anode_800V_led1_down;
 float anode_800V_led2_up, anode_800V_led2_down;
 float anode_800V_led3_up, anode_800V_led3_down;
 float anode_800V_led4_up, anode_800V_led4_down;
+float anode_900V_led1_up, anode_900V_led1_down;
 float anode_1000V_led1_up, anode_1000V_led1_down;
 float anode_1200V_led1_up, anode_1200V_led1_down;
 float anode_1200V_led2_up, anode_1200V_led2_down;
@@ -153,6 +156,7 @@ float ref_800V_led1_up, ref_800V_led1_down;
 float ref_800V_led2_up, ref_800V_led2_down;
 float ref_800V_led3_up, ref_800V_led3_down;
 float ref_800V_led4_up, ref_800V_led4_down;
+float ref_900V_led1_up, ref_900V_led1_down;
 float ref_1000V_led1_up, ref_1000V_led1_down;
 float ref_1200V_led1_up, ref_1200V_led1_down;
 float ref_1200V_led2_up, ref_1200V_led2_down;
@@ -165,6 +169,7 @@ float ee_800V_led1, qe_800V_led1;
 float ee_800V_led2, qe_800V_led2;
 float ee_800V_led3, qe_800V_led3;
 float ee_800V_led4, qe_800V_led4;
+float ee_900V_led1, qe_900V_led1;
 float ee_1000V_led1, qe_1000V_led1;
 float ee_1200V_led1, qe_1200V_led1;
 float ee_1200V_led2, qe_1200V_led2;
@@ -210,6 +215,12 @@ tree->Branch("Anode_800V_led4_up",&anode_800V_led4_up,"Anode Gain when switching
 tree->Branch("Anode_800V_led4_down",&anode_800V_led4_down,"Anode Gain when switching off led4 at 800V");
 tree->Branch("Reference_800V_led4_up",&ref_800V_led4_up,"Reference Gain when switching on led4 at 800V");
 tree->Branch("Reference_800V_led4_down",&ref_800V_led4_down,"Reference Gain when switching off led4 at 800V");
+tree->Branch("Cath_900V_led1_up",&cath_900V_led1_up,"Cathode Gain when switching on led1 at 900V");
+tree->Branch("Cath_900V_led1_down",&cath_900V_led1_down,"Cathode Gain when switching off led1 at 900V");
+tree->Branch("Anode_900V_led1_up",&anode_900V_led1_up,"Anode Gain when switching on led1 at 900V");
+tree->Branch("Anode_900V_led1_down",&anode_900V_led1_down,"Anode Gain when switching off led1 at 900V");
+tree->Branch("Reference_900V_led1_up",&ref_900V_led1_up,"Reference Gain when switching on led1 at 900V");
+tree->Branch("Reference_900V_led1_down",&ref_900V_led1_down,"Reference Gain when switching off led1 at 900V");
 tree->Branch("Cath_1000V_led1_up",&cath_1000V_led1_up,"Cathode Gain when switching on led1 at 1000V");
 tree->Branch("Cath_1000V_led1_down",&cath_1000V_led1_down,"Cathode Gain when switching off led1 at 1000V");
 tree->Branch("Anode_1000V_led1_up",&anode_1000V_led1_up,"Anode Gain when switching on led1 at 1000V");
@@ -260,6 +271,8 @@ tree->Branch("EE_800V_led3",&ee_800V_led3,"Eletrical effeciency for led3 at 800V
 tree->Branch("QE_800V_led3",&qe_800V_led3,"Quantum effeciency for led3 at 800V");
 tree->Branch("EE_800V_led4",&ee_800V_led4,"Eletrical effeciency for led4 at 800V");
 tree->Branch("QE_800V_led4",&qe_800V_led4,"Quantum effeciency for led4 at 800V");
+tree->Branch("EE_900V_led1",&ee_900V_led1,"Eletrical effeciency for led1 at 900V");
+tree->Branch("QE_900V_led1",&qe_900V_led1,"Quantum effeciency for led1 at 900V");
 tree->Branch("EE_1000V_led1",&ee_1000V_led1,"Eletrical effeciency for led1 at 1000V");
 tree->Branch("QE_1000V_led1",&qe_1000V_led1,"Quantum effeciency for led1 at 1000V");
 tree->Branch("EE_1200V_led1",&ee_1200V_led1,"Eletrical effeciency for led1 at 1200V");
@@ -314,6 +327,8 @@ index_800V_led3_up = 0;
 index_800V_led3_down = 0;
 index_800V_led4_up = 0;
 index_800V_led4_down = 0;
+index_900V_led1_up = 0;
+index_900V_led1_down = 0;
 index_1000V_led1_up = 0;
 index_1000V_led1_down = 0;
 index_1200V_led1_up = 0;
@@ -337,6 +352,8 @@ cath_800V_led3_up = 0;
 cath_800V_led3_down = 0;
 cath_800V_led4_up = 0;
 cath_800V_led4_down = 0;
+cath_900V_led1_up = 0;
+cath_900V_led1_down = 0;
 cath_1000V_led1_up = 0;
 cath_1000V_led1_down = 0;
 cath_1200V_led1_up = 0;
@@ -360,6 +377,8 @@ anode_800V_led3_up = 0;
 anode_800V_led3_down = 0;
 anode_800V_led4_up = 0;
 anode_800V_led4_down = 0;
+anode_900V_led1_up = 0;
+anode_900V_led1_down = 0;
 anode_1000V_led1_up = 0;
 anode_1000V_led1_down = 0;
 anode_1200V_led1_up = 0;
@@ -383,6 +402,8 @@ ref_800V_led3_up = 0;
 ref_800V_led3_down = 0;
 ref_800V_led4_up = 0;
 ref_800V_led4_down = 0;
+ref_900V_led1_up = 0;
+ref_900V_led1_down = 0;
 ref_1000V_led1_up = 0;
 ref_1000V_led1_down = 0;
 ref_1200V_led1_up = 0;
@@ -406,6 +427,8 @@ ee_800V_led3 = 0;
 qe_800V_led3 = 0;
 ee_800V_led4 = 0;
 qe_800V_led4 = 0;
+ee_900V_led1 = 0;
+qe_900V_led1 = 0;
 ee_1000V_led1 = 0;
 qe_1000V_led1 = 0;
 ee_1200V_led1 = 0;
@@ -460,12 +483,13 @@ cout<<endl;
 //finding the transition indexes
 for (int j=0; j < entries; j++)
 {
-if (vec_hv[j] < -20 and vec_hv[j] > -780) { cout<<"Unknown voltage : "<<vec_hv[j]<<endl; }
-if (vec_hv[j] < -820 and vec_hv[j] > -980) { cout<<"Unknown voltage : "<<vec_hv[j]<<endl; }
-if (vec_hv[j] < -1020 and vec_hv[j] > -1180) { cout<<"Unknown voltage : "<<vec_hv[j]<<endl; }
-if (vec_hv[j] < -1220 and vec_hv[j] > -1380) { cout<<"Unknown voltage : "<<vec_hv[j]<<endl; }
-if (vec_hv[j] < -1420 and vec_hv[j] > -1580) { cout<<"Unknown voltage : "<<vec_hv[j]<<endl; }
-if (vec_hv[j] < -1620) { cout<<"Unknown voltage : "<<vec_hv[j]<<endl; }
+if (vec_hv[j] < -20 and vec_hv[j] > -780) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<vec_led[j]<<endl; }
+if (vec_hv[j] < -820 and vec_hv[j] > -880) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<vec_led[j]<<endl; }
+if (vec_hv[j] < -920 and vec_hv[j] > -980) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<vec_led[j]<<endl; }
+if (vec_hv[j] < -1020 and vec_hv[j] > -1180) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<vec_led[j]<<endl; }
+if (vec_hv[j] < -1220 and vec_hv[j] > -1380) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<vec_led[j]<<endl; }
+if (vec_hv[j] < -1420 and vec_hv[j] > -1580) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<vec_led[j]<<endl; }
+if (vec_hv[j] < -1620) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<vec_led[j]<<endl; }
 
 if (vec_hv[j] < -780 and vec_hv[j] > -820)
 {
@@ -477,6 +501,13 @@ if (vec_led[j] == 3 and vec_led[j-1] == 0 ) { index_800V_led3_up = j; }
 if (vec_led[j] == 0 and vec_led[j-1] == 3 ) { index_800V_led3_down = j; }
 if (vec_led[j] == 4 and vec_led[j-1] == 0 ) { index_800V_led4_up = j; }
 if (vec_led[j] == 0 and vec_led[j-1] == 4 ) { index_800V_led4_down = j; }
+}
+
+if (vec_hv[j] < -880 and vec_hv[j] > -920)
+{
+if (vec_led[j] == 1 and vec_led[j-1] == 0 ) { index_900V_led1_up = j; }
+if (vec_led[j] == 0 and vec_led[j-1] == 1 ) { index_900V_led1_down = j; }
+if (vec_led[j] == 2 or vec_led[j] == 3 or vec_led[j] == 4 ) { cout<<"Voltage : "<<vec_hv[j]<<" Unknown led : "<<vec_led[j]<<endl; }
 }
 
 if (vec_hv[j] < -980 and vec_hv[j] > -1020)
@@ -551,6 +582,10 @@ calc_eff(cath_800V_led3_up, cath_800V_led3_down, anode_800V_led3_up, anode_800V_
 calc_dif(index_800V_led4_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led4_up, anode_800V_led4_up, ref_800V_led4_up);
 calc_dif(index_800V_led4_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led4_down, anode_800V_led4_down, ref_800V_led4_down);
 calc_eff(cath_800V_led4_up, cath_800V_led4_down, anode_800V_led4_up, anode_800V_led4_down, ref_800V_led4_up, ref_800V_led4_down, ee_800V_led4, qe_800V_led4);
+
+calc_dif(index_900V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_900V_led1_up, anode_900V_led1_up, ref_900V_led1_up);
+calc_dif(index_900V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_900V_led1_down, anode_900V_led1_down, ref_900V_led1_down);
+calc_eff(cath_900V_led1_up, cath_900V_led1_down, anode_900V_led1_up, anode_900V_led1_down, ref_900V_led1_up, ref_900V_led1_down, ee_900V_led1, qe_900V_led1);
 
 calc_dif(index_1000V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1000V_led1_up, anode_1000V_led1_up, ref_1000V_led1_up);
 calc_dif(index_1000V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1000V_led1_down, anode_1000V_led1_down, ref_1000V_led1_down);

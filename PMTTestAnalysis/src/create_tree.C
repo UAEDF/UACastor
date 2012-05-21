@@ -90,9 +90,9 @@ char ini_time[20], end_time[20];
 string pmt;
 
 std::vector<int> vec_time, vec_hv, vec_led;
-std::vector<float> vec_cath, vec_adut, vec_aref;
+std::vector<float> vec_cath, vec_cath_ori, vec_adut, vec_aref;
 std::vector<int> *pvec_time, *pvec_hv, *pvec_led;
-std::vector<float> *pvec_cath, *pvec_adut, *pvec_aref;
+std::vector<float> *pvec_cath, *pvec_cath_ori, *pvec_adut, *pvec_aref;
 
 int found1, found2, found3;
 
@@ -106,6 +106,7 @@ int index_1200V_led2_up, index_1200V_led2_down;
 int index_1200V_led3_up, index_1200V_led3_down;
 int index_1200V_led4_up, index_1200V_led4_down;
 int index_1400V_led1_up, index_1400V_led1_down;
+int index_1600V_led1_up, index_1600V_led1_down;
 
 float cath_800V_led1_up, cath_800V_led1_down;
 float cath_800V_led2_up, cath_800V_led2_down;
@@ -117,6 +118,7 @@ float cath_1200V_led2_up, cath_1200V_led2_down;
 float cath_1200V_led3_up, cath_1200V_led3_down;
 float cath_1200V_led4_up, cath_1200V_led4_down;
 float cath_1400V_led1_up, cath_1400V_led1_down;
+float cath_1600V_led1_up, cath_1600V_led1_down;
 
 float anode_800V_led1_up, anode_800V_led1_down;
 float anode_800V_led2_up, anode_800V_led2_down;
@@ -128,6 +130,7 @@ float anode_1200V_led2_up, anode_1200V_led2_down;
 float anode_1200V_led3_up, anode_1200V_led3_down;
 float anode_1200V_led4_up, anode_1200V_led4_down;
 float anode_1400V_led1_up, anode_1400V_led1_down;
+float anode_1600V_led1_up, anode_1600V_led1_down;
 
 float ref_800V_led1_up, ref_800V_led1_down;
 float ref_800V_led2_up, ref_800V_led2_down;
@@ -139,6 +142,7 @@ float ref_1200V_led2_up, ref_1200V_led2_down;
 float ref_1200V_led3_up, ref_1200V_led3_down;
 float ref_1200V_led4_up, ref_1200V_led4_down;
 float ref_1400V_led1_up, ref_1400V_led1_down;
+float ref_1600V_led1_up, ref_1600V_led1_down;
 
 //tree declaration
 TTree *tree = new TTree("Castor_PMT_Caracterization_2012","Castor PMT Caracterization 2012");
@@ -148,7 +152,8 @@ tree->Branch("Measurement_end",&end_time,"End of the measurement");
 tree->Branch("Entries",&entries,"Number of entries");
 tree->Branch("Measured_time","std::vector<int>",&pvec_time);
 tree->Branch("HV","std::vector<int>",&pvec_hv);
-tree->Branch("Cathode","std::vector<float>",&pvec_cath);
+tree->Branch("Cathode","std::vector<float>",&pvec_cath_ori);
+tree->Branch("Cathode after background subtraction","std::vector<float>",&pvec_cath);
 tree->Branch("Anode","std::vector<float>",&pvec_adut);
 tree->Branch("Reference PMT","std::vector<float>",&pvec_aref);
 tree->Branch("Led","std::vector<int>",&pvec_led);
@@ -212,6 +217,13 @@ tree->Branch("Anode_1400V_led1_up",&anode_1400V_led1_up,"Anode Gain when switchi
 tree->Branch("Anode_1400V_led1_down",&anode_1400V_led1_down,"Anode Gain when switching off led1 at 1400V");
 tree->Branch("Reference_1400V_led1_up",&ref_1400V_led1_up,"Reference Gain when switching on led1 at 1400V");
 tree->Branch("Reference_1400V_led1_down",&ref_1400V_led1_down,"Reference Gain when switching off led1 at 1400V");
+tree->Branch("Cath_1600V_led1_up",&cath_1600V_led1_up,"Cathode Gain when switching on led1 at 1400V");
+tree->Branch("Cath_1600V_led1_down",&cath_1600V_led1_down,"Cathode Gain when switching off led1 at 1600V");
+tree->Branch("Anode_1600V_led1_up",&anode_1600V_led1_up,"Anode Gain when switching on led1 at 1600V");
+tree->Branch("Anode_1600V_led1_down",&anode_1600V_led1_down,"Anode Gain when switching off led1 at 1600V");
+tree->Branch("Reference_1600V_led1_up",&ref_1600V_led1_up,"Reference Gain when switching on led1 at 1600V");
+tree->Branch("Reference_1600V_led1_down",&ref_1600V_led1_down,"Reference Gain when switching off led1 at 1600V");
+
 
 //loop over the pmt files
 for (int i=0; i < n_files; i++)
@@ -264,6 +276,8 @@ index_1200V_led4_up = 0;
 index_1200V_led4_down = 0;
 index_1400V_led1_up = 0;
 index_1400V_led1_down = 0;
+index_1600V_led1_up = 0;
+index_1600V_led1_down = 0;
 
 cath_800V_led1_up = 0;
 cath_800V_led1_down = 0;
@@ -285,6 +299,8 @@ cath_1200V_led4_up = 0;
 cath_1200V_led4_down = 0;
 cath_1400V_led1_up = 0;
 cath_1400V_led1_down = 0;
+cath_1600V_led1_up = 0;
+cath_1600V_led1_down = 0;
 
 anode_800V_led1_up = 0;
 anode_800V_led1_down = 0;
@@ -306,6 +322,8 @@ anode_1200V_led4_up = 0;
 anode_1200V_led4_down = 0;
 anode_1400V_led1_up = 0;
 anode_1400V_led1_down = 0;
+anode_1600V_led1_up = 0;
+anode_1600V_led1_down = 0;
 
 ref_800V_led1_up = 0;
 ref_800V_led1_down = 0;
@@ -327,6 +345,8 @@ ref_1200V_led4_up = 0;
 ref_1200V_led4_down = 0;
 ref_1400V_led1_up = 0;
 ref_1400V_led1_down = 0;
+ref_1600V_led1_up = 0;
+ref_1600V_led1_down = 0;
 
 //find the code of the pmt
 found1 = file.find("_");
@@ -343,6 +363,7 @@ fscanf(f,"%s %i %i %f %f %f %i", read_time, &time, &hv, &cath, &adut, &aref, &le
 if (time == 0) { strcpy (ini_time, read_time); } //set begin time of the measurement
 vec_time.push_back(time);
 vec_hv.push_back(hv);
+vec_cath_ori.push_back(cath);
 vec_cath.push_back(cath);
 vec_adut.push_back(adut);
 vec_aref.push_back(aref);
@@ -402,6 +423,12 @@ if (vec_led[j] == 1 and vec_led[j-1] == 0 ) { index_1400V_led1_up = j; }
 if (vec_led[j] == 0 and vec_led[j-1] == 1 ) { index_1400V_led1_down = j; }
 }
 
+if (vec_hv[j] < -1550 and vec_hv[j] > -1650)
+{
+if (vec_led[j] == 1 and vec_led[j-1] == 0 ) { index_1600V_led1_up = j; }
+if (vec_led[j] == 0 and vec_led[j-1] == 1 ) { index_1600V_led1_down = j; }
+}
+
 }
 
 //output the transition indexes
@@ -446,6 +473,8 @@ calc_dif(index_1200V_led4_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led
 calc_dif(index_1200V_led4_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led4_down, anode_1200V_led4_down, ref_1200V_led4_down);
 calc_dif(index_1400V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1400V_led1_up, anode_1400V_led1_up, ref_1400V_led1_up);
 calc_dif(index_1400V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1400V_led1_down, anode_1400V_led1_down, ref_1400V_led1_down);
+calc_dif(index_1600V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1600V_led1_up, anode_1600V_led1_up, ref_1600V_led1_up);
+calc_dif(index_1600V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1600V_led1_down, anode_1600V_led1_down, ref_1600V_led1_down);
 //fill the tree
 tree->Fill();
 

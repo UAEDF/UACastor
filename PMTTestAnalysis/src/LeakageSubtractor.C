@@ -10,7 +10,7 @@
 #include <iostream>
 
 #define skipAtVChange 10
-#define skipAtLedChange 10
+#define skipAtLedChange 3
 
 
 LeakageSubtractor::LeakageSubtractor(const std::vector<int> &time, std::vector<float> &current, const std::vector<int> &high_V, const std::vector<int> &led, const float error) : fVerbosity(1), fSize(-1), fX(time), fY(current), fHigh_V(high_V), fLed(led)
@@ -58,7 +58,7 @@ void LeakageSubtractor::Run()
               continue;
             }
 
-          if (voltageBegin+voltageStep+skipAtVChange > fSize)
+          if (voltageBegin+voltageStep > fSize)
             {
               ++voltageStep;
               continue; //don't break because counter used to skip voltage

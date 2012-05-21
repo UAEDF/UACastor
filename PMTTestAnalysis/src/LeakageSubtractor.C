@@ -102,7 +102,7 @@ void LeakageSubtractor::Run()
           theFcn.SetParameters(theMin->Parameter(0),theMin->Parameter(1));
           //std::cout << "x:" << fX[j+voltageBegin] << "/" << fX[voltageBegin+j]-fX[voltageBegin] << " ===  " << fY[j+voltageBegin] *1e12 << " ..... " << theFcn(fX[voltageBegin+j]-fX[voltageBegin]) << std::endl;
           fY[j+voltageBegin] -= float(1e-12 * theFcn(fX[j]-fX[voltageBegin]));
-          fY[j+voltageBegin] *= 1e12;
+         // fY[j+voltageBegin] *= 1e12;
         }//subtract the leakage
 
       voltageBegin += voltageStep; //jump to next voltage

@@ -6,6 +6,23 @@
 //user
 #include "LeakageSubtractor.h"
 
+void calc_eff(float cath_up, float cath_down, float anode_up, float anode_down, float ref_up, float ref_down, float& ee, float& qe)
+{
+
+float cath_ave, anode_ave, ref_ave;
+
+cath_ave = (cath_up + cath_down)/2;
+anode_ave = (anode_up + anode_down)/2;
+ref_ave = (ref_up + ref_down)/2;
+
+if (cath_ave > 0) { ee = anode_ave / cath_ave; }
+if (cath_ave > 0) { qe = ref_ave / cath_ave; }
+
+//cout<<"ee = "<<ee<<" qe = "<<qe<<endl;
+
+}
+
+
 void calc_dif(size_t cent_val, std::vector<int> *vec_hv, std::vector<float> *vec_cath, std::vector<float> *vec_adut, std::vector<float> *vec_aref, std::vector<int> *vec_led, float& cath, float& anode, float& ref)
 {
 
@@ -144,6 +161,18 @@ float ref_1200V_led4_up, ref_1200V_led4_down;
 float ref_1400V_led1_up, ref_1400V_led1_down;
 float ref_1600V_led1_up, ref_1600V_led1_down;
 
+float ee_800V_led1, qe_800V_led1;
+float ee_800V_led2, qe_800V_led2;
+float ee_800V_led3, qe_800V_led3;
+float ee_800V_led4, qe_800V_led4;
+float ee_1000V_led1, qe_1000V_led1;
+float ee_1200V_led1, qe_1200V_led1;
+float ee_1200V_led2, qe_1200V_led2;
+float ee_1200V_led3, qe_1200V_led3;
+float ee_1200V_led4, qe_1200V_led4;
+float ee_1400V_led1, qe_1400V_led1;
+float ee_1600V_led1, qe_1600V_led1;
+
 //tree declaration
 TTree *tree = new TTree("Castor_PMT_Caracterization_2012","Castor PMT Caracterization 2012");
 tree->Branch("PMT",&pmt,"Reference code of the PMT");
@@ -223,7 +252,28 @@ tree->Branch("Anode_1600V_led1_up",&anode_1600V_led1_up,"Anode Gain when switchi
 tree->Branch("Anode_1600V_led1_down",&anode_1600V_led1_down,"Anode Gain when switching off led1 at 1600V");
 tree->Branch("Reference_1600V_led1_up",&ref_1600V_led1_up,"Reference Gain when switching on led1 at 1600V");
 tree->Branch("Reference_1600V_led1_down",&ref_1600V_led1_down,"Reference Gain when switching off led1 at 1600V");
-
+tree->Branch("EE_800V_led1",&ee_800V_led1,"Eletrical effeciency for led1 at 800V");
+tree->Branch("QE_800V_led1",&qe_800V_led1,"Quantum effeciency for led1 at 800V");
+tree->Branch("EE_800V_led2",&ee_800V_led2,"Eletrical effeciency for led2 at 800V");
+tree->Branch("QE_800V_led2",&qe_800V_led2,"Quantum effeciency for led2 at 800V");
+tree->Branch("EE_800V_led3",&ee_800V_led3,"Eletrical effeciency for led3 at 800V");
+tree->Branch("QE_800V_led3",&qe_800V_led3,"Quantum effeciency for led3 at 800V");
+tree->Branch("EE_800V_led4",&ee_800V_led4,"Eletrical effeciency for led4 at 800V");
+tree->Branch("QE_800V_led4",&qe_800V_led4,"Quantum effeciency for led4 at 800V");
+tree->Branch("EE_1000V_led1",&ee_1000V_led1,"Eletrical effeciency for led1 at 1000V");
+tree->Branch("QE_1000V_led1",&qe_1000V_led1,"Quantum effeciency for led1 at 1000V");
+tree->Branch("EE_1200V_led1",&ee_1200V_led1,"Eletrical effeciency for led1 at 1200V");
+tree->Branch("QE_1200V_led1",&qe_1200V_led1,"Quantum effeciency for led1 at 1200V");
+tree->Branch("EE_1200V_led2",&ee_1200V_led2,"Eletrical effeciency for led2 at 1200V");
+tree->Branch("QE_1200V_led2",&qe_1200V_led2,"Quantum effeciency for led2 at 1200V");
+tree->Branch("EE_1200V_led3",&ee_1200V_led3,"Eletrical effeciency for led3 at 1200V");
+tree->Branch("QE_1200V_led3",&qe_1200V_led3,"Quantum effeciency for led3 at 1200V");
+tree->Branch("EE_1200V_led4",&ee_1200V_led4,"Eletrical effeciency for led4 at 1200V");
+tree->Branch("QE_1200V_led4",&qe_1200V_led4,"Quantum effeciency for led4 at 1200V");
+tree->Branch("EE_1400V_led1",&ee_1400V_led1,"Eletrical effeciency for led1 at 1400V");
+tree->Branch("QE_1400V_led1",&qe_1400V_led1,"Quantum effeciency for led1 at 1400V");
+tree->Branch("EE_1600V_led1",&ee_1600V_led1,"Eletrical effeciency for led1 at 1600V");
+tree->Branch("QE_1600V_led1",&qe_1600V_led1,"Quantum effeciency for led1 at 1600V");
 
 //loop over the pmt files
 for (int i=0; i < n_files; i++)
@@ -348,6 +398,29 @@ ref_1400V_led1_down = 0;
 ref_1600V_led1_up = 0;
 ref_1600V_led1_down = 0;
 
+ee_800V_led1 = 0;
+qe_800V_led1 = 0;
+ee_800V_led2 = 0;
+qe_800V_led2 = 0;
+ee_800V_led3 = 0;
+qe_800V_led3 = 0;
+ee_800V_led4 = 0;
+qe_800V_led4 = 0;
+ee_1000V_led1 = 0;
+qe_1000V_led1 = 0;
+ee_1200V_led1 = 0;
+qe_1200V_led1 = 0;
+ee_1200V_led2 = 0;
+qe_1200V_led2 = 0;
+ee_1200V_led3 = 0;
+qe_1200V_led3 = 0;
+ee_1200V_led4 = 0;
+qe_1200V_led4 = 0;
+ee_1400V_led1 = 0;
+qe_1400V_led1 = 0;
+ee_1600V_led1 = 0;
+qe_1600V_led1 = 0;
+
 //find the code of the pmt
 found1 = file.find("_");
 found2 = file.find("_",found1+1);
@@ -387,7 +460,14 @@ cout<<endl;
 //finding the transition indexes
 for (int j=0; j < entries; j++)
 {
-if (vec_hv[j] < -750 and vec_hv[j] > -850)
+if (vec_hv[j] < -20 and vec_hv[j] > -780) { cout<<"Unknown voltage : "<<vec_hv[j]<<endl; }
+if (vec_hv[j] < -820 and vec_hv[j] > -980) { cout<<"Unknown voltage : "<<vec_hv[j]<<endl; }
+if (vec_hv[j] < -1020 and vec_hv[j] > -1180) { cout<<"Unknown voltage : "<<vec_hv[j]<<endl; }
+if (vec_hv[j] < -1220 and vec_hv[j] > -1380) { cout<<"Unknown voltage : "<<vec_hv[j]<<endl; }
+if (vec_hv[j] < -1420 and vec_hv[j] > -1580) { cout<<"Unknown voltage : "<<vec_hv[j]<<endl; }
+if (vec_hv[j] < -1620) { cout<<"Unknown voltage : "<<vec_hv[j]<<endl; }
+
+if (vec_hv[j] < -780 and vec_hv[j] > -820)
 {
 if (vec_led[j] == 1 and vec_led[j-1] == 0 ) { index_800V_led1_up = j; }
 if (vec_led[j] == 0 and vec_led[j-1] == 1 ) { index_800V_led1_down = j; }
@@ -399,13 +479,14 @@ if (vec_led[j] == 4 and vec_led[j-1] == 0 ) { index_800V_led4_up = j; }
 if (vec_led[j] == 0 and vec_led[j-1] == 4 ) { index_800V_led4_down = j; }
 }
 
-if (vec_hv[j] < -950 and vec_hv[j] > -1050)
+if (vec_hv[j] < -980 and vec_hv[j] > -1020)
 {
 if (vec_led[j] == 1 and vec_led[j-1] == 0 ) { index_1000V_led1_up = j; }
 if (vec_led[j] == 0 and vec_led[j-1] == 1 ) { index_1000V_led1_down = j; }
+if (vec_led[j] == 2 or vec_led[j] == 3 or vec_led[j] == 4 ) { cout<<"Voltage : "<<vec_hv[j]<<" Unknown led : "<<vec_led[j]<<endl; }
 }
 
-if (vec_hv[j] < -1150 and vec_hv[j] > -1250)
+if (vec_hv[j] < -1180 and vec_hv[j] > -1220)
 {
 if (vec_led[j] == 1 && vec_led[j-1] == 0 ) { index_1200V_led1_up = j; }
 if (vec_led[j] == 0 && vec_led[j-1] == 1 ) { index_1200V_led1_down = j; }
@@ -417,16 +498,18 @@ if (vec_led[j] == 4 && vec_led[j-1] == 0 ) { index_1200V_led4_up = j; }
 if (vec_led[j] == 0 && vec_led[j-1] == 4 ) { index_1200V_led4_down = j; }
 }
 
-if (vec_hv[j] < -1350 and vec_hv[j] > -1450)
+if (vec_hv[j] < -1380 and vec_hv[j] > -1420)
 {
 if (vec_led[j] == 1 and vec_led[j-1] == 0 ) { index_1400V_led1_up = j; }
 if (vec_led[j] == 0 and vec_led[j-1] == 1 ) { index_1400V_led1_down = j; }
+if (vec_led[j] == 2 or vec_led[j] == 3 or vec_led[j] == 4 ) { cout<<"Voltage : "<<vec_hv[j]<<" Unknown led : "<<vec_led[j]<<endl; }
 }
 
-if (vec_hv[j] < -1550 and vec_hv[j] > -1650)
+if (vec_hv[j] < -1580 and vec_hv[j] > -1620)
 {
 if (vec_led[j] == 1 and vec_led[j-1] == 0 ) { index_1600V_led1_up = j; }
 if (vec_led[j] == 0 and vec_led[j-1] == 1 ) { index_1600V_led1_down = j; }
+if (vec_led[j] == 2 or vec_led[j] == 3 or vec_led[j] == 4 ) { cout<<"Voltage : "<<vec_hv[j]<<" Unknown led : "<<vec_led[j]<<endl; }
 }
 
 }
@@ -455,26 +538,48 @@ if (vec_led[j] == 0 and vec_led[j-1] == 1 ) { index_1600V_led1_down = j; }
 
 calc_dif(index_800V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led1_up, anode_800V_led1_up, ref_800V_led1_up);
 calc_dif(index_800V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led1_down, anode_800V_led1_down, ref_800V_led1_down);
+calc_eff(cath_800V_led1_up, cath_800V_led1_down, anode_800V_led1_up, anode_800V_led1_down, ref_800V_led1_up, ref_800V_led1_down, ee_800V_led1, qe_800V_led1);
+
 calc_dif(index_800V_led2_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led2_up, anode_800V_led2_up, ref_800V_led2_up);
 calc_dif(index_800V_led2_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led2_down, anode_800V_led2_down, ref_800V_led2_down);
+calc_eff(cath_800V_led2_up, cath_800V_led2_down, anode_800V_led2_up, anode_800V_led2_down, ref_800V_led2_up, ref_800V_led2_down, ee_800V_led2, qe_800V_led2);
+
 calc_dif(index_800V_led3_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led3_up, anode_800V_led3_up, ref_800V_led3_up);
 calc_dif(index_800V_led3_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led3_down, anode_800V_led3_down, ref_800V_led3_down);
+calc_eff(cath_800V_led3_up, cath_800V_led3_down, anode_800V_led3_up, anode_800V_led3_down, ref_800V_led3_up, ref_800V_led3_down, ee_800V_led3, qe_800V_led3);
+
 calc_dif(index_800V_led4_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led4_up, anode_800V_led4_up, ref_800V_led4_up);
 calc_dif(index_800V_led4_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led4_down, anode_800V_led4_down, ref_800V_led4_down);
+calc_eff(cath_800V_led4_up, cath_800V_led4_down, anode_800V_led4_up, anode_800V_led4_down, ref_800V_led4_up, ref_800V_led4_down, ee_800V_led4, qe_800V_led4);
+
 calc_dif(index_1000V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1000V_led1_up, anode_1000V_led1_up, ref_1000V_led1_up);
 calc_dif(index_1000V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1000V_led1_down, anode_1000V_led1_down, ref_1000V_led1_down);
+calc_eff(cath_1000V_led1_up, cath_1000V_led1_down, anode_1000V_led1_up, anode_1000V_led1_down, ref_1000V_led1_up, ref_1000V_led1_down, ee_1000V_led1, qe_1000V_led1);
+
 calc_dif(index_1200V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led1_up, anode_1200V_led1_up, ref_1200V_led1_up);
 calc_dif(index_1200V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led1_down, anode_1200V_led1_down, ref_1200V_led1_down);
+calc_eff(cath_1200V_led1_up, cath_1200V_led1_down, anode_1200V_led1_up, anode_1200V_led1_down, ref_1200V_led1_up, ref_1200V_led1_down, ee_1200V_led1, qe_1200V_led1);
+
 calc_dif(index_1200V_led2_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led2_up, anode_1200V_led2_up, ref_1200V_led2_up);
 calc_dif(index_1200V_led2_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led2_down, anode_1200V_led2_down, ref_1200V_led2_down);
+calc_eff(cath_1200V_led2_up, cath_1200V_led2_down, anode_1200V_led2_up, anode_1200V_led2_down, ref_1200V_led2_up, ref_1200V_led2_down, ee_1200V_led2, qe_1200V_led2);
+
 calc_dif(index_1200V_led3_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led3_up, anode_1200V_led3_up, ref_1200V_led3_up);
 calc_dif(index_1200V_led3_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led3_down, anode_1200V_led3_down, ref_1200V_led3_down);
+calc_eff(cath_1200V_led3_up, cath_1200V_led3_down, anode_1200V_led3_up, anode_1200V_led3_down, ref_1200V_led3_up, ref_1200V_led3_down, ee_1200V_led3, qe_1200V_led3);
+
 calc_dif(index_1200V_led4_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led4_up, anode_1200V_led4_up, ref_1200V_led4_up);
 calc_dif(index_1200V_led4_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led4_down, anode_1200V_led4_down, ref_1200V_led4_down);
+calc_eff(cath_1200V_led4_up, cath_1200V_led4_down, anode_1200V_led4_up, anode_1200V_led4_down, ref_1200V_led4_up, ref_1200V_led4_down, ee_1200V_led4, qe_1200V_led4);
+
 calc_dif(index_1400V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1400V_led1_up, anode_1400V_led1_up, ref_1400V_led1_up);
 calc_dif(index_1400V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1400V_led1_down, anode_1400V_led1_down, ref_1400V_led1_down);
+calc_eff(cath_1400V_led1_up, cath_1400V_led1_down, anode_1400V_led1_up, anode_1400V_led1_down, ref_1400V_led1_up, ref_1400V_led1_down, ee_1400V_led1, qe_1400V_led1);
+
 calc_dif(index_1600V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1600V_led1_up, anode_1600V_led1_up, ref_1600V_led1_up);
 calc_dif(index_1600V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1600V_led1_down, anode_1600V_led1_down, ref_1600V_led1_down);
+calc_eff(cath_1600V_led1_up, cath_1600V_led1_down, anode_1600V_led1_up, anode_1600V_led1_down, ref_1600V_led1_up, ref_1600V_led1_down, ee_1600V_led1, qe_1600V_led1);
+
 //fill the tree
 tree->Fill();
 

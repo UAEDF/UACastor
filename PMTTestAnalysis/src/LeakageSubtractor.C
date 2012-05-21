@@ -9,6 +9,10 @@
 #include <stdexcept>
 #include <iostream>
 
+#define skipAtVChange 10
+#define skipAtLedChange 10
+
+
 LeakageSubtractor::LeakageSubtractor(const std::vector<int> &time, std::vector<float> &current, const std::vector<int> &high_V, const std::vector<int> &led, const float error) : fVerbosity(1), fSize(-1), fX(time), fY(current), fHigh_V(high_V), fLed(led)
 {
   fSize = (int)current.size();
@@ -24,13 +28,16 @@ LeakageSubtractor::LeakageSubtractor(const std::vector<int> &time, std::vector<f
 void LeakageSubtractor::Run()
 {
   int voltageBegin = 0;
+  
+  // ----loop over all voltage regions----
   while (voltageBegin < fSize)
     {
-      while (abs(fHigh_V[voltageBegin]) < 50)
+      // ----Skip 0 voltage run----
+      while (abs(fHigh_V[voltageBegin]) < 50 && voltageBegin < fSize)
         {
           ++voltageBegin;
           continue;
-        }//Skip 0 voltage run
+        }
 
       int voltage = fHigh_V[voltageBegin];
       if (fVerbosity)
@@ -39,40 +46,43 @@ void LeakageSubtractor::Run()
       std::vector<double> fitY;
       std::vector<double> fitYe;
 
-      int voltageStep = 5;//don't look at first value because picoamp meter screws this up
-      if (voltageBegin+voltageStep >= fSize)
-        {
-          if(fVerbosity)
-            std::cout << "voltageBegin+voltageStep at end" << std::endl;
-          continue;
-        }
-      // loop in voltage region
-      int newX = 0;
-      while (fHigh_V[voltageBegin+voltageStep] > voltage-50 && fHigh_V[voltageBegin+voltageStep] < voltage+50 )
+      int voltageStep = 0;//don't look at first value because picoamp meter screws this up
+
+      // ----loop in voltage region----
+      while (fHigh_V[voltageBegin+voltageStep] > voltage-50 && fHigh_V[voltageBegin+voltageStep] < voltage+50 && voltageBegin+voltageStep < fSize)
         {
           //looking if led changes in last five or next five time bins
-          if (voltageBegin+voltageStep-5 < 0)
+          if (voltageBegin+voltageStep-skipAtVChange < 0)
             {
               ++voltageStep;
               continue;
             }
-          if (voltageBegin+voltageStep+5 >= fSize)
-            break;
-          if(fLed[voltageBegin+voltageStep-5] == 0 && fLed[voltageBegin+voltageStep] == 0 && fLed[voltageBegin+voltageStep+5] == 0)
+
+          if (voltageBegin+voltageStep+skipAtVChange > fSize)
             {
-              fitX.push_back(fX[voltageBegin+voltageStep]-fX[voltageBegin]); // always starts at 0
-              fitY.push_back(fY[voltageBegin+voltageStep]*1e12);
-              fitYe.push_back(fYe[voltageBegin+voltageStep]*1e12);
-            } // copy the x,y values for one voltage set and only where LED was off
-          ++newX;
+              ++voltageStep;
+              continue; //don't break because counter used to skip voltage
+            }
+
+          if(fLed[voltageBegin+voltageStep-skipAtLedChange] || fLed[voltageBegin+voltageStep] || fLed[voltageBegin+voltageStep+skipAtLedChange])
+            {
+              ++voltageStep;
+              continue;
+            }
+
+          // copy the x,y values for one voltage set and only where LED was off          
+          fitX.push_back(fX[voltageBegin+voltageStep]-fX[voltageBegin]); // always starts at 0
+          fitY.push_back(fY[voltageBegin+voltageStep]*1e12);
+          fitYe.push_back(fYe[voltageBegin+voltageStep]*1e12);
+
           ++voltageStep;
         }
-      int voltageEnd=voltageBegin + voltageStep;
-      if (voltageStep <= 10) //not enough data for fit
+
+      if (fitX.size() <= 5) //not enough data for fit
         {
           if (fVerbosity)
             std::cerr << "no fitting. not enoogh data in voltage set" << std::endl;
-          voltageBegin=voltageEnd+1; //jump to next voltage
+          voltageBegin += voltageStep + 1; //jump to next voltage
           continue;
         }
 
@@ -88,7 +98,7 @@ void LeakageSubtractor::Run()
           if (fVerbosity)
             std::cerr << "fit unsucessful" << std::endl;
 
-          voltageBegin = voltageEnd+1; //jump to next voltage
+          voltageBegin += voltageStep + 1; //jump to next voltage
           continue;
         }
       else
@@ -105,7 +115,7 @@ void LeakageSubtractor::Run()
          // fY[j+voltageBegin] *= 1e12;
         }//subtract the leakage
 
-      voltageBegin += voltageStep; //jump to next voltage
+      voltageBegin += voltageStep + 1; //jump to next voltage
     }
 }
 

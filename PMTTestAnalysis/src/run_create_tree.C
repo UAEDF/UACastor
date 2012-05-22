@@ -4,7 +4,7 @@ gROOT -> Reset();
 gROOT -> ProcessLine(".L LeakageSubtractor.C++");
 gROOT -> ProcessLine(".L create_tree.C++");
 
-string files_in[30];
+string files_in[3000];
 
 files_in[0] = "../data/cpt_sf_CA1579_2012_05_12_15_32_59_mod.cpt";
 files_in[1] = "../data/cpt_sf_CA1579_2012_05_13_09_56_20_mod.cpt";
@@ -35,9 +35,13 @@ files_in[25] = "../data/cpt_sf_CA1549_2012_05_21_12_33_16_mod.cpt";
 files_in[26] = "../data/cpt_sf_CA0948_2012_05_21_15_43_16_mod.cpt";
 files_in[27] = "../data/cpt_sf_CA1200_2012_05_21_20_34_38_mod.cpt";
 files_in[28] = "../data/cpt_sf_CA3236_2012_05_22_00_41_35_mod.cpt";
-files_in[29] = "../data/mod.cpt";
+files_in[29] = "../data/cpt_sf_CA0574_2012_05_22_11_37_58_mod.cpt";
+files_in[30] = "../data/cpt_sf_CA0715_2012_05_22_19_14_07_mod.cpt";
+files_in[31] = "../data/cpt_sf_CA0742_2012_05_22_08_13_03_mod.cpt";
+files_in[32] = "../data/cpt_sf_CA0829_2012_05_22_15_04_27_mod.cpt";
+files_in[33] = "../data/mod.cpt";
 
-int n_files = 29;
+int n_files = 33;
 
 string tree_out = "test_tree.root";
 

@@ -1,5 +1,13 @@
 #include <stdio.h>
 #include <iostream>
+
+//root libs
+#include "TROOT.h"
+#include "TSystem.h"
+#include "TStyle.h"
+#include "TH1.h"
+#include "TH2.h"
+#include "TCanvas.h"
 #include "TTree.h"
 #include "TFile.h"
 
@@ -12,7 +20,10 @@ TFile f(tree_in.c_str());
 TTree *tree = (TTree*)f.Get("Castor_PMT_Caracterization_2012");
 
 //declaring variables
-TString pmt, begin;
+char pmt[10];
+std::vector<int> *begin, *end;
+std::vector<int> *hv, *time, *cath, *cath_ori, *anode, *ref;
+
 float cath_800V_led1_up, cath_800V_led1_down;
 float cath_800V_led2_up, cath_800V_led2_down;
 float cath_800V_led3_up, cath_800V_led3_down;
@@ -77,7 +88,8 @@ float qe_1600V_led1;
 
 //setting the branches
 tree->SetBranchAddress("PMT",&pmt);
-tree->SetBranchAddress("Measurement_begin",&begin); 
+tree->SetBranchAddress("Measurement_begin",&begin);
+tree->SetBranchAddress("Measurement_end",&end);
 tree->SetBranchAddress("Cath_800V_led1_up",&cath_800V_led1_up); 
 tree->SetBranchAddress("Cath_800V_led1_down",&cath_800V_led1_down); 
 tree->SetBranchAddress("Cath_800V_led2_up",&cath_800V_led2_up); 
@@ -178,14 +190,29 @@ tree->SetBranchAddress("QE_1600V_led1",&qe_1600V_led1);
 
 //loop over the measurements
 int tests = tree->GetEntries();
+
+  TH2F *pmt_map; 
+
+  pmt_map =  new TH2F("map","map;sector;module", 14,0,14,16,0,16);
+
 for (int i = 0; i < tests ;i++)
 {
 tree->GetEvent(i);
-cout<<"Measurement "<<i+1<<" ; PMT code: "<<pmt<<" Begin of the measurement: "<<begin<<endl;
+cout<<"Measurement "<<i+1<<" ; PMT code: "<<pmt<<endl;
+cout<<"Begin of the measurement: "<<begin->at(0)<<"/"<<begin->at(1)<<"/"<<begin->at(2)<<" - "<<begin->at(3)<<":"<<begin->at(4)<<":"<<begin->at(5)<<endl;
+cout<<"End of the measurement: "<<end->at(0)<<"/"<<end->at(1)<<"/"<<end->at(2)<<" - "<<end->at(3)<<":"<<end->at(4)<<":"<<end->at(5)<<endl;
 cout<<"Cathode  | led1         led2          led3          led4"<<endl;
 cout<<"----------------------------------------------------------"<<endl;
+if (cath_800V_led2_up > 0.0)
+{
 cout<<"800V      |"<<cath_800V_led1_up<<"   "<<cath_800V_led2_up<<"   "<<cath_800V_led3_up<<"   "<<cath_800V_led4_up<<endl;
 cout<<"          |"<<cath_800V_led1_down<<"   "<<cath_800V_led2_down<<"   "<<cath_800V_led3_down<<"   "<<cath_800V_led4_down<<endl;
+}
+if (cath_800V_led2_up == 0.0 and cath_800V_led3_up == 0.0 and cath_800V_led4_up == 0.0)
+{
+cout<<"800V      |"<<cath_800V_led1_up<<endl;
+cout<<"          |"<<cath_800V_led1_down<<endl;
+}
 if (cath_900V_led1_up > 0.0)
 {
 cout<<"900V      |"<<cath_900V_led1_up<<endl;
@@ -205,8 +232,16 @@ cout<<"          |"<<cath_1600V_led1_down<<endl;
 cout<<"----------------------------------------------------------"<<endl;
 cout<<"Anode     | led1         led2          led3          led4"<<endl;
 cout<<"----------------------------------------------------------"<<endl;
+if (anode_800V_led2_up > 0.0)
+{
 cout<<"800V      |"<<anode_800V_led1_up<<"   "<<anode_800V_led2_up<<"   "<<anode_800V_led3_up<<"   "<<anode_800V_led4_up<<endl;
 cout<<"          |"<<anode_800V_led1_down<<"   "<<anode_800V_led2_down<<"   "<<anode_800V_led3_down<<"   "<<anode_800V_led4_down<<endl;
+}
+if (anode_800V_led2_up == 0.0 and anode_800V_led3_up == 0.0 and anode_800V_led4_up == 0.0)
+{
+cout<<"800V      |"<<anode_800V_led1_up<<endl;
+cout<<"          |"<<anode_800V_led1_down<<endl;
+}
 if (anode_900V_led1_up > 0.0)
 {
 cout<<"900V      |"<<anode_900V_led1_up<<endl;
@@ -226,8 +261,16 @@ cout<<"          |"<<anode_1600V_led1_down<<endl;
 cout<<"----------------------------------------------------------"<<endl;
 cout<<"Reference | led1         led2          led3          led4"<<endl;
 cout<<"----------------------------------------------------------"<<endl;
+if (ref_800V_led2_up > 0.0)
+{
 cout<<"800V      |"<<ref_800V_led1_up<<"   "<<ref_800V_led2_up<<"   "<<ref_800V_led3_up<<"   "<<ref_800V_led4_up<<endl;
 cout<<"          |"<<ref_800V_led1_down<<"   "<<ref_800V_led2_down<<"   "<<ref_800V_led3_down<<"   "<<ref_800V_led4_down<<endl;
+}
+if (ref_800V_led2_up == 0.0 and ref_800V_led3_up == 0.0 and ref_800V_led4_up == 0.0)
+{
+cout<<"800V      |"<<ref_800V_led1_up<<endl;
+cout<<"          |"<<ref_800V_led1_down<<endl;
+}
 if (ref_900V_led1_up > 0.0)
 {
 cout<<"900V      |"<<ref_900V_led1_up<<endl;
@@ -245,30 +288,72 @@ cout<<"1600V     |"<<ref_1600V_led1_up<<endl;
 cout<<"          |"<<ref_1600V_led1_down<<endl;
 }
 cout<<"----------------------------------------------------------"<<endl;
-cout<<"Efficiency| led1         led2          led3          led4"<<endl;
+cout<<"Eletrical Efficiency| led1         led2          led3          led4"<<endl;
 cout<<"----------------------------------------------------------"<<endl;
-cout<<"800V      |"<<ee_800V_led1<<"   "<<ee_800V_led2<<"   "<<ee_800V_led3<<"   "<<ee_800V_led4<<endl;
-cout<<"          |"<<qe_800V_led1<<"   "<<qe_800V_led2<<"   "<<qe_800V_led3<<"   "<<qe_800V_led4<<endl;
+if (ee_800V_led2 > 0.0)
+{
+cout<<"800V                |"<<ee_800V_led1<<"   "<<ee_800V_led2<<"   "<<ee_800V_led3<<"   "<<ee_800V_led4<<endl;
+}
+if (ee_800V_led2 == 0.0 and ee_800V_led3 == 0.0 and ee_800V_led4 == 0.0)
+{
+cout<<"800V                |"<<ee_800V_led1<<endl;
+}
 if (ee_900V_led1 > 0.0)
 {
-cout<<"900V      |"<<ee_900V_led1<<endl;
-cout<<"          |"<<qe_900V_led1<<endl;
+cout<<"900V                |"<<ee_900V_led1<<endl;
 }
-cout<<"1000V     |"<<ee_1000V_led1<<endl;
-cout<<"          |"<<qe_1000V_led1<<endl;
-cout<<"1200V     |"<<ee_1200V_led1<<"   "<<ee_1200V_led2<<"   "<<ee_1200V_led3<<"   "<<ee_1200V_led4<<endl;
-cout<<"          |"<<qe_1200V_led1<<"   "<<qe_1200V_led2<<"   "<<qe_1200V_led3<<"   "<<qe_1200V_led4<<endl;
-cout<<"1400V     |"<<ee_1400V_led1<<endl;
-cout<<"          |"<<qe_1400V_led1<<endl;
+cout<<"1000V               |"<<ee_1000V_led1<<endl;
+cout<<"1200V               |"<<ee_1200V_led1<<"   "<<ee_1200V_led2<<"   "<<ee_1200V_led3<<"   "<<ee_1200V_led4<<endl;
+cout<<"1400V               |"<<ee_1400V_led1<<endl;
 if (ee_1600V_led1 > 0.0)
 {
-cout<<"1600V     |"<<ee_1600V_led1<<endl;
-cout<<"          |"<<qe_1600V_led1<<endl;
+cout<<"1600V               |"<<ee_1600V_led1<<endl;
+}
+cout<<"----------------------------------------------------------"<<endl;
+cout<<"Quantum Efficiency  | led1         led2          led3          led4"<<endl;
+cout<<"----------------------------------------------------------"<<endl;
+if (qe_800V_led2 > 0.0)
+{
+cout<<"800V                |"<<qe_800V_led1<<"   "<<qe_800V_led2<<"   "<<qe_800V_led3<<"   "<<qe_800V_led4<<endl;
+}
+if (qe_800V_led2 == 0.0 and qe_800V_led3 == 0.0 and qe_800V_led4 == 0.0)
+{
+cout<<"800V                |"<<qe_800V_led1<<endl;
+}
+if (ee_900V_led1 > 0.0)
+{
+cout<<"900V                |"<<qe_900V_led1<<endl;
+}
+cout<<"1000V               |"<<qe_1000V_led1<<endl;
+cout<<"1200V               |"<<qe_1200V_led1<<"   "<<qe_1200V_led2<<"   "<<qe_1200V_led3<<"   "<<qe_1200V_led4<<endl;
+cout<<"1400V               |"<<qe_1400V_led1<<endl;
+if (ee_1600V_led1 > 0.0)
+{
+cout<<"1600V               |"<<qe_1600V_led1<<endl;
 }
 cout<<"----------------------------------------------------------"<<endl;
 cout<<" "<<endl;
+
+if(i+1 <= 16) { pmt_map->SetBinContent(1,i+1,50000.0/qe_1200V_led1); }
+if(i+1 > 16) { pmt_map->SetBinContent(2,i-15,50000.0/qe_1200V_led1); }
 }
 
 
+TCanvas *c01 = new TCanvas("c01","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_map->Draw("colz");
+pmt_map->Draw("text same");
+c01->Print("pmt_map.png");
+c01->Close();
 
 }

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <iostream>
 #include "TTree.h"
 #include "TFile.h"
@@ -15,8 +16,8 @@ cath_ave = (cath_up + cath_down)/2;
 anode_ave = (anode_up + anode_down)/2;
 ref_ave = (ref_up + ref_down)/2;
 
-if (cath_ave > 0) { ee = anode_ave / cath_ave; }
-if (cath_ave > 0) { qe = ref_ave / cath_ave; }
+if (cath_ave > 0.0) { ee = anode_ave / cath_ave; }
+if (cath_ave > 0.0) { qe = ref_ave / cath_ave; }
 
 //cout<<"ee = "<<ee<<" qe = "<<qe<<endl;
 
@@ -100,11 +101,14 @@ ref = ave_ref_after - ave_ref_before;
 void create_tree(string *files_in, int n_files, string tree_out){
 //variable declaration
 float cath, adut, aref;
-int entries, time, hv, led;
+int entries, time, hv, led, aux_int;
 
 char read_time[20];
-char ini_time[20], end_time[20];
-string pmt;
+string ini_time, end_time;
+string pmt, aux_str;
+
+std::vector<int> vec_begin, vec_end;
+std::vector<int> *pvec_begin, *pvec_end;
 
 std::vector<int> vec_time, vec_hv, vec_led;
 std::vector<float> vec_cath, vec_cath_ori, vec_adut, vec_aref;
@@ -181,8 +185,8 @@ float ee_1600V_led1, qe_1600V_led1;
 //tree declaration
 TTree *tree = new TTree("Castor_PMT_Caracterization_2012","Castor PMT Caracterization 2012");
 tree->Branch("PMT",&pmt,"Reference code of the PMT");
-tree->Branch("Measurement_begin",&ini_time,"Begin of the measurement");
-tree->Branch("Measurement_end",&end_time,"End of the measurement");
+tree->Branch("Measurement_begin","std::vector<int>",&pvec_begin);
+tree->Branch("Measurement_end","std::vector<int>",&pvec_end);
 tree->Branch("Entries",&entries,"Number of entries");
 tree->Branch("Measured_time","std::vector<int>",&pvec_time);
 tree->Branch("HV","std::vector<int>",&pvec_hv);
@@ -304,14 +308,18 @@ for (int i=0; i < n_files; i++)
 //reseting the variables
 entries = 0;
 pmt = "";
-strcpy (ini_time, "");
-strcpy (end_time, "");
+ini_time = "";
+end_time = "";
+pvec_begin = &vec_begin;
+pvec_end = &vec_end;
 pvec_time = &vec_time;
 pvec_hv = &vec_hv;
 pvec_cath = &vec_cath;
 pvec_adut = &vec_adut;
 pvec_aref = &vec_aref;
 pvec_led = &vec_led;
+vec_begin.clear();
+vec_end.clear();
 vec_time.clear();
 vec_hv.clear();
 vec_cath.clear();
@@ -456,7 +464,7 @@ while(!feof(f))
 fscanf(f,"%s %i %i %f %f %f %i", read_time, &time, &hv, &cath, &adut, &aref, &led);
 //cout<<read_time<<" "<<time<<" "<<hv<<" "<<cath<<" "<<adut<<" "<<aref<<" "<<led<<endl;
 //cout<<read_time<<" "<<time<<" "<<aref<<" "<<led<<endl;
-if (time == 0) { strcpy (ini_time, read_time); } //set begin time of the measurement
+if (time == 0) { ini_time = (string) read_time; } //set begin time of the measurement
 vec_time.push_back(time);
 vec_hv.push_back(hv);
 vec_cath_ori.push_back(cath);
@@ -471,12 +479,61 @@ LeakageSubtractor theSubtractor(vec_time,vec_cath,vec_hv,vec_led);
 theSubtractor.Run();
 
 //set the end time of the measurement
-strcpy (end_time, read_time);
+end_time = (string) read_time; 
+
+//turn timestring into vector to get the year
+aux_str = ini_time.substr(0,4);
+aux_int = atoi( aux_str.c_str() );
+vec_begin.push_back(aux_int);
+aux_str = end_time.substr(0,4);
+aux_int = atoi( aux_str.c_str() );
+vec_end.push_back(aux_int);
+
+//turn timestring into vector to get the month
+aux_str = ini_time.substr(5,2);
+aux_int = atoi( aux_str.c_str() );
+vec_begin.push_back(aux_int);
+aux_str = end_time.substr(5,2);
+aux_int = atoi( aux_str.c_str() );
+vec_end.push_back(aux_int);
+
+//turn timestring into vector to get the day
+aux_str = ini_time.substr(8,2);
+aux_int = atoi( aux_str.c_str() );
+vec_begin.push_back(aux_int);
+aux_str = end_time.substr(8,2);
+aux_int = atoi( aux_str.c_str() );
+vec_end.push_back(aux_int);
+
+//turn timestring into vector to get the hour
+aux_str = ini_time.substr(11,2);
+aux_int = atoi( aux_str.c_str() );
+vec_begin.push_back(aux_int);
+aux_str = end_time.substr(11,2);
+aux_int = atoi( aux_str.c_str() );
+vec_end.push_back(aux_int);
+
+//turn timestring into vector to get the minutes
+aux_str = ini_time.substr(14,2);
+aux_int = atoi( aux_str.c_str() );
+vec_begin.push_back(aux_int);
+aux_str = end_time.substr(14,2);
+aux_int = atoi( aux_str.c_str() );
+vec_end.push_back(aux_int);
+
+//turn timestring into vector to get the secunds
+aux_str = ini_time.substr(17,2);
+aux_int = atoi( aux_str.c_str() );
+vec_begin.push_back(aux_int);
+aux_str = end_time.substr(17,2);
+aux_int = atoi( aux_str.c_str() );
+vec_end.push_back(aux_int);
 
 //output the details of the measurement
 cout<<"PMT code: "<<pmt<<endl;
 cout<<"Begin: "<<ini_time<<endl;
-cout<<"End "<<end_time<<endl;
+cout<<"End: "<<end_time<<endl;
+//cout<<"End "<<vec_begin[0]<<":"<<vec_begin[1]<<":"<<vec_begin[2]<<endl;
 cout<<"Entries "<<entries<<endl;
 cout<<endl;
 
@@ -606,6 +663,8 @@ calc_eff(cath_1200V_led3_up, cath_1200V_led3_down, anode_1200V_led3_up, anode_12
 calc_dif(index_1200V_led4_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led4_up, anode_1200V_led4_up, ref_1200V_led4_up);
 calc_dif(index_1200V_led4_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led4_down, anode_1200V_led4_down, ref_1200V_led4_down);
 calc_eff(cath_1200V_led4_up, cath_1200V_led4_down, anode_1200V_led4_up, anode_1200V_led4_down, ref_1200V_led4_up, ref_1200V_led4_down, ee_1200V_led4, qe_1200V_led4);
+
+//cout<<"ee = "<<ee_1200V_led4<<" qe = "<<qe_1200V_led4<<" "<<cath_1200V_led4_up<<" "<<cath_1200V_led4_down<<" "<<anode_1200V_led4_up<<" "<<anode_1200V_led4_down<<endl;
 
 calc_dif(index_1400V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1400V_led1_up, anode_1400V_led1_up, ref_1400V_led1_up);
 calc_dif(index_1400V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1400V_led1_down, anode_1400V_led1_down, ref_1400V_led1_down);

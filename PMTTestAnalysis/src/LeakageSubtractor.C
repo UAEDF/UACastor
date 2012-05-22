@@ -122,14 +122,13 @@ void LeakageSubtractor::Run()
       //c->cd();
       //theGraph.Draw("AP");
       theFcn.SetParameters(theMin->Parameter(0),theMin->Parameter(1),theMin->Parameter(2),theMin->Parameter(3));
-      std::cout << theMin->Parameter(0) << " " << theMin->Parameter(1) << " " << theMin->Parameter(2) << " " << theMin->Parameter(3) << std::endl;
       //theFcn.SetLineColor(kRed);
       //theFcn.Draw("SAME");
       //cin >> fVerbosity;
 
       for (int j=0; j < voltageStep; j++)
         {
-          std::cout << "x:" << fX[j+voltageBegin] << "/" << fX[voltageBegin+j]-fX[voltageBegin] << " ===  " << fY[j+voltageBegin] *1e12 << " ..... " << theFcn(fX[voltageBegin+j]-fX[voltageBegin]) << std::endl;
+          //std::cout << "x:" << fX[j+voltageBegin] << "/" << fX[voltageBegin+j]-fX[voltageBegin] << " ===  " << fY[j+voltageBegin] *1e12 << " ..... " << theFcn(fX[voltageBegin+j]-fX[voltageBegin]) << std::endl;
           // if any poles in the function just skip the subtraction. only the LED regions are of interest. but if the profile doesn't look nice one can delete this if
           if ((theFcn)(fX[j+voltageBegin]-fX[voltageBegin]) < 1e5 && (theFcn)(fX[j+voltageBegin]-fX[voltageBegin]) > 0)
             fY[j+voltageBegin] -= float(1e-12 * theFcn(fX[j+voltageBegin]-fX[voltageBegin]));

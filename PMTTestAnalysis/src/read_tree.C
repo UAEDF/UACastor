@@ -21,8 +21,10 @@ TTree *tree = (TTree*)f.Get("Castor_PMT_Caracterization_2012");
 
 //declaring variables
 char pmt[10];
-std::vector<int> *begin, *end;
-std::vector<int> *hv, *time, *cath, *cath_ori, *anode, *ref;
+std::vector<int> *begin, *end, *led;
+std::vector<float> *hv, *time, *cath, *cath_ori, *anode, *ref;
+
+int total_spike, entries, module, sector;
 
 float cath_800V_led1_up, cath_800V_led1_down;
 float cath_800V_led2_up, cath_800V_led2_down;
@@ -90,6 +92,17 @@ float qe_1600V_led1;
 tree->SetBranchAddress("PMT",&pmt);
 tree->SetBranchAddress("Measurement_begin",&begin);
 tree->SetBranchAddress("Measurement_end",&end);
+tree->SetBranchAddress("Entries",&entries);
+tree->SetBranchAddress("Measured_time",&time);
+tree->SetBranchAddress("HV",&hv);
+tree->SetBranchAddress("Cathode",&cath_ori);
+tree->SetBranchAddress("Cathode_after_background_subtraction",&cath);
+tree->SetBranchAddress("Anode",&anode);
+tree->SetBranchAddress("Reference_PMT",&ref);
+tree->SetBranchAddress("Led",&led);
+tree->SetBranchAddress("Module",&module);
+tree->SetBranchAddress("Sector",&sector);
+tree->SetBranchAddress("Number_of_spikes",&total_spike);
 tree->SetBranchAddress("Cath_800V_led1_up",&cath_800V_led1_up); 
 tree->SetBranchAddress("Cath_800V_led1_down",&cath_800V_led1_down); 
 tree->SetBranchAddress("Cath_800V_led2_up",&cath_800V_led2_up); 
@@ -191,9 +204,13 @@ tree->SetBranchAddress("QE_1600V_led1",&qe_1600V_led1);
 //loop over the measurements
 int tests = tree->GetEntries();
 
-  TH2F *pmt_map; 
+  TH2F *pmt_inv_qe;
+  TH2F *pmt_inv_gain;
+  TH2F *pmt_spikes;
 
-  pmt_map =  new TH2F("map","map;sector;module", 14,0,14,16,0,16);
+  pmt_inv_qe =  new TH2F("Inverse_qe","inverse_qe;sector;module", 14,0,14,16,0,16);
+  pmt_inv_gain =  new TH2F("Inverse_gain","inverse_gain;sector;module", 14,0,14,16,0,16);
+  pmt_spikes =  new TH2F("Number_of_spikes","number_of_spikes;sector;module", 14,0,14,16,0,16);
 
 for (int i = 0; i < tests ;i++)
 {
@@ -201,6 +218,7 @@ tree->GetEvent(i);
 cout<<"Measurement "<<i+1<<"; PMT code: "<<pmt<<endl;
 cout<<"Begin of the measurement: "<<begin->at(0)<<"/"<<begin->at(1)<<"/"<<begin->at(2)<<" - "<<begin->at(3)<<":"<<begin->at(4)<<":"<<begin->at(5)<<endl;
 cout<<"End of the measurement: "<<end->at(0)<<"/"<<end->at(1)<<"/"<<end->at(2)<<" - "<<end->at(3)<<":"<<end->at(4)<<":"<<end->at(5)<<endl;
+cout<<"Number of identified and rejected spikes : "<<total_spike<<endl;
 cout<<"Cathode  | led1         led2          led3          led4"<<endl;
 cout<<"----------------------------------------------------------"<<endl;
 if (cath_800V_led2_up > 0.0)
@@ -334,8 +352,12 @@ cout<<"1600V               |"<<qe_1600V_led1<<endl;
 cout<<"----------------------------------------------------------"<<endl;
 cout<<" "<<endl;
 
-if(i+1 <= 16) { pmt_map->SetBinContent(1,i+1,50000.0/qe_1200V_led1); }
-if(i+1 > 16) { pmt_map->SetBinContent(2,i-15,50000.0/qe_1200V_led1); }
+if(i+1 <= 16) { pmt_inv_qe->SetBinContent(1,i+1,50000.0/qe_1200V_led1); }
+if(i+1 > 16) { pmt_inv_qe->SetBinContent(2,i-15,50000.0/qe_1200V_led1); }
+if(i+1 <= 16) { pmt_inv_gain->SetBinContent(1,i+1,1.0/cath_1200V_led1_up); }
+if(i+1 > 16) { pmt_inv_gain->SetBinContent(2,i-15,1.0/cath_1200V_led1_up); }
+if(i+1 <= 16) { pmt_spikes->SetBinContent(1,i+1,total_spike); }
+if(i+1 > 16) { pmt_spikes->SetBinContent(2,i-15,total_spike); }
 }
 
 
@@ -351,9 +373,43 @@ gPad->SetRightMargin(0.20);
 gPad->SetTopMargin(0.01);
 gPad->SetFrameBorderMode(0);
 
-pmt_map->Draw("colz");
-pmt_map->Draw("text same");
-c01->Print("pmt_map.png");
+pmt_inv_qe->Draw("colz");
+pmt_inv_qe->Draw("text same");
+c01->Print("Inverse_Quantum_Efficiency.png");
 c01->Close();
+
+TCanvas *c02 = new TCanvas("c02","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_inv_gain->Draw("colz");
+pmt_inv_gain->Draw("text same");
+c02->Print("Inverse_Gain.png");
+c02->Close();
+
+TCanvas *c03 = new TCanvas("c03","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_spikes->Draw("colz");
+pmt_spikes->Draw("text same");
+c03->Print("Number_of_Spikes.png");
+c03->Close();
 
 }

@@ -205,18 +205,22 @@ tree->SetBranchAddress("QE_1600V_led1",&qe_1600V_led1);
 int tests = tree->GetEntries();
 
   TH2F *pmt_inv_qe_800;
+  TH2F *pmt_inv_ee_800;
   TH2F *pmt_inv_gain_800;
   TH2F *pmt_inv_qe_1200;
+  TH2F *pmt_inv_ee_1200;
   TH2F *pmt_inv_gain_1200;
   TH2F *pmt_spikes;
   TH2F *measurements;
 
-  pmt_inv_qe_800 =  new TH2F("Inverse_qe_800V","inverse_qe_800V;sector;module", 14,0,14,16,0,16);
-  pmt_inv_gain_800 =  new TH2F("Inverse_gain_800V","inverse_gain_800V;sector;module", 14,0,14,16,0,16);
-  pmt_inv_qe_1200 =  new TH2F("Inverse_qe_1200V","inverse_qe_1200V;sector;module", 14,0,14,16,0,16);
-  pmt_inv_gain_1200 =  new TH2F("Inverse_gain_1200V","inverse_gain_1200V;sector;module", 14,0,14,16,0,16);
-  pmt_spikes =  new TH2F("Number_of_spikes","number_of_spikes;sector;module", 14,0,14,16,0,16);
-  measurements =  new TH2F("Number_of_measurements","number_of_measurements;sector;module", 14,0,14,16,0,16);
+  pmt_inv_qe_800 =  new TH2F("Inverse_qe_800V","inverse_qe_800V;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_ee_800 =  new TH2F("Inverse_ee_800V","inverse_ee_800V;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_gain_800 =  new TH2F("Inverse_gain_800V","inverse_gain_800V;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_qe_1200 =  new TH2F("Inverse_qe_1200V","inverse_qe_1200V;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_ee_1200 =  new TH2F("Inverse_ee_1200V","inverse_ee_1200V;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_gain_1200 =  new TH2F("Inverse_gain_1200V","inverse_gain_1200V;Sector;Module", 14,0,14,16,0,16);
+  pmt_spikes =  new TH2F("Number_of_spikes","number_of_spikes;Sector;Module", 14,0,14,16,0,16);
+  measurements =  new TH2F("Number_of_measurements","number_of_measurements;Sector;Module", 14,0,14,16,0,16);
 
 for (int i = 0; i < tests ;i++)
 {
@@ -358,12 +362,33 @@ cout<<"1600V               |"<<qe_1600V_led1<<endl;
 cout<<"----------------------------------------------------------"<<endl;
 cout<<" "<<endl;
 
+if (pmt_spikes->GetBinContent(module,sector) == 0)
+{
 pmt_inv_qe_1200->SetBinContent(module,sector,50000.0/qe_1200V_led1);
+pmt_inv_ee_1200->SetBinContent(module,sector,20000.0/ee_1200V_led1);
 pmt_inv_gain_1200->SetBinContent(module,sector,2.0e-11/cath_1200V_led1_up);
 pmt_inv_qe_800->SetBinContent(module,sector,50000.0/qe_800V_led1);
+pmt_inv_ee_800->SetBinContent(module,sector,2000.0/ee_800V_led1);
 pmt_inv_gain_800->SetBinContent(module,sector,2.0e-11/cath_800V_led1_up);
 pmt_spikes->SetBinContent(module,sector,total_spike);
 measurements->Fill(module-0.5,sector-0.5);
+}
+else
+{
+if (pmt_spikes->GetBinContent(module,sector) > total_spike)
+{
+pmt_inv_qe_1200->SetBinContent(module,sector,50000.0/qe_1200V_led1);
+pmt_inv_ee_1200->SetBinContent(module,sector,20000.0/ee_1200V_led1);
+pmt_inv_gain_1200->SetBinContent(module,sector,2.0e-11/cath_1200V_led1_up);
+pmt_inv_qe_800->SetBinContent(module,sector,50000.0/qe_800V_led1);
+pmt_inv_ee_800->SetBinContent(module,sector,2000.0/ee_800V_led1);
+pmt_inv_gain_800->SetBinContent(module,sector,2.0e-11/cath_800V_led1_up);
+pmt_spikes->SetBinContent(module,sector,total_spike);
+}
+measurements->Fill(module-0.5,sector-0.5);
+}
+
+
 }
 
 
@@ -472,5 +497,41 @@ measurements->Draw("colz");
 measurements->Draw("text same");
 c06->Print("Number_of_Measurements.png");
 c06->Close();
+
+TCanvas *c07 = new TCanvas("c07","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_inv_ee_800->Draw("colz");
+pmt_inv_ee_800->Draw("text same");
+c07->Print("Inverse_Eletrical_Efficiency_800V.png");
+c07->Close();
+
+TCanvas *c08 = new TCanvas("c08","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_inv_ee_1200->Draw("colz");
+pmt_inv_ee_1200->Draw("text same");
+c08->Print("Inverse_Eletrical_Efficiency_1200V.png");
+c08->Close();
 
 }

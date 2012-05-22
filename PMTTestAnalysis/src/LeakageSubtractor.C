@@ -4,12 +4,15 @@
 #include "TGraphErrors.h"
 #include "TFitResult.h"
 #include "TFitResultPtr.h"
+#include "TCanvas.h"
 
 #include <cassert>
 #include <stdexcept>
+#include <stdio.h>
+#include <stdlib.h>
 #include <iostream>
 
-#define skipAtVChange 10
+#define skipAtVChange 100
 #define skipAtLedChange 3
 
 
@@ -52,7 +55,7 @@ void LeakageSubtractor::Run()
       while (fHigh_V[voltageBegin+voltageStep] > voltage-50 && fHigh_V[voltageBegin+voltageStep] < voltage+50 && voltageBegin+voltageStep < fSize)
         {
           //looking if led changes in last five or next five time bins
-          if (voltageBegin+voltageStep-skipAtVChange < 0)
+          if (voltageStep-skipAtVChange < 0)
             {
               ++voltageStep;
               continue;
@@ -62,6 +65,12 @@ void LeakageSubtractor::Run()
             {
               ++voltageStep;
               continue; //don't break because counter used to skip voltage
+            }
+
+          if(fY[voltageBegin+voltageStep]*1e12 < 0. || fY[voltageBegin+voltageStep]*1e12 > 1e5) //weird value skip
+            {
+              ++voltageStep;
+              continue;
             }
 
           if(fLed[voltageBegin+voltageStep-skipAtLedChange] || fLed[voltageBegin+voltageStep] || fLed[voltageBegin+voltageStep+skipAtLedChange])
@@ -89,14 +98,14 @@ void LeakageSubtractor::Run()
       if (fVerbosity)
         std::cout << "fitting with " << voltageStep << " datapoints in voltage set " << voltage << std::endl;
 
-      TF1 theFcn ("a","[0]+[1]/TMath::Power(x,2.)");
-      TGraphErrors theGraph(fitX.size(),&fitX.front(),&fitY.front(),NULL,&fitYe.front());
-      TFitResultPtr theMin = theGraph.Fit(&theFcn,"S M E 0");
-      int status = theMin;
-      if (!status)
+      TF1 theFcn("a","[0]+[1]*TMath::Exp(-(x-[2])/[3])");
+      theFcn.SetParameters(fitY.back(),40,60,fabs(voltage-800)<50.?650:350);
+      theFcn.SetParLimits(3,200.,1200.);
+      TGraphErrors theGraph (fitX.size(),&fitX.front(),&fitY.front(),NULL,&fitYe.front());
+      TFitResultPtr theMin = theGraph.Fit(&theFcn,fVerbosity>1?"S M E 0":"S M E 0 Q");
+      if (theMin == NULL || !theMin->Status() || theMin->IsValid() == 0)
         {
-          if (fVerbosity)
-            std::cerr << "fit unsucessful" << std::endl;
+          std::cerr << "fit unsucessful" << std::endl;
 
           voltageBegin += voltageStep + 1; //jump to next voltage
           continue;
@@ -104,15 +113,26 @@ void LeakageSubtractor::Run()
       else
         {
           if (fVerbosity)
-            std::cerr << "fit sucessful" << std::endl;
+            std::cerr << "fit sucessful with f=" << theMin->Chi2()/double(fitX.size()) << std::endl;
+          if (theMin->Chi2()/double(fitX.size()) > 50)
+            std::cout << " - Warning: fit converged but high chi2/ndf compromised: " << theMin->Chi2()/double(fitX.size()) << std::endl;
         }
+
+      //TCanvas * c = new TCanvas("c","c",800,600);
+      //c->cd();
+      //theGraph.Draw("AP");
+      theFcn.SetParameters(theMin->Parameter(0),theMin->Parameter(1),theMin->Parameter(2),theMin->Parameter(3));
+      std::cout << theMin->Parameter(0) << " " << theMin->Parameter(1) << " " << theMin->Parameter(2) << " " << theMin->Parameter(3) << std::endl;
+      //theFcn.SetLineColor(kRed);
+      //theFcn.Draw("SAME");
+      //cin >> fVerbosity;
 
       for (int j=0; j < voltageStep; j++)
         {
-          theFcn.SetParameters(theMin->Parameter(0),theMin->Parameter(1));
-          //std::cout << "x:" << fX[j+voltageBegin] << "/" << fX[voltageBegin+j]-fX[voltageBegin] << " ===  " << fY[j+voltageBegin] *1e12 << " ..... " << theFcn(fX[voltageBegin+j]-fX[voltageBegin]) << std::endl;
-          fY[j+voltageBegin] -= float(1e-12 * theFcn(fX[j]-fX[voltageBegin]));
-         // fY[j+voltageBegin] *= 1e12;
+          std::cout << "x:" << fX[j+voltageBegin] << "/" << fX[voltageBegin+j]-fX[voltageBegin] << " ===  " << fY[j+voltageBegin] *1e12 << " ..... " << theFcn(fX[voltageBegin+j]-fX[voltageBegin]) << std::endl;
+          // if any poles in the function just skip the subtraction. only the LED regions are of interest. but if the profile doesn't look nice one can delete this if
+          if ((theFcn)(fX[j+voltageBegin]-fX[voltageBegin]) < 1e5 && (theFcn)(fX[j+voltageBegin]-fX[voltageBegin]) > 0)
+            fY[j+voltageBegin] -= float(1e-12 * theFcn(fX[j+voltageBegin]-fX[voltageBegin]));
         }//subtract the leakage
 
       voltageBegin += voltageStep + 1; //jump to next voltage

@@ -568,6 +568,7 @@ entries = entries + 1; //update the number of stored entries
 }
 
 LeakageSubtractor theSubtractor(vec_time,vec_cath,vec_hv,vec_led);
+theSubtractor.SetVerbosity(0);
 theSubtractor.Run();
 
 //set the end time of the measurement

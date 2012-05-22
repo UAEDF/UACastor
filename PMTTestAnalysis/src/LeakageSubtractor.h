@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <stdexcept>
-#include <iostream>
 
 class LeakageSubtractor
 {
@@ -18,7 +17,7 @@ class LeakageSubtractor
   const std::vector<int> &fLed;
 
  public:
-  LeakageSubtractor(const std::vector<int> &time, std::vector<float> &current, const std::vector<int> &high_V, const std::vector<int> &led, const float error=3.e-12);///Constructor. Add reference to the current. This will be modified. Also needed: time, the high voltage, and led.
+  LeakageSubtractor(const std::vector<int> &time, std::vector<float> &current, const std::vector<int> &high_V, const std::vector<int> &led, const float error=0.5e-12);///Constructor. Add reference to the current. This will be modified. Also needed: time, the high voltage, and led.
   ~LeakageSubtractor()
     {
     }///Destructor

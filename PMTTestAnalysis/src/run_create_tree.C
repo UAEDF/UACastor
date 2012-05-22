@@ -30,21 +30,14 @@ files_in[20] = "../data/cpt_sf_CA1620_2012_05_20_15_58_54_mod.cpt";
 files_in[21] = "../data/cpt_sf_CA1829_2012_05_20_21_04_16_mod.cpt";
 files_in[22] = "../data/cpt_sf_CA3362_2012_05_20_09_24_04_mod.cpt";
 files_in[23] = "../data/cpt_sf_CA1617_2012_05_21_00_24_41_mod.cpt";
-files_in[24] = "../data/mod.cpt";
-files_in[25] = "../data/mod.cpt";
-files_in[26] = "../data/mod.cpt";
-files_in[27] = "../data/mod.cpt";
-files_in[28] = "../data/mod.cpt";
+files_in[24] = "../data/cpt_sf_CA1431_2012_05_21_08_55_15_mod.cpt";
+files_in[25] = "../data/cpt_sf_CA1549_2012_05_21_12_33_16_mod.cpt";
+files_in[26] = "../data/cpt_sf_CA0948_2012_05_21_15_43_16_mod.cpt";
+files_in[27] = "../data/cpt_sf_CA1200_2012_05_21_20_34_38_mod.cpt";
+files_in[28] = "../data/cpt_sf_CA3236_2012_05_22_00_41_35_mod.cpt";
 files_in[29] = "../data/mod.cpt";
 
-
-
-
-
-
-
-
-int n_files = 24;
+int n_files = 29;
 
 string tree_out = "test_tree.root";
 

@@ -209,12 +209,14 @@ int tests = tree->GetEntries();
   TH2F *pmt_inv_qe_1200;
   TH2F *pmt_inv_gain_1200;
   TH2F *pmt_spikes;
+  TH2F *measurements;
 
   pmt_inv_qe_800 =  new TH2F("Inverse_qe_800V","inverse_qe_800V;sector;module", 14,0,14,16,0,16);
   pmt_inv_gain_800 =  new TH2F("Inverse_gain_800V","inverse_gain_800V;sector;module", 14,0,14,16,0,16);
   pmt_inv_qe_1200 =  new TH2F("Inverse_qe_1200V","inverse_qe_1200V;sector;module", 14,0,14,16,0,16);
   pmt_inv_gain_1200 =  new TH2F("Inverse_gain_1200V","inverse_gain_1200V;sector;module", 14,0,14,16,0,16);
   pmt_spikes =  new TH2F("Number_of_spikes","number_of_spikes;sector;module", 14,0,14,16,0,16);
+  measurements =  new TH2F("Number_of_measurements","number_of_measurements;sector;module", 14,0,14,16,0,16);
 
 for (int i = 0; i < tests ;i++)
 {
@@ -361,6 +363,7 @@ pmt_inv_gain_1200->SetBinContent(module,sector,2.0e-11/cath_1200V_led1_up);
 pmt_inv_qe_800->SetBinContent(module,sector,50000.0/qe_800V_led1);
 pmt_inv_gain_800->SetBinContent(module,sector,2.0e-11/cath_800V_led1_up);
 pmt_spikes->SetBinContent(module,sector,total_spike);
+measurements->Fill(module-0.5,sector-0.5);
 }
 
 
@@ -452,5 +455,22 @@ pmt_spikes->Draw("colz");
 pmt_spikes->Draw("text same");
 c05->Print("Number_of_Spikes.png");
 c05->Close();
+
+TCanvas *c06 = new TCanvas("c06","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+measurements->Draw("colz");
+measurements->Draw("text same");
+c06->Print("Number_of_Measurements.png");
+c06->Close();
 
 }

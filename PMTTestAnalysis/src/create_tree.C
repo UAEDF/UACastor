@@ -11,6 +11,40 @@ void set_coordinates(string pmt, int& module, int& sector)
 {
 
 if (pmt == "CA1579") { sector = 4; module = 1; }
+if (pmt == "CA3399") { sector = 1; module = 2; }
+if (pmt == "CA0683") { sector = 13; module = 1; }
+if (pmt == "CA0540") { sector = 13; module = 2; }
+if (pmt == "CA3362") { sector = 14; module = 1; }
+if (pmt == "CA0625") { sector = 3; module = 2; }
+if (pmt == "CA0715") { sector = 15; module = 2; }
+if (pmt == "CA1832") { sector = 5; module = 2; }
+if (pmt == "CA0857") { sector = 14; module = 2; }
+if (pmt == "CA0886") { sector = 15; module = 1; }
+if (pmt == "CA1549") { sector = 5; module = 1; }
+if (pmt == "CA1617") { sector = 6; module = 1; }
+if (pmt == "CA0742") { sector = 6; module = 2; }
+if (pmt == "CA3236") { sector = 11; module = 2; }
+if (pmt == "CA0829") { sector = 10; module = 1; }
+if (pmt == "CA0948") { sector = 12; module = 1; }
+if (pmt == "CA1263") { sector = 10; module = 2; }
+if (pmt == "CA1200") { sector = 9; module = 2; }
+if (pmt == "CA1829") { sector = 9; module = 1; }
+if (pmt == "CA1431") { sector = 11; module = 1; }
+if (pmt == "CA1593") { sector = 12; module = 2; }
+if (pmt == "CA0327") { sector = 2; module = 2; }
+if (pmt == "CA1680") { sector = 16; module = 2; }
+if (pmt == "CA0558") { sector = 16; module = 1; }
+if (pmt == "CA0574") { sector = 1; module = 1; }
+if (pmt == "CA1842") { sector = 2; module = 1; }
+if (pmt == "CA0812") { sector = 4; module = 2; }
+if (pmt == "CA1592") { sector = 3; module = 1; }
+if (pmt == "CA0892") { sector = 8; module = 10; }
+if (pmt == "CA1620") { sector = 7; module = 10; }
+if (pmt == "CA1321") { sector = 7; module = 1; }
+if (pmt == "CA1537") { sector = 8; module = 1; }
+if (pmt == "CA3386") { sector = 7; module = 2; }
+if (pmt == "CA1954") { sector = 8; module = 2; }
+
 
 }
 
@@ -69,16 +103,21 @@ float ave_cath_before = 0, ave_cath_after = 0;
 float ave_anode_before = 0, ave_anode_after = 0;
 float ave_ref_before = 0, ave_ref_after = 0;
 
-int tot_up = 7, tot_down = 7;
+int tot_up = 10, tot_down = 10;
 
 int spike = 0;
 
-for (int i = 1; i <= 7; i++)
+for (int i = 1; i <= 10; i++)
 {
 spike_check(cent_val-1-i, vec_cath, spike);
 total_spike = total_spike + spike;
 
-if (spike == 0) { ave_cath_before = ave_cath_before + vec_cath->at(cent_val-1-i); }
+if (spike == 0)
+{
+ave_cath_before = ave_cath_before + vec_cath->at(cent_val-1-i);
+ave_anode_before = ave_anode_before + vec_adut->at(cent_val-1-i);
+ave_ref_before = ave_ref_before + vec_aref->at(cent_val-1-i);
+}
 else { tot_up = tot_up - 1; }
 //cout<<i<<" cath A = "<<vec_cath->at(cent_val-1-i)<<endl;
 
@@ -87,28 +126,33 @@ spike = 0;
 spike_check(cent_val+6+i, vec_cath, spike);
 total_spike = total_spike + spike;
 
-if (spike == 0) { ave_cath_after = ave_cath_after + vec_cath->at(cent_val+6+i); }
+if (spike == 0)
+{
+ave_cath_after = ave_cath_after + vec_cath->at(cent_val+6+i);
+ave_anode_after = ave_anode_after + vec_adut->at(cent_val+6+i);
+ave_ref_after = ave_ref_after + vec_aref->at(cent_val+6+i);
+}
 else { tot_down = tot_down - 1; }
 //cout<<i<<" cath B = "<<vec_cath->at(cent_val+5+i)<<endl;
 
 spike = 0;
 
-ave_anode_before = ave_anode_before + vec_adut->at(cent_val-1-i);
+
 //cout<<i<<" anode A = "<<vec_adut->at(cent_val-1-i)<<endl;
-ave_anode_after = ave_anode_after + vec_adut->at(cent_val+6+i);
+
 //cout<<i<<" anode B = "<<vec_adut->at(cent_val+5+i)<<endl;
-ave_ref_before = ave_ref_before + vec_aref->at(cent_val-1-i);
+
 //cout<<i<<" ref A = "<<vec_aref->at(cent_val-1-i)<<endl;
-ave_ref_after = ave_ref_after + vec_aref->at(cent_val+6+i);
+
 //cout<<i<<" ref B = "<<vec_aref->at(cent_val+5+i)<<endl;
 }
 
 ave_cath_before = ave_cath_before/tot_up;
 ave_cath_after = ave_cath_after/tot_down;
-ave_anode_before = ave_anode_before/5.0;
-ave_anode_after = ave_anode_after/5.0;
-ave_ref_before = ave_ref_before/5.0;
-ave_ref_after = ave_ref_after/5.0;
+ave_anode_before = ave_anode_before/tot_up;
+ave_anode_after = ave_anode_after/tot_down;
+ave_ref_before = ave_ref_before/tot_up;
+ave_ref_after = ave_ref_after/tot_down;
 
 //cout<<"cath before = "<<ave_cath_before<<endl;
 //cout<<"cath after = "<<ave_cath_after<<endl;
@@ -229,9 +273,9 @@ TTree *tree = new TTree("Castor_PMT_Caracterization_2012","Castor PMT Caracteriz
 tree->Branch("PMT",&pmt,"Reference code of the PMT");
 tree->Branch("Measurement_begin","std::vector<int>",&pvec_begin);
 tree->Branch("Measurement_end","std::vector<int>",&pvec_end);
-tree->Branch("Entries",&entries,"Number of entries");
-tree->Branch("Module",&module,"Castor module");
-tree->Branch("Sector",&sector,"Castor sector");
+tree->Branch("Entries",&entries,"Number of entries/I");
+tree->Branch("Module",&module,"Castor module/I");
+tree->Branch("Sector",&sector,"Castor sector/I");
 tree->Branch("Measured_time","std::vector<int>",&pvec_time);
 tree->Branch("HV","std::vector<int>",&pvec_hv);
 tree->Branch("Cathode","std::vector<float>",&pvec_cath_ori);
@@ -239,7 +283,7 @@ tree->Branch("Cathode_after_background_subtraction","std::vector<float>",&pvec_c
 tree->Branch("Anode","std::vector<float>",&pvec_adut);
 tree->Branch("Reference_PMT","std::vector<float>",&pvec_aref);
 tree->Branch("Led","std::vector<int>",&pvec_led);
-tree->Branch("Number_of_spikes",&total_spike,"Number of spikes found during the analysis");
+tree->Branch("Number_of_spikes",&total_spike,"Number of spikes found during the analysis/I");
 tree->Branch("Cath_800V_led1_up",&cath_800V_led1_up,"Cathode Gain when switching on led1 at 800V");
 tree->Branch("Cath_800V_led1_down",&cath_800V_led1_down,"Cathode Gain when switching off led1 at 800V");
 tree->Branch("Anode_800V_led1_up",&anode_800V_led1_up,"Anode Gain when switching on led1 at 800V");
@@ -577,8 +621,10 @@ aux_str = end_time.substr(17,2);
 aux_int = atoi( aux_str.c_str() );
 vec_end.push_back(aux_int);
 
+set_coordinates(pmt, module, sector);
+
 //output the details of the measurement
-cout<<"PMT code: "<<pmt<<endl;
+cout<<"PMT code: "<<pmt<<" (Sector : "<<sector<<" ; Module : "<<module<<")"<<endl;
 cout<<"Begin: "<<ini_time<<endl;
 cout<<"End: "<<end_time<<endl;
 cout<<"Entries "<<entries<<endl;

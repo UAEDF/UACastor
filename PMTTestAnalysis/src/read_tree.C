@@ -21,8 +21,8 @@ TTree *tree = (TTree*)f.Get("Castor_PMT_Caracterization_2012");
 
 //declaring variables
 char pmt[10];
-std::vector<int> *begin, *end, *led;
-std::vector<float> *hv, *time, *cath, *cath_ori, *anode, *ref;
+std::vector<int> *begin, *end, *led, *hv, *time;
+std::vector<float> *cath, *cath_ori, *anode, *ref;
 
 int total_spike, entries, module, sector;
 
@@ -215,7 +215,7 @@ int tests = tree->GetEntries();
 for (int i = 0; i < tests ;i++)
 {
 tree->GetEvent(i);
-cout<<"Measurement "<<i+1<<"; PMT code: "<<pmt<<endl;
+cout<<"Measurement "<<i+1<<"; PMT code: "<<pmt<<" (Sector : "<<sector<<" ; Module : "<<module<<")"<<endl;
 cout<<"Begin of the measurement: "<<begin->at(0)<<"/"<<begin->at(1)<<"/"<<begin->at(2)<<" - "<<begin->at(3)<<":"<<begin->at(4)<<":"<<begin->at(5)<<endl;
 cout<<"End of the measurement: "<<end->at(0)<<"/"<<end->at(1)<<"/"<<end->at(2)<<" - "<<end->at(3)<<":"<<end->at(4)<<":"<<end->at(5)<<endl;
 cout<<"Number of identified and rejected spikes : "<<total_spike<<endl;
@@ -352,12 +352,9 @@ cout<<"1600V               |"<<qe_1600V_led1<<endl;
 cout<<"----------------------------------------------------------"<<endl;
 cout<<" "<<endl;
 
-if(i+1 <= 16) { pmt_inv_qe->SetBinContent(1,i+1,50000.0/qe_1200V_led1); }
-if(i+1 > 16) { pmt_inv_qe->SetBinContent(2,i-15,50000.0/qe_1200V_led1); }
-if(i+1 <= 16) { pmt_inv_gain->SetBinContent(1,i+1,1.0/cath_1200V_led1_up); }
-if(i+1 > 16) { pmt_inv_gain->SetBinContent(2,i-15,1.0/cath_1200V_led1_up); }
-if(i+1 <= 16) { pmt_spikes->SetBinContent(1,i+1,total_spike); }
-if(i+1 > 16) { pmt_spikes->SetBinContent(2,i-15,total_spike); }
+pmt_inv_qe->SetBinContent(module,sector,50000.0/qe_1200V_led1);
+pmt_inv_gain->SetBinContent(module,sector,2.0e-11/cath_1200V_led1_up);
+pmt_spikes->SetBinContent(module,sector,total_spike);
 }
 
 
@@ -365,6 +362,7 @@ TCanvas *c01 = new TCanvas("c01","Canvas",0,29,1200,800);
 gStyle->SetOptStat(0);
 gStyle->SetOptTitle(kFALSE);
 gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
 gPad->SetFillColor(0);
 gPad->SetBorderMode(0);
 gPad->SetBorderSize(2);
@@ -382,6 +380,7 @@ TCanvas *c02 = new TCanvas("c02","Canvas",0,29,1200,800);
 gStyle->SetOptStat(0);
 gStyle->SetOptTitle(kFALSE);
 gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
 gPad->SetFillColor(0);
 gPad->SetBorderMode(0);
 gPad->SetBorderSize(2);

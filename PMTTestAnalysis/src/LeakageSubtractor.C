@@ -90,7 +90,7 @@ void LeakageSubtractor::Run()
       if (fitX.size() <= 5) //not enough data for fit
         {
           if (fVerbosity)
-            std::cerr << "no fitting. not enoogh data in voltage set" << std::endl;
+            std::cerr << "no fitting. not enough data in voltage set" << std::endl;
           voltageBegin += voltageStep + 1; //jump to next voltage
           continue;
         }
@@ -128,7 +128,8 @@ void LeakageSubtractor::Run()
 
       for (int j=0; j < voltageStep; j++)
         {
-          //std::cout << "x:" << fX[j+voltageBegin] << "/" << fX[voltageBegin+j]-fX[voltageBegin] << " ===  " << fY[j+voltageBegin] *1e12 << " ..... " << theFcn(fX[voltageBegin+j]-fX[voltageBegin]) << std::endl;
+          if (fVerbosity>=3)
+            std::cout << "x:" << fX[j+voltageBegin] << "/" << fX[voltageBegin+j]-fX[voltageBegin] << " ===  " << fY[j+voltageBegin] *1e12 << " ..... " << theFcn(fX[voltageBegin+j]-fX[voltageBegin]) << std::endl;
           // if any poles in the function just skip the subtraction. only the LED regions are of interest. but if the profile doesn't look nice one can delete this if
           if ((theFcn)(fX[j+voltageBegin]-fX[voltageBegin]) < 1e5 && (theFcn)(fX[j+voltageBegin]-fX[voltageBegin]) > 0)
             fY[j+voltageBegin] -= float(1e-12 * theFcn(fX[j+voltageBegin]-fX[voltageBegin]));

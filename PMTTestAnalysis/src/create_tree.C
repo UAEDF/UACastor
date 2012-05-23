@@ -45,6 +45,7 @@ if (pmt == "CA1537") { sector = 8; module = 1; }
 if (pmt == "CA3386") { sector = 7; module = 2; }
 if (pmt == "CA1954") { sector = 8; module = 2; }
 
+if (sector == 0 and module == 0) { cout<<"Unknown PMT"<<endl; }
 
 }
 
@@ -55,12 +56,17 @@ float ave, dev;
 
 //cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
 
-ave = (vec_cath->at(point-2) + vec_cath->at(point-1) + vec_cath->at(point) + vec_cath->at(point+1) + vec_cath->at(point+2))/5.0;
+ave = (vec_cath->at(point-2) + vec_cath->at(point-1) + vec_cath->at(point+1) + vec_cath->at(point+2))/4.0;
 
 dev = (vec_cath->at(point) - ave)/ave;
 
-if (dev > 0.50) { cout<<"Positive spike! "<<dev<<endl; cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;spike = 1; }
-if (dev < -0.50) { cout<<"Negative spike! "<<dev<<endl; cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;spike = 1; }
+if (dev > 1.00 and vec_cath->at(point) > 1e-12) { cout<<"Positive spike! "<<dev<<endl; //cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
+spike = 1;
+}
+if (dev < -1.00 and vec_cath->at(point) < -1e-12) { cout<<"Negative spike! "<<dev<<endl;
+//cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
+spike = 1;
+}
 
 }
 
@@ -109,6 +115,7 @@ int spike = 0;
 
 for (int i = 1; i <= 10; i++)
 {
+
 spike_check(cent_val-1-i, vec_cath, spike);
 total_spike = total_spike + spike;
 
@@ -766,7 +773,7 @@ calc_dif(index_1600V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led
 calc_dif(index_1600V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1600V_led1_down, anode_1600V_led1_down, ref_1600V_led1_down, total_spike);
 calc_eff(cath_1600V_led1_up, cath_1600V_led1_down, anode_1600V_led1_up, anode_1600V_led1_down, ref_1600V_led1_up, ref_1600V_led1_down, ee_1600V_led1, qe_1600V_led1);
 
-//cout<<"Total spikes = "<<total_spike<<endl;
+cout<<"Total spikes = "<<total_spike<<endl;
 
 //fill the tree
 tree->Fill();

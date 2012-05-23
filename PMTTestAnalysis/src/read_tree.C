@@ -366,7 +366,7 @@ if (pmt_spikes->GetBinContent(module,sector) == 0)
 {
 pmt_inv_qe_1200->SetBinContent(module,sector,50000.0/qe_1200V_led1);
 pmt_inv_ee_1200->SetBinContent(module,sector,20000.0/ee_1200V_led1);
-pmt_inv_gain_1200->SetBinContent(module,sector,2.0e-11/anode_1200V_led1_up);
+pmt_inv_gain_1200->SetBinContent(module,sector,2.0e-6/anode_1200V_led1_up);
 pmt_inv_qe_800->SetBinContent(module,sector,50000.0/qe_800V_led1);
 pmt_inv_ee_800->SetBinContent(module,sector,2000.0/ee_800V_led1);
 pmt_inv_gain_800->SetBinContent(module,sector,2.0e-11/anode_800V_led1_up);
@@ -379,7 +379,7 @@ if (pmt_spikes->GetBinContent(module,sector) > total_spike)
 {
 pmt_inv_qe_1200->SetBinContent(module,sector,50000.0/qe_1200V_led1);
 pmt_inv_ee_1200->SetBinContent(module,sector,20000.0/ee_1200V_led1);
-pmt_inv_gain_1200->SetBinContent(module,sector,2.0e-11/anode_1200V_led1_up);
+pmt_inv_gain_1200->SetBinContent(module,sector,2.0e-6/anode_1200V_led1_up);
 pmt_inv_qe_800->SetBinContent(module,sector,50000.0/qe_800V_led1);
 pmt_inv_ee_800->SetBinContent(module,sector,2000.0/ee_800V_led1);
 pmt_inv_gain_800->SetBinContent(module,sector,2.0e-11/anode_800V_led1_up);

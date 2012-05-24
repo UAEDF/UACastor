@@ -77,18 +77,18 @@ float ref_1200V_led4_up, ref_1200V_led4_down;
 float ref_1400V_led1_up, ref_1400V_led1_down;
 float ref_1600V_led1_up, ref_1600V_led1_down;
 
-float ee_800V_led1;
-float ee_800V_led2;
-float ee_800V_led3;
-float ee_800V_led4;
-float ee_900V_led1;
-float ee_1000V_led1;
-float ee_1200V_led1;
-float ee_1200V_led2;
-float ee_1200V_led3;
-float ee_1200V_led4;
-float ee_1400V_led1;
-float ee_1600V_led1;
+float gain_800V_led1;
+float gain_800V_led2;
+float gain_800V_led3;
+float gain_800V_led4;
+float gain_900V_led1;
+float gain_1000V_led1;
+float gain_1200V_led1;
+float gain_1200V_led2;
+float gain_1200V_led3;
+float gain_1200V_led4;
+float gain_1400V_led1;
+float gain_1600V_led1;
 float qe_800V_led1;
 float qe_800V_led2;
 float qe_800V_led3;
@@ -101,6 +101,14 @@ float qe_1200V_led3;
 float qe_1200V_led4;
 float qe_1400V_led1;
 float qe_1600V_led1;
+
+float leakage_0V;
+float leakage_800V;
+float leakage_900V;
+float leakage_1000V;
+float leakage_1200V;
+float leakage_1400V;
+float leakage_1600V;
 
 //setting the branches
 tree->SetBranchAddress("PMT",&pmt);
@@ -213,31 +221,37 @@ tree->SetBranchAddress("Reference_1400V_led1_up",&ref_1400V_led1_up);
 tree->SetBranchAddress("Reference_1400V_led1_down",&ref_1400V_led1_down);
 tree->SetBranchAddress("Reference_1600V_led1_up",&ref_1600V_led1_up);
 tree->SetBranchAddress("Reference_1600V_led1_down",&ref_1600V_led1_down);
-tree->SetBranchAddress("EE_800V_led1",&ee_800V_led1);
+tree->SetBranchAddress("Gain_800V_led1",&gain_800V_led1);
 tree->SetBranchAddress("QE_800V_led1",&qe_800V_led1);
-tree->SetBranchAddress("EE_800V_led2",&ee_800V_led2);
+tree->SetBranchAddress("Gain_800V_led2",&gain_800V_led2);
 tree->SetBranchAddress("QE_800V_led2",&qe_800V_led2);
-tree->SetBranchAddress("EE_800V_led3",&ee_800V_led3);
+tree->SetBranchAddress("Gain_800V_led3",&gain_800V_led3);
 tree->SetBranchAddress("QE_800V_led3",&qe_800V_led3);
-tree->SetBranchAddress("EE_800V_led4",&ee_800V_led4);
+tree->SetBranchAddress("Gain_800V_led4",&gain_800V_led4);
 tree->SetBranchAddress("QE_800V_led4",&qe_800V_led4);
-tree->SetBranchAddress("EE_900V_led1",&ee_900V_led1);
+tree->SetBranchAddress("Gain_900V_led1",&gain_900V_led1);
 tree->SetBranchAddress("QE_900V_led1",&qe_900V_led1);
-tree->SetBranchAddress("EE_1000V_led1",&ee_1000V_led1);
+tree->SetBranchAddress("Gain_1000V_led1",&gain_1000V_led1);
 tree->SetBranchAddress("QE_1000V_led1",&qe_1000V_led1);
-tree->SetBranchAddress("EE_1200V_led1",&ee_1200V_led1);
+tree->SetBranchAddress("Gain_1200V_led1",&gain_1200V_led1);
 tree->SetBranchAddress("QE_1200V_led1",&qe_1200V_led1);
-tree->SetBranchAddress("EE_1200V_led2",&ee_1200V_led2);
+tree->SetBranchAddress("Gain_1200V_led2",&gain_1200V_led2);
 tree->SetBranchAddress("QE_1200V_led2",&qe_1200V_led2);
-tree->SetBranchAddress("EE_1200V_led3",&ee_1200V_led3);
+tree->SetBranchAddress("Gain_1200V_led3",&gain_1200V_led3);
 tree->SetBranchAddress("QE_1200V_led3",&qe_1200V_led3);
-tree->SetBranchAddress("EE_1200V_led4",&ee_1200V_led4);
+tree->SetBranchAddress("Gain_1200V_led4",&gain_1200V_led4);
 tree->SetBranchAddress("QE_1200V_led4",&qe_1200V_led4);
-tree->SetBranchAddress("EE_1400V_led1",&ee_1400V_led1);
+tree->SetBranchAddress("Gain_1400V_led1",&gain_1400V_led1);
 tree->SetBranchAddress("QE_1400V_led1",&qe_1400V_led1);
-tree->SetBranchAddress("EE_1600V_led1",&ee_1600V_led1);
+tree->SetBranchAddress("Gain_1600V_led1",&gain_1600V_led1);
 tree->SetBranchAddress("QE_1600V_led1",&qe_1600V_led1);
-
+tree->SetBranchAddress("Leakage_0V",&leakage_0V);
+tree->SetBranchAddress("Leakage_800V",&leakage_800V);
+tree->SetBranchAddress("Leakage_900V",&leakage_900V);
+tree->SetBranchAddress("Leakage_1000V",&leakage_1000V);
+tree->SetBranchAddress("Leakage_1200V",&leakage_1200V);
+tree->SetBranchAddress("Leakage_1400V",&leakage_1400V);
+tree->SetBranchAddress("Leakage_1600V",&leakage_1600V);
 
 //loop over the measurements
 int tests = tree->GetEntries();
@@ -370,26 +384,26 @@ cout<<"1600V     |"<<ref_1600V_led1_up<<endl;
 cout<<"          |"<<ref_1600V_led1_down<<endl;
 }
 cout<<"----------------------------------------------------------"<<endl;
-cout<<"Eletrical Efficiency| led1         led2          led3          led4"<<endl;
+cout<<"Gain                | led1         led2          led3          led4"<<endl;
 cout<<"----------------------------------------------------------"<<endl;
-if (ee_800V_led2 > 0.0)
+if (gain_800V_led2 > 0.0)
 {
-cout<<"800V                |"<<ee_800V_led1<<"   "<<ee_800V_led2<<"   "<<ee_800V_led3<<"   "<<ee_800V_led4<<endl;
+cout<<"800V                |"<<gain_800V_led1<<"   "<<gain_800V_led2<<"   "<<gain_800V_led3<<"   "<<gain_800V_led4<<endl;
 }
-if (ee_800V_led2 == 0.0 and ee_800V_led3 == 0.0 and ee_800V_led4 == 0.0)
+if (gain_800V_led2 == 0.0 and gain_800V_led3 == 0.0 and gain_800V_led4 == 0.0)
 {
-cout<<"800V                |"<<ee_800V_led1<<endl;
+cout<<"800V                |"<<gain_800V_led1<<endl;
 }
-if (ee_900V_led1 > 0.0)
+if (gain_900V_led1 > 0.0)
 {
-cout<<"900V                |"<<ee_900V_led1<<endl;
+cout<<"900V                |"<<gain_900V_led1<<endl;
 }
-cout<<"1000V               |"<<ee_1000V_led1<<endl;
-cout<<"1200V               |"<<ee_1200V_led1<<"   "<<ee_1200V_led2<<"   "<<ee_1200V_led3<<"   "<<ee_1200V_led4<<endl;
-cout<<"1400V               |"<<ee_1400V_led1<<endl;
-if (ee_1600V_led1 > 0.0)
+cout<<"1000V               |"<<gain_1000V_led1<<endl;
+cout<<"1200V               |"<<gain_1200V_led1<<"   "<<gain_1200V_led2<<"   "<<gain_1200V_led3<<"   "<<gain_1200V_led4<<endl;
+cout<<"1400V               |"<<gain_1400V_led1<<endl;
+if (gain_1600V_led1 > 0.0)
 {
-cout<<"1600V               |"<<ee_1600V_led1<<endl;
+cout<<"1600V               |"<<gain_1600V_led1<<endl;
 }
 cout<<"----------------------------------------------------------"<<endl;
 cout<<"Quantum Efficiency  | led1         led2          led3          led4"<<endl;
@@ -402,27 +416,46 @@ if (qe_800V_led2 == 0.0 and qe_800V_led3 == 0.0 and qe_800V_led4 == 0.0)
 {
 cout<<"800V                |"<<qe_800V_led1<<endl;
 }
-if (ee_900V_led1 > 0.0)
+if (qe_900V_led1 > 0.0)
 {
 cout<<"900V                |"<<qe_900V_led1<<endl;
 }
 cout<<"1000V               |"<<qe_1000V_led1<<endl;
 cout<<"1200V               |"<<qe_1200V_led1<<"   "<<qe_1200V_led2<<"   "<<qe_1200V_led3<<"   "<<qe_1200V_led4<<endl;
 cout<<"1400V               |"<<qe_1400V_led1<<endl;
-if (ee_1600V_led1 > 0.0)
+if (qe_1600V_led1 > 0.0)
 {
 cout<<"1600V               |"<<qe_1600V_led1<<endl;
+}
+cout<<"----------------------------------------------------------"<<endl;
+cout<<"Leakage"<<endl;
+cout<<"----------------------------------------------------------"<<endl;
+cout<<"0V                  |"<<leakage_0V<<endl;
+if (leakage_800V > 0.0)
+{
+cout<<"800V                |"<<leakage_800V<<endl;
+}
+if (leakage_900V > 0.0)
+{
+cout<<"900V                |"<<leakage_900V<<endl;
+}
+cout<<"1000V               |"<<leakage_1000V<<endl;
+cout<<"1200V               |"<<leakage_1200V<<endl;
+cout<<"1400V               |"<<leakage_1400V<<endl;
+if (leakage_1600V > 0.0)
+{
+cout<<"1600V               |"<<leakage_1600V<<endl;
 }
 cout<<"----------------------------------------------------------"<<endl;
 cout<<" "<<endl;
 
 
 pmt_inv_qe_1200->SetBinContent(module,sector,50000.0/qe_1200V_led1);
-pmt_inv_ee_1200->SetBinContent(module,sector,22000.0/ee_1200V_led1);
+pmt_inv_ee_1200->SetBinContent(module,sector,22000.0/gain_1200V_led1);
 pmt_inv_gain_1200->SetBinContent(module,sector,5.0e-07/anode_1200V_led1_up);
 pmt_inv_gain_1400->SetBinContent(module,sector,1.3e-06/anode_1400V_led1_up);
 pmt_inv_qe_800->SetBinContent(module,sector,50000.0/qe_800V_led1);
-pmt_inv_ee_800->SetBinContent(module,sector,2000.0/ee_800V_led1);
+pmt_inv_ee_800->SetBinContent(module,sector,2000.0/gain_800V_led1);
 pmt_inv_gain_800->SetBinContent(module,sector,4.0e-08/anode_800V_led1_up);
 pmt_spikes->SetBinContent(module,sector,total_spikes);
 measurements->Fill(module-0.5,sector-0.5);

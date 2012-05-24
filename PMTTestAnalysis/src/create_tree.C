@@ -65,13 +65,13 @@ dev = (vec_cath->at(point) - ave)/ave;
 
 if (dev > 1.00 and vec_cath->at(point) > 1e-12)
 {
-cout<<"Positive spike! "<<dev<<endl;
+//cout<<"Positive spike! "<<dev<<endl;
 //cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
 spike = 1;
 }
 if (dev < -1.00 and vec_cath->at(point) < -1e-12)
 {
-cout<<"Negative spike! "<<dev<<endl;
+//cout<<"Negative spike! "<<dev<<endl;
 //cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
 spike = 1;
 }
@@ -80,6 +80,9 @@ spike = 1;
 
 
 void estimate_leakage(float point, std::vector<float> *vec_cath, float& leakage, int& total_spikes)
+{
+
+if (point > 0)
 {
 
 int tot_points = 20;
@@ -94,6 +97,7 @@ spike = 0;
 }
 
 leakage = leakage/tot_points;
+}
 
 }
 
@@ -116,7 +120,11 @@ if (cathode > 0.0) { qe = ref_ave / cathode; }
 void gain_cathode(int ini_val, int end_val, std::vector<float> *vec_cath, float& cath_gain, int& cath_spikes, float& cath_error, int& n_middle)
 {
 
-if (ini_val > 0 and end_val > 0)
+int lenght = vec_cath->size();
+
+//cout<<"lenght = "<<lenght;
+
+if (ini_val > 0 and end_val > 0 and end_val+30 < lenght)
 {
 
 TH1D *val_before;
@@ -209,9 +217,11 @@ delete(val_after);
 void calc_dif(size_t cent_val, std::vector<float> *vec_adut, std::vector<float> *vec_aref, std::vector<int> *vec_led, float& anode, float& ref)
 {
 
+size_t lenght = vec_adut->size();
+
 //check the inputed values
 //cout<<"central value = "<<cent_val<<endl;
-if (cent_val > 0)
+if (cent_val > 0 and cent_val+20 < lenght)
 {
 //cout<<"hv begin = "<<vec_hv->at(cent_val-6)<<endl;
 //cout<<"hv end = "<<vec_hv->at(cent_val+5)<<endl;
@@ -296,6 +306,7 @@ std::vector<float> *pvec_cath, *pvec_cath_ori, *pvec_adut, *pvec_aref;
 int total_spikes, sector, module;
 
 int found1, found2, found3;
+int total_unknown = 0;
 
 int index_800V_led1_up, index_800V_led1_down;
 int index_800V_led2_up, index_800V_led2_down;
@@ -807,6 +818,7 @@ aux_int = atoi( aux_str.c_str() );
 vec_end.push_back(aux_int);
 
 set_coordinates(pmt, module, sector);
+if (sector == 0 and module == 0) { total_unknown = total_unknown + 1; }
 
 //output the details of the measurement
 cout<<"PMT code: "<<pmt<<" (Sector : "<<sector<<" ; Module : "<<module<<")"<<endl;
@@ -825,6 +837,11 @@ if (vec_hv[j] < -1020 and vec_hv[j] > -1180) { cout<<"Unknown voltage : "<<vec_h
 if (vec_hv[j] < -1220 and vec_hv[j] > -1380) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<vec_led[j]<<endl; }
 if (vec_hv[j] < -1420 and vec_hv[j] > -1580) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<vec_led[j]<<endl; }
 if (vec_hv[j] < -1620) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<vec_led[j]<<endl; }
+
+if (vec_hv[j] < 20 and vec_hv[j] > -20)
+{
+if (vec_hv[j+1] > 20 or vec_hv[j+1] < -20) { index_leakage_0V = j; }
+}
 
 if (vec_hv[j] < -780 and vec_hv[j] > -820)
 {
@@ -885,6 +902,8 @@ if (vec_led[j] == 2 or vec_led[j] == 3 or vec_led[j] == 4 ) { cout<<"Voltage : "
 }
 
 }
+
+//cout<<"so far so good!"<<endl;
 
 //output the transition indexes
 //cout<<"index 800V led1 up    = "<<index_800V_led1_up<<endl;
@@ -992,12 +1011,23 @@ gain_cathode(index_1600V_led1_up, index_1600V_led1_down, &vec_cath, cath_1600V_l
 calc_eff(cath_1600V_led1, anode_1600V_led1_up, anode_1600V_led1_down, ref_1600V_led1_up, ref_1600V_led1_down, gain_1600V_led1, qe_1600V_led1);
 total_spikes = total_spikes + cath_1600V_led1_spikes;
 
+estimate_leakage(index_leakage_0V, &vec_cath_ori, leakage_0V, total_spikes);
+estimate_leakage(index_leakage_800V, &vec_cath_ori, leakage_800V, total_spikes);
+estimate_leakage(index_leakage_900V, &vec_cath_ori, leakage_900V, total_spikes);
+estimate_leakage(index_leakage_1000V, &vec_cath_ori, leakage_1000V, total_spikes);
+estimate_leakage(index_leakage_1200V, &vec_cath_ori, leakage_1200V, total_spikes);
+estimate_leakage(index_leakage_1400V, &vec_cath_ori, leakage_1400V, total_spikes);
+estimate_leakage(index_leakage_1600V, &vec_cath_ori, leakage_1600V, total_spikes);
+
 cout<<"Total spikes = "<<total_spikes<<endl;
+
+//cout<<"the problem is before filling the tree?"<<endl;
 
 //fill the tree
 tree->Fill();
 
 }
+cout<<"Total unknown PMTs : "<<total_unknown<<endl;
 
 //write to file
 TFile *data_output= TFile::Open( tree_out.c_str() , "RECREATE");

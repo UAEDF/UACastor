@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+
+//root lib
+#include "TH1.h"
 #include "TTree.h"
 #include "TFile.h"
 
@@ -60,34 +63,134 @@ ave = (vec_cath->at(point-2) + vec_cath->at(point-1) + vec_cath->at(point+1) + v
 
 dev = (vec_cath->at(point) - ave)/ave;
 
-if (dev > 1.00 and vec_cath->at(point) > 1e-12) { cout<<"Positive spike! "<<dev<<endl; //cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
+if (dev > 1.00 and vec_cath->at(point) > 1e-12)
+{
+cout<<"Positive spike! "<<dev<<endl;
+//cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
 spike = 1;
 }
-if (dev < -1.00 and vec_cath->at(point) < -1e-12) { cout<<"Negative spike! "<<dev<<endl;
+if (dev < -1.00 and vec_cath->at(point) < -1e-12)
+{
+cout<<"Negative spike! "<<dev<<endl;
 //cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
 spike = 1;
 }
 
 }
 
-void calc_eff(float cath_up, float cath_down, float anode_up, float anode_down, float ref_up, float ref_down, float& ee, float& qe)
+void calc_eff(float cathode, float anode_up, float anode_down, float ref_up, float ref_down, float& gain, float& qe)
 {
 
-float cath_ave, anode_ave, ref_ave;
+float anode_ave, ref_ave;
 
-cath_ave = (cath_up + cath_down)/2;
 anode_ave = (anode_up + anode_down)/2;
 ref_ave = (ref_up + ref_down)/2;
 
-if (cath_ave > 0.0) { ee = anode_ave / cath_ave; }
-if (cath_ave > 0.0) { qe = ref_ave / cath_ave; }
+if (cathode > 0.0) { gain = anode_ave / cathode; }
+if (cathode > 0.0) { qe = ref_ave / cathode; }
 
 //cout<<"ee = "<<ee<<" qe = "<<qe<<endl;
 
 }
 
 
-void calc_dif(size_t cent_val, std::vector<int> *vec_hv, std::vector<float> *vec_cath, std::vector<float> *vec_adut, std::vector<float> *vec_aref, std::vector<int> *vec_led, float& cath, float& anode, float& ref, int& total_spike)
+void gain_cathode(int ini_val, int end_val, std::vector<float> *vec_cath, float& cath_gain, int& cath_spikes, float& cath_error, int& n_middle)
+{
+
+if (ini_val > 0 and end_val > 0)
+{
+
+TH1D *val_before;
+TH1D *val_middle;
+TH1D *val_after;
+
+int spike;
+
+float low_before = 0.0, high_before = 0.0;
+float low_middle = 0.0, high_middle = 0.0;
+float low_after  = 0.0, high_after  = 0.0;
+
+int n_before = 0, n_after = 0;
+
+float ave_before = 0.0, error_before = 0.0;
+float ave_middle = 0.0, error_middle = 0.0;
+float ave_after  = 0.0, error_after  = 0.0;
+
+float ave_low = 0.0;
+
+for (int i = 1; i <= 20; i++)
+{
+if (i == 1) { low_before = vec_cath->at(ini_val-1-i); }
+if (high_before < vec_cath->at(ini_val-1-i)) { high_before = vec_cath->at(ini_val-1-i); }
+if (low_before > vec_cath->at(ini_val-1-i)) { low_before = vec_cath->at(ini_val-1-i); }
+n_before = n_before + 1;
+}
+
+for (int i = ini_val+7; i <= end_val-7; i++)
+{
+if (i == ini_val+7) { low_middle = vec_cath->at(i); }
+if (high_middle < vec_cath->at(i)) { high_middle = vec_cath->at(i); }
+if (low_middle > vec_cath->at(i)) { low_middle = vec_cath->at(i); }
+n_middle = n_middle + 1;
+}
+
+for (int i = 1; i <= 20; i++)
+{
+if (i == 1) { low_after = vec_cath->at(end_val+6+i); }
+if (high_after < vec_cath->at(end_val+6+i)) { high_after = vec_cath->at(end_val-1-i); }
+if (low_after > vec_cath->at(end_val+6+i)) { low_after = vec_cath->at(end_val-1-i); }
+n_after = n_after + 1;
+}
+
+val_before =  new TH1D("val_before","val_before;current", 100,low_before,high_before);
+val_middle =  new TH1D("val_middle","val_middle;current", 100,low_middle, high_middle);
+val_after  =  new TH1D("val_after","val_after;current", 100,low_after,high_after);
+
+for (int i = 1; i <= 20; i++)
+{
+spike_check(ini_val-1-i, vec_cath, spike);
+if (spike == 1) { cath_spikes = cath_spikes + 1; }
+else { val_after->Fill(vec_cath->at(ini_val-1-i)); }
+spike = 0;
+}
+
+for (int i = ini_val+7; i <= end_val-7; i++)
+{
+spike_check(i, vec_cath, spike);
+if (spike == 1) { cath_spikes = cath_spikes + 1; }
+else { val_middle->Fill(vec_cath->at(i)); }
+spike = 0;
+}
+
+for (int i = 1; i <= 20; i++)
+{
+spike_check(end_val+6+i, vec_cath, spike);
+if (spike == 1) { cath_spikes = cath_spikes + 1; }
+else { val_after->Fill(vec_cath->at(end_val+6+i)); }
+spike = 0;
+} 
+
+ave_before = val_before->GetMean();
+error_before = val_before->GetRMS();
+ave_middle = val_middle->GetMean();
+error_middle = val_middle->GetRMS();
+ave_after = val_after->GetMean();
+error_after = val_after->GetRMS();
+
+ave_low = (ave_before*n_before + ave_after*n_after)/(n_before+n_after);
+cath_gain = ave_middle - ave_low;
+
+cath_error = (error_before*n_before + error_middle*n_middle + error_after+n_after)/(n_before + n_middle + n_after);
+
+delete(val_before);
+delete(val_middle);
+delete(val_after);
+
+}
+
+}
+
+void calc_dif(size_t cent_val, std::vector<float> *vec_adut, std::vector<float> *vec_aref, std::vector<int> *vec_led, float& anode, float& ref)
 {
 
 //check the inputed values
@@ -105,45 +208,17 @@ if (cent_val > 0)
 //cout<<"led begin = "<<vec_led->at(cent_val-5)<<endl;
 //cout<<"led end = "<<vec_led->at(cent_val+6)<<endl;
 
-float ave_cath_before = 0, ave_cath_after = 0;
 float ave_anode_before = 0, ave_anode_after = 0;
 float ave_ref_before = 0, ave_ref_after = 0;
 
 int tot_up = 10, tot_down = 10;
 
-int spike = 0;
-
 for (int i = 1; i <= 10; i++)
 {
-
-spike_check(cent_val-1-i, vec_cath, spike);
-total_spike = total_spike + spike;
-
-if (spike == 0)
-{
-ave_cath_before = ave_cath_before + vec_cath->at(cent_val-1-i);
 ave_anode_before = ave_anode_before + vec_adut->at(cent_val-1-i);
 ave_ref_before = ave_ref_before + vec_aref->at(cent_val-1-i);
-}
-else { tot_up = tot_up - 1; }
-//cout<<i<<" cath A = "<<vec_cath->at(cent_val-1-i)<<endl;
-
-spike = 0;
-
-spike_check(cent_val+6+i, vec_cath, spike);
-total_spike = total_spike + spike;
-
-if (spike == 0)
-{
-ave_cath_after = ave_cath_after + vec_cath->at(cent_val+6+i);
 ave_anode_after = ave_anode_after + vec_adut->at(cent_val+6+i);
 ave_ref_after = ave_ref_after + vec_aref->at(cent_val+6+i);
-}
-else { tot_down = tot_down - 1; }
-//cout<<i<<" cath B = "<<vec_cath->at(cent_val+5+i)<<endl;
-
-spike = 0;
-
 
 //cout<<i<<" anode A = "<<vec_adut->at(cent_val-1-i)<<endl;
 
@@ -153,9 +228,6 @@ spike = 0;
 
 //cout<<i<<" ref B = "<<vec_aref->at(cent_val+5+i)<<endl;
 }
-
-ave_cath_before = ave_cath_before/tot_up;
-ave_cath_after = ave_cath_after/tot_down;
 ave_anode_before = ave_anode_before/tot_up;
 ave_anode_after = ave_anode_after/tot_down;
 ave_ref_before = ave_ref_before/tot_up;
@@ -171,13 +243,11 @@ ave_ref_after = ave_ref_after/tot_down;
 //calculate the gain
 if (vec_led->at(cent_val-1) == 0)
 {
-cath = ave_cath_after - ave_cath_before;
 anode = ave_anode_before - ave_anode_after;
 ref = ave_ref_before - ave_ref_after;
 }
 if (vec_led->at(cent_val-1) > 0)
 {
-cath = ave_cath_before - ave_cath_after;
 anode = ave_anode_after - ave_anode_before;
 ref = ave_ref_after - ave_ref_before;
 }
@@ -190,7 +260,8 @@ ref = ave_ref_after - ave_ref_before;
 
 }
 
-void create_tree(string *files_in, int n_files, string tree_out){
+void create_tree(string *files_in, int n_files, string tree_out)
+{
 //variable declaration
 float cath, adut, aref;
 int entries, time, hv, led, aux_int;
@@ -206,7 +277,7 @@ std::vector<int> vec_time, vec_hv, vec_led;
 std::vector<float> vec_cath, vec_cath_ori, vec_adut, vec_aref;
 std::vector<int> *pvec_time, *pvec_hv, *pvec_led;
 std::vector<float> *pvec_cath, *pvec_cath_ori, *pvec_adut, *pvec_aref;
-int total_spike, sector, module;
+int total_spikes, sector, module;
 
 int found1, found2, found3;
 
@@ -223,18 +294,31 @@ int index_1200V_led4_up, index_1200V_led4_down;
 int index_1400V_led1_up, index_1400V_led1_down;
 int index_1600V_led1_up, index_1600V_led1_down;
 
-float cath_800V_led1_up, cath_800V_led1_down;
-float cath_800V_led2_up, cath_800V_led2_down;
-float cath_800V_led3_up, cath_800V_led3_down;
-float cath_800V_led4_up, cath_800V_led4_down;
-float cath_900V_led1_up, cath_900V_led1_down;
-float cath_1000V_led1_up, cath_1000V_led1_down;
-float cath_1200V_led1_up, cath_1200V_led1_down;
-float cath_1200V_led2_up, cath_1200V_led2_down;
-float cath_1200V_led3_up, cath_1200V_led3_down;
-float cath_1200V_led4_up, cath_1200V_led4_down;
-float cath_1400V_led1_up, cath_1400V_led1_down;
-float cath_1600V_led1_up, cath_1600V_led1_down;
+float cath_800V_led1, cath_800V_led1_error;
+float cath_800V_led2, cath_800V_led2_error;
+float cath_800V_led3, cath_800V_led3_error;
+float cath_800V_led4, cath_800V_led4_error;
+float cath_900V_led1, cath_900V_led1_error;
+float cath_1000V_led1, cath_1000V_led1_error;
+float cath_1200V_led1, cath_1200V_led1_error;
+float cath_1200V_led2, cath_1200V_led2_error;
+float cath_1200V_led3, cath_1200V_led3_error;
+float cath_1200V_led4, cath_1200V_led4_error;
+float cath_1400V_led1, cath_1400V_led1_error;
+float cath_1600V_led1, cath_1600V_led1_error;
+
+int cath_800V_led1_spikes, cath_800V_led1_n;
+int cath_800V_led2_spikes, cath_800V_led2_n;
+int cath_800V_led3_spikes, cath_800V_led3_n;
+int cath_800V_led4_spikes, cath_800V_led4_n;
+int cath_900V_led1_spikes, cath_900V_led1_n;
+int cath_1000V_led1_spikes, cath_1000V_led1_n;
+int cath_1200V_led1_spikes, cath_1200V_led1_n;
+int cath_1200V_led2_spikes, cath_1200V_led2_n;
+int cath_1200V_led3_spikes, cath_1200V_led3_n;
+int cath_1200V_led4_spikes, cath_1200V_led4_n;
+int cath_1400V_led1_spikes, cath_1400V_led1_n;
+int cath_1600V_led1_spikes, cath_1600V_led1_n;
 
 float anode_800V_led1_up, anode_800V_led1_down;
 float anode_800V_led2_up, anode_800V_led2_down;
@@ -290,75 +374,99 @@ tree->Branch("Cathode_after_background_subtraction","std::vector<float>",&pvec_c
 tree->Branch("Anode","std::vector<float>",&pvec_adut);
 tree->Branch("Reference_PMT","std::vector<float>",&pvec_aref);
 tree->Branch("Led","std::vector<int>",&pvec_led);
-tree->Branch("Number_of_spikes",&total_spike,"Number of spikes found during the analysis/I");
-tree->Branch("Cath_800V_led1_up",&cath_800V_led1_up,"Cathode Gain when switching on led1 at 800V");
-tree->Branch("Cath_800V_led1_down",&cath_800V_led1_down,"Cathode Gain when switching off led1 at 800V");
+tree->Branch("Number_of_spikes",&total_spikes,"Number of spikes found during the analysis/I");
+tree->Branch("Cath_800V_led1",&cath_800V_led1,"Cathode Gain when switching on led1 at 800V");
+tree->Branch("Cath_800V_led1_error",&cath_800V_led1_error,"Cathode Gain error when switching off led1 at 800V");
+tree->Branch("Cath_800V_led1_spikes",&cath_800V_led1_spikes,"Cathode Gain spikes when switching on led1 at 800V");
+tree->Branch("Cath_800V_led1_n",&cath_800V_led1_n,"Number of points used for cathode gain calculation when switching off led1 at 800V");
 tree->Branch("Anode_800V_led1_up",&anode_800V_led1_up,"Anode Gain when switching on led1 at 800V");
 tree->Branch("Anode_800V_led1_down",&anode_800V_led1_down,"Anode Gain when switching off led1 at 800V");
 tree->Branch("Reference_800V_led1_up",&ref_800V_led1_up,"Reference Gain when switching on led1 at 800V");
 tree->Branch("Reference_800V_led1_down",&ref_800V_led1_down,"Reference Gain when switching off led1 at 800V");
-tree->Branch("Cath_800V_led2_up",&cath_800V_led2_up,"Cathode Gain when switching on led2 at 800V");
-tree->Branch("Cath_800V_led2_down",&cath_800V_led2_down,"Cathode Gain when switching off led2 at 800V");
+tree->Branch("Cath_800V_led2",&cath_800V_led2,"Cathode Gain when switching on led2 at 800V");
+tree->Branch("Cath_800V_led2_error",&cath_800V_led2_error,"Cathode Gain error when switching off led2 at 800V");
+tree->Branch("Cath_800V_led2_spikes",&cath_800V_led2_spikes,"Cathode Gain spikes when switching on led2 at 800V");
+tree->Branch("Cath_800V_led2_n",&cath_800V_led2_n,"Number of points used for cathode gain calculation when switching off led2 at 800V");
 tree->Branch("Anode_800V_led2_up",&anode_800V_led2_up,"Anode Gain when switching on led2 at 800V");
 tree->Branch("Anode_800V_led2_down",&anode_800V_led2_down,"Anode Gain when switching off led2 at 800V");
 tree->Branch("Reference_800V_led2_up",&ref_800V_led2_up,"Reference Gain when switching on led2 at 800V");
 tree->Branch("Reference_800V_led2_down",&ref_800V_led2_down,"Reference Gain when switching off led2 at 800V");
-tree->Branch("Cath_800V_led3_up",&cath_800V_led3_up,"Cathode Gain when switching on led3 at 800V");
-tree->Branch("Cath_800V_led3_down",&cath_800V_led3_down,"Cathode Gain when switching off led3 at 800V");
+tree->Branch("Cath_800V_led3",&cath_800V_led3,"Cathode Gain when switching on led3 at 800V");
+tree->Branch("Cath_800V_led3_error",&cath_800V_led3_error,"Cathode Gain error when switching off led3 at 800V");
+tree->Branch("Cath_800V_led3_spikes",&cath_800V_led3_spikes,"Cathode Gain spikes when switching on led3 at 800V");
+tree->Branch("Cath_800V_led3_n",&cath_800V_led3_n,"Number of points used for cathode gain calculation when switching off led3 at 800V");
 tree->Branch("Anode_800V_led3_up",&anode_800V_led3_up,"Anode Gain when switching on led3 at 800V");
 tree->Branch("Anode_800V_led3_down",&anode_800V_led3_down,"Anode Gain when switching off led3 at 800V");
 tree->Branch("Reference_800V_led3_up",&ref_800V_led3_up,"Reference Gain when switching on led3 at 800V");
 tree->Branch("Reference_800V_led3_down",&ref_800V_led3_down,"Reference Gain when switching off led3 at 800V");
-tree->Branch("Cath_800V_led4_up",&cath_800V_led4_up,"Cathode Gain when switching on led4 at 800V");
-tree->Branch("Cath_800V_led4_down",&cath_800V_led4_down,"Cathode Gain when switching off led4 at 800V");
+tree->Branch("Cath_800V_led4",&cath_800V_led4,"Cathode Gain when switching on led4 at 800V");
+tree->Branch("Cath_800V_led4_error",&cath_800V_led4_error,"Cathode Gain error when switching off led4 at 800V");
+tree->Branch("Cath_800V_led4_spikes",&cath_800V_led4_spikes,"Cathode Gain spikes when switching on led4 at 800V");
+tree->Branch("Cath_800V_led4_n",&cath_800V_led4_n,"Number of points used for cathode gain calculation when switching off led4 at 800V");
 tree->Branch("Anode_800V_led4_up",&anode_800V_led4_up,"Anode Gain when switching on led4 at 800V");
 tree->Branch("Anode_800V_led4_down",&anode_800V_led4_down,"Anode Gain when switching off led4 at 800V");
 tree->Branch("Reference_800V_led4_up",&ref_800V_led4_up,"Reference Gain when switching on led4 at 800V");
 tree->Branch("Reference_800V_led4_down",&ref_800V_led4_down,"Reference Gain when switching off led4 at 800V");
-tree->Branch("Cath_900V_led1_up",&cath_900V_led1_up,"Cathode Gain when switching on led1 at 900V");
-tree->Branch("Cath_900V_led1_down",&cath_900V_led1_down,"Cathode Gain when switching off led1 at 900V");
+tree->Branch("Cath_900V_led1",&cath_900V_led1,"Cathode Gain when switching on led1 at 900V");
+tree->Branch("Cath_900V_led1_error",&cath_900V_led1_error,"Cathode Gain error when switching off led1 at 900V");
+tree->Branch("Cath_900V_led1_spikes",&cath_900V_led1_spikes,"Cathode Gain spikes when switching on led1 at 900V");
+tree->Branch("Cath_900V_led1_n",&cath_900V_led1_n,"Number of points used for cathode gain calculation when switching off led1 at 900V");
 tree->Branch("Anode_900V_led1_up",&anode_900V_led1_up,"Anode Gain when switching on led1 at 900V");
 tree->Branch("Anode_900V_led1_down",&anode_900V_led1_down,"Anode Gain when switching off led1 at 900V");
 tree->Branch("Reference_900V_led1_up",&ref_900V_led1_up,"Reference Gain when switching on led1 at 900V");
 tree->Branch("Reference_900V_led1_down",&ref_900V_led1_down,"Reference Gain when switching off led1 at 900V");
-tree->Branch("Cath_1000V_led1_up",&cath_1000V_led1_up,"Cathode Gain when switching on led1 at 1000V");
-tree->Branch("Cath_1000V_led1_down",&cath_1000V_led1_down,"Cathode Gain when switching off led1 at 1000V");
+tree->Branch("Cath_1000V_led1",&cath_1000V_led1,"Cathode Gain when switching on led1 at 1000V");
+tree->Branch("Cath_1000V_led1_error",&cath_1000V_led1_error,"Cathode Gain error when switching off led1 at 1000V");
+tree->Branch("Cath_1000V_led1_spikes",&cath_1000V_led1_spikes,"Cathode Gain spikes when switching on led1 at 1000V");
+tree->Branch("Cath_1000V_led1_n",&cath_1000V_led1_n,"Number of points used for cathode gain calculation when switching off led1 at 1000V");
 tree->Branch("Anode_1000V_led1_up",&anode_1000V_led1_up,"Anode Gain when switching on led1 at 1000V");
 tree->Branch("Anode_1000V_led1_down",&anode_1000V_led1_down,"Anode Gain when switching off led1 at 1000V");
 tree->Branch("Reference_1000V_led1_up",&ref_1000V_led1_up,"Reference Gain when switching on led1 at 1000V");
 tree->Branch("Reference_1000V_led1_down",&ref_1000V_led1_down,"Reference Gain when switching off led1 at 1000V");
-tree->Branch("Cath_1200V_led1_up",&cath_1200V_led1_up,"Cathode Gain when switching on led1 at 1200V");
-tree->Branch("Cath_1200V_led1_down",&cath_1200V_led1_down,"Cathode Gain when switching off led1 at 1200V");
+tree->Branch("Cath_1200V_led1",&cath_1200V_led1,"Cathode Gain when switching on led1 at 1200V");
+tree->Branch("Cath_1200V_led1_error",&cath_1200V_led1_error,"Cathode Gain error when switching off led1 at 1200V");
+tree->Branch("Cath_1200V_led1_spikes",&cath_1200V_led1_spikes,"Cathode Gain spikes when switching on led1 at 1200V");
+tree->Branch("Cath_1200V_led1_n",&cath_1200V_led1_n,"Number of points used for cathode gain calculation when switching off led1 at 1200V");
 tree->Branch("Anode_1200V_led1_up",&anode_1200V_led1_up,"Anode Gain when switching on led1 at 1200V");
 tree->Branch("Anode_1200V_led1_down",&anode_1200V_led1_down,"Anode Gain when switching off led1 at 1200V");
 tree->Branch("Reference_1200V_led1_up",&ref_1200V_led1_up,"Reference Gain when switching on led1 at 1200V");
 tree->Branch("Reference_1200V_led1_down",&ref_1200V_led1_down,"Reference Gain when switching off led1 at 1200V");
-tree->Branch("Cath_1200V_led2_up",&cath_1200V_led2_up,"Cathode Gain when switching on led2 at 1200V");
-tree->Branch("Cath_1200V_led2_down",&cath_1200V_led2_down,"Cathode Gain when switching off led2 at 1200V");
+tree->Branch("Cath_1200V_led2",&cath_1200V_led2,"Cathode Gain when switching on led2 at 1200V");
+tree->Branch("Cath_1200V_led2_error",&cath_1200V_led2_error,"Cathode Gain error when switching off led2 at 1200V");
+tree->Branch("Cath_1200V_led2_spikes",&cath_1200V_led2_spikes,"Cathode Gain spikes when switching on led2 at 1200V");
+tree->Branch("Cath_1200V_led2_n",&cath_1200V_led2_n,"Number of points used for cathode gain calculation when switching off led2 at 1200V");
 tree->Branch("Anode_1200V_led2_up",&anode_1200V_led2_up,"Anode Gain when switching on led2 at 1200V");
 tree->Branch("Anode_1200V_led2_down",&anode_1200V_led2_down,"Anode Gain when switching off led2 at 1200V");
 tree->Branch("Reference_1200V_led2_up",&ref_1200V_led2_up,"Reference Gain when switching on led2 at 1200V");
 tree->Branch("Reference_1200V_led2_down",&ref_1200V_led2_down,"Reference Gain when switching off led2 at 1200V");
-tree->Branch("Cath_1200V_led3_up",&cath_1200V_led3_up,"Cathode Gain when switching on led3 at 1200V");
-tree->Branch("Cath_1200V_led3_down",&cath_1200V_led3_down,"Cathode Gain when switching off led3 at 1200V");
+tree->Branch("Cath_1200V_led3",&cath_1200V_led3,"Cathode Gain when switching on led3 at 1200V");
+tree->Branch("Cath_1200V_led3_error",&cath_1200V_led3_error,"Cathode Gain error when switching off led3 at 1200V");
+tree->Branch("Cath_1200V_led3_spikes",&cath_1200V_led3_spikes,"Cathode Gain spikes when switching on led3 at 1200V");
+tree->Branch("Cath_1200V_led3_n",&cath_1200V_led3_n,"Number of points used for cathode gain calculation when switching off led3 at 1200V");
 tree->Branch("Anode_1200V_led3_up",&anode_1200V_led3_up,"Anode Gain when switching on led3 at 1200V");
 tree->Branch("Anode_1200V_led3_down",&anode_1200V_led3_down,"Anode Gain when switching off led3 at 1200V");
 tree->Branch("Reference_1200V_led3_up",&ref_1200V_led3_up,"Reference Gain when switching on led3 at 1200V");
 tree->Branch("Reference_1200V_led3_down",&ref_1200V_led3_down,"Reference Gain when switching off led3 at 1200V");
-tree->Branch("Cath_1200V_led4_up",&cath_1200V_led4_up,"Cathode Gain when switching on led4 at 1200V");
-tree->Branch("Cath_1200V_led4_down",&cath_1200V_led4_down,"Cathode Gain when switching off led4 at 1200V");
+tree->Branch("Cath_1200V_led4",&cath_1200V_led4,"Cathode Gain when switching on led4 at 1200V");
+tree->Branch("Cath_1200V_led4_error",&cath_1200V_led4_error,"Cathode Gain error when switching off led4 at 1200V");
+tree->Branch("Cath_1200V_led4_spikes",&cath_1200V_led4_spikes,"Cathode Gain spikes when switching on led4 at 1200V");
+tree->Branch("Cath_1200V_led4_n",&cath_1200V_led4_n,"Number of points used for cathode gain calculation when switching off led4 at 1200V");
 tree->Branch("Anode_1200V_led4_up",&anode_1200V_led4_up,"Anode Gain when switching on led4 at 1200V");
 tree->Branch("Anode_1200V_led4_down",&anode_1200V_led4_down,"Anode Gain when switching off led4 at 1200V");
 tree->Branch("Reference_1200V_led4_up",&ref_1200V_led4_up,"Reference Gain when switching on led4 at 1200V");
 tree->Branch("Reference_1200V_led4_down",&ref_1200V_led4_down,"Reference Gain when switching off led4 at 1200V");
-tree->Branch("Cath_1400V_led1_up",&cath_1400V_led1_up,"Cathode Gain when switching on led1 at 1400V");
-tree->Branch("Cath_1400V_led1_down",&cath_1400V_led1_down,"Cathode Gain when switching off led1 at 1400V");
+tree->Branch("Cath_1400V_led1",&cath_1400V_led1,"Cathode Gain when switching on led1 at 1400V");
+tree->Branch("Cath_1400V_led1_error",&cath_1400V_led1_error,"Cathode Gain error when switching off led1 at 1400V");
+tree->Branch("Cath_1400V_led1_spikes",&cath_1400V_led1_spikes,"Cathode Gain spikes when switching on led1 at 1400V");
+tree->Branch("Cath_1400V_led1_n",&cath_1400V_led1_n,"Number of points used for cathode gain calculation when switching off led1 at 1400V");
 tree->Branch("Anode_1400V_led1_up",&anode_1400V_led1_up,"Anode Gain when switching on led1 at 1400V");
 tree->Branch("Anode_1400V_led1_down",&anode_1400V_led1_down,"Anode Gain when switching off led1 at 1400V");
 tree->Branch("Reference_1400V_led1_up",&ref_1400V_led1_up,"Reference Gain when switching on led1 at 1400V");
 tree->Branch("Reference_1400V_led1_down",&ref_1400V_led1_down,"Reference Gain when switching off led1 at 1400V");
-tree->Branch("Cath_1600V_led1_up",&cath_1600V_led1_up,"Cathode Gain when switching on led1 at 1400V");
-tree->Branch("Cath_1600V_led1_down",&cath_1600V_led1_down,"Cathode Gain when switching off led1 at 1600V");
+tree->Branch("Cath_1600V_led1",&cath_1600V_led1,"Cathode Gain when switching on led1 at 1600V");
+tree->Branch("Cath_1600V_led1_error",&cath_1600V_led1_error,"Cathode Gain error when switching off led1 at 1600V");
+tree->Branch("Cath_1600V_led1_spikes",&cath_1600V_led1_spikes,"Cathode Gain spikes when switching on led1 at 1600V");
+tree->Branch("Cath_1600V_led1_n",&cath_1600V_led1_n,"Number of points used for cathode gain calculation when switching off led1 at 1600V");
 tree->Branch("Anode_1600V_led1_up",&anode_1600V_led1_up,"Anode Gain when switching on led1 at 1600V");
 tree->Branch("Anode_1600V_led1_down",&anode_1600V_led1_down,"Anode Gain when switching off led1 at 1600V");
 tree->Branch("Reference_1600V_led1_up",&ref_1600V_led1_up,"Reference Gain when switching on led1 at 1600V");
@@ -399,7 +507,7 @@ for (int i=0; i < n_files; i++)
   if(f==NULL) {
     std::cout << "can't find file\n";
     exit(1);
-  };
+  }
 
 //reseting the variables
 entries = 0;
@@ -423,7 +531,7 @@ vec_adut.clear();
 vec_aref.clear();
 vec_led.clear();
 
-total_spike = 0;
+total_spikes = 0;
 module = 0;
 sector = 0;
 
@@ -452,30 +560,54 @@ index_1400V_led1_down = 0;
 index_1600V_led1_up = 0;
 index_1600V_led1_down = 0;
 
-cath_800V_led1_up = 0;
-cath_800V_led1_down = 0;
-cath_800V_led2_up = 0;
-cath_800V_led2_down = 0;
-cath_800V_led3_up = 0;
-cath_800V_led3_down = 0;
-cath_800V_led4_up = 0;
-cath_800V_led4_down = 0;
-cath_900V_led1_up = 0;
-cath_900V_led1_down = 0;
-cath_1000V_led1_up = 0;
-cath_1000V_led1_down = 0;
-cath_1200V_led1_up = 0;
-cath_1200V_led1_down = 0;
-cath_1200V_led2_up = 0;
-cath_1200V_led2_down = 0;
-cath_1200V_led3_up = 0;
-cath_1200V_led3_down = 0;
-cath_1200V_led4_up = 0;
-cath_1200V_led4_down = 0;
-cath_1400V_led1_up = 0;
-cath_1400V_led1_down = 0;
-cath_1600V_led1_up = 0;
-cath_1600V_led1_down = 0;
+cath_800V_led1 = 0;
+cath_800V_led1_error = 0;
+cath_800V_led1_spikes = 0;
+cath_800V_led1_n = 0;
+cath_800V_led2 = 0;
+cath_800V_led2_error = 0;
+cath_800V_led2_spikes = 0;
+cath_800V_led2_n = 0;
+cath_800V_led3 = 0;
+cath_800V_led3_error = 0;
+cath_800V_led3_spikes = 0;
+cath_800V_led3_n = 0;
+cath_800V_led4 = 0;
+cath_800V_led4_error = 0;
+cath_800V_led4_spikes = 0;
+cath_800V_led4_n = 0;
+cath_900V_led1 = 0;
+cath_900V_led1_error = 0;
+cath_900V_led1_spikes = 0;
+cath_900V_led1_n = 0;
+cath_1000V_led1 = 0;
+cath_1000V_led1_error = 0;
+cath_1000V_led1_spikes = 0;
+cath_1000V_led1_n = 0;
+cath_1200V_led1 = 0;
+cath_1200V_led1_error = 0;
+cath_1200V_led1_spikes = 0;
+cath_1200V_led1_n = 0;
+cath_1200V_led2 = 0;
+cath_1200V_led2_error = 0;
+cath_1200V_led2_spikes = 0;
+cath_1200V_led2_n = 0;
+cath_1200V_led3 = 0;
+cath_1200V_led3_error = 0;
+cath_1200V_led3_spikes = 0;
+cath_1200V_led3_n = 0;
+cath_1200V_led4 = 0;
+cath_1200V_led4_error = 0;
+cath_1200V_led4_spikes = 0;
+cath_1200V_led4_n = 0;
+cath_1400V_led1 = 0;
+cath_1400V_led1_error = 0;
+cath_1400V_led1_spikes = 0;
+cath_1400V_led1_n = 0;
+cath_1600V_led1 = 0;
+cath_1600V_led1_error = 0;
+cath_1600V_led1_spikes = 0;
+cath_1600V_led1_n = 0;
 
 anode_800V_led1_up = 0;
 anode_800V_led1_down = 0;
@@ -725,55 +857,90 @@ if (vec_led[j] == 2 or vec_led[j] == 3 or vec_led[j] == 4 ) { cout<<"Voltage : "
 //cout<<"index 1400V led1 up    = "<<index_1400V_led1_up<<endl;
 //cout<<"index 1400V led1 down  = "<<index_1400V_led1_down<<endl;
 
-calc_dif(index_800V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led1_up, anode_800V_led1_up, ref_800V_led1_up, total_spike);
-calc_dif(index_800V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led1_down, anode_800V_led1_down, ref_800V_led1_down, total_spike);
-calc_eff(cath_800V_led1_up, cath_800V_led1_down, anode_800V_led1_up, anode_800V_led1_down, ref_800V_led1_up, ref_800V_led1_down, ee_800V_led1, qe_800V_led1);
+//800V led1
+calc_dif(index_800V_led1_up, &vec_adut, &vec_aref, &vec_led, anode_800V_led1_up, ref_800V_led1_up);
+calc_dif(index_800V_led1_down, &vec_adut, &vec_aref, &vec_led, anode_800V_led1_down, ref_800V_led1_down);
+gain_cathode(index_800V_led1_up, index_800V_led1_down, &vec_cath, cath_800V_led1, cath_800V_led1_spikes, cath_800V_led1_error, cath_800V_led1_n);
+calc_eff(cath_800V_led1, anode_800V_led1_up, anode_800V_led1_down, ref_800V_led1_up, ref_800V_led1_down, ee_800V_led1, qe_800V_led1);
+total_spikes = cath_800V_led1_spikes;
+//800V led2
+calc_dif(index_800V_led2_up, &vec_adut, &vec_aref, &vec_led, anode_800V_led2_up, ref_800V_led2_up);
+calc_dif(index_800V_led2_down, &vec_adut, &vec_aref, &vec_led, anode_800V_led2_down, ref_800V_led2_down);
+gain_cathode(index_800V_led2_up, index_800V_led2_down, &vec_cath, cath_800V_led2, cath_800V_led2_spikes, cath_800V_led2_error, cath_800V_led2_n);
+calc_eff(cath_800V_led2, anode_800V_led2_up, anode_800V_led2_down, ref_800V_led2_up, ref_800V_led2_down, ee_800V_led2, qe_800V_led2);
+total_spikes = total_spikes + cath_800V_led2_spikes;
 
-calc_dif(index_800V_led2_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led2_up, anode_800V_led2_up, ref_800V_led2_up, total_spike);
-calc_dif(index_800V_led2_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led2_down, anode_800V_led2_down, ref_800V_led2_down, total_spike);
-calc_eff(cath_800V_led2_up, cath_800V_led2_down, anode_800V_led2_up, anode_800V_led2_down, ref_800V_led2_up, ref_800V_led2_down, ee_800V_led2, qe_800V_led2);
+//800V led3
+calc_dif(index_800V_led3_up, &vec_adut, &vec_aref, &vec_led, anode_800V_led3_up, ref_800V_led3_up);
+calc_dif(index_800V_led3_down, &vec_adut, &vec_aref, &vec_led, anode_800V_led3_down, ref_800V_led3_down);
+gain_cathode(index_800V_led3_up, index_800V_led3_down, &vec_cath, cath_800V_led3, cath_800V_led3_spikes, cath_800V_led3_error, cath_800V_led3_n);
+calc_eff(cath_800V_led3, anode_800V_led3_up, anode_800V_led3_down, ref_800V_led3_up, ref_800V_led3_down, ee_800V_led3, qe_800V_led3);
+total_spikes = total_spikes + cath_800V_led3_spikes;
 
-calc_dif(index_800V_led3_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led3_up, anode_800V_led3_up, ref_800V_led3_up, total_spike);
-calc_dif(index_800V_led3_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led3_down, anode_800V_led3_down, ref_800V_led3_down, total_spike);
-calc_eff(cath_800V_led3_up, cath_800V_led3_down, anode_800V_led3_up, anode_800V_led3_down, ref_800V_led3_up, ref_800V_led3_down, ee_800V_led3, qe_800V_led3);
+//800V led4
+calc_dif(index_800V_led4_up, &vec_adut, &vec_aref, &vec_led, anode_800V_led4_up, ref_800V_led4_up);
+calc_dif(index_800V_led4_down, &vec_adut, &vec_aref, &vec_led, anode_800V_led4_down, ref_800V_led4_down);
+gain_cathode(index_800V_led4_up, index_800V_led4_down, &vec_cath, cath_800V_led4, cath_800V_led4_spikes, cath_800V_led4_error, cath_800V_led4_n);
+calc_eff(cath_800V_led4, anode_800V_led4_up, anode_800V_led4_down, ref_800V_led4_up, ref_800V_led4_down, ee_800V_led4, qe_800V_led4);
+total_spikes = total_spikes + cath_800V_led4_spikes;
 
-calc_dif(index_800V_led4_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led4_up, anode_800V_led4_up, ref_800V_led4_up, total_spike);
-calc_dif(index_800V_led4_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_800V_led4_down, anode_800V_led4_down, ref_800V_led4_down, total_spike);
-calc_eff(cath_800V_led4_up, cath_800V_led4_down, anode_800V_led4_up, anode_800V_led4_down, ref_800V_led4_up, ref_800V_led4_down, ee_800V_led4, qe_800V_led4);
+//900V led1
+calc_dif(index_900V_led1_up, &vec_adut, &vec_aref, &vec_led, anode_900V_led1_up, ref_900V_led1_up);
+calc_dif(index_900V_led1_down, &vec_adut, &vec_aref, &vec_led, anode_900V_led1_down, ref_900V_led1_down);
+gain_cathode(index_900V_led1_up, index_900V_led1_down, &vec_cath, cath_900V_led1, cath_900V_led1_spikes, cath_900V_led1_error, cath_900V_led1_n);
+calc_eff(cath_900V_led1, anode_900V_led1_up, anode_900V_led1_down, ref_900V_led1_up, ref_900V_led1_down, ee_900V_led1, qe_900V_led1);
+total_spikes = total_spikes + cath_900V_led1_spikes;
 
-calc_dif(index_900V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_900V_led1_up, anode_900V_led1_up, ref_900V_led1_up, total_spike);
-calc_dif(index_900V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_900V_led1_down, anode_900V_led1_down, ref_900V_led1_down, total_spike);
-calc_eff(cath_900V_led1_up, cath_900V_led1_down, anode_900V_led1_up, anode_900V_led1_down, ref_900V_led1_up, ref_900V_led1_down, ee_900V_led1, qe_900V_led1);
+//1000V led1
+calc_dif(index_1000V_led1_up, &vec_adut, &vec_aref, &vec_led, anode_1000V_led1_up, ref_1000V_led1_up);
+calc_dif(index_1000V_led1_down, &vec_adut, &vec_aref, &vec_led, anode_1000V_led1_down, ref_1000V_led1_down);
+gain_cathode(index_1000V_led1_up, index_1000V_led1_down, &vec_cath, cath_1000V_led1, cath_1000V_led1_spikes, cath_1000V_led1_error, cath_1000V_led1_n);
+calc_eff(cath_1000V_led1, anode_1000V_led1_up, anode_1000V_led1_down, ref_1000V_led1_up, ref_1000V_led1_down, ee_1000V_led1, qe_1000V_led1);
+total_spikes = total_spikes + cath_1000V_led1_spikes;
 
-calc_dif(index_1000V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1000V_led1_up, anode_1000V_led1_up, ref_1000V_led1_up, total_spike);
-calc_dif(index_1000V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1000V_led1_down, anode_1000V_led1_down, ref_1000V_led1_down, total_spike);
-calc_eff(cath_1000V_led1_up, cath_1000V_led1_down, anode_1000V_led1_up, anode_1000V_led1_down, ref_1000V_led1_up, ref_1000V_led1_down, ee_1000V_led1, qe_1000V_led1);
+//1200V led1
+calc_dif(index_1200V_led1_up, &vec_adut, &vec_aref, &vec_led, anode_1200V_led1_up, ref_1200V_led1_up);
+calc_dif(index_1200V_led1_down, &vec_adut, &vec_aref, &vec_led, anode_1200V_led1_down, ref_1200V_led1_down);
+gain_cathode(index_1200V_led1_up, index_1200V_led1_down, &vec_cath, cath_1200V_led1, cath_1200V_led1_spikes, cath_1200V_led1_error, cath_1200V_led1_n);
+calc_eff(cath_1200V_led1, anode_1200V_led1_up, anode_1200V_led1_down, ref_1200V_led1_up, ref_1200V_led1_down, ee_1200V_led1, qe_1200V_led1);
+total_spikes = total_spikes + cath_1200V_led1_spikes;
 
-calc_dif(index_1200V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led1_up, anode_1200V_led1_up, ref_1200V_led1_up, total_spike);
-calc_dif(index_1200V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led1_down, anode_1200V_led1_down, ref_1200V_led1_down, total_spike);
-calc_eff(cath_1200V_led1_up, cath_1200V_led1_down, anode_1200V_led1_up, anode_1200V_led1_down, ref_1200V_led1_up, ref_1200V_led1_down, ee_1200V_led1, qe_1200V_led1);
+//1200V led2
+calc_dif(index_1200V_led2_up, &vec_adut, &vec_aref, &vec_led, anode_1200V_led2_up, ref_1200V_led2_up);
+calc_dif(index_1200V_led2_down, &vec_adut, &vec_aref, &vec_led, anode_1200V_led2_down, ref_1200V_led2_down);
+gain_cathode(index_1200V_led2_up, index_1200V_led2_down, &vec_cath, cath_1200V_led2, cath_1200V_led2_spikes, cath_1200V_led2_error, cath_1200V_led2_n);
+calc_eff(cath_1200V_led2, anode_1200V_led2_up, anode_1200V_led2_down, ref_1200V_led2_up, ref_1200V_led2_down, ee_1200V_led2, qe_1200V_led2);
+total_spikes = total_spikes + cath_1200V_led2_spikes;
 
-calc_dif(index_1200V_led2_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led2_up, anode_1200V_led2_up, ref_1200V_led2_up, total_spike);
-calc_dif(index_1200V_led2_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led2_down, anode_1200V_led2_down, ref_1200V_led2_down, total_spike);
-calc_eff(cath_1200V_led2_up, cath_1200V_led2_down, anode_1200V_led2_up, anode_1200V_led2_down, ref_1200V_led2_up, ref_1200V_led2_down, ee_1200V_led2, qe_1200V_led2);
+//1200V led3
+calc_dif(index_1200V_led3_up, &vec_adut, &vec_aref, &vec_led, anode_1200V_led3_up, ref_1200V_led3_up);
+calc_dif(index_1200V_led3_down, &vec_adut, &vec_aref, &vec_led, anode_1200V_led3_down, ref_1200V_led3_down);
+gain_cathode(index_1200V_led3_up, index_1200V_led3_down, &vec_cath, cath_1200V_led3, cath_1200V_led3_spikes, cath_1200V_led3_error, cath_1200V_led3_n);
+calc_eff(cath_1200V_led3, anode_1200V_led3_up, anode_1200V_led3_down, ref_1200V_led3_up, ref_1200V_led3_down, ee_1200V_led3, qe_1200V_led3);
+total_spikes = total_spikes + cath_1200V_led3_spikes;
 
-calc_dif(index_1200V_led3_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led3_up, anode_1200V_led3_up, ref_1200V_led3_up, total_spike);
-calc_dif(index_1200V_led3_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led3_down, anode_1200V_led3_down, ref_1200V_led3_down, total_spike);
-calc_eff(cath_1200V_led3_up, cath_1200V_led3_down, anode_1200V_led3_up, anode_1200V_led3_down, ref_1200V_led3_up, ref_1200V_led3_down, ee_1200V_led3, qe_1200V_led3);
+//1200V led4
+calc_dif(index_1200V_led4_up, &vec_adut, &vec_aref, &vec_led, anode_1200V_led4_up, ref_1200V_led4_up);
+calc_dif(index_1200V_led4_down, &vec_adut, &vec_aref, &vec_led, anode_1200V_led4_down, ref_1200V_led4_down);
+gain_cathode(index_1200V_led4_up, index_1200V_led4_down, &vec_cath, cath_1200V_led4, cath_1200V_led4_spikes, cath_1200V_led4_error, cath_1200V_led4_n);
+calc_eff(cath_1200V_led4, anode_1200V_led4_up, anode_1200V_led4_down, ref_1200V_led4_up, ref_1200V_led4_down, ee_1200V_led4, qe_1200V_led4);
+total_spikes = total_spikes + cath_1200V_led4_spikes;
 
-calc_dif(index_1200V_led4_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led4_up, anode_1200V_led4_up, ref_1200V_led4_up, total_spike);
-calc_dif(index_1200V_led4_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1200V_led4_down, anode_1200V_led4_down, ref_1200V_led4_down, total_spike);
-calc_eff(cath_1200V_led4_up, cath_1200V_led4_down, anode_1200V_led4_up, anode_1200V_led4_down, ref_1200V_led4_up, ref_1200V_led4_down, ee_1200V_led4, qe_1200V_led4);
+//1400V led1
+calc_dif(index_1400V_led1_up, &vec_adut, &vec_aref, &vec_led, anode_1400V_led1_up, ref_1400V_led1_up);
+calc_dif(index_1400V_led1_down, &vec_adut, &vec_aref, &vec_led, anode_1400V_led1_down, ref_1400V_led1_down);
+gain_cathode(index_1400V_led1_up, index_1400V_led1_down, &vec_cath, cath_1400V_led1, cath_1400V_led1_spikes, cath_1400V_led1_error, cath_1400V_led1_n);
+calc_eff(cath_1400V_led1, anode_1400V_led1_up, anode_1400V_led1_down, ref_1400V_led1_up, ref_1400V_led1_down, ee_1400V_led1, qe_1400V_led1);
+total_spikes = total_spikes + cath_1400V_led1_spikes;
 
-calc_dif(index_1400V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1400V_led1_up, anode_1400V_led1_up, ref_1400V_led1_up, total_spike);
-calc_dif(index_1400V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1400V_led1_down, anode_1400V_led1_down, ref_1400V_led1_down, total_spike);
-calc_eff(cath_1400V_led1_up, cath_1400V_led1_down, anode_1400V_led1_up, anode_1400V_led1_down, ref_1400V_led1_up, ref_1400V_led1_down, ee_1400V_led1, qe_1400V_led1);
+//1600V led1
+calc_dif(index_1600V_led1_up, &vec_adut, &vec_aref, &vec_led, anode_1600V_led1_up, ref_1600V_led1_up);
+calc_dif(index_1600V_led1_down, &vec_adut, &vec_aref, &vec_led, anode_1600V_led1_down, ref_1600V_led1_down);
+gain_cathode(index_1600V_led1_up, index_1600V_led1_down, &vec_cath, cath_1600V_led1, cath_1600V_led1_spikes, cath_1600V_led1_error, cath_1600V_led1_n);
+calc_eff(cath_1600V_led1, anode_1600V_led1_up, anode_1600V_led1_down, ref_1600V_led1_up, ref_1600V_led1_down, ee_1600V_led1, qe_1600V_led1);
+total_spikes = total_spikes + cath_1600V_led1_spikes;
 
-calc_dif(index_1600V_led1_up, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1600V_led1_up, anode_1600V_led1_up, ref_1600V_led1_up, total_spike);
-calc_dif(index_1600V_led1_down, &vec_hv, &vec_cath, &vec_adut, &vec_aref, &vec_led, cath_1600V_led1_down, anode_1600V_led1_down, ref_1600V_led1_down, total_spike);
-calc_eff(cath_1600V_led1_up, cath_1600V_led1_down, anode_1600V_led1_up, anode_1600V_led1_down, ref_1600V_led1_up, ref_1600V_led1_down, ee_1600V_led1, qe_1600V_led1);
-
-cout<<"Total spikes = "<<total_spike<<endl;
+cout<<"Total spikes = "<<total_spikes<<endl;
 
 //fill the tree
 tree->Fill();

@@ -44,7 +44,7 @@ files_in[33] = "../data/mod.cpt";
 int n_files = 33;
 
 
-  string tree_out = "test_tree.root";
+  string tree_out = "PMT_test_2012.root";
 
   create_tree(files_in, n_files, tree_out);
 }

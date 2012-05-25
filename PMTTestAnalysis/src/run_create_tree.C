@@ -44,10 +44,10 @@ files_in[34] = "../data/cpt_sf_CA1263_2012_05_23_08_02_05_mod.cpt";
 files_in[35] = "../data/cpt_sf_CA3386_2012_05_23_11_31_26_mod.cpt";
 files_in[36] = "../data/cpt_sf_CA0625_2012_05_23_15_50_52_mod.cpt";
 files_in[37] = "../data/cpt_sf_CA1593_2012_05_23_18_47_30_mod.cpt";
-files_in[38] = "../data/.cpt";
-files_in[39] = "../data/.cpt";
+files_in[38] = "../data/cpt_sf_CA0892_2012_05_24_08_51_55_mod.cpt";
+files_in[39] = "../data/cpt_sf_CA1620_2012_05_24_14_49_03_mod.cpt";
 
-int n_files = 38;
+int n_files = 40;
 
 
   string tree_out = "PMT_test_2012.root";

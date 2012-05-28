@@ -79,26 +79,26 @@ spike = 1;
 }
 
 
-void estimate_leakage(float point, std::vector<float> *vec_cath, float& leakage, int& total_spikes)
+void estimate_leakage(float ini_point, float end_point, std::vector<float> *vec_cath, float& leakage, int& tot_points, int& total_spikes)
 {
 
-if (point > 0)
-{
-
-int tot_points = 20;
 int spike = 0;
 
-for (int i = 1; i <= 20; i++)
+if (ini_point > 0 and end_point > 0)
 {
-spike_check(point-3-i, vec_cath, spike);
-if (spike == 1) { total_spikes = total_spikes + 1; tot_points = tot_points - 1; }
-else { leakage = leakage + vec_cath->at(point-3-i); }
+
+for (int i = ini_point + 5; i <= end_point - 5; i++)
+{
+spike_check(i, vec_cath, spike);
+if (spike == 1) { total_spikes = total_spikes + 1;}
+else { leakage = leakage + vec_cath->at(i);  tot_points = tot_points + 1; }
 spike = 0;
 }
 
 leakage = leakage/tot_points;
 }
 
+cout<<"Leakage estimated with "<<tot_points<<" points."<<endl;
 }
 
 void calc_eff(float cathode, float anode_up, float anode_down, float ref_up, float ref_down, float& gain, float& qe)
@@ -321,8 +321,13 @@ int index_1200V_led4_up, index_1200V_led4_down;
 int index_1400V_led1_up, index_1400V_led1_down;
 int index_1600V_led1_up, index_1600V_led1_down;
 
-int index_leakage_0V, index_leakage_800V, index_leakage_900V;
-int index_leakage_1000V, index_leakage_1200V, index_leakage_1400V, index_leakage_1600V;
+int index_leakage_0V_begin, index_leakage_0V_end;
+int index_leakage_800V_begin, index_leakage_800V_end;
+int index_leakage_900V_begin, index_leakage_900V_end;
+int index_leakage_1000V_begin, index_leakage_1000V_end;
+int index_leakage_1200V_begin, index_leakage_1200V_end;
+int index_leakage_1400V_begin, index_leakage_1400V_end;
+int index_leakage_1600V_begin, index_leakage_1600V_end;
 
 float cath_800V_led1, cath_800V_led1_error;
 float cath_800V_led2, cath_800V_led2_error;
@@ -389,8 +394,15 @@ float gain_1200V_led4, qe_1200V_led4;
 float gain_1400V_led1, qe_1400V_led1;
 float gain_1600V_led1, qe_1600V_led1;
 
-float leakage_0V, leakage_800V, leakage_900V;
-float leakage_1000V, leakage_1200V, leakage_1400V, leakage_1600V;
+float leakage_0V, leakage_800V;
+float leakage_900V, leakage_1000V;
+float leakage_1200V, leakage_1400V;
+float leakage_1600V;
+
+int leakage_0V_n, leakage_800V_n;
+int leakage_900V_n, leakage_1000V_n;
+int leakage_1200V_n, leakage_1400V_n;
+int leakage_1600V_n;
 
 //tree declaration
 TTree *tree = new TTree("Castor_PMT_Caracterization_2012","Castor PMT Caracterization 2012");
@@ -529,12 +541,19 @@ tree->Branch("QE_1400V_led1",&qe_1400V_led1,"Quantum effeciency for led1 at 1400
 tree->Branch("Gain_1600V_led1",&gain_1600V_led1,"Gain for led1 at 1600V");
 tree->Branch("QE_1600V_led1",&qe_1600V_led1,"Quantum effeciency for led1 at 1600V");
 tree->Branch("Leakage_0V",&leakage_0V,"Current leakage at 0V");
+tree->Branch("Leakage_0V_n",&leakage_0V_n,"Number of points used to estimate the current leakage at 0V/I");
 tree->Branch("Leakage_800V",&leakage_800V,"Current leakage at 800V");
+tree->Branch("Leakage_800V_n",&leakage_800V_n,"Number of points used to estimate the current leakage at 800V/I");
 tree->Branch("Leakage_900V",&leakage_900V,"Current leakage at 900V");
+tree->Branch("Leakage_900V_n",&leakage_900V_n,"Number of points used to estimate the current leakage at 900V/I");
 tree->Branch("Leakage_1000V",&leakage_1000V,"Current leakage at 1000V");
+tree->Branch("Leakage_1000V_n",&leakage_1000V_n,"Number of points used to estimate the current leakage at 1000V/I");
 tree->Branch("Leakage_1200V",&leakage_1200V,"Current leakage at 1200V");
+tree->Branch("Leakage_1200V_n",&leakage_1200V_n,"Number of points used to estimate the current leakage at 1200V/I");
 tree->Branch("Leakage_1400V",&leakage_1400V,"Current leakage at 1400V");
+tree->Branch("Leakage_1400V_n",&leakage_1400V_n,"Number of points used to estimate the current leakage at 1400V/I");
 tree->Branch("Leakage_1600V",&leakage_1600V,"Current leakage at 1600V");
+tree->Branch("Leakage_1600V_n",&leakage_1600V_n,"Number of points used to estimate the current leakage at 1600V/I");
 
 //loop over the pmt files
 for (int i=0; i < n_files; i++)
@@ -600,13 +619,21 @@ index_1400V_led1_down = 0;
 index_1600V_led1_up = 0;
 index_1600V_led1_down = 0;
 
-index_leakage_0V = 0;
-index_leakage_800V = 0;
-index_leakage_900V = 0;
-index_leakage_1000V = 0;
-index_leakage_1200V = 0;
-index_leakage_1400V = 0;
-index_leakage_1600V = 0;
+index_leakage_0V_begin = 0;
+index_leakage_800V_begin = 0;
+index_leakage_900V_begin = 0;
+index_leakage_1000V_begin = 0;
+index_leakage_1200V_begin = 0;
+index_leakage_1400V_begin = 0;
+index_leakage_1600V_begin = 0;
+
+index_leakage_0V_end = 0;
+index_leakage_800V_end = 0;
+index_leakage_900V_end = 0;
+index_leakage_1000V_end = 0;
+index_leakage_1200V_end = 0;
+index_leakage_1400V_end = 0;
+index_leakage_1600V_end = 0;
 
 cath_800V_led1 = 0.0;
 cath_800V_led1_error = 0.0;
@@ -740,6 +767,14 @@ leakage_1200V = 0.0;
 leakage_1400V = 0.0;
 leakage_1600V = 0.0;
 
+leakage_0V_n = 0;
+leakage_800V_n = 0;
+leakage_900V_n = 0;
+leakage_1000V_n = 0;
+leakage_1200V_n = 0;
+leakage_1400V_n = 0;
+leakage_1600V_n = 0;
+
 //find the code of the pmt
 found1 = file.find("_");
 found2 = file.find("_",found1+1);
@@ -840,12 +875,16 @@ if (vec_hv[j] < -1620) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<
 
 if (vec_hv[j] < 20 and vec_hv[j] > -20)
 {
-if (vec_hv[j+1] > 20 or vec_hv[j+1] < -20) { index_leakage_0V = j; }
+if (vec_hv[j+1] > 20 or vec_hv[j+1] < -20) { index_leakage_0V_end = j; }
+if (vec_hv[j-1] > 20 or vec_hv[j-1] < -20) { index_leakage_0V_begin = j; index_leakage_0V_end = 0; }
+if (vec_led[j-1] > 1) { index_leakage_0V_begin = j; index_leakage_0V_end = 0; }
 }
 
 if (vec_hv[j] < -780 and vec_hv[j] > -820)
 {
-if (vec_hv[j+1] > -780 or vec_hv[j+1] < -820) { index_leakage_800V = j; }
+if (vec_hv[j+1] > -780 or vec_hv[j+1] < -820) { index_leakage_800V_end = j; }
+if (vec_hv[j-1] > -780 or vec_hv[j-1] < -820) { index_leakage_800V_begin = j; index_leakage_800V_end = 0; }
+if (vec_led[j-1] > 0) { index_leakage_800V_begin = j; index_leakage_800V_end = 0; } 
 if (vec_led[j] == 1 and vec_led[j-1] == 0 ) { index_800V_led1_up = j; }
 if (vec_led[j] == 0 and vec_led[j-1] == 1 ) { index_800V_led1_down = j; }
 if (vec_led[j] == 2 and vec_led[j-1] == 0 ) { index_800V_led2_up = j; }
@@ -858,7 +897,9 @@ if (vec_led[j] == 0 and vec_led[j-1] == 4 ) { index_800V_led4_down = j; }
 
 if (vec_hv[j] < -880 and vec_hv[j] > -920)
 {
-if (vec_hv[j+1] > -880 or vec_hv[j+1] < -920) { index_leakage_900V = j; }
+if (vec_hv[j+1] > -880 or vec_hv[j+1] < -920) { index_leakage_900V_end = j; }
+if (vec_hv[j-1] > -880 or vec_hv[j-1] < -920) { index_leakage_900V_begin = j; index_leakage_900V_end = 0; }
+if (vec_led[j-1] > 0) { index_leakage_900V_begin = j; index_leakage_900V_end = 0; }
 if (vec_led[j] == 1 and vec_led[j-1] == 0 ) { index_900V_led1_up = j; }
 if (vec_led[j] == 0 and vec_led[j-1] == 1 ) { index_900V_led1_down = j; }
 if (vec_led[j] == 2 or vec_led[j] == 3 or vec_led[j] == 4 ) { cout<<"Voltage : "<<vec_hv[j]<<" Unknown led : "<<vec_led[j]<<endl; }
@@ -866,7 +907,9 @@ if (vec_led[j] == 2 or vec_led[j] == 3 or vec_led[j] == 4 ) { cout<<"Voltage : "
 
 if (vec_hv[j] < -980 and vec_hv[j] > -1020)
 {
-if (vec_hv[j+1] > -980 or vec_hv[j+1] < -1020) { index_leakage_1000V = j; }
+if (vec_hv[j+1] > -980 or vec_hv[j+1] < -1020) { index_leakage_1000V_end = j; }
+if (vec_hv[j-1] > -980 or vec_hv[j-1] < -1020) { index_leakage_1000V_begin = j; index_leakage_1000V_end = 0;}
+if (vec_led[j-1] > 0) { index_leakage_1000V_begin = j; index_leakage_1000V_end = 0;}
 if (vec_led[j] == 1 and vec_led[j-1] == 0 ) { index_1000V_led1_up = j; }
 if (vec_led[j] == 0 and vec_led[j-1] == 1 ) { index_1000V_led1_down = j; }
 if (vec_led[j] == 2 or vec_led[j] == 3 or vec_led[j] == 4 ) { cout<<"Voltage : "<<vec_hv[j]<<" Unknown led : "<<vec_led[j]<<endl; }
@@ -874,7 +917,9 @@ if (vec_led[j] == 2 or vec_led[j] == 3 or vec_led[j] == 4 ) { cout<<"Voltage : "
 
 if (vec_hv[j] < -1180 and vec_hv[j] > -1220)
 {
-if (vec_hv[j+1] > -1180 or vec_hv[j+1] < -1220) { index_leakage_1200V = j; }
+if (vec_hv[j+1] > -1180 or vec_hv[j+1] < -1220) { index_leakage_1200V_end = j; }
+if (vec_hv[j-1] > -1180 or vec_hv[j-1] < -1220) { index_leakage_1200V_begin = j; index_leakage_1200V_end = 0; }
+if (vec_led[j-1] > 0)  { index_leakage_1200V_begin = j; index_leakage_1200V_end = 0; }
 if (vec_led[j] == 1 && vec_led[j-1] == 0 ) { index_1200V_led1_up = j; }
 if (vec_led[j] == 0 && vec_led[j-1] == 1 ) { index_1200V_led1_down = j; }
 if (vec_led[j] == 2 && vec_led[j-1] == 0 ) { index_1200V_led2_up = j; }
@@ -887,7 +932,9 @@ if (vec_led[j] == 0 && vec_led[j-1] == 4 ) { index_1200V_led4_down = j; }
 
 if (vec_hv[j] < -1380 and vec_hv[j] > -1420)
 {
-if (vec_hv[j+1] > -1380 or vec_hv[j+1] < -1420) { index_leakage_1400V = j; }
+if (vec_hv[j+1] > -1380 or vec_hv[j+1] < -1420) { index_leakage_1400V_end = j; }
+if (vec_hv[j-1] > -1380 or vec_hv[j-1] < -1420) { index_leakage_1400V_begin = j; index_leakage_1400V_end = 0; }
+if (vec_led[j-1] > 0) { index_leakage_1400V_begin = j; index_leakage_1400V_end = 0; }
 if (vec_led[j] == 1 and vec_led[j-1] == 0 ) { index_1400V_led1_up = j; }
 if (vec_led[j] == 0 and vec_led[j-1] == 1 ) { index_1400V_led1_down = j; }
 if (vec_led[j] == 2 or vec_led[j] == 3 or vec_led[j] == 4 ) { cout<<"Voltage : "<<vec_hv[j]<<" Unknown led : "<<vec_led[j]<<endl; }
@@ -895,7 +942,9 @@ if (vec_led[j] == 2 or vec_led[j] == 3 or vec_led[j] == 4 ) { cout<<"Voltage : "
 
 if (vec_hv[j] < -1580 and vec_hv[j] > -1620)
 {
-if (vec_hv[j+1] > -1580 or vec_hv[j+1] < -1620) { index_leakage_1600V = j; }
+if (vec_hv[j+1] > -1580 or vec_hv[j+1] < -1620) { index_leakage_1600V_end = j; }
+if (vec_hv[j-1] > -1580 or vec_hv[j-1] < -1620) { index_leakage_1600V_begin = j; index_leakage_1600V_end = 0; }
+if (vec_led[j-1] > 0) { index_leakage_1600V_begin = j; index_leakage_1600V_end = 0; }
 if (vec_led[j] == 1 and vec_led[j-1] == 0 ) { index_1600V_led1_up = j; }
 if (vec_led[j] == 0 and vec_led[j-1] == 1 ) { index_1600V_led1_down = j; }
 if (vec_led[j] == 2 or vec_led[j] == 3 or vec_led[j] == 4 ) { cout<<"Voltage : "<<vec_hv[j]<<" Unknown led : "<<vec_led[j]<<endl; }
@@ -1011,13 +1060,21 @@ gain_cathode(index_1600V_led1_up, index_1600V_led1_down, &vec_cath, cath_1600V_l
 calc_eff(cath_1600V_led1, anode_1600V_led1_up, anode_1600V_led1_down, ref_1600V_led1_up, ref_1600V_led1_down, gain_1600V_led1, qe_1600V_led1);
 total_spikes = total_spikes + cath_1600V_led1_spikes;
 
-estimate_leakage(index_leakage_0V, &vec_cath_ori, leakage_0V, total_spikes);
-estimate_leakage(index_leakage_800V, &vec_cath_ori, leakage_800V, total_spikes);
-estimate_leakage(index_leakage_900V, &vec_cath_ori, leakage_900V, total_spikes);
-estimate_leakage(index_leakage_1000V, &vec_cath_ori, leakage_1000V, total_spikes);
-estimate_leakage(index_leakage_1200V, &vec_cath_ori, leakage_1200V, total_spikes);
-estimate_leakage(index_leakage_1400V, &vec_cath_ori, leakage_1400V, total_spikes);
-estimate_leakage(index_leakage_1600V, &vec_cath_ori, leakage_1600V, total_spikes);
+cout<<"0V     "<<index_leakage_0V_begin<<" "<<index_leakage_0V_end<<endl;
+cout<<"800V   "<<index_leakage_800V_begin<<" "<<index_leakage_800V_end<<endl;
+cout<<"900V   "<<index_leakage_900V_begin<<" "<<index_leakage_900V_end<<endl;
+cout<<"1000V  "<<index_leakage_1000V_begin<<" "<<index_leakage_1000V_end<<endl;
+cout<<"1200V  "<<index_leakage_1200V_begin<<" "<<index_leakage_1200V_end<<endl;
+cout<<"1400V  "<<index_leakage_1400V_begin<<" "<<index_leakage_1400V_end<<endl;
+cout<<"1600V  "<<index_leakage_1600V_begin<<" "<<index_leakage_1600V_end<<endl;
+
+estimate_leakage(index_leakage_0V_begin, index_leakage_0V_end, &vec_cath_ori, leakage_0V, leakage_0V_n, total_spikes);
+estimate_leakage(index_leakage_800V_begin, index_leakage_800V_end, &vec_cath_ori, leakage_800V, leakage_800V_n, total_spikes);
+estimate_leakage(index_leakage_900V_begin, index_leakage_900V_end, &vec_cath_ori, leakage_900V, leakage_900V_n, total_spikes);
+estimate_leakage(index_leakage_1000V_begin, index_leakage_1000V_end, &vec_cath_ori, leakage_1000V, leakage_1000V_n, total_spikes);
+estimate_leakage(index_leakage_1200V_begin, index_leakage_1200V_end, &vec_cath_ori, leakage_1200V, leakage_1200V_n, total_spikes);
+estimate_leakage(index_leakage_1400V_begin, index_leakage_1400V_end, &vec_cath_ori, leakage_1400V, leakage_1400V_n, total_spikes);
+estimate_leakage(index_leakage_1600V_begin, index_leakage_1600V_end, &vec_cath_ori, leakage_1600V, leakage_1600V_n, total_spikes);
 
 cout<<"Total spikes = "<<total_spikes<<endl;
 

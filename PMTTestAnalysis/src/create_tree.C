@@ -79,23 +79,38 @@ spike = 1;
 }
 
 
-void estimate_leakage(float ini_point, float end_point, std::vector<float> *vec_cath, float& leakage, int& tot_points, int& total_spikes)
+void estimate_leakage(float ini_point, float end_point, std::vector<float> *vec_cath, float& leakage_mean, int& tot_points, int& total_spikes, float& leakage_error)
 {
 
+TH1D *leakage;
+
 int spike = 0;
+float l_low, l_high;
 
 if (ini_point > 0 and end_point > 0)
 {
 
 for (int i = ini_point + 5; i <= end_point - 5; i++)
 {
+if (i == ini_point + 5) { l_low = vec_cath->at(i); }
+if (l_high < vec_cath->at(i)) { l_high = vec_cath->at(i); }
+if (l_low > vec_cath->at(i)) { l_low = vec_cath->at(i); }
+}
+
+leakage =  new TH1D("leakage","leakage;current", 100,l_low,l_high);
+
+for (int i = ini_point + 5; i <= end_point - 5; i++)
+{
 spike_check(i, vec_cath, spike);
 if (spike == 1) { total_spikes = total_spikes + 1;}
-else { leakage = leakage + vec_cath->at(i);  tot_points = tot_points + 1; }
+else { leakage->Fill(vec_cath->at(i));  tot_points = tot_points + 1; }
 spike = 0;
 }
 
-leakage = leakage/tot_points;
+leakage_mean = leakage->GetMean();
+leakage_error = leakage->GetRMS();
+
+delete(leakage);
 }
 
 cout<<"Leakage estimated with "<<tot_points<<" points."<<endl;
@@ -394,15 +409,21 @@ float gain_1200V_led4, qe_1200V_led4;
 float gain_1400V_led1, qe_1400V_led1;
 float gain_1600V_led1, qe_1600V_led1;
 
-float leakage_0V, leakage_800V;
-float leakage_900V, leakage_1000V;
-float leakage_1200V, leakage_1400V;
-float leakage_1600V;
+float leakage_0V, leakage_0V_error;
+float leakage_800V, leakage_800V_error;
+float leakage_900V, leakage_900V_error;
+float leakage_1000V, leakage_1000V_error;
+float leakage_1200V, leakage_1200V_error;
+float leakage_1400V, leakage_1400V_error;
+float leakage_1600V, leakage_1600V_error;
 
-int leakage_0V_n, leakage_800V_n;
-int leakage_900V_n, leakage_1000V_n;
-int leakage_1200V_n, leakage_1400V_n;
-int leakage_1600V_n;
+int leakage_0V_n, leakage_0V_spikes;
+int leakage_800V_n, leakage_800V_spikes;
+int leakage_900V_n, leakage_900V_spikes;
+int leakage_1000V_n, leakage_1000V_spikes;
+int leakage_1200V_n, leakage_1200V_spikes;
+int leakage_1400V_n, leakage_1400V_spikes;
+int leakage_1600V_n, leakage_1600V_spikes;
 
 //tree declaration
 TTree *tree = new TTree("Castor_PMT_Caracterization_2012","Castor PMT Caracterization 2012");
@@ -541,19 +562,28 @@ tree->Branch("QE_1400V_led1",&qe_1400V_led1,"Quantum effeciency for led1 at 1400
 tree->Branch("Gain_1600V_led1",&gain_1600V_led1,"Gain for led1 at 1600V");
 tree->Branch("QE_1600V_led1",&qe_1600V_led1,"Quantum effeciency for led1 at 1600V");
 tree->Branch("Leakage_0V",&leakage_0V,"Current leakage at 0V");
+tree->Branch("Leakage_0V_error",&leakage_0V_error,"Error on the current leakage at 0V");
 tree->Branch("Leakage_0V_n",&leakage_0V_n,"Number of points used to estimate the current leakage at 0V/I");
+tree->Branch("Leakage_0V_spikes",&leakage_0V_spikes,"Number of spikes found when estimate the current leakage at 0V/I");
 tree->Branch("Leakage_800V",&leakage_800V,"Current leakage at 800V");
+tree->Branch("Leakage_800V_error",&leakage_800V_error,"Error on the current leakage at 800V");
 tree->Branch("Leakage_800V_n",&leakage_800V_n,"Number of points used to estimate the current leakage at 800V/I");
+tree->Branch("Leakage_800V_spikes",&leakage_800V_spikes,"Number of spikes found when estimate the current leakage at 800V/I");
 tree->Branch("Leakage_900V",&leakage_900V,"Current leakage at 900V");
 tree->Branch("Leakage_900V_n",&leakage_900V_n,"Number of points used to estimate the current leakage at 900V/I");
+tree->Branch("Leakage_900V_spikes",&leakage_900V_spikes,"Number of spikes found when estimate the current leakage at 900V/I");
 tree->Branch("Leakage_1000V",&leakage_1000V,"Current leakage at 1000V");
 tree->Branch("Leakage_1000V_n",&leakage_1000V_n,"Number of points used to estimate the current leakage at 1000V/I");
+tree->Branch("Leakage_1000V_spikes",&leakage_1000V_spikes,"Number of spikes found when estimate the current leakage at 1000V/I");
 tree->Branch("Leakage_1200V",&leakage_1200V,"Current leakage at 1200V");
 tree->Branch("Leakage_1200V_n",&leakage_1200V_n,"Number of points used to estimate the current leakage at 1200V/I");
+tree->Branch("Leakage_1200V_spikes",&leakage_1200V_spikes,"Number of spikes found when estimate the current leakage at 1200V/I");
 tree->Branch("Leakage_1400V",&leakage_1400V,"Current leakage at 1400V");
 tree->Branch("Leakage_1400V_n",&leakage_1400V_n,"Number of points used to estimate the current leakage at 1400V/I");
+tree->Branch("Leakage_1400V_spikes",&leakage_1400V_spikes,"Number of spikes found when estimate the current leakage at 1400V/I");
 tree->Branch("Leakage_1600V",&leakage_1600V,"Current leakage at 1600V");
 tree->Branch("Leakage_1600V_n",&leakage_1600V_n,"Number of points used to estimate the current leakage at 1600V/I");
+tree->Branch("Leakage_1600V_spikes",&leakage_1600V_spikes,"Number of spikes found when estimate the current leakage at 1600V/I");
 
 //loop over the pmt files
 for (int i=0; i < n_files; i++)
@@ -774,6 +804,22 @@ leakage_1000V_n = 0;
 leakage_1200V_n = 0;
 leakage_1400V_n = 0;
 leakage_1600V_n = 0;
+
+leakage_0V_spikes = 0;
+leakage_800V_spikes = 0;
+leakage_900V_spikes = 0;
+leakage_1000V_spikes = 0;
+leakage_1200V_spikes = 0;
+leakage_1400V_spikes = 0;
+leakage_1600V_spikes = 0;
+
+leakage_0V_error = 0;
+leakage_800V_error = 0;
+leakage_900V_error = 0;
+leakage_1000V_error = 0;
+leakage_1200V_error = 0;
+leakage_1400V_error = 0;
+leakage_1600V_error = 0;
 
 //find the code of the pmt
 found1 = file.find("_");
@@ -1060,6 +1106,7 @@ gain_cathode(index_1600V_led1_up, index_1600V_led1_down, &vec_cath, cath_1600V_l
 calc_eff(cath_1600V_led1, anode_1600V_led1_up, anode_1600V_led1_down, ref_1600V_led1_up, ref_1600V_led1_down, gain_1600V_led1, qe_1600V_led1);
 total_spikes = total_spikes + cath_1600V_led1_spikes;
 
+//index output for the leakage estimation
 cout<<"0V     "<<index_leakage_0V_begin<<" "<<index_leakage_0V_end<<endl;
 cout<<"800V   "<<index_leakage_800V_begin<<" "<<index_leakage_800V_end<<endl;
 cout<<"900V   "<<index_leakage_900V_begin<<" "<<index_leakage_900V_end<<endl;
@@ -1068,13 +1115,33 @@ cout<<"1200V  "<<index_leakage_1200V_begin<<" "<<index_leakage_1200V_end<<endl;
 cout<<"1400V  "<<index_leakage_1400V_begin<<" "<<index_leakage_1400V_end<<endl;
 cout<<"1600V  "<<index_leakage_1600V_begin<<" "<<index_leakage_1600V_end<<endl;
 
-estimate_leakage(index_leakage_0V_begin, index_leakage_0V_end, &vec_cath_ori, leakage_0V, leakage_0V_n, total_spikes);
-estimate_leakage(index_leakage_800V_begin, index_leakage_800V_end, &vec_cath_ori, leakage_800V, leakage_800V_n, total_spikes);
-estimate_leakage(index_leakage_900V_begin, index_leakage_900V_end, &vec_cath_ori, leakage_900V, leakage_900V_n, total_spikes);
-estimate_leakage(index_leakage_1000V_begin, index_leakage_1000V_end, &vec_cath_ori, leakage_1000V, leakage_1000V_n, total_spikes);
-estimate_leakage(index_leakage_1200V_begin, index_leakage_1200V_end, &vec_cath_ori, leakage_1200V, leakage_1200V_n, total_spikes);
-estimate_leakage(index_leakage_1400V_begin, index_leakage_1400V_end, &vec_cath_ori, leakage_1400V, leakage_1400V_n, total_spikes);
-estimate_leakage(index_leakage_1600V_begin, index_leakage_1600V_end, &vec_cath_ori, leakage_1600V, leakage_1600V_n, total_spikes);
+//leakage 0V
+estimate_leakage(index_leakage_0V_begin, index_leakage_0V_end, &vec_cath_ori, leakage_0V, leakage_0V_n, leakage_0V_spikes, leakage_0V_error);
+total_spikes = total_spikes + leakage_0V_spikes;
+
+//leakage 800V
+estimate_leakage(index_leakage_800V_begin, index_leakage_800V_end, &vec_cath_ori, leakage_800V, leakage_800V_n, leakage_800V_spikes, leakage_800V_error);
+total_spikes = total_spikes + leakage_800V_spikes;
+
+//leakage 900V
+estimate_leakage(index_leakage_900V_begin, index_leakage_900V_end, &vec_cath_ori, leakage_900V, leakage_900V_n, leakage_900V_spikes, leakage_900V_error);
+total_spikes = total_spikes + leakage_900V_spikes;
+
+//leakage 1000V
+estimate_leakage(index_leakage_1000V_begin, index_leakage_1000V_end, &vec_cath_ori, leakage_1000V, leakage_1000V_n, leakage_1000V_spikes, leakage_1000V_error);
+total_spikes = total_spikes + leakage_1000V_spikes;
+
+//leakage 1200V
+estimate_leakage(index_leakage_1200V_begin, index_leakage_1200V_end, &vec_cath_ori, leakage_1200V, leakage_1200V_n, leakage_1200V_spikes, leakage_1200V_error);
+total_spikes = total_spikes + leakage_1200V_spikes;
+
+//leakage 1400V
+estimate_leakage(index_leakage_1400V_begin, index_leakage_1400V_end, &vec_cath_ori, leakage_1400V, leakage_1400V_n, leakage_1400V_spikes, leakage_1400V_error);
+total_spikes = total_spikes + leakage_1400V_spikes;
+
+//leakage 1400V
+estimate_leakage(index_leakage_1600V_begin, index_leakage_1600V_end, &vec_cath_ori, leakage_1600V, leakage_1600V_n, leakage_1600V_spikes, leakage_1600V_error);
+total_spikes = total_spikes + leakage_1600V_spikes;
 
 cout<<"Total spikes = "<<total_spikes<<endl;
 

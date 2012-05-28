@@ -12,6 +12,11 @@
 #include <stdlib.h>
 #include <iostream>
 
+//to style
+#include "TROOT.h"
+#include "TSystem.h"
+#include "TStyle.h"
+
 #define skipAtVChange 100
 #define skipAtLedChange 3
 
@@ -30,6 +35,9 @@ LeakageSubtractor::LeakageSubtractor(const std::vector<int> &time, std::vector<f
 }
 void LeakageSubtractor::Run()
 {
+
+gStyle->SetOptFit(1);
+
   int voltageBegin = 0;
   
   // ----loop over all voltage regions----
@@ -98,11 +106,14 @@ void LeakageSubtractor::Run()
       if (fVerbosity)
         std::cout << "fitting with " << voltageStep << " datapoints in voltage set " << voltage << std::endl;
 
+
       TF1 theFcn("a","[0]+[1]*TMath::Exp(-(x-[2])/[3])");
       theFcn.SetParameters(fitY.back(),40,60,fabs(voltage-800)<50.?650:350);
       theFcn.SetParLimits(3,200.,1200.);
       TGraphErrors theGraph (fitX.size(),&fitX.front(),&fitY.front(),NULL,&fitYe.front());
-      TFitResultPtr theMin = theGraph.Fit(&theFcn,fVerbosity>1?"S M E 0":"S M E 0 Q");
+     // TFitResultPtr theMin = theGraph.Fit(&theFcn,fVerbosity>1?"S M E 0":"S M E 0 Q");
+
+     TFitResultPtr theMin = theGraph.Fit(&theFcn);
       if (theMin == NULL || !theMin->Status() || theMin->IsValid() == 0)
         {
           std::cerr << "fit unsucessful" << std::endl;
@@ -118,13 +129,14 @@ void LeakageSubtractor::Run()
             std::cout << " - Warning: fit converged but high chi2/ndf compromised: " << theMin->Chi2()/double(fitX.size()) << std::endl;
         }
 
-      //TCanvas * c = new TCanvas("c","c",800,600);
-      //c->cd();
-      //theGraph.Draw("AP");
-      theFcn.SetParameters(theMin->Parameter(0),theMin->Parameter(1),theMin->Parameter(2),theMin->Parameter(3));
-      //theFcn.SetLineColor(kRed);
-      //theFcn.Draw("SAME");
+      	TCanvas * c = new TCanvas("c","c",800,600);
+      	c->cd();
+      	theGraph.Draw("AP");
+//      theFcn.SetParameters(theMin->Parameter(0),theMin->Parameter(1),theMin->Parameter(2),theMin->Parameter(3));
+      theFcn.SetLineColor(kRed);
+     // theFcn.Draw("lSAME");
       //cin >> fVerbosity;
+      c->Print("example.eps");
 
       for (int j=0; j < voltageStep; j++)
         {

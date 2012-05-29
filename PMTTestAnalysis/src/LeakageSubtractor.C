@@ -5,8 +5,8 @@
 #include "TFitResultPtr.h"
 #include "TCanvas.h"
 
-#include <cassert>
-#include <stdexcept>
+//#include <cassert>
+//#include <stdexcept>
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -25,7 +25,7 @@ double fexp(double *x, double *p){
     return p[0] + p[1] * exp (-(x[0]/p[2] ) );
 };
 
-void LeakageSubtractor(const std::vector<int> &time, std::vector<float> &cathode, const std::vector<int> &hv, const std::vector<int> &led){
+void LeakageSubtractor(const std::vector<int> &time, std::vector<float> &cathode, const std::vector<int> &hv, const std::vector<int> &led, std::string pmt ){
 
 gStyle->SetOptFit(1);
 int skipAtVChange = 40;
@@ -34,10 +34,6 @@ int skipAtLedChange = 4;
 int size = 0;
 
 std::vector<float> cathode_ye;
-
-int voltage; 
-int voltageBegin = 0;
-//int voltageStep = 0; //the lenght of the high voltage steps //don't look at first value because picoamp meter screws this up
 
 float error = (0.5/16.6)*10E-12;
 
@@ -97,19 +93,18 @@ std::vector<double> fitYe;
 
    //do the fitting
    // define the fit function
-   int shift =0;
+   int shift = 400;
    
    // TGraphErrors has to be defined befor TF1 (the fit function)
    TGraphErrors *gc0 = new TGraphErrors(fitX.size(),&fitX.front(),&fitY.front(),NULL,&fitYe.front());
 
-   TF1 *ff  = new TF1("ff", fexp, index_begin[0]+shift, index_end[0], 3);
+   TF1 *ff  = new TF1("ff", fexp, shift, time[index_end[0]], 3);
 	ff->SetLineColor(2);
     int fcount=0;
     bool repeate=true;
     double ini1[5] = {1.0e-7, 0.1e-7, 10.e-7, 0.01e-7, 100.e-7};
    //    double ini1[5] = {1.0e-9, 0.1e-9, 10.e-9, 0.01e-9, 100.e-9};
     TVirtualFitter::SetMaxIterations(7000);
-double pp[3];
     while (repeate && fcount<5){
 
 
@@ -118,44 +113,17 @@ double pp[3];
 
       ff->SetParameter(1, ini1[fcount]);
       cout << "ini par[1] = " << ini1[fcount] << endl;
-cout << ff->GetParameter(0) <<" " << ff->GetParameter(1)<< endl;
       gc0->Fit("ff","ER");
-cout << ff->GetParameter(0) <<" " << ff->GetParameter(1)<< endl;
-	ff->GetParameters(pp);
-cout << pp[0] << " " << pp[1] << endl;
       cout << "=> " << gMinuit->fCstatu.Data() << endl;    
       repeate = ( (gMinuit->fCstatu.Data()[0]!='S') || (ff->GetParameter(1)<0) || (ff->GetParameter(0)<0));
-	cout << "repeat " << repeate << " " << gMinuit->fCstatu.Data()[0]<< endl;
 	
       fcount++;
-     }
 
-    /*  TF1 theFcn("a","[0]+[1]*TMath::Exp(-(x)/[2])");
-      theFcn.SetParameters(fitY.back(),40,60,fabs(voltage-800)<20.?650:350);
-      theFcn.SetParLimits(3,200.,1200.);
-      TGraphErrors theGraph (fitX.size(),&fitX.front(),&fitY.front(),NULL,&fitYe.front());
-
- // TFitResultPtr theMin = theGraph.Fit(&theFcn,fVerbosity>1?"S M E 0":"S M E 0 Q");
-  //   TFitResultPtr theMin = theGraph.Fit(&theFcn); //do the fit and print out the fit parameters
-      if (theMin == NULL || !theMin->Status() || theMin->IsValid() == 0)
-        {
-          std::cerr << "fit unsucessful" << std::endl;
-        }
-      else
-        {
-          std::cerr << "fit sucessful with f=" << theMin->Chi2()/double(fitX.size()) << std::endl;
-          if (theMin->Chi2()/double(fitX.size()) > 50)
-            std::cout << " - Warning: fit converged but high chi2/ndf compromised: " << theMin->Chi2()/double(fitX.size()) << std::endl;
-        }
-*/
       	TCanvas * c = new TCanvas("c","c",800,600);
-      	c->cd();
-      //  gc0.SetLineColor(kRed);
       	gc0->Draw("AP");
-//      theFcn.SetParameters(theMin->Parameter(0),theMin->Parameter(1),theMin->Parameter(2),theMin->Parameter(3));
-     // theFcn.Draw("lSAME");
-      //cin >> fVerbosity;
-      c->Print("example.eps");
+        string name = "fit/" + pmt + ".png";
+        c->Print(name.c_str());
+	c->Close();
 
  /*     for (int j=0; j < index_end[0]-index_begin[0]; j++)
         {
@@ -275,4 +243,5 @@ cout << pp[0] << " " << pp[1] << endl;
       voltageBegin += voltageStep + 1; //jump to next voltage
      }
 */
+}
 }

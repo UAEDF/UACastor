@@ -895,7 +895,7 @@ LeakageSubtractor theSubtractor(vec_time,vec_cath,vec_hv,vec_led);
 theSubtractor.SetVerbosity(0);
 theSubtractor.Run();
 */
-//LeakageSubtractor(vec_time, vec_cath, vec_hv, vec_led);
+LeakageSubtractor(vec_time, vec_cath, vec_hv, vec_led, pmt);
 
 //set the end time of the measurement
 end_time = (string) read_time; 

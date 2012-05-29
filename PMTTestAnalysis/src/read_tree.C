@@ -514,12 +514,12 @@ if (leakage_900V > 0.0)
 {
 cout<<"900V                |"<<leakage_900V<<"  "<<leakage_900V_error<<endl;
 }
-cout<<"1000V               |"<<leakage_1000V<<"  "<<leakage_1000V<<endl;
-cout<<"1200V               |"<<leakage_1200V<<"  "<<leakage_1200V<<endl;
-cout<<"1400V               |"<<leakage_1400V<<"  "<<leakage_1400V<<endl;
+cout<<"1000V               |"<<leakage_1000V<<"  "<<leakage_1000V_error<<endl;
+cout<<"1200V               |"<<leakage_1200V<<"  "<<leakage_1200V_error<<endl;
+cout<<"1400V               |"<<leakage_1400V<<"  "<<leakage_1400V_error<<endl;
 if (leakage_1600V > 0.0)
 {
-cout<<"1600V               |"<<leakage_1600V<<"  "<<leakage_1600V<<endl;
+cout<<"1600V               |"<<leakage_1600V<<"  "<<leakage_1600V_error<<endl;
 }
 cout<<"----------------------------------------------------------"<<endl;
 cout<<" "<<endl;

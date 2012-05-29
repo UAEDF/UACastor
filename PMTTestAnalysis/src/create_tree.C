@@ -336,6 +336,7 @@ int index_1200V_led3_up, index_1200V_led3_down;
 int index_1200V_led4_up, index_1200V_led4_down;
 int index_1400V_led1_up, index_1400V_led1_down;
 int index_1600V_led1_up, index_1600V_led1_down;
+int index_1800V_led4_up, index_1800V_led4_down;
 
 int index_leakage_0V_begin, index_leakage_0V_end;
 int index_leakage_800V_begin, index_leakage_800V_end;
@@ -344,6 +345,7 @@ int index_leakage_1000V_begin, index_leakage_1000V_end;
 int index_leakage_1200V_begin, index_leakage_1200V_end;
 int index_leakage_1400V_begin, index_leakage_1400V_end;
 int index_leakage_1600V_begin, index_leakage_1600V_end;
+int index_leakage_1800V_begin, index_leakage_1800V_end;
 
 float cath_800V_led1, cath_800V_led1_error;
 float cath_800V_led2, cath_800V_led2_error;
@@ -357,6 +359,7 @@ float cath_1200V_led3, cath_1200V_led3_error;
 float cath_1200V_led4, cath_1200V_led4_error;
 float cath_1400V_led1, cath_1400V_led1_error;
 float cath_1600V_led1, cath_1600V_led1_error;
+float cath_1800V_led4, cath_1800V_led4_error;
 
 int cath_800V_led1_spikes, cath_800V_led1_n;
 int cath_800V_led2_spikes, cath_800V_led2_n;
@@ -370,6 +373,7 @@ int cath_1200V_led3_spikes, cath_1200V_led3_n;
 int cath_1200V_led4_spikes, cath_1200V_led4_n;
 int cath_1400V_led1_spikes, cath_1400V_led1_n;
 int cath_1600V_led1_spikes, cath_1600V_led1_n;
+int cath_1800V_led4_spikes, cath_1800V_led4_n;
 
 float anode_800V_led1_up, anode_800V_led1_down;
 float anode_800V_led2_up, anode_800V_led2_down;
@@ -383,6 +387,7 @@ float anode_1200V_led3_up, anode_1200V_led3_down;
 float anode_1200V_led4_up, anode_1200V_led4_down;
 float anode_1400V_led1_up, anode_1400V_led1_down;
 float anode_1600V_led1_up, anode_1600V_led1_down;
+float anode_1800V_led4_up, anode_1800V_led4_down;
 
 float ref_800V_led1_up, ref_800V_led1_down;
 float ref_800V_led2_up, ref_800V_led2_down;
@@ -396,6 +401,7 @@ float ref_1200V_led3_up, ref_1200V_led3_down;
 float ref_1200V_led4_up, ref_1200V_led4_down;
 float ref_1400V_led1_up, ref_1400V_led1_down;
 float ref_1600V_led1_up, ref_1600V_led1_down;
+float ref_1800V_led4_up, ref_1800V_led4_down;
 
 float gain_800V_led1, qe_800V_led1;
 float gain_800V_led2, qe_800V_led2;
@@ -409,6 +415,7 @@ float gain_1200V_led3, qe_1200V_led3;
 float gain_1200V_led4, qe_1200V_led4;
 float gain_1400V_led1, qe_1400V_led1;
 float gain_1600V_led1, qe_1600V_led1;
+float gain_1800V_led4, qe_1800V_led4;
 
 float leakage_0V, leakage_0V_error;
 float leakage_800V, leakage_800V_error;
@@ -417,6 +424,7 @@ float leakage_1000V, leakage_1000V_error;
 float leakage_1200V, leakage_1200V_error;
 float leakage_1400V, leakage_1400V_error;
 float leakage_1600V, leakage_1600V_error;
+float leakage_1800V, leakage_1800V_error;
 
 int leakage_0V_n, leakage_0V_spikes;
 int leakage_800V_n, leakage_800V_spikes;
@@ -425,6 +433,7 @@ int leakage_1000V_n, leakage_1000V_spikes;
 int leakage_1200V_n, leakage_1200V_spikes;
 int leakage_1400V_n, leakage_1400V_spikes;
 int leakage_1600V_n, leakage_1600V_spikes;
+int leakage_1800V_n, leakage_1800V_spikes;
 
 //tree declaration
 TTree *tree = new TTree("Castor_PMT_Caracterization_2012","Castor PMT Caracterization 2012");
@@ -538,6 +547,14 @@ tree->Branch("Anode_1600V_led1_up",&anode_1600V_led1_up,"Anode Gain when switchi
 tree->Branch("Anode_1600V_led1_down",&anode_1600V_led1_down,"Anode Gain when switching off led1 at 1600V");
 tree->Branch("Reference_1600V_led1_up",&ref_1600V_led1_up,"Reference Gain when switching on led1 at 1600V");
 tree->Branch("Reference_1600V_led1_down",&ref_1600V_led1_down,"Reference Gain when switching off led1 at 1600V");
+tree->Branch("Cath_1800V_led4",&cath_1800V_led4,"Cathode Gain when switching on led4 at 1800V");
+tree->Branch("Cath_1800V_led4_error",&cath_1800V_led4_error,"Cathode Gain error when switching off led4 at 1800V");
+tree->Branch("Cath_1800V_led4_spikes",&cath_1800V_led4_spikes,"Cathode Gain spikes when switching on led4 at 1800V/I");
+tree->Branch("Cath_1800V_led4_n",&cath_1800V_led4_n,"Number of points used for cathode gain calculation when switching off led4 at 1800V/I");
+tree->Branch("Anode_1800V_led4_up",&anode_1800V_led4_up,"Anode Gain when switching on led4 at 1800V");
+tree->Branch("Anode_1800V_led4_down",&anode_1800V_led4_down,"Anode Gain when switching off led4 at 1800V");
+tree->Branch("Reference_1800V_led4_up",&ref_1800V_led4_up,"Reference Gain when switching on led4 at 1800V");
+tree->Branch("Reference_1800V_led4_down",&ref_1800V_led4_down,"Reference Gain when switching off led4 at 1800V");
 tree->Branch("Gain_800V_led1",&gain_800V_led1,"Gain for led1 at 800V");
 tree->Branch("QE_800V_led1",&qe_800V_led1,"Quantum effeciency for led1 at 800V");
 tree->Branch("Gain_800V_led2",&gain_800V_led2,"Gain for led2 at 800V");
@@ -562,6 +579,8 @@ tree->Branch("Gain_1400V_led1",&gain_1400V_led1,"Gain for led1 at 1400V");
 tree->Branch("QE_1400V_led1",&qe_1400V_led1,"Quantum effeciency for led1 at 1400V");
 tree->Branch("Gain_1600V_led1",&gain_1600V_led1,"Gain for led1 at 1600V");
 tree->Branch("QE_1600V_led1",&qe_1600V_led1,"Quantum effeciency for led1 at 1600V");
+tree->Branch("Gain_1800V_led4",&gain_1800V_led4,"Gain for led4 at 1800V");
+tree->Branch("QE_1800V_led4",&qe_1800V_led4,"Quantum effeciency for led4 at 1800V");
 tree->Branch("Leakage_0V",&leakage_0V,"Current leakage at 0V");
 tree->Branch("Leakage_0V_error",&leakage_0V_error,"Error on the current leakage at 0V");
 tree->Branch("Leakage_0V_n",&leakage_0V_n,"Number of points used to estimate the current leakage at 0V/I");
@@ -590,6 +609,10 @@ tree->Branch("Leakage_1600V",&leakage_1600V,"Current leakage at 1600V");
 tree->Branch("Leakage_1600V_error",&leakage_1600V_error,"Error on the current leakage at 1600V");
 tree->Branch("Leakage_1600V_n",&leakage_1600V_n,"Number of points used to estimate the current leakage at 1600V/I");
 tree->Branch("Leakage_1600V_spikes",&leakage_1600V_spikes,"Number of spikes found when estimate the current leakage at 1600V/I");
+tree->Branch("Leakage_1800V",&leakage_1800V,"Current leakage at 1800V");
+tree->Branch("Leakage_1800V_error",&leakage_1800V_error,"Error on the current leakage at 1800V");
+tree->Branch("Leakage_1800V_n",&leakage_1800V_n,"Number of points used to estimate the current leakage at 1800V/I");
+tree->Branch("Leakage_1800V_spikes",&leakage_1800V_spikes,"Number of spikes found when estimate the current leakage at 1800V/I");
 
 //loop over the pmt files
 for (int i=0; i < n_files; i++)
@@ -654,6 +677,8 @@ index_1400V_led1_up = 0;
 index_1400V_led1_down = 0;
 index_1600V_led1_up = 0;
 index_1600V_led1_down = 0;
+index_1800V_led4_up = 0;
+index_1800V_led4_down = 0;
 
 index_leakage_0V_begin = 0;
 index_leakage_800V_begin = 0;
@@ -662,6 +687,7 @@ index_leakage_1000V_begin = 0;
 index_leakage_1200V_begin = 0;
 index_leakage_1400V_begin = 0;
 index_leakage_1600V_begin = 0;
+index_leakage_1800V_begin = 0;
 
 index_leakage_0V_end = 0;
 index_leakage_800V_end = 0;
@@ -670,6 +696,7 @@ index_leakage_1000V_end = 0;
 index_leakage_1200V_end = 0;
 index_leakage_1400V_end = 0;
 index_leakage_1600V_end = 0;
+index_leakage_1800V_end = 0;
 
 cath_800V_led1 = 0.0;
 cath_800V_led1_error = 0.0;
@@ -719,6 +746,10 @@ cath_1600V_led1 = 0.0;
 cath_1600V_led1_error = 0.0;
 cath_1600V_led1_spikes = 0;
 cath_1600V_led1_n = 0;
+cath_1800V_led4 = 0.0;
+cath_1800V_led4_error = 0.0;
+cath_1800V_led4_spikes = 0;
+cath_1800V_led4_n = 0;
 
 anode_800V_led1_up = 0.0;
 anode_800V_led1_down = 0.0;
@@ -744,6 +775,8 @@ anode_1400V_led1_up = 0.0;
 anode_1400V_led1_down = 0.0;
 anode_1600V_led1_up = 0.0;
 anode_1600V_led1_down = 0.0;
+anode_1800V_led4_up = 0.0;
+anode_1800V_led4_down = 0.0;
 
 ref_800V_led1_up = 0.0;
 ref_800V_led1_down = 0.0;
@@ -769,6 +802,8 @@ ref_1400V_led1_up = 0.0;
 ref_1400V_led1_down = 0.0;
 ref_1600V_led1_up = 0.0;
 ref_1600V_led1_down = 0.0;
+ref_1800V_led4_up = 0.0;
+ref_1800V_led4_down = 0.0;
 
 gain_800V_led1 = 0.0;
 qe_800V_led1 = 0.0;
@@ -794,6 +829,8 @@ gain_1400V_led1 = 0.0;
 qe_1400V_led1 = 0.0;
 gain_1600V_led1 = 0.0;
 qe_1600V_led1 = 0.0;
+gain_1800V_led4 = 0.0;
+qe_1800V_led4 = 0.0;
 
 leakage_0V = 0.0;
 leakage_800V = 0.0;
@@ -802,6 +839,7 @@ leakage_1000V = 0.0;
 leakage_1200V = 0.0;
 leakage_1400V = 0.0;
 leakage_1600V = 0.0;
+leakage_1800V = 0.0;
 
 leakage_0V_n = 0;
 leakage_800V_n = 0;
@@ -810,6 +848,7 @@ leakage_1000V_n = 0;
 leakage_1200V_n = 0;
 leakage_1400V_n = 0;
 leakage_1600V_n = 0;
+leakage_1800V_n = 0;
 
 leakage_0V_spikes = 0;
 leakage_800V_spikes = 0;
@@ -818,6 +857,7 @@ leakage_1000V_spikes = 0;
 leakage_1200V_spikes = 0;
 leakage_1400V_spikes = 0;
 leakage_1600V_spikes = 0;
+leakage_1800V_spikes = 0;
 
 leakage_0V_error = 0;
 leakage_800V_error = 0;
@@ -826,6 +866,7 @@ leakage_1000V_error = 0;
 leakage_1200V_error = 0;
 leakage_1400V_error = 0;
 leakage_1600V_error = 0;
+leakage_1800V_error = 0;
 
 //find the code of the pmt
 found1 = file.find("_");
@@ -854,7 +895,7 @@ LeakageSubtractor theSubtractor(vec_time,vec_cath,vec_hv,vec_led);
 theSubtractor.SetVerbosity(0);
 theSubtractor.Run();
 */
-LeakageSubtractor(vec_time, vec_cath, vec_hv, vec_led);
+//LeakageSubtractor(vec_time, vec_cath, vec_hv, vec_led);
 
 //set the end time of the measurement
 end_time = (string) read_time; 
@@ -926,7 +967,8 @@ if (vec_hv[j] < -920 and vec_hv[j] > -980) { cout<<"Unknown voltage : "<<vec_hv[
 if (vec_hv[j] < -1020 and vec_hv[j] > -1180) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<vec_led[j]<<endl; }
 if (vec_hv[j] < -1220 and vec_hv[j] > -1380) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<vec_led[j]<<endl; }
 if (vec_hv[j] < -1420 and vec_hv[j] > -1580) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<vec_led[j]<<endl; }
-if (vec_hv[j] < -1620) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<vec_led[j]<<endl; }
+if (vec_hv[j] < -1620 and vec_hv[j] > -1780) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<vec_led[j]<<endl; }
+if (vec_hv[j] < -1820) { cout<<"Unknown voltage : "<<vec_hv[j]<<" with led : "<<vec_led[j]<<endl; }
 
 if (vec_hv[j] < 20 and vec_hv[j] > -20)
 {
@@ -1003,6 +1045,17 @@ if (vec_led[j-1] > 0) { index_leakage_1600V_begin = j; index_leakage_1600V_end =
 if (vec_led[j] == 1 and vec_led[j-1] == 0 ) { index_1600V_led1_up = j; }
 if (vec_led[j] == 0 and vec_led[j-1] == 1 ) { index_1600V_led1_down = j; }
 if (vec_led[j] == 2 or vec_led[j] == 3 or vec_led[j] == 4 ) { cout<<"Voltage : "<<vec_hv[j]<<" Unknown led : "<<vec_led[j]<<endl; }
+}
+
+
+if (vec_hv[j] < -1780 and vec_hv[j] > -1820)
+{
+if (vec_hv[j+1] > -1780 or vec_hv[j+1] < -1820) { index_leakage_1800V_end = j; }
+if (vec_hv[j-1] > -1780 or vec_hv[j-1] < -1820) { index_leakage_1800V_begin = j; index_leakage_1800V_end = 0; }
+if (vec_led[j-1] > 0) { index_leakage_1800V_begin = j; index_leakage_1800V_end = 0; }
+if (vec_led[j] == 4 and vec_led[j-1] == 0 ) { index_1800V_led4_up = j; }
+if (vec_led[j] == 0 and vec_led[j-1] == 4 ) { index_1800V_led4_down = j; }
+if (vec_led[j] == 2 or vec_led[j] == 3 or vec_led[j] == 1 ) { cout<<"Voltage : "<<vec_hv[j]<<" Unknown led : "<<vec_led[j]<<endl; }
 }
 
 }
@@ -1115,6 +1168,13 @@ gain_cathode(index_1600V_led1_up, index_1600V_led1_down, &vec_cath, cath_1600V_l
 calc_eff(cath_1600V_led1, anode_1600V_led1_up, anode_1600V_led1_down, ref_1600V_led1_up, ref_1600V_led1_down, gain_1600V_led1, qe_1600V_led1);
 total_spikes = total_spikes + cath_1600V_led1_spikes;
 
+//1800V led4
+calc_dif(index_1800V_led4_up, &vec_adut, &vec_aref, &vec_led, anode_1800V_led4_up, ref_1800V_led4_up);
+calc_dif(index_1800V_led4_down, &vec_adut, &vec_aref, &vec_led, anode_1800V_led4_down, ref_1800V_led4_down);
+gain_cathode(index_1800V_led4_up, index_1800V_led4_down, &vec_cath, cath_1800V_led4, cath_1800V_led4_spikes, cath_1800V_led4_error, cath_1800V_led4_n);
+calc_eff(cath_1800V_led4, anode_1800V_led4_up, anode_1800V_led4_down, ref_1800V_led4_up, ref_1800V_led4_down, gain_1800V_led4, qe_1800V_led4);
+total_spikes = total_spikes + cath_1800V_led4_spikes;
+
 //index output for the leakage estimation
 cout<<"0V     "<<index_leakage_0V_begin<<" "<<index_leakage_0V_end<<endl;
 cout<<"800V   "<<index_leakage_800V_begin<<" "<<index_leakage_800V_end<<endl;
@@ -1123,6 +1183,7 @@ cout<<"1000V  "<<index_leakage_1000V_begin<<" "<<index_leakage_1000V_end<<endl;
 cout<<"1200V  "<<index_leakage_1200V_begin<<" "<<index_leakage_1200V_end<<endl;
 cout<<"1400V  "<<index_leakage_1400V_begin<<" "<<index_leakage_1400V_end<<endl;
 cout<<"1600V  "<<index_leakage_1600V_begin<<" "<<index_leakage_1600V_end<<endl;
+cout<<"1800V  "<<index_leakage_1800V_begin<<" "<<index_leakage_1800V_end<<endl;
 
 //leakage 0V
 estimate_leakage(index_leakage_0V_begin, index_leakage_0V_end, &vec_cath_ori, leakage_0V, leakage_0V_n, leakage_0V_spikes, leakage_0V_error);
@@ -1148,8 +1209,12 @@ total_spikes = total_spikes + leakage_1200V_spikes;
 estimate_leakage(index_leakage_1400V_begin, index_leakage_1400V_end, &vec_cath_ori, leakage_1400V, leakage_1400V_n, leakage_1400V_spikes, leakage_1400V_error);
 total_spikes = total_spikes + leakage_1400V_spikes;
 
-//leakage 1400V
+//leakage 1600V
 estimate_leakage(index_leakage_1600V_begin, index_leakage_1600V_end, &vec_cath_ori, leakage_1600V, leakage_1600V_n, leakage_1600V_spikes, leakage_1600V_error);
+total_spikes = total_spikes + leakage_1600V_spikes;
+
+//leakage 1800V
+estimate_leakage(index_leakage_1800V_begin, index_leakage_1800V_end, &vec_cath_ori, leakage_1800V, leakage_1800V_n, leakage_1800V_spikes, leakage_1800V_error);
 total_spikes = total_spikes + leakage_1600V_spikes;
 
 cout<<"Total spikes = "<<total_spikes<<endl;

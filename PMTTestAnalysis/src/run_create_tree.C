@@ -47,7 +47,7 @@ files_in[37] = "../data/cpt_sf_CA1593_2012_05_23_18_47_30_mod.cpt";
 files_in[38] = "../data/cpt_sf_CA0892_2012_05_24_08_51_55_mod.cpt";
 files_in[39] = "../data/cpt_sf_CA1620_2012_05_24_14_49_03_mod.cpt";
 
-int n_files = 1;
+int n_files = 40;
 
 
   string tree_out = "PMT_test_2012_test.root";

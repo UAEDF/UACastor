@@ -145,13 +145,21 @@ float qe_1200V_led4;
 float qe_1400V_led1;
 float qe_1600V_led1;
 
-float leakage_0V;
-float leakage_800V;
-float leakage_900V;
-float leakage_1000V;
-float leakage_1200V;
-float leakage_1400V;
-float leakage_1600V;
+float leakage_0V, leakage_0V_error;
+float leakage_800V, leakage_800V_error;
+float leakage_900V, leakage_900V_error;
+float leakage_1000V, leakage_1000V_error;
+float leakage_1200V, leakage_1200V_error;
+float leakage_1400V, leakage_1400V_error;
+float leakage_1600V, leakage_1600V_error;
+
+int leakage_0V_n, leakage_0V_spikes;
+int leakage_800V_n, leakage_800V_spikes;
+int leakage_900V_n, leakage_900V_spikes;
+int leakage_1000V_n, leakage_1000V_spikes;
+int leakage_1200V_n, leakage_1200V_spikes;
+int leakage_1400V_n, leakage_1400V_spikes;
+int leakage_1600V_n, leakage_1600V_spikes;
 
 //setting the branches
 //tree->SetBranchAddress("PMT",&pmt); //we got the code from the coordinates
@@ -289,12 +297,33 @@ tree->SetBranchAddress("QE_1400V_led1",&qe_1400V_led1);
 tree->SetBranchAddress("Gain_1600V_led1",&gain_1600V_led1);
 tree->SetBranchAddress("QE_1600V_led1",&qe_1600V_led1);
 tree->SetBranchAddress("Leakage_0V",&leakage_0V);
+tree->SetBranchAddress("Leakage_0V_error",&leakage_0V_error);
+tree->SetBranchAddress("Leakage_0V_n",&leakage_0V_n);
+tree->SetBranchAddress("Leakage_0V_spikes",&leakage_0V_spikes);
 tree->SetBranchAddress("Leakage_800V",&leakage_800V);
+tree->SetBranchAddress("Leakage_800V_error",&leakage_800V_error);
+tree->SetBranchAddress("Leakage_800V_n",&leakage_800V_n);
+tree->SetBranchAddress("Leakage_800V_spikes",&leakage_800V_spikes);
 tree->SetBranchAddress("Leakage_900V",&leakage_900V);
+tree->SetBranchAddress("Leakage_900V_error",&leakage_900V_error);
+tree->SetBranchAddress("Leakage_900V_n",&leakage_900V_n);
+tree->SetBranchAddress("Leakage_900V_spikes",&leakage_900V_spikes);
 tree->SetBranchAddress("Leakage_1000V",&leakage_1000V);
+tree->SetBranchAddress("Leakage_1000V_error",&leakage_1000V_error);
+tree->SetBranchAddress("Leakage_1000V_n",&leakage_1000V_n);
+tree->SetBranchAddress("Leakage_1000V_spikes",&leakage_1000V_spikes);
 tree->SetBranchAddress("Leakage_1200V",&leakage_1200V);
+tree->SetBranchAddress("Leakage_1200V_error",&leakage_1200V_error);
+tree->SetBranchAddress("Leakage_1200V_n",&leakage_1200V_n);
+tree->SetBranchAddress("Leakage_1200V_spikes",&leakage_1200V_spikes);
 tree->SetBranchAddress("Leakage_1400V",&leakage_1400V);
+tree->SetBranchAddress("Leakage_1400V_error",&leakage_1400V_error);
+tree->SetBranchAddress("Leakage_1400V_n",&leakage_1400V_n);
+tree->SetBranchAddress("Leakage_1400V_spikes",&leakage_1400V_spikes);
 tree->SetBranchAddress("Leakage_1600V",&leakage_1600V);
+tree->SetBranchAddress("Leakage_1600V_error",&leakage_1600V_error);
+tree->SetBranchAddress("Leakage_1600V_n",&leakage_1600V_n);
+tree->SetBranchAddress("Leakage_1600V_spikes",&leakage_1600V_spikes);
 
 //loop over the measurements
 int tests = tree->GetEntries();
@@ -474,23 +503,23 @@ if (qe_1600V_led1 > 0.0)
 cout<<"1600V               |"<<qe_1600V_led1<<endl;
 }
 cout<<"----------------------------------------------------------"<<endl;
-cout<<"Leakage"<<endl;
+cout<<"Leakage             |Value         Error"<<endl;
 cout<<"----------------------------------------------------------"<<endl;
-cout<<"0V                  |"<<leakage_0V<<endl;
+cout<<"0V                  |"<<leakage_0V<<"  "<<leakage_0V_error<<endl;
 if (leakage_800V > 0.0)
 {
-cout<<"800V                |"<<leakage_800V<<endl;
+cout<<"800V                |"<<leakage_800V<<"  "<<leakage_800V_error<<endl;
 }
 if (leakage_900V > 0.0)
 {
-cout<<"900V                |"<<leakage_900V<<endl;
+cout<<"900V                |"<<leakage_900V<<"  "<<leakage_900V_error<<endl;
 }
-cout<<"1000V               |"<<leakage_1000V<<endl;
-cout<<"1200V               |"<<leakage_1200V<<endl;
-cout<<"1400V               |"<<leakage_1400V<<endl;
+cout<<"1000V               |"<<leakage_1000V<<"  "<<leakage_1000V<<endl;
+cout<<"1200V               |"<<leakage_1200V<<"  "<<leakage_1200V<<endl;
+cout<<"1400V               |"<<leakage_1400V<<"  "<<leakage_1400V<<endl;
 if (leakage_1600V > 0.0)
 {
-cout<<"1600V               |"<<leakage_1600V<<endl;
+cout<<"1600V               |"<<leakage_1600V<<"  "<<leakage_1600V<<endl;
 }
 cout<<"----------------------------------------------------------"<<endl;
 cout<<" "<<endl;

@@ -85,7 +85,7 @@ void estimate_leakage(float ini_point, float end_point, std::vector<float> *vec_
 TH1D *leakage;
 
 int spike = 0;
-float l_low, l_high;
+float l_low = 0, l_high = 0;
 
 if (ini_point > 0 and end_point > 0)
 {
@@ -570,18 +570,23 @@ tree->Branch("Leakage_800V_error",&leakage_800V_error,"Error on the current leak
 tree->Branch("Leakage_800V_n",&leakage_800V_n,"Number of points used to estimate the current leakage at 800V/I");
 tree->Branch("Leakage_800V_spikes",&leakage_800V_spikes,"Number of spikes found when estimate the current leakage at 800V/I");
 tree->Branch("Leakage_900V",&leakage_900V,"Current leakage at 900V");
+tree->Branch("Leakage_900V_error",&leakage_900V_error,"Error on the current leakage at 900V");
 tree->Branch("Leakage_900V_n",&leakage_900V_n,"Number of points used to estimate the current leakage at 900V/I");
 tree->Branch("Leakage_900V_spikes",&leakage_900V_spikes,"Number of spikes found when estimate the current leakage at 900V/I");
 tree->Branch("Leakage_1000V",&leakage_1000V,"Current leakage at 1000V");
+tree->Branch("Leakage_1000V_error",&leakage_1000V_error,"Error on the current leakage at 1000V");
 tree->Branch("Leakage_1000V_n",&leakage_1000V_n,"Number of points used to estimate the current leakage at 1000V/I");
 tree->Branch("Leakage_1000V_spikes",&leakage_1000V_spikes,"Number of spikes found when estimate the current leakage at 1000V/I");
 tree->Branch("Leakage_1200V",&leakage_1200V,"Current leakage at 1200V");
+tree->Branch("Leakage_1200V_error",&leakage_1200V_error,"Error on the current leakage at 1200V");
 tree->Branch("Leakage_1200V_n",&leakage_1200V_n,"Number of points used to estimate the current leakage at 1200V/I");
 tree->Branch("Leakage_1200V_spikes",&leakage_1200V_spikes,"Number of spikes found when estimate the current leakage at 1200V/I");
 tree->Branch("Leakage_1400V",&leakage_1400V,"Current leakage at 1400V");
+tree->Branch("Leakage_1400V_error",&leakage_1400V_error,"Error on the current leakage at 1400V");
 tree->Branch("Leakage_1400V_n",&leakage_1400V_n,"Number of points used to estimate the current leakage at 1400V/I");
 tree->Branch("Leakage_1400V_spikes",&leakage_1400V_spikes,"Number of spikes found when estimate the current leakage at 1400V/I");
 tree->Branch("Leakage_1600V",&leakage_1600V,"Current leakage at 1600V");
+tree->Branch("Leakage_1600V_error",&leakage_1600V_error,"Error on the current leakage at 1600V");
 tree->Branch("Leakage_1600V_n",&leakage_1600V_n,"Number of points used to estimate the current leakage at 1600V/I");
 tree->Branch("Leakage_1600V_spikes",&leakage_1600V_spikes,"Number of spikes found when estimate the current leakage at 1600V/I");
 

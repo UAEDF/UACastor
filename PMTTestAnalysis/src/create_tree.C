@@ -6,9 +6,10 @@
 #include "TH1.h"
 #include "TTree.h"
 #include "TFile.h"
+#include "LeakageSubtractor.C"
 
 //user
-#include "LeakageSubtractor.h"
+//#include "LeakageSubtractor.h"
 
 void set_coordinates(string pmt, int& module, int& sector)
 {
@@ -848,9 +849,12 @@ vec_led.push_back(led);
 entries = entries + 1; //update the number of stored entries
 }
 
+/*
 LeakageSubtractor theSubtractor(vec_time,vec_cath,vec_hv,vec_led);
 theSubtractor.SetVerbosity(0);
 theSubtractor.Run();
+*/
+LeakageSubtractor(vec_time, vec_cath, vec_hv, vec_led);
 
 //set the end time of the measurement
 end_time = (string) read_time; 

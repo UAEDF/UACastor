@@ -11,45 +11,68 @@
 //user
 //#include "LeakageSubtractor.h"
 
-void set_coordinates(string pmt, int& module, int& sector)
+void set_coordinates(string pmt, int& module, int& sector, int& set)
 {
 
-if (pmt == "CA1579") { sector = 4; module = 1; }
-if (pmt == "CA3399") { sector = 1; module = 2; }
-if (pmt == "CA0683") { sector = 13; module = 1; }
-if (pmt == "CA0540") { sector = 13; module = 2; }
-if (pmt == "CA3362") { sector = 14; module = 1; }
-if (pmt == "CA0625") { sector = 3; module = 2; }
-if (pmt == "CA0715") { sector = 15; module = 2; }
-if (pmt == "CA1832") { sector = 5; module = 2; }
-if (pmt == "CA0857") { sector = 14; module = 2; }
-if (pmt == "CA0886") { sector = 15; module = 1; }
-if (pmt == "CA1549") { sector = 5; module = 1; }
-if (pmt == "CA1617") { sector = 6; module = 1; }
-if (pmt == "CA0742") { sector = 6; module = 2; }
-if (pmt == "CA3236") { sector = 11; module = 2; }
-if (pmt == "CA0829") { sector = 10; module = 1; }
-if (pmt == "CA0948") { sector = 12; module = 1; }
-if (pmt == "CA1263") { sector = 10; module = 2; }
-if (pmt == "CA1200") { sector = 9; module = 2; }
-if (pmt == "CA1829") { sector = 9; module = 1; }
-if (pmt == "CA1431") { sector = 11; module = 1; }
-if (pmt == "CA1593") { sector = 12; module = 2; }
-if (pmt == "CA0327") { sector = 2; module = 2; }
-if (pmt == "CA1680") { sector = 16; module = 2; }
-if (pmt == "CA0558") { sector = 16; module = 1; }
-if (pmt == "CA0574") { sector = 1; module = 1; }
-if (pmt == "CA1842") { sector = 2; module = 1; }
-if (pmt == "CA0812") { sector = 4; module = 2; }
-if (pmt == "CA1592") { sector = 3; module = 1; }
-if (pmt == "CA0892") { sector = 8; module = 10; }
-if (pmt == "CA1620") { sector = 7; module = 10; }
-if (pmt == "CA1321") { sector = 7; module = 1; }
-if (pmt == "CA1537") { sector = 8; module = 1; }
-if (pmt == "CA3386") { sector = 7; module = 2; }
-if (pmt == "CA1954") { sector = 8; module = 2; }
+//old pmts in castor
+if (pmt == "CA1579") { sector = 4;  module = 1;  set = 1; }
+if (pmt == "CA3399") { sector = 1;  module = 2;  set = 1; }
+if (pmt == "CA0683") { sector = 13; module = 1;  set = 1; }
+if (pmt == "CA0540") { sector = 13; module = 2;  set = 1; }
+if (pmt == "CA3362") { sector = 14; module = 1;  set = 1; }
+if (pmt == "CA0625") { sector = 3;  module = 2;  set = 1; }
+if (pmt == "CA0715") { sector = 15; module = 2;  set = 1; }
+if (pmt == "CA1832") { sector = 5;  module = 2;  set = 1; }
+if (pmt == "CA0857") { sector = 14; module = 2;  set = 1; }
+if (pmt == "CA0886") { sector = 15; module = 1;  set = 1; }
+if (pmt == "CA1549") { sector = 5;  module = 1;  set = 1; }
+if (pmt == "CA1617") { sector = 6;  module = 1;  set = 1; }
+if (pmt == "CA0742") { sector = 6;  module = 2;  set = 1; }
+if (pmt == "CA3236") { sector = 11; module = 2;  set = 1; }
+if (pmt == "CA0829") { sector = 10; module = 1;  set = 1; }
+if (pmt == "CA0948") { sector = 12; module = 1;  set = 1; }
+if (pmt == "CA1263") { sector = 10; module = 2;  set = 1; }
+if (pmt == "CA1200") { sector = 9;  module = 2;  set = 1; }
+if (pmt == "CA1829") { sector = 9;  module = 1;  set = 1; }
+if (pmt == "CA1431") { sector = 11; module = 1;  set = 1; }
+if (pmt == "CA1593") { sector = 12; module = 2;  set = 1; }
+if (pmt == "CA0327") { sector = 2;  module = 2;  set = 1; }
+if (pmt == "CA1680") { sector = 16; module = 2;  set = 1; }
+if (pmt == "CA0558") { sector = 16; module = 1;  set = 1; }
+if (pmt == "CA0574") { sector = 1;  module = 1;  set = 1; }
+if (pmt == "CA1842") { sector = 2;  module = 1;  set = 1; }
+if (pmt == "CA0812") { sector = 4;  module = 2;  set = 1; }
+if (pmt == "CA1592") { sector = 3;  module = 1;  set = 1; }
+if (pmt == "CA0892") { sector = 8;  module = 10; set = 1; }
+if (pmt == "CA1620") { sector = 7;  module = 10; set = 1; }
+if (pmt == "CA1321") { sector = 7;  module = 1;  set = 1; }
+if (pmt == "CA1537") { sector = 8;  module = 1;  set = 1; }
+if (pmt == "CA3386") { sector = 7;  module = 2;  set = 1; }
+if (pmt == "CA1954") { sector = 8;  module = 2;  set = 1; }
 
-if (sector == 0 and module == 0) { cout<<"Unknown PMT"<<endl; }
+//new ones first delivery
+if (pmt == "BA0263") { sector = 1;  module = 1;  set = 2; }
+if (pmt == "BA0264") { sector = 1;  module = 2;  set = 2; }
+if (pmt == "BA0265") { sector = 1;  module = 3;  set = 2; }
+if (pmt == "BA0267") { sector = 1;  module = 4;  set = 2; }
+if (pmt == "BA0274") { sector = 1;  module = 5;  set = 2; }
+if (pmt == "BA0275") { sector = 2;  module = 1;  set = 2; }
+if (pmt == "BA0277") { sector = 2;  module = 2;  set = 2; }
+if (pmt == "BA0278") { sector = 2;  module = 3;  set = 2; }
+if (pmt == "BA0279") { sector = 2;  module = 4;  set = 2; }
+if (pmt == "BA0287") { sector = 2;  module = 5;  set = 2; }
+if (pmt == "BA0288") { sector = 3;  module = 1;  set = 2; }
+if (pmt == "BA0291") { sector = 3;  module = 2;  set = 2; }
+if (pmt == "BA0297") { sector = 3;  module = 3;  set = 2; }
+if (pmt == "BA0300") { sector = 3;  module = 4;  set = 2; }
+if (pmt == "BA0303") { sector = 3;  module = 5;  set = 2; }
+if (pmt == "BA0304") { sector = 4;  module = 1;  set = 2; }
+if (pmt == "BA0305") { sector = 4;  module = 2;  set = 2; }
+if (pmt == "BA0307") { sector = 4;  module = 3;  set = 2; }
+if (pmt == "BA0309") { sector = 4;  module = 4;  set = 2; }
+if (pmt == "BA0311") { sector = 4;  module = 5;  set = 2; }
+
+if (sector == 0 and module == 0 and set == 0) { cout<<"Unknown PMT"<<endl; }
 
 }
 
@@ -319,7 +342,7 @@ std::vector<int> vec_time, vec_hv, vec_led;
 std::vector<float> vec_cath, vec_cath_ori, vec_adut, vec_aref;
 std::vector<int> *pvec_time, *pvec_hv, *pvec_led;
 std::vector<float> *pvec_cath, *pvec_cath_ori, *pvec_adut, *pvec_aref;
-int total_spikes, sector, module;
+int total_spikes, sector, module, set;
 
 int found1, found2, found3;
 int total_unknown = 0;
@@ -443,6 +466,7 @@ tree->Branch("Measurement_end","std::vector<int>",&pvec_end);
 tree->Branch("Entries",&entries,"Number of entries/I");
 tree->Branch("Module",&module,"Castor module/I");
 tree->Branch("Sector",&sector,"Castor sector/I");
+tree->Branch("Set",&set,"Set of pmts/I");
 tree->Branch("Measured_time","std::vector<int>",&pvec_time);
 tree->Branch("HV","std::vector<int>",&pvec_hv);
 tree->Branch("Cathode","std::vector<float>",&pvec_cath_ori);
@@ -652,6 +676,7 @@ vec_led.clear();
 total_spikes = 0;
 module = 0;
 sector = 0;
+set = 0;
 
 index_800V_led1_up = 0;
 index_800V_led1_down = 0;
@@ -948,11 +973,11 @@ aux_str = end_time.substr(17,2);
 aux_int = atoi( aux_str.c_str() );
 vec_end.push_back(aux_int);
 
-set_coordinates(pmt, module, sector);
-if (sector == 0 and module == 0) { total_unknown = total_unknown + 1; }
+set_coordinates(pmt, module, sector, set);
+if (sector == 0 and module == 0 and set == 0) { total_unknown = total_unknown + 1; }
 
 //output the details of the measurement
-cout<<"PMT code: "<<pmt<<" (Sector : "<<sector<<" ; Module : "<<module<<")"<<endl;
+cout<<"PMT code: "<<pmt<<" (Sector : "<<sector<<" ; Module : "<<module<<" ; Set: "<<set<<")"<<endl;
 cout<<"Begin: "<<ini_time<<endl;
 cout<<"End: "<<end_time<<endl;
 cout<<"Entries "<<entries<<endl;

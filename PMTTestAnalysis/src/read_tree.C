@@ -67,7 +67,7 @@ string pmt;
 std::vector<int> *begin, *end, *led, *hv, *time;
 std::vector<float> *cath, *cath_ori, *anode, *ref;
 
-int total_spikes, entries, module, sector;
+int total_spikes, entries, module, sector, set;
 
 float cath_800V_led1, cath_800V_led1_error;
 float cath_800V_led2, cath_800V_led2_error;
@@ -175,6 +175,7 @@ tree->SetBranchAddress("Reference_PMT",&ref);
 tree->SetBranchAddress("Led",&led);
 tree->SetBranchAddress("Module",&module);
 tree->SetBranchAddress("Sector",&sector);
+tree->SetBranchAddress("Set",&set);
 tree->SetBranchAddress("Number_of_spikes",&total_spikes);
 tree->SetBranchAddress("Cath_800V_led1",&cath_800V_led1);
 tree->SetBranchAddress("Cath_800V_led1_error",&cath_800V_led1_error);
@@ -328,25 +329,45 @@ tree->SetBranchAddress("Leakage_1600V_spikes",&leakage_1600V_spikes);
 //loop over the measurements
 int tests = tree->GetEntries();
 
-  TH2F *pmt_inv_qe_800;
-  TH2F *pmt_inv_ee_800;
-  TH2F *pmt_inv_gain_800;
-  TH2F *pmt_inv_qe_1200;
-  TH2F *pmt_inv_ee_1200;
-  TH2F *pmt_inv_gain_1200;
-  TH2F *pmt_inv_gain_1400;
-  TH2F *pmt_spikes;
-  TH2F *measurements;
+  TH2F *pmt_inv_qe_800_old;
+  TH2F *pmt_inv_ee_800_old;
+  TH2F *pmt_inv_gain_800_old;
+  TH2F *pmt_inv_qe_1200_old;
+  TH2F *pmt_inv_ee_1200_old;
+  TH2F *pmt_inv_gain_1200_old;
+  TH2F *pmt_inv_gain_1400_old;
+  TH2F *pmt_spikes_old;
+  TH2F *measurements_old;
 
-  pmt_inv_qe_800 =  new TH2F("Inverse_qe_800V","inverse_qe_800V;Sector;Module", 14,0,14,16,0,16);
-  pmt_inv_ee_800 =  new TH2F("Inverse_ee_800V","inverse_ee_800V;Sector;Module", 14,0,14,16,0,16);
-  pmt_inv_gain_800 =  new TH2F("Inverse_gain_800V","inverse_gain_800V;Sector;Module", 14,0,14,16,0,16);
-  pmt_inv_qe_1200 =  new TH2F("Inverse_qe_1200V","inverse_qe_1200V;Sector;Module", 14,0,14,16,0,16);
-  pmt_inv_ee_1200 =  new TH2F("Inverse_ee_1200V","inverse_ee_1200V;Sector;Module", 14,0,14,16,0,16);
-  pmt_inv_gain_1200 =  new TH2F("Inverse_gain_1200V","inverse_gain_1200V;Sector;Module", 14,0,14,16,0,16);
-  pmt_inv_gain_1400 =  new TH2F("Inverse_gain_1400V","inverse_gain_1400V;Sector;Module", 14,0,14,16,0,16);
-  pmt_spikes =  new TH2F("Number_of_spikes","number_of_spikes;Sector;Module", 14,0,14,16,0,16);
-  measurements =  new TH2F("Number_of_measurements","number_of_measurements;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_qe_800_old =  new TH2F("Inverse_qe_800V_old","inverse_qe_800V_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_ee_800_old =  new TH2F("Inverse_ee_800V_old","inverse_ee_800V_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_gain_800_old =  new TH2F("Inverse_gain_800V_old","inverse_gain_800V_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_qe_1200_old =  new TH2F("Inverse_qe_1200V_old","inverse_qe_1200V_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_ee_1200_old =  new TH2F("Inverse_ee_1200V_old","inverse_ee_1200V_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_gain_1200_old =  new TH2F("Inverse_gain_1200V_old","inverse_gain_1200V_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_gain_1400_old =  new TH2F("Inverse_gain_1400V_old","inverse_gain_1400V_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_spikes_old =  new TH2F("Number_of_spikes_old","number_of_spikes_old;Sector;Module", 14,0,14,16,0,16);
+  measurements_old =  new TH2F("Number_of_measurements_old","number_of_measurements_old;Sector;Module", 14,0,14,16,0,16);
+
+  TH2F *pmt_inv_qe_800_new1;
+  TH2F *pmt_inv_ee_800_new1;
+  TH2F *pmt_inv_gain_800_new1;
+  TH2F *pmt_inv_qe_1200_new1;
+  TH2F *pmt_inv_ee_1200_new1;
+  TH2F *pmt_inv_gain_1200_new1;
+  TH2F *pmt_inv_gain_1400_new1;
+  TH2F *pmt_spikes_new1;
+  TH2F *measurements_new1;
+
+  pmt_inv_qe_800_new1 =  new TH2F("Inverse_qe_800V_new1","inverse_qe_800V_new1;Sector;Module", 5,0,5,4,0,4);
+  pmt_inv_ee_800_new1 =  new TH2F("Inverse_ee_800V_new1","inverse_ee_800V_new1;Sector;Module", 5,0,5,4,0,4);
+  pmt_inv_gain_800_new1 =  new TH2F("Inverse_gain_800V_new1","inverse_gain_800V_new1;Sector;Module", 5,0,5,4,0,4);
+  pmt_inv_qe_1200_new1 =  new TH2F("Inverse_qe_1200V_new1","inverse_qe_1200V_new1;Sector;Module", 5,0,5,4,0,4);
+  pmt_inv_ee_1200_new1 =  new TH2F("Inverse_ee_1200V_new1","inverse_ee_1200V_new1;Sector;Module", 5,0,5,4,0,4);
+  pmt_inv_gain_1200_new1 =  new TH2F("Inverse_gain_1200V_new1","inverse_gain_1200V_new1;Sector;Module", 5,0,5,4,0,4);
+  pmt_inv_gain_1400_new1 =  new TH2F("Inverse_gain_1400V_new1","inverse_gain_1400V_new1;Sector;Module", 5,0,5,4,0,4);
+  pmt_spikes_new1 =  new TH2F("Number_of_spikes_new1","number_of_spikes_new1;Sector;Module", 5,0,5,4,0,4);
+  measurements_new1 =  new TH2F("Number_of_measurements_new1","number_of_measurements_new1;Sector;Module", 5,0,5,4,0,4);
 
 for (int i = 0; i < tests ;i++)
 {
@@ -524,13 +545,27 @@ cout<<"1600V               |"<<leakage_1600V<<"  "<<leakage_1600V_error<<endl;
 cout<<"----------------------------------------------------------"<<endl;
 cout<<" "<<endl;
 
-pmt_inv_gain_800->SetBinContent(module,sector,4.0e-08/anode_800V_led1_up);
-pmt_inv_gain_1200->SetBinContent(module,sector,5.0e-07/gain_1200V_led1);
-pmt_inv_gain_1400->SetBinContent(module,sector,1.3e-06/gain_1400V_led1);
-pmt_inv_qe_800->SetBinContent(module,sector,50000.0/qe_800V_led1);
-pmt_inv_qe_1200->SetBinContent(module,sector,50000.0/qe_1200V_led1);
-pmt_spikes->SetBinContent(module,sector,total_spikes);
-measurements->Fill(module-0.5,sector-0.5);
+if (set == 1)
+{
+pmt_inv_gain_800_old->SetBinContent(module,sector,4.0e-08/anode_800V_led1_up);
+pmt_inv_gain_1200_old->SetBinContent(module,sector,5.0e-07/gain_1200V_led1);
+pmt_inv_gain_1400_old->SetBinContent(module,sector,1.3e-06/gain_1400V_led1);
+pmt_inv_qe_800_old->SetBinContent(module,sector,50000.0/qe_800V_led1);
+pmt_inv_qe_1200_old->SetBinContent(module,sector,50000.0/qe_1200V_led1);
+pmt_spikes_old->SetBinContent(module,sector,total_spikes);
+measurements_old->Fill(module-0.5,sector-0.5);
+}
+
+if (set == 2)
+{
+pmt_inv_gain_800_new1->SetBinContent(module,sector,4.0e-08/anode_800V_led1_up);
+pmt_inv_gain_1200_new1->SetBinContent(module,sector,5.0e-07/gain_1200V_led1);
+pmt_inv_gain_1400_new1->SetBinContent(module,sector,1.3e-06/gain_1400V_led1);
+pmt_inv_qe_800_new1->SetBinContent(module,sector,50000.0/qe_800V_led1);
+pmt_inv_qe_1200_new1->SetBinContent(module,sector,50000.0/qe_1200V_led1);
+pmt_spikes_new1->SetBinContent(module,sector,total_spikes);
+measurements_new1->Fill(module-0.5,sector-0.5);
+}
 }
 
 
@@ -547,9 +582,9 @@ gPad->SetRightMargin(0.20);
 gPad->SetTopMargin(0.01);
 gPad->SetFrameBorderMode(0);
 
-pmt_inv_qe_800->Draw("colz");
-pmt_inv_qe_800->Draw("text same");
-c01->Print("Inverse_Quantum_Efficiency_800V.png");
+pmt_inv_qe_800_old->Draw("colz");
+pmt_inv_qe_800_old->Draw("text same");
+c01->Print("Inverse_Quantum_Efficiency_800V_old.png");
 c01->Close();
 
 TCanvas *c02 = new TCanvas("c02","Canvas",0,29,1200,800);
@@ -565,9 +600,9 @@ gPad->SetRightMargin(0.20);
 gPad->SetTopMargin(0.01);
 gPad->SetFrameBorderMode(0);
 
-pmt_inv_qe_1200->Draw("colz");
-pmt_inv_qe_1200->Draw("text same");
-c02->Print("Inverse_Quantum_Efficiency_1200V.png");
+pmt_inv_qe_1200_old->Draw("colz");
+pmt_inv_qe_1200_old->Draw("text same");
+c02->Print("Inverse_Quantum_Efficiency_1200V_old.png");
 c02->Close();
 
 TCanvas *c03 = new TCanvas("c03","Canvas",0,29,1200,800);
@@ -583,9 +618,9 @@ gPad->SetRightMargin(0.20);
 gPad->SetTopMargin(0.01);
 gPad->SetFrameBorderMode(0);
 
-pmt_inv_gain_800->Draw("colz");
-pmt_inv_gain_800->Draw("text same");
-c03->Print("Inverse_Gain_800V.png");
+pmt_inv_gain_800_old->Draw("colz");
+pmt_inv_gain_800_old->Draw("text same");
+c03->Print("Inverse_Gain_800V_old.png");
 c03->Close();
 
 TCanvas *c04 = new TCanvas("c04","Canvas",0,29,1200,800);
@@ -601,9 +636,9 @@ gPad->SetRightMargin(0.20);
 gPad->SetTopMargin(0.01);
 gPad->SetFrameBorderMode(0);
 
-pmt_inv_gain_1200->Draw("colz");
-pmt_inv_gain_1200->Draw("text same");
-c04->Print("Inverse_Gain_1200V.png");
+pmt_inv_gain_1200_old->Draw("colz");
+pmt_inv_gain_1200_old->Draw("text same");
+c04->Print("Inverse_Gain_1200V_old.png");
 c04->Close();
 
 TCanvas *c05 = new TCanvas("c05","Canvas",0,29,1200,800);
@@ -618,9 +653,9 @@ gPad->SetRightMargin(0.20);
 gPad->SetTopMargin(0.01);
 gPad->SetFrameBorderMode(0);
 
-pmt_spikes->Draw("colz");
-pmt_spikes->Draw("text same");
-c05->Print("Number_of_Spikes.png");
+pmt_spikes_old->Draw("colz");
+pmt_spikes_old->Draw("text same");
+c05->Print("Number_of_Spikes_old.png");
 c05->Close();
 
 TCanvas *c06 = new TCanvas("c06","Canvas",0,29,1200,800);
@@ -635,9 +670,9 @@ gPad->SetRightMargin(0.20);
 gPad->SetTopMargin(0.01);
 gPad->SetFrameBorderMode(0);
 
-measurements->Draw("colz");
-measurements->Draw("text same");
-c06->Print("Number_of_Measurements.png");
+measurements_old->Draw("colz");
+measurements_old->Draw("text same");
+c06->Print("Number_of_Measurements_old.png");
 c06->Close();
 
 TCanvas *c07 = new TCanvas("c07","Canvas",0,29,1200,800);
@@ -653,9 +688,9 @@ gPad->SetRightMargin(0.20);
 gPad->SetTopMargin(0.01);
 gPad->SetFrameBorderMode(0);
 
-pmt_inv_ee_800->Draw("colz");
-pmt_inv_ee_800->Draw("text same");
-c07->Print("Inverse_Eletrical_Efficiency_800V.png");
+pmt_inv_ee_800_old->Draw("colz");
+pmt_inv_ee_800_old->Draw("text same");
+c07->Print("Inverse_Eletrical_Efficiency_800V_old.png");
 c07->Close();
 
 TCanvas *c08 = new TCanvas("c08","Canvas",0,29,1200,800);
@@ -671,9 +706,9 @@ gPad->SetRightMargin(0.20);
 gPad->SetTopMargin(0.01);
 gPad->SetFrameBorderMode(0);
 
-pmt_inv_ee_1200->Draw("colz");
-pmt_inv_ee_1200->Draw("text same");
-c08->Print("Inverse_Eletrical_Efficiency_1200V.png");
+pmt_inv_ee_1200_old->Draw("colz");
+pmt_inv_ee_1200_old->Draw("text same");
+c08->Print("Inverse_Eletrical_Efficiency_1200V_old.png");
 c08->Close();
 
 
@@ -690,9 +725,171 @@ gPad->SetRightMargin(0.20);
 gPad->SetTopMargin(0.01);
 gPad->SetFrameBorderMode(0);
 
-pmt_inv_gain_1400->Draw("colz");
-pmt_inv_gain_1400->Draw("text same");
-c09->Print("Inverse_Gain_1400V.png");
+pmt_inv_gain_1400_old->Draw("colz");
+pmt_inv_gain_1400_old->Draw("text same");
+c09->Print("Inverse_Gain_1400V_old.png");
 c09->Close();
+
+
+TCanvas *c11 = new TCanvas("c11","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_inv_qe_800_new1->Draw("colz");
+pmt_inv_qe_800_new1->Draw("text same");
+c11->Print("Inverse_Quantum_Efficiency_800V_new1.png");
+c11->Close();
+
+TCanvas *c12 = new TCanvas("c12","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_inv_qe_1200_new1->Draw("colz");
+pmt_inv_qe_1200_new1->Draw("text same");
+c12->Print("Inverse_Quantum_Efficiency_1200V_new1.png");
+c12->Close();
+
+TCanvas *c13 = new TCanvas("c13","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_inv_gain_800_new1->Draw("colz");
+pmt_inv_gain_800_new1->Draw("text same");
+c13->Print("Inverse_Gain_800V_new1.png");
+c13->Close();
+
+TCanvas *c14 = new TCanvas("c14","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_inv_gain_1200_new1->Draw("colz");
+pmt_inv_gain_1200_new1->Draw("text same");
+c14->Print("Inverse_Gain_1200V_new1.png");
+c14->Close();
+
+TCanvas *c15 = new TCanvas("c15","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_spikes_new1->Draw("colz");
+pmt_spikes_new1->Draw("text same");
+c15->Print("Number_of_Spikes_new1.png");
+c15->Close();
+
+TCanvas *c16 = new TCanvas("c16","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+measurements_new1->Draw("colz");
+measurements_new1->Draw("text same");
+c16->Print("Number_of_Measurements_new1.png");
+c16->Close();
+
+TCanvas *c17 = new TCanvas("c17","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_inv_ee_800_new1->Draw("colz");
+pmt_inv_ee_800_new1->Draw("text same");
+c17->Print("Inverse_Eletrical_Efficiency_800V_new1.png");
+c17->Close();
+
+TCanvas *c18 = new TCanvas("c18","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_inv_ee_1200_new1->Draw("colz");
+pmt_inv_ee_1200_new1->Draw("text same");
+c18->Print("Inverse_Eletrical_Efficiency_1200V_new1.png");
+c18->Close();
+
+
+TCanvas *c19 = new TCanvas("c19","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_inv_gain_1400_new1->Draw("colz");
+pmt_inv_gain_1400_new1->Draw("text same");
+c19->Print("Inverse_Gain_1400V_new1.png");
+c19->Close();
 
 }

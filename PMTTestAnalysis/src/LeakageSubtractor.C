@@ -28,7 +28,7 @@ double fexp(double *x, double *p){
 void LeakageSubtractor(const std::vector<int> &time, std::vector<float> &cathode, const std::vector<int> &hv, const std::vector<int> &led, std::string pmt ){
 
 gStyle->SetOptFit(1);
-int skipAtVChange = 40;
+//int skipAtVChange = 40;
 int skipAtLedChange = 4;
 
 int size = 0;

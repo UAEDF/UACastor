@@ -25,7 +25,9 @@ double fexp(double *x, double *p){
     return p[0] + p[1] * exp (-(x[0]/p[2] ) );
 };
 
-void LeakageSubtractor(const std::vector<int> &time, std::vector<float> &cathode, const std::vector<int> &hv, const std::vector<int> &led, std::string pmt ){
+void LeakageSubtractor(const std::vector<int> &time, std::vector<float> &cathode, const std::vector<int> &hv, const std::vector<int> &led, std::string file ){
+
+string str_volt;
 
 gStyle->SetOptFit(1);
 //int skipAtVChange = 40;
@@ -54,51 +56,60 @@ std::vector<double> fitYe;
 
   //the different hight voltage steps in volt
   int nstep = 7;
-  int step[7]={0,800,900,1000,1200,1400,1600}; 
+  int step[7]={800,900,1000,1200,1400,1600,1800}; 
   //write the endex of the beginning and the end of the hv regions into an array
   int voltageStep[nstep];
   int index_begin[nstep];
   int index_end[nstep];
-
-  
-   for(int istep = 0; istep < 7; istep++){
+  int istep; 
+   
+   for(istep = 0; istep < 7; istep++){
     int index1 =0;
     int index2 =0;
-    while(abs(hv[index1]) < step[istep] +20 ){
+    
+    cout<<"trying voltage: "<<step[istep]<<endl;
+    
+    while((abs(hv[index1-1]) > step[istep] + 20 or abs(hv[index1-1]) < step[istep] - 20) and index1 < size){
       index1++;
     }
-    index_begin[istep]= index1;
+    index_begin[istep] = index1;
     cout << "index_begin " <<index_begin[istep] << endl;
-    while(abs(hv[index2]) < step[istep+1] +20 ){
+    index2 = index1;
+    while((abs(hv[index2]) < step[istep] + 20 and abs(hv[index2]) > step[istep] - 20) and index2 < size){
       index2++;
     }
-    index_end[istep] =index2;
+    index_end[istep] = index2;
     cout << "index_end " << index_end[istep] << endl;
 
     voltageStep[istep] = index_end[istep] - index_begin[istep];
     cout << "voltage Step " << voltageStep[istep] << endl;
-}
    //write the voltages into the vector
    // copy the x,y values for one voltage set and only where LED was off 
-           
-    for(int i = index_begin[0]; i < index_end[0]; i++){  
-     if(led[i] == 0 && led[i-skipAtLedChange] ==0 && led[i+skipAtLedChange] == 0){       
-          fitX.push_back(time[i]-time[index_begin[0]]); 
+     
+     
+   if (voltageStep[istep] > 20)
+   {      
+    for(int i = index_begin[istep]; i < index_end[istep]; i++){  
+     if(led[i] == 0 && led[i-skipAtLedChange] == 0 && led[i+skipAtLedChange] == 0){  
+          if (time[i] < 0) { cout << "warning: negative time " << i << " " << time[i] << endl; }     
+          fitX.push_back(time[i]); 
 	  fitY.push_back(cathode[i]);
           fitYe.push_back(cathode_ye[i]);
           fitXe.push_back(0.);
     }
    }
-	cout << "========" << hv[index_begin[0]] << "===========" << endl;
+	cout << "========" << hv[index_begin[istep]] << "===========" << endl;
 
    //do the fitting
    // define the fit function
-   int shift = 400;
+   int shift;
+   shift = 100;
+   if (abs(hv[index2]) < 820 and abs(hv[index2]) > 780) { shift = 300; }
    
    // TGraphErrors has to be defined befor TF1 (the fit function)
    TGraphErrors *gc0 = new TGraphErrors(fitX.size(),&fitX.front(),&fitY.front(),NULL,&fitYe.front());
 
-   TF1 *ff  = new TF1("ff", fexp, shift, time[index_end[0]], 3);
+   TF1 *ff  = new TF1("ff", fexp, time[index_begin[istep]] + shift, time[index_end[istep]], 3);
 	ff->SetLineColor(2);
     int fcount=0;
     bool repeate=true;
@@ -114,17 +125,34 @@ std::vector<double> fitYe;
       ff->SetParameter(1, ini1[fcount]);
       cout << "ini par[1] = " << ini1[fcount] << endl;
       gc0->Fit("ff","ER");
-      cout << "=> " << gMinuit->fCstatu.Data() << endl;    
+      //cout << "=> " << gMinuit->fCstatu.Data() << endl;    
       repeate = ( (gMinuit->fCstatu.Data()[0]!='S') || (ff->GetParameter(1)<0) || (ff->GetParameter(0)<0));
 	
       fcount++;
 
-      	TCanvas * c = new TCanvas("c","c",800,600);
-      	gc0->Draw("AP");
-        string name = "fit/" + pmt + ".png";
-        c->Print(name.c_str());
-	c->Close();
-
+      	//TCanvas * c = new TCanvas("c","c",800,600);
+      	//gc0->Draw("AP");
+      	str_volt = "unknownvoltage";
+      	if (hv[index_begin[istep]] > -820 and hv[index_begin[istep]] < -780) { str_volt = "800V"; }
+      	if (hv[index_begin[istep]] > -920 and hv[index_begin[istep]] < -880) { str_volt = "900V"; }
+      	if (hv[index_begin[istep]] > -1020 and hv[index_begin[istep]] < -980) { str_volt = "1000V"; }
+      	if (hv[index_begin[istep]] > -1220 and hv[index_begin[istep]] < -1180) { str_volt = "1200V"; }
+      	if (hv[index_begin[istep]] > -1420 and hv[index_begin[istep]] < -1380) { str_volt = "1400V"; }
+      	if (hv[index_begin[istep]] > -1620 and hv[index_begin[istep]] < -1580) { str_volt = "1600V"; }
+      	if (hv[index_begin[istep]] > -1820 and hv[index_begin[istep]] < -1780) { str_volt = "1800V"; }
+        string name = "fit/" + file + "_" + str_volt + ".png";
+        //c->Print(name.c_str());
+	//c->Close();
+	}
+	
+	delete(gc0);
+	fitX.clear(); 
+	fitY.clear();
+        fitYe.clear();
+        fitXe.clear();
+       }
+       else
+       { cout << "voltage not found!" << endl; }
  /*     for (int j=0; j < index_end[0]-index_begin[0]; j++)
         {
             std::cout << "x:" << time[j+index_begin[0]] << "/" << time[index_begin[0]+j]-time[index_begin[0]] << " ===  " << cathode[j+index_begin[0]] << " ..... " << theFcn(time[index_begin[0]+j]-time[index_begin[0]]) << std::endl;

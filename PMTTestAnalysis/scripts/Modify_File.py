@@ -9,12 +9,13 @@ def seconds( time ):
     sec   = time.split(':')[5]
     min   = time.split(':')[4]
     hour  = time.split(':')[3]
-    #print hour, min, sec
-    return int(hour)*3600 + int(min)*60 + int(sec)
+    day   = time.split(':')[2]
+    #print day, hour, min, sec
+    return int(day)*86400 * int(hour)*3600 + int(min)*60 + int(sec)
 
 
 def ReadFile( FileName ):
-    print FileName
+    #print FileName
     f = open(FileName,"r")
     try:
         ii=0
@@ -28,15 +29,15 @@ def ReadFile( FileName ):
                 cath  = float(line.split()[14])
                 adut  = float(line.split()[16])
                 aref  = float(line.split()[17])
-                time  = seconds(timestr) - start # seconds from first point - your x coordinate
-                led   = int(line.split()[5])
-                print '{0:20s}\t{1:8d}\t{2:6d}\t\t{3:10.3e}\t{4:10.4e}\t{5:10.4e}\t{6}'.format(timestr,
-                                                                                               time,
-                                                                                               hv,
-                                                                                               cath,
-                                                                                               adut,
-                                                                                               aref,
-                                                                                               led)
+                time     = seconds(timestr) - start # seconds from first point - your x coordinate
+                led = int(line.split()[5])
+                print '{0:20s}\t{1:8d}\t{2:6d}\t\t{3:10.3e}\t{4:10.4e}\t{5:10.4e}\t{6}'.format(timestr, 
+                                                                                        time,
+                                                                                        hv, 
+                                                                                        cath, 
+                                                                                        adut, 
+                                                                                        aref,
+                                                                                        led)
             ii=ii+1
     finally:
         f.close()

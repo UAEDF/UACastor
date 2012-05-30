@@ -137,7 +137,7 @@ leakage_error = leakage->GetRMS();
 delete(leakage);
 }
 
-cout<<"Leakage estimated with "<<tot_points<<" points."<<endl;
+//cout<<"Leakage estimated with "<<tot_points<<" points."<<endl;
 }
 
 void calc_eff(float cathode, float anode_up, float anode_down, float ref_up, float ref_down, float& gain, float& qe)
@@ -325,7 +325,7 @@ ref = ave_ref_after - ave_ref_before;
 
 }
 
-void create_tree(string *files_in, int n_files, string tree_out)
+void create_tree(string *files_in, int ini_file, int end_file, string tree_out)
 {
 //variable declaration
 float cath, adut, aref;
@@ -639,12 +639,12 @@ tree->Branch("Leakage_1800V_n",&leakage_1800V_n,"Number of points used to estima
 tree->Branch("Leakage_1800V_spikes",&leakage_1800V_spikes,"Number of spikes found when estimate the current leakage at 1800V/I");
 
 //loop over the pmt files
-for (int i=0; i < n_files; i++)
+for (int i=ini_file-1; i < end_file; i++)
 {
 
 //open the cpt file
   string file = files_in[i];
-  cout<<"File "<<i+1<<"/"<<n_files<<" -> "<<file<<endl;
+  cout<<"File "<<i+1<<"/"<<end_file - ini_file + 1<<" -> "<<file<<endl;
   FILE *f = fopen( file.c_str() , "r");
   if(f==NULL) {
     std::cout << "can't find file\n";
@@ -920,7 +920,8 @@ LeakageSubtractor theSubtractor(vec_time,vec_cath,vec_hv,vec_led);
 theSubtractor.SetVerbosity(0);
 theSubtractor.Run();
 */
-LeakageSubtractor(vec_time, vec_cath, vec_hv, vec_led, pmt);
+string file2 = file.substr(15,-1);
+LeakageSubtractor(vec_time, vec_cath, vec_hv, vec_led, file2);
 
 //set the end time of the measurement
 end_time = (string) read_time; 
@@ -1201,14 +1202,14 @@ calc_eff(cath_1800V_led4, anode_1800V_led4_up, anode_1800V_led4_down, ref_1800V_
 total_spikes = total_spikes + cath_1800V_led4_spikes;
 
 //index output for the leakage estimation
-cout<<"0V     "<<index_leakage_0V_begin<<" "<<index_leakage_0V_end<<endl;
-cout<<"800V   "<<index_leakage_800V_begin<<" "<<index_leakage_800V_end<<endl;
-cout<<"900V   "<<index_leakage_900V_begin<<" "<<index_leakage_900V_end<<endl;
-cout<<"1000V  "<<index_leakage_1000V_begin<<" "<<index_leakage_1000V_end<<endl;
-cout<<"1200V  "<<index_leakage_1200V_begin<<" "<<index_leakage_1200V_end<<endl;
-cout<<"1400V  "<<index_leakage_1400V_begin<<" "<<index_leakage_1400V_end<<endl;
-cout<<"1600V  "<<index_leakage_1600V_begin<<" "<<index_leakage_1600V_end<<endl;
-cout<<"1800V  "<<index_leakage_1800V_begin<<" "<<index_leakage_1800V_end<<endl;
+//cout<<"0V     "<<index_leakage_0V_begin<<" "<<index_leakage_0V_end<<endl;
+//cout<<"800V   "<<index_leakage_800V_begin<<" "<<index_leakage_800V_end<<endl;
+//cout<<"900V   "<<index_leakage_900V_begin<<" "<<index_leakage_900V_end<<endl;
+//cout<<"1000V  "<<index_leakage_1000V_begin<<" "<<index_leakage_1000V_end<<endl;
+//cout<<"1200V  "<<index_leakage_1200V_begin<<" "<<index_leakage_1200V_end<<endl;
+//cout<<"1400V  "<<index_leakage_1400V_begin<<" "<<index_leakage_1400V_end<<endl;
+//cout<<"1600V  "<<index_leakage_1600V_begin<<" "<<index_leakage_1600V_end<<endl;
+//cout<<"1800V  "<<index_leakage_1800V_begin<<" "<<index_leakage_1800V_end<<endl;
 
 //leakage 0V
 estimate_leakage(index_leakage_0V_begin, index_leakage_0V_end, &vec_cath_ori, leakage_0V, leakage_0V_n, leakage_0V_spikes, leakage_0V_error);

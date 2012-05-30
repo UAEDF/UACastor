@@ -4,7 +4,7 @@ void run_create_tree()
   //gROOT -> ProcessLine(".L LeakageSubtractor.C++");
   gROOT -> ProcessLine(".L create_tree.C++");
 
-string files_in[50];
+string files_in[60];
 
 files_in[0] = "../data/cpt_sf_CA1579_2012_05_12_15_32_59_mod.cpt";
 files_in[1] = "../data/cpt_sf_CA1579_2012_05_13_09_56_20_mod.cpt";
@@ -56,8 +56,18 @@ files_in[46] = "../data/cpt_sf_BA0263_2012_05_29_15_33_18_mod.cpt";
 files_in[47] = "../data/cpt_sf_BA0279_2012_05_29_18_45_43_mod.cpt";
 files_in[48] = "../data/cpt_sf_BA0287_2012_05_29_21_53_31_mod.cpt";
 files_in[49] = "../data/cpt_sf_BA0288_2012_05_30_07_22_29_mod.cpt";
+files_in[50] = "../data/cpt_sf_BA0291_2012_05_30_10_34_08_mod.cpt";
+files_in[51] = "../data/.cpt";
+files_in[52] = "../data/.cpt";
+files_in[53] = "../data/.cpt";
+files_in[54] = "../data/.cpt";
+files_in[55] = "../data/.cpt";
+files_in[56] = "../data/.cpt";
+files_in[57] = "../data/.cpt";
+files_in[58] = "../data/.cpt";
+files_in[59] = "../data/.cpt";
 
-int n_files = 50;
+int n_files = 51;
 
 
   string tree_out = "PMT_test_2012.root";

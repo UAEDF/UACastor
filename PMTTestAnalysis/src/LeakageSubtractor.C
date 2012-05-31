@@ -104,7 +104,7 @@ std::vector<double> fitYe;
    // define the fit function
    int shift;
    shift = 100;
-   if (abs(hv[index2]) < 820 and abs(hv[index2]) > 780) { shift = 300; }
+   if (abs(hv[index1]) < 820 and abs(hv[index1]) > 780) { shift = 300; }
    
    // TGraphErrors has to be defined befor TF1 (the fit function)
    TGraphErrors *gc0 = new TGraphErrors(fitX.size(),&fitX.front(),&fitY.front(),NULL,&fitYe.front());
@@ -130,8 +130,9 @@ std::vector<double> fitYe;
 	
       fcount++;
 
-      	//TCanvas * c = new TCanvas("c","c",800,600);
-      	//gc0->Draw("AP");
+      	TCanvas * c = new TCanvas("c","c",800,600);
+      	gPad->SetLogy();
+      	gc0->Draw("AP");
       	str_volt = "unknownvoltage";
       	if (hv[index_begin[istep]] > -820 and hv[index_begin[istep]] < -780) { str_volt = "800V"; }
       	if (hv[index_begin[istep]] > -920 and hv[index_begin[istep]] < -880) { str_volt = "900V"; }
@@ -141,8 +142,8 @@ std::vector<double> fitYe;
       	if (hv[index_begin[istep]] > -1620 and hv[index_begin[istep]] < -1580) { str_volt = "1600V"; }
       	if (hv[index_begin[istep]] > -1820 and hv[index_begin[istep]] < -1780) { str_volt = "1800V"; }
         string name = "fit/" + file + "_" + str_volt + ".png";
-        //c->Print(name.c_str());
-	//c->Close();
+        c->Print(name.c_str());
+	c->Close();
 	}
 	
 	delete(gc0);

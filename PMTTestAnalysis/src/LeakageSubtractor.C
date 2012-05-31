@@ -73,16 +73,16 @@ std::vector<double> fitYe;
       index1++;
     }
     index_begin[istep] = index1;
-    cout << "index_begin " <<index_begin[istep] << endl;
+    //cout << "index_begin " <<index_begin[istep] << endl;
     index2 = index1;
     while((abs(hv[index2]) < step[istep] + 20 and abs(hv[index2]) > step[istep] - 20) and index2 < size){
       index2++;
     }
     index_end[istep] = index2;
-    cout << "index_end " << index_end[istep] << endl;
+    //cout << "index_end " << index_end[istep] << endl;
 
     voltageStep[istep] = index_end[istep] - index_begin[istep];
-    cout << "voltage Step " << voltageStep[istep] << endl;
+   // cout << "voltage Step " << voltageStep[istep] << endl;
    //write the voltages into the vector
    // copy the x,y values for one voltage set and only where LED was off 
      
@@ -98,14 +98,15 @@ std::vector<double> fitYe;
           fitXe.push_back(0.);
     }
    }
-	cout << "========" << hv[index_begin[istep]] << "===========" << endl;
+	// cout << "========" << hv[index_begin[istep]] << "===========" << endl;
 
    //do the fitting
    // define the fit function
    int shift;
    shift = 100;
    if (abs(hv[index1]) < 820 and abs(hv[index1]) > 780) { shift = 300; }
-   
+   if (voltageStep[istep] < 100) { shift = 0; }   
+
    // TGraphErrors has to be defined befor TF1 (the fit function)
    TGraphErrors *gc0 = new TGraphErrors(fitX.size(),&fitX.front(),&fitY.front(),NULL,&fitYe.front());
 
@@ -124,7 +125,7 @@ std::vector<double> fitYe;
 
       ff->SetParameter(1, ini1[fcount]);
       cout << "ini par[1] = " << ini1[fcount] << endl;
-      gc0->Fit("ff","ER");
+      gc0->Fit("ff","Q");
       //cout << "=> " << gMinuit->fCstatu.Data() << endl;    
       repeate = ( (gMinuit->fCstatu.Data()[0]!='S') || (ff->GetParameter(1)<0) || (ff->GetParameter(0)<0));
 	

@@ -11,45 +11,67 @@
 #include "TTree.h"
 #include "TFile.h"
 
-void set_code(int module, int sector, string& pmt)
+void set_code(int module, int sector, int set, string& pmt)
 {
 
-if (sector == 4  and module == 1 ) { pmt = "CA1579"; }
-if (sector == 1  and module == 2 ) { pmt = "CA3399"; }
-if (sector == 13 and module == 1 ) { pmt = "CA0683"; }
-if (sector == 13 and module == 2 ) { pmt = "CA0540"; }
-if (sector == 14 and module == 1 ) { pmt = "CA3362"; }
-if (sector == 3  and module == 2 ) { pmt = "CA0625"; }
-if (sector == 15 and module == 2 ) { pmt = "CA0715"; }
-if (sector == 5  and module == 2 ) { pmt = "CA1832"; }
-if (sector == 14 and module == 2 ) { pmt = "CA0857"; }
-if (sector == 15 and module == 1 ) { pmt = "CA0886"; }
-if (sector == 5  and module == 1 ) { pmt = "CA1549"; }
-if (sector == 6  and module == 1 ) { pmt = "CA1617"; }
-if (sector == 6  and module == 2 ) { pmt = "CA0742"; }
-if (sector == 11 and module == 2 ) { pmt = "CA3236"; }
-if (sector == 10 and module == 1 ) { pmt = "CA0829"; }
-if (sector == 12 and module == 1 ) { pmt = "CA0948"; }
-if (sector == 10 and module == 2 ) { pmt = "CA1263"; }
-if (sector == 9  and module == 2 ) { pmt = "CA1200"; }
-if (sector == 9  and module == 1 ) { pmt = "CA1829"; }
-if (sector == 11 and module == 1 ) { pmt = "CA1431"; }
-if (sector == 12 and module == 2 ) { pmt = "CA1593"; }
-if (sector == 2  and module == 2 ) { pmt = "CA0327"; }
-if (sector == 16 and module == 2 ) { pmt = "CA1680"; }
-if (sector == 16 and module == 1 ) { pmt = "CA0558"; }
-if (sector == 1  and module == 1 ) { pmt = "CA0574"; }
-if (sector == 2  and module == 1 ) { pmt = "CA1842"; }
-if (sector == 4  and module == 2 ) { pmt = "CA0812"; }
-if (sector == 3  and module == 1 ) { pmt = "CA1592"; }
-if (sector == 8  and module == 10) { pmt = "CA0892"; }
-if (sector == 7  and module == 10) { pmt = "CA1620"; }
-if (sector == 7  and module == 1 ) { pmt = "CA1321"; }
-if (sector == 8  and module == 1 ) { pmt = "CA1537"; }
-if (sector == 7  and module == 2 ) { pmt = "CA3386"; }
-if (sector == 8  and module == 2 ) { pmt = "CA1954"; }
+if (sector == 4  and module == 1  and set == 1) { pmt = "CA1579"; }
+if (sector == 1  and module == 2  and set == 1) { pmt = "CA3399"; }
+if (sector == 13 and module == 1  and set == 1) { pmt = "CA0683"; }
+if (sector == 13 and module == 2  and set == 1) { pmt = "CA0540"; }
+if (sector == 14 and module == 1  and set == 1) { pmt = "CA3362"; }
+if (sector == 3  and module == 2  and set == 1) { pmt = "CA0625"; }
+if (sector == 15 and module == 2  and set == 1) { pmt = "CA0715"; }
+if (sector == 5  and module == 2  and set == 1) { pmt = "CA1832"; }
+if (sector == 14 and module == 2  and set == 1) { pmt = "CA0857"; }
+if (sector == 15 and module == 1  and set == 1) { pmt = "CA0886"; }
+if (sector == 5  and module == 1  and set == 1) { pmt = "CA1549"; }
+if (sector == 6  and module == 1  and set == 1) { pmt = "CA1617"; }
+if (sector == 6  and module == 2  and set == 1) { pmt = "CA0742"; }
+if (sector == 11 and module == 2  and set == 1) { pmt = "CA3236"; }
+if (sector == 10 and module == 1  and set == 1) { pmt = "CA0829"; }
+if (sector == 12 and module == 1  and set == 1) { pmt = "CA0948"; }
+if (sector == 10 and module == 2  and set == 1) { pmt = "CA1263"; }
+if (sector == 9  and module == 2  and set == 1) { pmt = "CA1200"; }
+if (sector == 9  and module == 1  and set == 1) { pmt = "CA1829"; }
+if (sector == 11 and module == 1  and set == 1) { pmt = "CA1431"; }
+if (sector == 12 and module == 2  and set == 1) { pmt = "CA1593"; }
+if (sector == 2  and module == 2  and set == 1) { pmt = "CA0327"; }
+if (sector == 16 and module == 2  and set == 1) { pmt = "CA1680"; }
+if (sector == 16 and module == 1  and set == 1) { pmt = "CA0558"; }
+if (sector == 1  and module == 1  and set == 1) { pmt = "CA0574"; }
+if (sector == 2  and module == 1  and set == 1) { pmt = "CA1842"; }
+if (sector == 4  and module == 2  and set == 1) { pmt = "CA0812"; }
+if (sector == 3  and module == 1  and set == 1) { pmt = "CA1592"; }
+if (sector == 8  and module == 10 and set == 1) { pmt = "CA0892"; }
+if (sector == 7  and module == 10 and set == 1) { pmt = "CA1620"; }
+if (sector == 7  and module == 1  and set == 1) { pmt = "CA1321"; }
+if (sector == 8  and module == 1  and set == 1) { pmt = "CA1537"; }
+if (sector == 7  and module == 2  and set == 1) { pmt = "CA3386"; }
+if (sector == 8  and module == 2  and set == 1) { pmt = "CA1954"; }
 
-if (sector == 0 and module == 0) { cout<<"Unknown PMT"<<endl; }
+
+if (sector == 4  and module == 1  and set == 2) { pmt = "BA0263"; }
+if (sector == 4  and module == 2  and set == 2) { pmt = "BA0264"; }
+if (sector == 4  and module == 3  and set == 2) { pmt = "BA0265"; }
+if (sector == 4  and module == 4  and set == 2) { pmt = "BA0267"; }
+if (sector == 4  and module == 5  and set == 2) { pmt = "BA0274"; }
+if (sector == 3  and module == 1  and set == 2) { pmt = "BA0275"; }
+if (sector == 3  and module == 2  and set == 2) { pmt = "BA0277"; }
+if (sector == 3  and module == 3  and set == 2) { pmt = "BA0278"; }
+if (sector == 3  and module == 4  and set == 2) { pmt = "BA0279"; }
+if (sector == 3  and module == 5  and set == 2) { pmt = "BA0287"; }
+if (sector == 2  and module == 1  and set == 2) { pmt = "BA0288"; }
+if (sector == 2  and module == 2  and set == 2) { pmt = "BA0291"; }
+if (sector == 2  and module == 3  and set == 2) { pmt = "BA0297"; }
+if (sector == 2  and module == 4  and set == 2) { pmt = "BA0300"; }
+if (sector == 2  and module == 5  and set == 2) { pmt = "BA0303"; }
+if (sector == 1  and module == 1  and set == 2) { pmt = "BA0304"; }
+if (sector == 1  and module == 2  and set == 2) { pmt = "BA0305"; }
+if (sector == 1  and module == 3  and set == 2) { pmt = "BA0307"; }
+if (sector == 1  and module == 4  and set == 2) { pmt = "BA0309"; }
+if (sector == 1  and module == 5  and set == 2) { pmt = "BA0311"; }
+
+if (pmt == "") { cout<<"Unknown PMT"<<endl; }
 
 }
 
@@ -372,10 +394,10 @@ int tests = tree->GetEntries();
 for (int i = 0; i < tests ;i++)
 {
 tree->GetEvent(i);
+pmt = "";
+set_code(module, sector, set, pmt);
 
-set_code(module, sector, pmt);
-
-cout<<"Measurement "<<i+1<<"; PMT code: "<<pmt<<" (Sector : "<<sector<<" ; Module : "<<module<<")"<<endl;
+cout<<"Measurement "<<i+1<<"; PMT code: "<<pmt<<" (Sector : "<<sector<<" ; Module : "<<module<<" ; Set : "<<set<<")"<<endl;
 cout<<"Begin of the measurement: "<<begin->at(0)<<"/"<<begin->at(1)<<"/"<<begin->at(2)<<" - "<<begin->at(3)<<":"<<begin->at(4)<<":"<<begin->at(5)<<endl;
 cout<<"End of the measurement: "<<end->at(0)<<"/"<<end->at(1)<<"/"<<end->at(2)<<" - "<<end->at(3)<<":"<<end->at(4)<<":"<<end->at(5)<<endl;
 cout<<"Number of identified and rejected spikes : "<<total_spikes<<endl;

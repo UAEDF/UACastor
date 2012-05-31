@@ -51,26 +51,26 @@ if (pmt == "CA3386") { sector = 7;  module = 2;  set = 1; }
 if (pmt == "CA1954") { sector = 8;  module = 2;  set = 1; }
 
 //new ones first delivery
-if (pmt == "BA0263") { sector = 1;  module = 1;  set = 2; }
-if (pmt == "BA0264") { sector = 1;  module = 2;  set = 2; }
-if (pmt == "BA0265") { sector = 1;  module = 3;  set = 2; }
-if (pmt == "BA0267") { sector = 1;  module = 4;  set = 2; }
-if (pmt == "BA0274") { sector = 1;  module = 5;  set = 2; }
-if (pmt == "BA0275") { sector = 2;  module = 1;  set = 2; }
-if (pmt == "BA0277") { sector = 2;  module = 2;  set = 2; }
-if (pmt == "BA0278") { sector = 2;  module = 3;  set = 2; }
-if (pmt == "BA0279") { sector = 2;  module = 4;  set = 2; }
-if (pmt == "BA0287") { sector = 2;  module = 5;  set = 2; }
-if (pmt == "BA0288") { sector = 3;  module = 1;  set = 2; }
-if (pmt == "BA0291") { sector = 3;  module = 2;  set = 2; }
-if (pmt == "BA0297") { sector = 3;  module = 3;  set = 2; }
-if (pmt == "BA0300") { sector = 3;  module = 4;  set = 2; }
-if (pmt == "BA0303") { sector = 3;  module = 5;  set = 2; }
-if (pmt == "BA0304") { sector = 4;  module = 1;  set = 2; }
-if (pmt == "BA0305") { sector = 4;  module = 2;  set = 2; }
-if (pmt == "BA0307") { sector = 4;  module = 3;  set = 2; }
-if (pmt == "BA0309") { sector = 4;  module = 4;  set = 2; }
-if (pmt == "BA0311") { sector = 4;  module = 5;  set = 2; }
+if (pmt == "BA0263") { sector = 4;  module = 1;  set = 2; }
+if (pmt == "BA0264") { sector = 4;  module = 2;  set = 2; }
+if (pmt == "BA0265") { sector = 4;  module = 3;  set = 2; }
+if (pmt == "BA0267") { sector = 4;  module = 4;  set = 2; }
+if (pmt == "BA0274") { sector = 4;  module = 5;  set = 2; }
+if (pmt == "BA0275") { sector = 3;  module = 1;  set = 2; }
+if (pmt == "BA0277") { sector = 3;  module = 2;  set = 2; }
+if (pmt == "BA0278") { sector = 3;  module = 3;  set = 2; }
+if (pmt == "BA0279") { sector = 3;  module = 4;  set = 2; }
+if (pmt == "BA0287") { sector = 3;  module = 5;  set = 2; }
+if (pmt == "BA0288") { sector = 2;  module = 1;  set = 2; }
+if (pmt == "BA0291") { sector = 2;  module = 2;  set = 2; }
+if (pmt == "BA0297") { sector = 2;  module = 3;  set = 2; }
+if (pmt == "BA0300") { sector = 2;  module = 4;  set = 2; }
+if (pmt == "BA0303") { sector = 2;  module = 5;  set = 2; }
+if (pmt == "BA0304") { sector = 1;  module = 1;  set = 2; }
+if (pmt == "BA0305") { sector = 1;  module = 2;  set = 2; }
+if (pmt == "BA0307") { sector = 1;  module = 3;  set = 2; }
+if (pmt == "BA0309") { sector = 1;  module = 4;  set = 2; }
+if (pmt == "BA0311") { sector = 1;  module = 5;  set = 2; }
 
 if (sector == 0 and module == 0 and set == 0) { cout<<"Unknown PMT"<<endl; }
 

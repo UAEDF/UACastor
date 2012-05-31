@@ -125,11 +125,13 @@ std::vector<double> fitYe;
 
       ff->SetParameter(1, ini1[fcount]);
       cout << "ini par[1] = " << ini1[fcount] << endl;
-      gc0->Fit("ff","Q");
+      gc0->Fit("ff","ERQ");
       //cout << "=> " << gMinuit->fCstatu.Data() << endl;    
       repeate = ( (gMinuit->fCstatu.Data()[0]!='S') || (ff->GetParameter(1)<0) || (ff->GetParameter(0)<0));
 	
       fcount++;
+
+	}
 
       	TCanvas * c = new TCanvas("c","c",800,600);
       	gPad->SetLogy();
@@ -145,7 +147,6 @@ std::vector<double> fitYe;
         string name = "fit/" + file + "_" + str_volt + ".png";
         c->Print(name.c_str());
 	c->Close();
-	}
 	
 	delete(gc0);
 	fitX.clear(); 

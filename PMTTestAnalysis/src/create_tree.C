@@ -920,7 +920,7 @@ LeakageSubtractor theSubtractor(vec_time,vec_cath,vec_hv,vec_led);
 theSubtractor.SetVerbosity(0);
 theSubtractor.Run();
 */
-string file2 = file.substr(15,-1);
+string file2 = file.substr(15,26);
 LeakageSubtractor(vec_time, vec_cath, vec_hv, vec_led, file2);
 
 //set the end time of the measurement

@@ -126,7 +126,7 @@ std::vector<double> fitYe;
       ff->SetParameter(1, ini1[fcount]);
       cout << "ini par[1] = " << ini1[fcount] << endl;
       gc0->Fit("ff","ERQ");
-      //cout << "=> " << gMinuit->fCstatu.Data() << endl;    
+      cout << "=> " << gMinuit->fCstatu.Data() << endl;    
       repeate = ( (gMinuit->fCstatu.Data()[0]!='S') || (ff->GetParameter(1)<0) || (ff->GetParameter(0)<0));
 	
       fcount++;
@@ -155,7 +155,8 @@ std::vector<double> fitYe;
         fitXe.clear();
        }
        else
-       { cout << "voltage not found!" << endl; }
+       { cout << "voltage not found!" << endl;
+       }
  /*     for (int j=0; j < index_end[0]-index_begin[0]; j++)
         {
             std::cout << "x:" << time[j+index_begin[0]] << "/" << time[index_begin[0]+j]-time[index_begin[0]] << " ===  " << cathode[j+index_begin[0]] << " ..... " << theFcn(time[index_begin[0]+j]-time[index_begin[0]]) << std::endl;

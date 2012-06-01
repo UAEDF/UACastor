@@ -6,11 +6,8 @@
 #include "TH1.h"
 #include "TTree.h"
 #include "TFile.h"
-#include "LeakageSubtractor.C"
 
-//user
-//#include "LeakageSubtractor.h"
-
+//structures
 struct measurement {
 	float cath_value;
 	float cath_error;
@@ -24,6 +21,18 @@ struct measurement {
 	float qe;
 };
 
+struct chi2 {
+	float c_800V;
+	float c_900V;
+	float c_1000V;
+	float c_1200V;
+	float c_1400V;
+	float c_1600V;
+	float c_1800V;
+};
+
+//user
+#include "LeakageSubtractor.C"
 
 void set_coordinates(string pmt, int& module, int& sector, int& set)
 {
@@ -438,6 +447,8 @@ int leakage_1400V_n, leakage_1400V_spikes;
 int leakage_1600V_n, leakage_1600V_spikes;
 int leakage_1800V_n, leakage_1800V_spikes;
 
+chi2 fit;
+
 //tree declaration
 TTree *tree = new TTree("Castor_PMT_Caracterization_2012","Castor PMT Caracterization 2012");
 tree->Branch("Measurement_begin","std::vector<int>",&pvec_begin);
@@ -499,6 +510,7 @@ tree->Branch("Leakage_1800V",&leakage_1800V,"Current leakage at 1800V");
 tree->Branch("Leakage_1800V_error",&leakage_1800V_error,"Error on the current leakage at 1800V");
 tree->Branch("Leakage_1800V_n",&leakage_1800V_n,"Number of points used to estimate the current leakage at 1800V/I");
 tree->Branch("Leakage_1800V_spikes",&leakage_1800V_spikes,"Number of spikes found when estimate the current leakage at 1800V/I");
+tree->Branch("Fit_chi2",&fit.c_800V,"c_800V/F:c_900V/F:c_1000V/F:c_1200V/F:c_1400V/F:c_1600V/F:c_1800V/F");
 
 //loop over the pmt files
 for (int i=ini_file-1; i < end_file; i++)
@@ -764,6 +776,14 @@ leakage_1400V_error = 0;
 leakage_1600V_error = 0;
 leakage_1800V_error = 0;
 
+fit.c_800V = 0.0;
+fit.c_900V = 0.0;
+fit.c_1000V = 0.0;
+fit.c_1200V = 0.0;
+fit.c_1400V = 0.0;
+fit.c_1600V = 0.0;
+fit.c_1800V = 0.0;
+
 //find the code of the pmt
 found1 = file.find("_");
 found2 = file.find("_",found1+1);
@@ -792,7 +812,7 @@ theSubtractor.SetVerbosity(0);
 theSubtractor.Run();
 */
 string file2 = file.substr(15,26);
-LeakageSubtractor(vec_time, vec_cath, vec_hv, vec_led, file2);
+LeakageSubtractor(vec_time, vec_cath_ori, vec_hv, vec_led, file2, vec_cath, fit);
 
 //set the end time of the measurement
 end_time = (string) read_time; 
@@ -1052,7 +1072,7 @@ total_spikes = total_spikes + leakage_1600V_spikes;
 
 cout<<"Total spikes = "<<total_spikes<<endl;
 
-//cout<<"the problem is before filling the tree?"<<endl;
+cout<< "fit 800V : " << fit.c_800V <<endl;
 
 //fill the tree
 tree->Fill();

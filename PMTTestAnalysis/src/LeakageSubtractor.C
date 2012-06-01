@@ -18,6 +18,17 @@
 #include "TVirtualFitter.h"
 #include "TMinuit.h"
 
+/*struct chi2 {
+	float c_800V;
+	float c_900V;
+	float c_1000V;
+	float c_1200V;
+	float c_1400V;
+	float c_1600V;
+	float c_1800V;
+};*/
+
+
 // fit function
 
 double fexp(double *x, double *p){
@@ -25,7 +36,7 @@ double fexp(double *x, double *p){
     return p[0] + p[1] * exp (-(x[0]/p[2] ) );
 };
 
-void LeakageSubtractor(const std::vector<int> &time, std::vector<float> &cathode, const std::vector<int> &hv, const std::vector<int> &led, std::string file ){
+void LeakageSubtractor(const std::vector<int> &time, std::vector<float> &cathode, const std::vector<int> &hv, const std::vector<int> &led, std::string file, std::vector<float>& cathode_out, chi2& fit ){
 
 string str_volt;
 
@@ -137,13 +148,20 @@ std::vector<double> fitYe;
       	//gPad->SetLogy();
       	//gc0->Draw("AP");
       	str_volt = "unknownvoltage";
-      	if (hv[index_begin[istep]] > -820 and hv[index_begin[istep]] < -780) { str_volt = "800V"; }
-      	if (hv[index_begin[istep]] > -920 and hv[index_begin[istep]] < -880) { str_volt = "900V"; }
-      	if (hv[index_begin[istep]] > -1020 and hv[index_begin[istep]] < -980) { str_volt = "1000V"; }
-      	if (hv[index_begin[istep]] > -1220 and hv[index_begin[istep]] < -1180) { str_volt = "1200V"; }
-      	if (hv[index_begin[istep]] > -1420 and hv[index_begin[istep]] < -1380) { str_volt = "1400V"; }
-      	if (hv[index_begin[istep]] > -1620 and hv[index_begin[istep]] < -1580) { str_volt = "1600V"; }
-      	if (hv[index_begin[istep]] > -1820 and hv[index_begin[istep]] < -1780) { str_volt = "1800V"; }
+      	if (hv[index_begin[istep]] > -820 and hv[index_begin[istep]] < -780)
+	{ fit.c_800V = ff->GetChisquare()/float(ff->GetNDF()); str_volt = "800V"; }
+      	if (hv[index_begin[istep]] > -920 and hv[index_begin[istep]] < -880)
+	{ fit.c_900V = ff->GetChisquare()/float(ff->GetNDF()); str_volt = "900V"; }
+      	if (hv[index_begin[istep]] > -1020 and hv[index_begin[istep]] < -980)
+	{ fit.c_1000V = ff->GetChisquare()/float(ff->GetNDF()); str_volt = "1000V"; }
+      	if (hv[index_begin[istep]] > -1220 and hv[index_begin[istep]] < -1180)
+	{ fit.c_1200V = ff->GetChisquare()/float(ff->GetNDF()); str_volt = "1200V"; }
+      	if (hv[index_begin[istep]] > -1420 and hv[index_begin[istep]] < -1380)
+	{ fit.c_1400V = ff->GetChisquare()/float(ff->GetNDF()); str_volt = "1400V"; }
+      	if (hv[index_begin[istep]] > -1620 and hv[index_begin[istep]] < -1580)
+	{ fit.c_1600V = ff->GetChisquare()/float(ff->GetNDF()); str_volt = "1600V"; }
+      	if (hv[index_begin[istep]] > -1820 and hv[index_begin[istep]] < -1780)
+	{ fit.c_1800V = ff->GetChisquare()/float(ff->GetNDF()); str_volt = "1800V"; }
         string name = "fit/" + file + "_" + str_volt + ".png";
         //c->Print(name.c_str());
 	//c->Close();

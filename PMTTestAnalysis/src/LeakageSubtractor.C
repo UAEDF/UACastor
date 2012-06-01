@@ -133,9 +133,9 @@ std::vector<double> fitYe;
 
 	}
 
-      	TCanvas * c = new TCanvas("c","c",800,600);
-      	gPad->SetLogy();
-      	gc0->Draw("AP");
+      	//TCanvas * c = new TCanvas("c","c",800,600);
+      	//gPad->SetLogy();
+      	//gc0->Draw("AP");
       	str_volt = "unknownvoltage";
       	if (hv[index_begin[istep]] > -820 and hv[index_begin[istep]] < -780) { str_volt = "800V"; }
       	if (hv[index_begin[istep]] > -920 and hv[index_begin[istep]] < -880) { str_volt = "900V"; }
@@ -145,8 +145,8 @@ std::vector<double> fitYe;
       	if (hv[index_begin[istep]] > -1620 and hv[index_begin[istep]] < -1580) { str_volt = "1600V"; }
       	if (hv[index_begin[istep]] > -1820 and hv[index_begin[istep]] < -1780) { str_volt = "1800V"; }
         string name = "fit/" + file + "_" + str_volt + ".png";
-        c->Print(name.c_str());
-	c->Close();
+        //c->Print(name.c_str());
+	//c->Close();
 	
 	delete(gc0);
 	fitX.clear(); 

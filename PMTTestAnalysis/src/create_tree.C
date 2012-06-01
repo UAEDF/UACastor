@@ -1,4 +1,4 @@
-//to do:	plot gain
+//to do:	solve the problem of the points feed to the fitting routine
 //		correct bug on the index fiding for the estimation of the dark current
 
 #include <stdio.h>
@@ -34,6 +34,33 @@ struct chi2 {
 	float c_1600V;
 	float c_1800V;
 };
+
+
+void spike_check(float point, std::vector<float> *vec_cath, int& spike)
+{
+
+float ave, dev;
+
+//cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
+
+ave = (vec_cath->at(point-2) + vec_cath->at(point-1) + vec_cath->at(point+1) + vec_cath->at(point+2))/4.0;
+
+dev = (vec_cath->at(point) - ave)/ave;
+
+if (dev > 0.50 and vec_cath->at(point) > 1e-13)
+{
+//cout<<"Positive spike! "<<dev<<endl;
+//cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
+spike = 1;
+}
+if (dev < -0.50 and vec_cath->at(point) < -1e-13)
+{
+//cout<<"Negative spike! "<<dev<<endl;
+//cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
+spike = 1;
+}
+
+}
 
 //user
 #include "LeakageSubtractor.C"
@@ -76,6 +103,39 @@ if (pmt == "CA1321") { sector = 7;  module = 1;  set = 1; }
 if (pmt == "CA1537") { sector = 8;  module = 1;  set = 1; }
 if (pmt == "CA3386") { sector = 7;  module = 2;  set = 1; }
 if (pmt == "CA1954") { sector = 8;  module = 2;  set = 1; }
+if (pmt == "CA0723") { sector = 4;  module = 3;  set = 1; }
+if (pmt == "CA1438") { sector = 3;  module = 3;  set = 1; }
+if (pmt == "CA0640") { sector = 2;  module = 3;  set = 1; }
+if (pmt == "CA0126") { sector = 1;  module = 3;  set = 1; }
+if (pmt == "CA1524") { sector = 4;  module = 4;  set = 1; }
+if (pmt == "CA1434") { sector = 3;  module = 4;  set = 1; }
+if (pmt == "CA0885") { sector = 2;  module = 4;  set = 1; }
+if (pmt == "CA1410") { sector = 1;  module = 4;  set = 1; }
+if (pmt == "CA1387") { sector = 4;  module = 5;  set = 1; }
+if (pmt == "CA1228") { sector = 3;  module = 5;  set = 1; }
+if (pmt == "CA2044") { sector = 2;  module = 5;  set = 1; }
+if (pmt == "CA0315") { sector = 1;  module = 5;  set = 1; }
+if (pmt == "CA2623") { sector = 4;  module = 6;  set = 1; }
+if (pmt == "CA0354") { sector = 3;  module = 6;  set = 1; }
+if (pmt == "CA0979") { sector = 2;  module = 6;  set = 1; }
+if (pmt == "CA0811") { sector = 1;  module = 6;  set = 1; }
+if (pmt == "CA1984") { sector = 16; module = 3;  set = 1; }
+if (pmt == "CA1316") { sector = 15; module = 3;  set = 1; }
+if (pmt == "CA1634") { sector = 14; module = 3;  set = 1; }
+if (pmt == "CA0535") { sector = 13; module = 3;  set = 1; }
+if (pmt == "CA1141") { sector = 16; module = 4;  set = 1; }
+if (pmt == "CA0793") { sector = 15; module = 4;  set = 1; }
+if (pmt == "CA3184") { sector = 14; module = 4;  set = 1; }
+if (pmt == "CA1327") { sector = 13; module = 4;  set = 1; }
+if (pmt == "CA1759") { sector = 16; module = 5;  set = 1; }
+if (pmt == "CA1161") { sector = 15; module = 5;  set = 1; }
+if (pmt == "CA1131") { sector = 14; module = 5;  set = 1; }
+if (pmt == "CA0792") { sector = 13; module = 5;  set = 1; }
+if (pmt == "CA1495") { sector = 16; module = 6;  set = 1; }
+if (pmt == "CA1538") { sector = 15; module = 6;  set = 1; }
+if (pmt == "CA1844") { sector = 14; module = 6;  set = 1; }
+if (pmt == "CA0292") { sector = 13; module = 6;  set = 1; }
+
 
 //new ones first delivery
 if (pmt == "BA0263") { sector = 4;  module = 1;  set = 2; }
@@ -102,33 +162,6 @@ if (pmt == "BA0311") { sector = 1;  module = 5;  set = 2; }
 if (sector == 0 and module == 0 and set == 0) { cout<<"Unknown PMT"<<endl; }
 
 }
-
-void spike_check(float point, std::vector<float> *vec_cath, int& spike)
-{
-
-float ave, dev;
-
-//cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
-
-ave = (vec_cath->at(point-2) + vec_cath->at(point-1) + vec_cath->at(point+1) + vec_cath->at(point+2))/4.0;
-
-dev = (vec_cath->at(point) - ave)/ave;
-
-if (dev > 0.50 and vec_cath->at(point) > 1e-12)
-{
-//cout<<"Positive spike! "<<dev<<endl;
-//cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
-spike = 1;
-}
-if (dev < -0.50 and vec_cath->at(point) < -1e-12)
-{
-//cout<<"Negative spike! "<<dev<<endl;
-//cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
-spike = 1;
-}
-
-}
-
 
 void estimate_leakage(float ini_point, float end_point, std::vector<float> *vec_cath, float& leakage_mean, int& tot_points, int& total_spikes, float& leakage_error)
 {
@@ -402,6 +435,7 @@ int total_spikes, sector, module, set, bad_fits;
 
 int found1, found2, found3;
 int total_unknown = 0;
+int total_bad_fits = 0;
 
 int index_800V_led1_up, index_800V_led1_down;
 int index_800V_led2_up, index_800V_led2_down;
@@ -553,6 +587,7 @@ pvec_end = &vec_end;
 pvec_time = &vec_time;
 pvec_hv = &vec_hv;
 pvec_cath = &vec_cath;
+pvec_cath_ori = &vec_cath_ori;
 pvec_adut = &vec_adut;
 pvec_aref = &vec_aref;
 pvec_led = &vec_led;
@@ -561,6 +596,7 @@ vec_end.clear();
 vec_time.clear();
 vec_hv.clear();
 vec_cath.clear();
+vec_cath_ori.clear();
 vec_adut.clear();
 vec_aref.clear();
 vec_led.clear();
@@ -833,7 +869,36 @@ theSubtractor.Run();
 
 string file2 = file.substr(15,26);
 
-LeakageSubtractor(vec_time, vec_cath_ori, vec_hv, vec_led, file2, vec_cath, fit);
+	TCanvas * c1 = new TCanvas("c","c",800,600);
+      	//gPad->SetLogy();
+	TGraph *gc1 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath_ori.front());
+	gc1->SetTitle("Cathode current as function of time before the background subtraction;time [s];Current [A]");
+      	gc1->Draw("AP");
+	string name1 = "plots/" + file2 + ".pdf(";
+        c1->Print(name1.c_str());
+	c1->Close();
+
+	TCanvas * c2b = new TCanvas("c","c",800,600);
+      	//gPad->SetLogy();
+	TGraph *gc2b = new TGraph(entries,&vec_time.front(),&vec_hv.front());
+	gc2b->SetTitle("High voltage as function of time;time [s];High voltage [V]");
+      	gc2b->Draw("AP");
+	string name2b = "plots/" + file2 + ".pdf";
+        c2b->Print(name2b.c_str());
+	c2b->Close();
+	
+	TCanvas * c2c = new TCanvas("c","c",800,600);
+      	//gPad->SetLogy();
+	TGraph *gc2c = new TGraph(entries,&vec_time.front(),&vec_led.front());
+	gc2c->SetTitle("Led light as function of time;time [s];Led light");
+      	gc2c->Draw("AP");
+	string name2c = "plots/" + file2 + ".pdf";
+        c2c->Print(name2c.c_str());
+	c2c->Close();
+
+//cout << "size before : " << vec_cath_ori.size() << endl;
+
+LeakageSubtractor(&vec_time, &vec_cath_ori, &vec_hv, &vec_led, file2, vec_cath, fit);
 
 //set the end time of the measurement
 end_time = (string) read_time; 
@@ -1050,13 +1115,13 @@ do_measurement(index_1600V_led1_up, index_1600V_led1_down, &vec_cath, &vec_adut,
 do_measurement(index_1800V_led4_up, index_1800V_led4_down, &vec_cath, &vec_adut, &vec_aref, &vec_led, m_1800V_led4, total_spikes);
 
 //index output for the leakage estimation
-//cout<<"0V     "<<index_leakage_0V_begin<<" "<<index_leakage_0V_end<<endl;
+cout<<"0V     "<<index_leakage_0V_begin<<" "<<index_leakage_0V_end<<endl;
 //cout<<"800V   "<<index_leakage_800V_begin<<" "<<index_leakage_800V_end<<endl;
 //cout<<"900V   "<<index_leakage_900V_begin<<" "<<index_leakage_900V_end<<endl;
 //cout<<"1000V  "<<index_leakage_1000V_begin<<" "<<index_leakage_1000V_end<<endl;
-cout<<"1200V  "<<index_leakage_1200V_begin<<" "<<index_leakage_1200V_end<<endl;
-cout<<"1400V  "<<index_leakage_1400V_begin<<" "<<index_leakage_1400V_end<<endl;
-cout<<"1600V  "<<index_leakage_1600V_begin<<" "<<index_leakage_1600V_end<<endl;
+//cout<<"1200V  "<<index_leakage_1200V_begin<<" "<<index_leakage_1200V_end<<endl;
+//cout<<"1400V  "<<index_leakage_1400V_begin<<" "<<index_leakage_1400V_end<<endl;
+//cout<<"1600V  "<<index_leakage_1600V_begin<<" "<<index_leakage_1600V_end<<endl;
 //cout<<"1800V  "<<index_leakage_1800V_begin<<" "<<index_leakage_1800V_end<<endl;
 
 //leakage 0V
@@ -1091,18 +1156,32 @@ total_spikes = total_spikes + leakage_1600V_spikes;
 estimate_leakage(index_leakage_1800V_begin, index_leakage_1800V_end, &vec_cath_ori, leakage_1800V, leakage_1800V_n, leakage_1800V_spikes, leakage_1800V_error);
 total_spikes = total_spikes + leakage_1600V_spikes;
 
-if (fit.c_800V > 50) { bad_fits = bad_fits + 1; }
-if (fit.c_900V > 50) { bad_fits = bad_fits + 1; }
-if (fit.c_1000V > 50) { bad_fits = bad_fits + 1; }
-if (fit.c_1200V > 50) { bad_fits = bad_fits + 1; }
-if (fit.c_1400V > 50) { bad_fits = bad_fits + 1; }
-if (fit.c_1600V > 50) { bad_fits = bad_fits + 1; }
-if (fit.c_1800V > 50) { bad_fits = bad_fits + 1; }
+if (fit.c_800V > 5) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
+if (fit.c_900V > 5) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
+if (fit.c_1000V > 5) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
+if (fit.c_1200V > 5) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
+if (fit.c_1400V > 5) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
+if (fit.c_1600V > 5) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
+if (fit.c_1800V > 5) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
 
 cout<<"Total spikes = "<<total_spikes<<endl;
 cout<<"Total bad fits = "<<bad_fits<<endl;
 
-float quantum_eff[4] = {m_800V_led1.qe, m_800V_led2.qe, m_800V_led3.qe, m_800V_led4.qe};
+float quantum_eff[4];
+if (m_1200V_led1.qe > 0 && m_1200V_led2.qe && m_1200V_led3.qe && m_1200V_led4.qe)
+{
+quantum_eff[0] = m_1200V_led1.qe;
+quantum_eff[1] = m_1200V_led2.qe;
+quantum_eff[2] = m_1200V_led3.qe;
+quantum_eff[3] = m_1200V_led4.qe;
+}
+if (m_800V_led1.qe > 0 && m_800V_led2.qe && m_800V_led3.qe && m_800V_led4.qe)
+{
+quantum_eff[0] = m_800V_led1.qe;
+quantum_eff[1] = m_800V_led2.qe;
+quantum_eff[2] = m_800V_led3.qe;
+quantum_eff[3] = m_800V_led4.qe;
+}
 float gains[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float voltages_temp[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float temp1[7] = {m_800V_led1.anode_up, m_900V_led1.anode_up, m_1000V_led1.anode_up, m_1200V_led1.anode_up, m_1400V_led1.anode_up, m_1600V_led1.anode_up, m_1800V_led4.anode_up};
@@ -1118,19 +1197,12 @@ index_temp = index_temp + 1;
 }
 }
 
-	TCanvas * c1 = new TCanvas("c","c",800,600);
-      	//gPad->SetLogy();
-	TGraph *gc1 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath_ori.front());
-      	gc1->Draw("AP");
-	string name1 = "plots/" + file2 + "_cathode_original.png";
-        c1->Print(name1.c_str());
-	c1->Close();
-
 	TCanvas * c2 = new TCanvas("c","c",800,600);
       	gPad->SetLogy();
 	TGraph *gc2 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath.front());
+	gc2->SetTitle("Cathode current as function of time after background subtraction;Time [s];Current [V]");
       	gc2->Draw("AP");
-	string name2 = "plots/" + file2 + "_cathode.png";
+	string name2 = "plots/" + file2 + ".pdf";
         c2->Print(name2.c_str());
 	c2->Close();
 
@@ -1141,7 +1213,7 @@ index_temp = index_temp + 1;
 	gc3->SetTitle("Gain as function of voltage;Voltage [V];Gain");
         gc3->SetMarkerStyle(20);
       	gc3->Draw("APL");
-	string name3 = "plots/" + file2 + "_gain.png";
+	string name3 = "plots/" + file2 + ".pdf";
         c3->Print(name3.c_str());
 	c3->Close();
 
@@ -1151,7 +1223,7 @@ index_temp = index_temp + 1;
 	gc4->SetTitle("Quantum efficiency as faction of wavelenght;Wave lenght [nm];Quantum efficiency");
         gc4->SetMarkerStyle(20);
       	gc4->Draw("APL");
-	string name4 = "plots/" + file2 + "_quatum_efficiency.png";
+	string name4 = "plots/" + file2 + ".pdf)";
         c4->Print(name4.c_str());
 	c4->Close();
 
@@ -1160,6 +1232,7 @@ tree->Fill();
 
 }
 cout<<"Total unknown PMTs : "<<total_unknown<<endl;
+cout<<"Total bad fits : "<<total_bad_fits<<endl;
 
 //write to file
 TFile *data_output= TFile::Open( tree_out.c_str() , "RECREATE");

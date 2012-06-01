@@ -61,6 +61,38 @@ if (sector == 7  and module == 1  and set == 1) { pmt = "CA1321"; }
 if (sector == 8  and module == 1  and set == 1) { pmt = "CA1537"; }
 if (sector == 7  and module == 2  and set == 1) { pmt = "CA3386"; }
 if (sector == 8  and module == 2  and set == 1) { pmt = "CA1954"; }
+if (sector == 4  and module == 3  and set == 1) { pmt = "CA0723"; }
+if (sector == 3  and module == 3  and set == 1) { pmt = "CA1438"; }
+if (sector == 2  and module == 3  and set == 1) { pmt = "CA0640"; }
+if (sector == 1  and module == 3  and set == 1) { pmt = "CA0126"; }
+if (sector == 4  and module == 4  and set == 1) { pmt = "CA1524"; }
+if (sector == 3  and module == 4  and set == 1) { pmt = "CA1434"; }
+if (sector == 2  and module == 4  and set == 1) { pmt = "CA0885"; }
+if (sector == 1  and module == 4  and set == 1) { pmt = "CA1410"; }
+if (sector == 4  and module == 5  and set == 1) { pmt = "CA1387"; }
+if (sector == 3  and module == 5  and set == 1) { pmt = "CA1228"; }
+if (sector == 2  and module == 5  and set == 1) { pmt = "CA2044"; }
+if (sector == 1  and module == 5  and set == 1) { pmt = "CA0315"; }
+if (sector == 4  and module == 6  and set == 1) { pmt = "CA2623"; }
+if (sector == 3  and module == 6  and set == 1) { pmt = "CA0354"; }
+if (sector == 2  and module == 6  and set == 1) { pmt = "CA0979"; }
+if (sector == 1  and module == 6  and set == 1) { pmt = "CA0811"; }
+if (sector == 16 and module == 3  and set == 1) { pmt = "CA1984"; }
+if (sector == 15 and module == 3  and set == 1) { pmt = "CA1316"; }
+if (sector == 14 and module == 3  and set == 1) { pmt = "CA1634"; }
+if (sector == 13 and module == 3  and set == 1) { pmt = "CA0535"; }
+if (sector == 16 and module == 4  and set == 1) { pmt = "CA1141"; }
+if (sector == 15 and module == 4  and set == 1) { pmt = "CA0793"; }
+if (sector == 14 and module == 4  and set == 1) { pmt = "CA3184"; }
+if (sector == 13 and module == 4  and set == 1) { pmt = "CA1327"; }
+if (sector == 16 and module == 5  and set == 1) { pmt = "CA1759"; }
+if (sector == 15 and module == 5  and set == 1) { pmt = "CA1161"; }
+if (sector == 14 and module == 5  and set == 1) { pmt = "CA1131"; }
+if (sector == 13 and module == 5  and set == 1) { pmt = "CA0792"; }
+if (sector == 16 and module == 6  and set == 1) { pmt = "CA1495"; }
+if (sector == 15 and module == 6  and set == 1) { pmt = "CA1538"; }
+if (sector == 14 and module == 6  and set == 1) { pmt = "CA1844"; }
+if (sector == 13 and module == 6  and set == 1) { pmt = "CA0292"; }
 
 
 if (sector == 4  and module == 1  and set == 2) { pmt = "BA0263"; }
@@ -222,6 +254,7 @@ int tests = tree->GetEntries();
   TH2F *pmt_inv_gain_1200_old;
   TH2F *pmt_inv_gain_1400_old;
   TH2F *pmt_spikes_old;
+  TH2F *pmt_bad_fits_old;
   TH2F *measurements_old;
 
   pmt_inv_qe_800_old =  new TH2F("Inverse_qe_800V_old","inverse_qe_800V_old;Sector;Module", 14,0,14,16,0,16);
@@ -232,6 +265,7 @@ int tests = tree->GetEntries();
   pmt_inv_gain_1200_old =  new TH2F("Inverse_gain_1200V_old","inverse_gain_1200V_old;Sector;Module", 14,0,14,16,0,16);
   pmt_inv_gain_1400_old =  new TH2F("Inverse_gain_1400V_old","inverse_gain_1400V_old;Sector;Module", 14,0,14,16,0,16);
   pmt_spikes_old =  new TH2F("Number_of_spikes_old","number_of_spikes_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_bad_fits_old =  new TH2F("Number_of_bad_fits_old","number_of_bad_fits_old;Sector;Module", 14,0,14,16,0,16);
   measurements_old =  new TH2F("Number_of_measurements_old","number_of_measurements_old;Sector;Module", 14,0,14,16,0,16);
 
   TH2F *pmt_inv_qe_800_new1;
@@ -242,6 +276,7 @@ int tests = tree->GetEntries();
   TH2F *pmt_inv_gain_1200_new1;
   TH2F *pmt_inv_gain_1400_new1;
   TH2F *pmt_spikes_new1;
+  TH2F *pmt_bad_fits_new1;
   TH2F *measurements_new1;
 
   pmt_inv_qe_800_new1 =  new TH2F("Inverse_qe_800V_new1","inverse_qe_800V_new1;Sector;Module", 5,0,5,4,0,4);
@@ -252,6 +287,7 @@ int tests = tree->GetEntries();
   pmt_inv_gain_1200_new1 =  new TH2F("Inverse_gain_1200V_new1","inverse_gain_1200V_new1;Sector;Module", 5,0,5,4,0,4);
   pmt_inv_gain_1400_new1 =  new TH2F("Inverse_gain_1400V_new1","inverse_gain_1400V_new1;Sector;Module", 5,0,5,4,0,4);
   pmt_spikes_new1 =  new TH2F("Number_of_spikes_new1","number_of_spikes_new1;Sector;Module", 5,0,5,4,0,4);
+  pmt_bad_fits_new1 =  new TH2F("Number_of_bad_fits_new1","number_of_bad_fits_new1;Sector;Module", 5,0,5,4,0,4);
   measurements_new1 =  new TH2F("Number_of_measurements_new1","number_of_measurements_new1;Sector;Module", 5,0,5,4,0,4);
 
 for (int i = 0; i < tests ;i++)
@@ -513,6 +549,7 @@ pmt_inv_gain_1400_old->SetBinContent(module,sector,1.3e-06/m_1400V_led1.gain);
 pmt_inv_qe_800_old->SetBinContent(module,sector,50000.0/m_800V_led1.qe);
 pmt_inv_qe_1200_old->SetBinContent(module,sector,50000.0/m_1200V_led1.qe);
 pmt_spikes_old->SetBinContent(module,sector,total_spikes);
+pmt_bad_fits_old->SetBinContent(module,sector,bad_fits);
 measurements_old->Fill(module-0.5,sector-0.5);
 }
 
@@ -524,6 +561,7 @@ pmt_inv_gain_1400_new1->SetBinContent(module,sector,1.3e-06/m_1400V_led1.gain);
 pmt_inv_qe_800_new1->SetBinContent(module,sector,50000.0/m_800V_led1.qe);
 pmt_inv_qe_1200_new1->SetBinContent(module,sector,50000.0/m_1200V_led1.qe);
 pmt_spikes_new1->SetBinContent(module,sector,total_spikes);
+pmt_bad_fits_new1->SetBinContent(module,sector,bad_fits);
 measurements_new1->Fill(module-0.5,sector-0.5);
 }
 }
@@ -690,6 +728,23 @@ pmt_inv_gain_1400_old->Draw("text same");
 c09->Print("Inverse_Gain_1400V_old.png");
 c09->Close();
 
+TCanvas *c10 = new TCanvas("c10","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_bad_fits_old->Draw("colz");
+pmt_bad_fits_old->Draw("text same");
+c10->Print("Bad_fits_old.png");
+c10->Close();
 
 TCanvas *c11 = new TCanvas("c11","Canvas",0,29,1200,800);
 gStyle->SetOptStat(0);
@@ -851,5 +906,23 @@ pmt_inv_gain_1400_new1->Draw("colz");
 pmt_inv_gain_1400_new1->Draw("text same");
 c19->Print("Inverse_Gain_1400V_new1.png");
 c19->Close();
+
+TCanvas *c20 = new TCanvas("c20","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_bad_fits_new1->Draw("colz");
+pmt_bad_fits_new1->Draw("text same");
+c20->Print("Bad_fits_new1.png");
+c20->Close();
 
 }

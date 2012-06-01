@@ -99,7 +99,7 @@ TFile f(tree_in.c_str());
 //declaring the tree
 TTree *tree = (TTree*)f.Get("Castor_PMT_Caracterization_2012");
 
-tree->Show(0);
+//tree->Show(0);
 
 //cout << "variables" << endl;
 //declaring variables
@@ -107,7 +107,7 @@ string pmt;
 std::vector<int> *begin, *end, *led, *hv, *time;
 std::vector<float> *cath, *cath_ori, *anode, *ref;
 
-int total_spikes, entries, module, sector, set;
+int total_spikes, bad_fits, entries, module, sector, set;
 
 measurement m_800V_led1;
 measurement m_800V_led2;
@@ -163,6 +163,7 @@ tree->SetBranchAddress("Module",&module);
 tree->SetBranchAddress("Sector",&sector);
 tree->SetBranchAddress("Set",&set);
 tree->SetBranchAddress("Number_of_spikes",&total_spikes);
+tree->SetBranchAddress("Number_of_bad_fits",&bad_fits);
 tree->SetBranchAddress("m_800V_led1",&m_800V_led1);
 tree->SetBranchAddress("m_800V_led2",&m_800V_led2);
 tree->SetBranchAddress("m_800V_led3",&m_800V_led3);
@@ -268,6 +269,7 @@ cout<<"Measurement "<<i+1<<"; PMT code: "<<pmt<<" (Sector : "<<sector<<" ; Modul
 cout<<"Begin of the measurement: "<<begin->at(0)<<"/"<<begin->at(1)<<"/"<<begin->at(2)<<" - "<<begin->at(3)<<":"<<begin->at(4)<<":"<<begin->at(5)<<endl;
 cout<<"End of the measurement: "<<end->at(0)<<"/"<<end->at(1)<<"/"<<end->at(2)<<" - "<<end->at(3)<<":"<<end->at(4)<<":"<<end->at(5)<<endl;
 cout<<"Number of identified and rejected spikes : "<<total_spikes<<endl;
+cout<<"Number of bad fits: "<<bad_fits<<endl;
 cout<<"Cathode   |                 |led1         led2          led3          led4"<<endl;
 cout<<"----------------------------------------------------------"<<endl;
 if (m_800V_led2.cath_value > 0.0)
@@ -295,10 +297,20 @@ cout<<"1000V     |Current          |"<<m_1000V_led1.cath_value<<endl;
 cout<<"          |Error            |"<<m_1000V_led1.cath_error<<endl;
 cout<<"          |Number of Spikes |"<<m_1000V_led1.cath_spikes<<endl;
 cout<<"          |Points used      |"<<m_1000V_led1.cath_points<<endl;
+if (m_1200V_led2.cath_value > 0.0)
+{
 cout<<"1200V     |Current          |"<<m_1200V_led1.cath_value<<"   "<<m_1200V_led2.cath_value<<"   "<<m_1200V_led3.cath_value<<"   "<<m_1200V_led4.cath_value<<endl;
 cout<<"          |Error            |"<<m_1200V_led1.cath_error<<"   "<<m_1200V_led2.cath_error<<"   "<<m_1200V_led3.cath_error<<"   "<<m_1200V_led4.cath_error<<endl;
 cout<<"          |Number of Spikes |"<<m_1200V_led1.cath_spikes<<"   "<<m_1200V_led2.cath_spikes<<"   "<<m_1200V_led3.cath_spikes<<"   "<<m_1200V_led4.cath_spikes<<endl;
 cout<<"          |Points used      |"<<m_1200V_led1.cath_points<<"   "<<m_1200V_led2.cath_points<<"   "<<m_1200V_led3.cath_points<<"   "<<m_1200V_led4.cath_points<<endl;
+}
+if (m_1200V_led2.cath_value == 0.0 and m_1200V_led3.cath_value == 0.0 and m_1200V_led4.cath_value == 0.0)
+{
+cout<<"1200V     |Current          |"<<m_1200V_led1.cath_value<<endl;
+cout<<"          |Error            |"<<m_1200V_led1.cath_error<<endl;
+cout<<"          |Number of Spikes |"<<m_1200V_led1.cath_spikes<<endl;
+cout<<"          |Points used      |"<<m_1200V_led1.cath_points<<endl;
+}
 cout<<"1400V     |Current          |"<<m_1400V_led1.cath_value<<endl;
 cout<<"          |Error            |"<<m_1400V_led1.cath_error<<endl;
 cout<<"          |Number of Spikes |"<<m_1400V_led1.cath_spikes<<endl;
@@ -337,8 +349,16 @@ cout<<"          |"<<m_900V_led1.anode_down<<endl;
 }
 cout<<"1000V     |"<<m_1000V_led1.anode_up<<endl;
 cout<<"          |"<<m_1000V_led1.anode_down<<endl;
+if (m_1200V_led2.anode_up > 0.0)
+{
 cout<<"1200V     |"<<m_1200V_led1.anode_up<<"   "<<m_1200V_led2.anode_up<<"   "<<m_1200V_led3.anode_up<<"   "<<m_1200V_led4.anode_up<<endl;
 cout<<"          |"<<m_1200V_led1.anode_down<<"   "<<m_1200V_led2.anode_down<<"   "<<m_1200V_led3.anode_down<<"   "<<m_1200V_led4.anode_down<<endl;
+}
+if (m_1200V_led2.anode_up == 0.0 and m_1200V_led3.anode_up == 0.0 and m_1200V_led4.anode_up == 0.0)
+{
+cout<<"1200V     |"<<m_1200V_led1.anode_up<<endl;
+cout<<"          |"<<m_1200V_led1.anode_down<<endl;
+}
 cout<<"1400V     |"<<m_1400V_led1.anode_up<<endl;
 cout<<"          |"<<m_1400V_led1.anode_down<<endl;
 if (m_1600V_led1.anode_up > 0.0)
@@ -371,8 +391,16 @@ cout<<"          |"<<m_900V_led1.ref_down<<endl;
 }
 cout<<"1000V     |"<<m_1000V_led1.ref_up<<endl;
 cout<<"          |"<<m_1000V_led1.ref_down<<endl;
+if (m_1200V_led2.ref_up > 0.0)
+{
 cout<<"1200V     |"<<m_1200V_led1.ref_up<<"   "<<m_1200V_led2.ref_up<<"   "<<m_1200V_led3.ref_up<<"   "<<m_1200V_led4.ref_up<<endl;
 cout<<"          |"<<m_1200V_led1.ref_down<<"   "<<m_1200V_led2.ref_down<<"   "<<m_1200V_led3.ref_down<<"   "<<m_1200V_led4.ref_down<<endl;
+}
+if (m_1200V_led2.ref_up == 0.0 and m_1200V_led3.ref_up == 0.0 and m_1200V_led4.ref_up == 0.0)
+{
+cout<<"1200V     |"<<m_1200V_led1.ref_up<<endl;
+cout<<"          |"<<m_1200V_led1.ref_down<<endl;
+}
 cout<<"1400V     |"<<m_1400V_led1.ref_up<<endl;
 cout<<"          |"<<m_1400V_led1.ref_down<<endl;
 if (m_1600V_led1.ref_up > 0.0)
@@ -401,7 +429,14 @@ if (m_900V_led1.gain > 0.0)
 cout<<"900V                |"<<m_900V_led1.gain<<endl;
 }
 cout<<"1000V               |"<<m_1000V_led1.gain<<endl;
+if (m_1200V_led2.gain > 0.0)
+{
 cout<<"1200V               |"<<m_1200V_led1.gain<<"   "<<m_1200V_led2.gain<<"   "<<m_1200V_led3.gain<<"   "<<m_1200V_led4.gain<<endl;
+}
+if (m_1200V_led2.gain == 0.0 and m_1200V_led3.gain == 0.0 and m_1200V_led4.gain == 0.0)
+{
+cout<<"1200V               |"<<m_1200V_led1.gain<<endl;
+}
 cout<<"1400V               |"<<m_1400V_led1.gain<<endl;
 if (m_1600V_led1.gain > 0.0)
 {
@@ -427,7 +462,14 @@ if (m_900V_led1.qe > 0.0)
 cout<<"900V                |"<<m_900V_led1.qe<<endl;
 }
 cout<<"1000V               |"<<m_1000V_led1.qe<<endl;
+if (m_1200V_led2.qe > 0.0)
+{
 cout<<"1200V               |"<<m_1200V_led1.qe<<"   "<<m_1200V_led2.qe<<"   "<<m_1200V_led3.qe<<"   "<<m_1200V_led4.qe<<endl;
+}
+if (m_1200V_led2.qe == 0.0 and m_1200V_led3.qe == 0.0 and m_1200V_led4.qe == 0.0)
+{
+cout<<"1200V               |"<<m_1200V_led1.qe<<endl;
+}
 cout<<"1400V               |"<<m_1400V_led1.qe<<endl;
 if (m_1600V_led1.qe > 0.0)
 {

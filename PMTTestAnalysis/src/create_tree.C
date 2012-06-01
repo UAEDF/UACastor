@@ -1,3 +1,7 @@
+//to do:	plot quantum efficiency
+//		plot gain
+//		correct bug on the index fiding for the estimation of the dark current
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -5,6 +9,7 @@
 //root lib
 #include "TH1.h"
 #include "TTree.h"
+#include "TGraph.h"
 #include "TFile.h"
 
 //structures
@@ -112,13 +117,13 @@ dev = (vec_cath->at(point) - ave)/ave;
 
 if (dev > 0.50 and vec_cath->at(point) > 1e-12)
 {
-cout<<"Positive spike! "<<dev<<endl;
+//cout<<"Positive spike! "<<dev<<endl;
 //cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
 spike = 1;
 }
 if (dev < -0.50 and vec_cath->at(point) < -1e-12)
 {
-cout<<"Negative spike! "<<dev<<endl;
+//cout<<"Negative spike! "<<dev<<endl;
 //cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
 spike = 1;
 }
@@ -172,7 +177,7 @@ anode_ave = (anode_up + anode_down)/2;
 ref_ave = (ref_up + ref_down)/2;
 
 if (cathode > 0.0) { gain = anode_ave / cathode; }
-if (cathode > 0.0) { qe = ref_ave / cathode; }
+if (cathode > 0.0) { qe =  cathode / ref_ave; }
 
 //cout<<"ee = "<<ee<<" qe = "<<qe<<endl;
 
@@ -224,8 +229,8 @@ if (low_middle > vec_cath->at(i)) { low_middle = vec_cath->at(i); }
 for (int i = 1; i <= 20; i++)
 {
 if (i == 1) { low_after = vec_cath->at(end_val+6+i); }
-if (high_after < vec_cath->at(end_val+6+i)) { high_after = vec_cath->at(end_val-1-i); }
-if (low_after > vec_cath->at(end_val+6+i)) { low_after = vec_cath->at(end_val-1-i); }
+if (high_after < vec_cath->at(end_val+6+i)) { high_after = vec_cath->at(end_val+6+i); }
+if (low_after > vec_cath->at(end_val+6+i)) { low_after = vec_cath->at(end_val+6+i); }
 }
 
 val_before =  new TH1D("val_before","val_before;current", 100,low_before,high_before);
@@ -236,7 +241,7 @@ for (int i = 1; i <= 20; i++)
 {
 spike_check(ini_val-1-i, vec_cath, spike);
 if (spike == 1) { cath_spikes = cath_spikes + 1; }
-else { val_after->Fill(vec_cath->at(ini_val-1-i)); n_before = n_before + 1; }
+else { val_before->Fill(vec_cath->at(ini_val-1-i)); n_before = n_before + 1; }
 spike = 0;
 }
 
@@ -254,6 +259,7 @@ spike_check(end_val+6+i, vec_cath, spike);
 if (spike == 1) { cath_spikes = cath_spikes + 1; }
 else { val_after->Fill(vec_cath->at(end_val+6+i)); n_after = n_after + 1; }
 spike = 0;
+cout << "after " << i << " -> " << vec_cath->at(end_val+6+i) << " " << spike << endl;
 } 
 
 ave_before = val_before->GetMean();
@@ -265,6 +271,14 @@ error_after = val_after->GetRMS();
 
 ave_low = (ave_before*n_before + ave_after*n_after)/(n_before+n_after);
 cath_gain = ave_middle - ave_low;
+
+if (ave_before == 0 || ave_middle == 0 || ave_after == 0)
+{
+cout << "value before : " << ave_before << endl;
+cout << "value middle : " << ave_middle << endl;
+cout << "value after  : " << ave_after  << " " << n_after << endl;
+cout << "cath gain    : " << cath_gain  << endl;
+}
 
 cath_error = (error_before*n_before + error_middle*n_middle + error_after+n_after)/(n_before + n_middle + n_after);
 
@@ -381,7 +395,7 @@ std::vector<int> vec_time, vec_hv, vec_led;
 std::vector<float> vec_cath, vec_cath_ori, vec_adut, vec_aref;
 std::vector<int> *pvec_time, *pvec_hv, *pvec_led;
 std::vector<float> *pvec_cath, *pvec_cath_ori, *pvec_adut, *pvec_aref;
-int total_spikes, sector, module, set;
+int total_spikes, sector, module, set, bad_fits;
 
 int found1, found2, found3;
 int total_unknown = 0;
@@ -465,6 +479,7 @@ tree->Branch("Anode","std::vector<float>",&pvec_adut);
 tree->Branch("Reference_PMT","std::vector<float>",&pvec_aref);
 tree->Branch("Led","std::vector<int>",&pvec_led);
 tree->Branch("Number_of_spikes",&total_spikes,"Number of spikes found during the analysis/I");
+tree->Branch("Number_of_bad_fits",&bad_fits,"Number of bad fits found during the analysis/I");
 tree->Branch("m_800V_led1",&m_800V_led1.cath_value,"cath_value/F:cath_error/F:cath_spikes/I:cath_points/I:anode_up/F:anode_down/F:ref_up/F:ref_down/F:gain/F:qe/F");
 tree->Branch("m_800V_led2",&m_800V_led2.cath_value,"cath_value/F:cath_error/F:cath_spikes/I:cath_points/I:anode_up/F:anode_down/F:ref_up/F:ref_down/F:gain/F:qe/F");
 tree->Branch("m_800V_led3",&m_800V_led3.cath_value,"cath_value/F:cath_error/F:cath_spikes/I:cath_points/I:anode_up/F:anode_down/F:ref_up/F:ref_down/F:gain/F:qe/F");
@@ -548,6 +563,7 @@ vec_aref.clear();
 vec_led.clear();
 
 total_spikes = 0;
+bad_fits = 0;
 module = 0;
 sector = 0;
 set = 0;
@@ -812,6 +828,39 @@ theSubtractor.SetVerbosity(0);
 theSubtractor.Run();
 */
 string file2 = file.substr(15,26);
+
+	TCanvas * c1 = new TCanvas("c","c",800,600);
+      	//gPad->SetLogy();
+	TGraph *gc1 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath_ori.front());
+      	gc1->Draw("AP");
+	string name1 = "plots/" + file2 + "_cathode_original.png";
+        c1->Print(name1.c_str());
+	c1->Close();
+
+	TCanvas * c2 = new TCanvas("c","c",800,600);
+      	gPad->SetLogy();
+	TGraph *gc2 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath.front());
+      	gc2->Draw("AP");
+	string name2 = "plots/" + file2 + "_cathode.png";
+        c2->Print(name2.c_str());
+	c2->Close();
+
+	/* TCanvas * c3 = new TCanvas("c","c",800,600);
+      	//gPad->SetLogy();
+	TGraph *gc3 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath_ori.front());
+      	gc3->Draw("AP");
+	string name1 = "plots/" + file2 + "_gain.png";
+        c3->Print(name1.c_str());
+	c3->Close();
+
+	TCanvas * c4 = new TCanvas("c","c",800,600);
+      	//gPad->SetLogy();
+	TGraph *gc4 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath.front());
+      	gc4->Draw("AP");
+	string name2 = "plots/" + file2 + "_quatum_efficiency.png";
+        c4->Print(name2.c_str());
+	c4->Close(); */
+
 LeakageSubtractor(vec_time, vec_cath_ori, vec_hv, vec_led, file2, vec_cath, fit);
 
 //set the end time of the measurement
@@ -1033,9 +1082,9 @@ do_measurement(index_1800V_led4_up, index_1800V_led4_down, &vec_cath, &vec_adut,
 //cout<<"800V   "<<index_leakage_800V_begin<<" "<<index_leakage_800V_end<<endl;
 //cout<<"900V   "<<index_leakage_900V_begin<<" "<<index_leakage_900V_end<<endl;
 //cout<<"1000V  "<<index_leakage_1000V_begin<<" "<<index_leakage_1000V_end<<endl;
-//cout<<"1200V  "<<index_leakage_1200V_begin<<" "<<index_leakage_1200V_end<<endl;
-//cout<<"1400V  "<<index_leakage_1400V_begin<<" "<<index_leakage_1400V_end<<endl;
-//cout<<"1600V  "<<index_leakage_1600V_begin<<" "<<index_leakage_1600V_end<<endl;
+cout<<"1200V  "<<index_leakage_1200V_begin<<" "<<index_leakage_1200V_end<<endl;
+cout<<"1400V  "<<index_leakage_1400V_begin<<" "<<index_leakage_1400V_end<<endl;
+cout<<"1600V  "<<index_leakage_1600V_begin<<" "<<index_leakage_1600V_end<<endl;
 //cout<<"1800V  "<<index_leakage_1800V_begin<<" "<<index_leakage_1800V_end<<endl;
 
 //leakage 0V
@@ -1070,7 +1119,16 @@ total_spikes = total_spikes + leakage_1600V_spikes;
 estimate_leakage(index_leakage_1800V_begin, index_leakage_1800V_end, &vec_cath_ori, leakage_1800V, leakage_1800V_n, leakage_1800V_spikes, leakage_1800V_error);
 total_spikes = total_spikes + leakage_1600V_spikes;
 
+if (fit.c_800V > 50) { bad_fits = bad_fits + 1; }
+if (fit.c_900V > 50) { bad_fits = bad_fits + 1; }
+if (fit.c_1000V > 50) { bad_fits = bad_fits + 1; }
+if (fit.c_1200V > 50) { bad_fits = bad_fits + 1; }
+if (fit.c_1400V > 50) { bad_fits = bad_fits + 1; }
+if (fit.c_1600V > 50) { bad_fits = bad_fits + 1; }
+if (fit.c_1800V > 50) { bad_fits = bad_fits + 1; }
+
 cout<<"Total spikes = "<<total_spikes<<endl;
+cout<<"Total bad fits = "<<bad_fits<<endl;
 
 cout<< "fit 800V : " << fit.c_800V <<endl;
 
@@ -1083,7 +1141,7 @@ cout<<"Total unknown PMTs : "<<total_unknown<<endl;
 //write to file
 TFile *data_output= TFile::Open( tree_out.c_str() , "RECREATE");
 tree->Write();
-tree->Print();
+//tree->Print();
 
 data_output->Close();
 cout<<tree_out<<" created sucessfully!"<<endl;

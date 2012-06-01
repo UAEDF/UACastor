@@ -46,6 +46,8 @@ int skipAtLedChange = 4;
 
 int size = 0;
 
+float chi2;
+
 std::vector<float> cathode_ye;
 
 float error = (0.5/16.6)*10E-12;
@@ -84,16 +86,16 @@ std::vector<double> fitYe;
       index1++;
     }
     index_begin[istep] = index1;
-    //cout << "index_begin " <<index_begin[istep] << endl;
+    cout << "index_begin " <<index_begin[istep] << endl;
     index2 = index1;
     while((abs(hv[index2]) < step[istep] + 20 and abs(hv[index2]) > step[istep] - 20) and index2 < size){
       index2++;
     }
     index_end[istep] = index2;
-    //cout << "index_end " << index_end[istep] << endl;
+    cout << "index_end " << index_end[istep] << endl;
 
     voltageStep[istep] = index_end[istep] - index_begin[istep];
-   // cout << "voltage Step " << voltageStep[istep] << endl;
+    cout << "voltage Step " << voltageStep[istep] << endl;
    //write the voltages into the vector
    // copy the x,y values for one voltage set and only where LED was off 
      
@@ -101,7 +103,7 @@ std::vector<double> fitYe;
    if (voltageStep[istep] > 20)
    {      
     for(int i = index_begin[istep]; i < index_end[istep]; i++){  
-     if(led[i] == 0 && led[i-skipAtLedChange] == 0 && led[i+skipAtLedChange] == 0){  
+     if(led[i] == 0 && led[i-skipAtLedChange] == 0 && led[i+skipAtLedChange] == 0 && abs(hv[i]) < step[istep] + 20 && abs(hv[i]) > step[istep] - 20){  
           if (time[i] < 0) { cout << "warning: negative time " << i << " " << time[i] << endl; }     
           fitX.push_back(time[i]); 
 	  fitY.push_back(cathode[i]);
@@ -125,10 +127,9 @@ std::vector<double> fitYe;
 	ff->SetLineColor(2);
     int fcount=0;
     bool repeate=true;
-    double ini1[5] = {1.0e-7, 0.1e-7, 10.e-7, 0.01e-7, 100.e-7};
-   //    double ini1[5] = {1.0e-9, 0.1e-9, 10.e-9, 0.01e-9, 100.e-9};
+    double ini1[7] = {1.0e-7, 1.0e-8, 1.e-6, 1.0e-9, 1.0e-5, 1.0e-10, 1.e-4};
     TVirtualFitter::SetMaxIterations(7000);
-    while (repeate && fcount<5){
+    while (repeate && fcount<7){
 
 
       ff->SetParameter(0, 0.01e-9);
@@ -137,34 +138,39 @@ std::vector<double> fitYe;
       ff->SetParameter(1, ini1[fcount]);
       cout << "ini par[1] = " << ini1[fcount] << endl;
       gc0->Fit("ff","ERQ");
-      cout << "=> " << gMinuit->fCstatu.Data() << endl;    
-      repeate = ( (gMinuit->fCstatu.Data()[0]!='S') || (ff->GetParameter(1)<0) || (ff->GetParameter(0)<0));
+      cout << "=> " << gMinuit->fCstatu.Data() << endl;
+      chi2 = ff->GetChisquare()/float(ff->GetNDF());
+      cout << ff->GetChisquare() << " " << ff->GetNDF() << " chi2 = " << chi2 << endl;
+      repeate = ( (gMinuit->fCstatu.Data()[0]!='S') || (ff->GetParameter(1)<0) || (ff->GetParameter(0)<0) || chi2 > 1000);
 	
       fcount++;
 
 	}
 
-      	//TCanvas * c = new TCanvas("c","c",800,600);
-      	//gPad->SetLogy();
-      	//gc0->Draw("AP");
       	str_volt = "unknownvoltage";
       	if (hv[index_begin[istep]] > -820 and hv[index_begin[istep]] < -780)
-	{ fit.c_800V = ff->GetChisquare()/float(ff->GetNDF()); str_volt = "800V"; }
+	{ fit.c_800V = chi2; str_volt = "800V"; }
       	if (hv[index_begin[istep]] > -920 and hv[index_begin[istep]] < -880)
-	{ fit.c_900V = ff->GetChisquare()/float(ff->GetNDF()); str_volt = "900V"; }
+	{ fit.c_900V = chi2; str_volt = "900V"; }
       	if (hv[index_begin[istep]] > -1020 and hv[index_begin[istep]] < -980)
-	{ fit.c_1000V = ff->GetChisquare()/float(ff->GetNDF()); str_volt = "1000V"; }
+	{ fit.c_1000V = chi2; str_volt = "1000V"; }
       	if (hv[index_begin[istep]] > -1220 and hv[index_begin[istep]] < -1180)
-	{ fit.c_1200V = ff->GetChisquare()/float(ff->GetNDF()); str_volt = "1200V"; }
+	{ fit.c_1200V = chi2; str_volt = "1200V"; }
       	if (hv[index_begin[istep]] > -1420 and hv[index_begin[istep]] < -1380)
-	{ fit.c_1400V = ff->GetChisquare()/float(ff->GetNDF()); str_volt = "1400V"; }
+	{ fit.c_1400V = chi2; str_volt = "1400V"; }
       	if (hv[index_begin[istep]] > -1620 and hv[index_begin[istep]] < -1580)
-	{ fit.c_1600V = ff->GetChisquare()/float(ff->GetNDF()); str_volt = "1600V"; }
+	{ fit.c_1600V = chi2; str_volt = "1600V"; }
       	if (hv[index_begin[istep]] > -1820 and hv[index_begin[istep]] < -1780)
-	{ fit.c_1800V = ff->GetChisquare()/float(ff->GetNDF()); str_volt = "1800V"; }
+	{ fit.c_1800V = chi2; str_volt = "1800V"; }
         string name = "fit/" + file + "_" + str_volt + ".png";
-        //c->Print(name.c_str());
-	//c->Close();
+      	if (chi2 > 1000)
+	{
+	TCanvas * c = new TCanvas("c","c",800,600);
+      	gPad->SetLogy();
+      	gc0->Draw("AP");
+        c->Print(name.c_str());
+	c->Close();
+	}
 	
 	delete(gc0);
 	fitX.clear(); 

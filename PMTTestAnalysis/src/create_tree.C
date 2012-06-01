@@ -1,5 +1,4 @@
-//to do:	plot quantum efficiency
-//		plot gain
+//to do:	plot gain
 //		correct bug on the index fiding for the estimation of the dark current
 
 #include <stdio.h>
@@ -259,7 +258,7 @@ spike_check(end_val+6+i, vec_cath, spike);
 if (spike == 1) { cath_spikes = cath_spikes + 1; }
 else { val_after->Fill(vec_cath->at(end_val+6+i)); n_after = n_after + 1; }
 spike = 0;
-cout << "after " << i << " -> " << vec_cath->at(end_val+6+i) << " " << spike << endl;
+//cout << "after " << i << " -> " << vec_cath->at(end_val+6+i) << " " << spike << endl;
 } 
 
 ave_before = val_before->GetMean();
@@ -380,6 +379,10 @@ total_spikes = total_spikes + meas.cath_spikes;
 
 void create_tree(string *files_in, int ini_file, int end_file, string tree_out)
 {
+
+float wave_lenght[4] = {400.0, 470.0, 500.0, 517.0};
+float voltages[7] = {800.0, 900.0, 1000.0, 1200.0, 1400.0, 1600.0, 1800.0};
+
 //variable declaration
 float cath, adut, aref;
 int entries, time, hv, led, aux_int;
@@ -827,39 +830,8 @@ LeakageSubtractor theSubtractor(vec_time,vec_cath,vec_hv,vec_led);
 theSubtractor.SetVerbosity(0);
 theSubtractor.Run();
 */
+
 string file2 = file.substr(15,26);
-
-	TCanvas * c1 = new TCanvas("c","c",800,600);
-      	//gPad->SetLogy();
-	TGraph *gc1 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath_ori.front());
-      	gc1->Draw("AP");
-	string name1 = "plots/" + file2 + "_cathode_original.png";
-        c1->Print(name1.c_str());
-	c1->Close();
-
-	TCanvas * c2 = new TCanvas("c","c",800,600);
-      	gPad->SetLogy();
-	TGraph *gc2 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath.front());
-      	gc2->Draw("AP");
-	string name2 = "plots/" + file2 + "_cathode.png";
-        c2->Print(name2.c_str());
-	c2->Close();
-
-	/* TCanvas * c3 = new TCanvas("c","c",800,600);
-      	//gPad->SetLogy();
-	TGraph *gc3 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath_ori.front());
-      	gc3->Draw("AP");
-	string name1 = "plots/" + file2 + "_gain.png";
-        c3->Print(name1.c_str());
-	c3->Close();
-
-	TCanvas * c4 = new TCanvas("c","c",800,600);
-      	//gPad->SetLogy();
-	TGraph *gc4 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath.front());
-      	gc4->Draw("AP");
-	string name2 = "plots/" + file2 + "_quatum_efficiency.png";
-        c4->Print(name2.c_str());
-	c4->Close(); */
 
 LeakageSubtractor(vec_time, vec_cath_ori, vec_hv, vec_led, file2, vec_cath, fit);
 
@@ -1130,7 +1102,58 @@ if (fit.c_1800V > 50) { bad_fits = bad_fits + 1; }
 cout<<"Total spikes = "<<total_spikes<<endl;
 cout<<"Total bad fits = "<<bad_fits<<endl;
 
-cout<< "fit 800V : " << fit.c_800V <<endl;
+float quantum_eff[4] = {m_800V_led1.qe, m_800V_led2.qe, m_800V_led3.qe, m_800V_led4.qe};
+float gains[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float voltages_temp[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float temp1[7] = {m_800V_led1.anode_up, m_900V_led1.anode_up, m_1000V_led1.anode_up, m_1200V_led1.anode_up, m_1400V_led1.anode_up, m_1600V_led1.anode_up, m_1800V_led4.anode_up};
+float temp2[7] = {m_800V_led1.cath_value, m_900V_led1.cath_value, m_1000V_led1.cath_value, m_1200V_led1.cath_value, m_1400V_led1.cath_value, m_1600V_led1.cath_value, m_1800V_led4.cath_value};
+int index_temp = 0;
+for (int j=0; j < 7; j++)
+{
+if (temp1[j] != 0 && temp2[j] != 0)
+{
+voltages_temp[index_temp] = voltages[j];
+gains[index_temp] = temp1[j]/temp2[j];
+index_temp = index_temp + 1;
+}
+}
+
+	TCanvas * c1 = new TCanvas("c","c",800,600);
+      	//gPad->SetLogy();
+	TGraph *gc1 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath_ori.front());
+      	gc1->Draw("AP");
+	string name1 = "plots/" + file2 + "_cathode_original.png";
+        c1->Print(name1.c_str());
+	c1->Close();
+
+	TCanvas * c2 = new TCanvas("c","c",800,600);
+      	gPad->SetLogy();
+	TGraph *gc2 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath.front());
+      	gc2->Draw("AP");
+	string name2 = "plots/" + file2 + "_cathode.png";
+        c2->Print(name2.c_str());
+	c2->Close();
+
+	TCanvas * c3 = new TCanvas("c","c",800,600);
+      	gPad->SetLogy();
+        gPad->SetLogx();
+	TGraph *gc3 = new TGraph(index_temp,voltages_temp,gains);
+	gc3->SetTitle("Gain as function of voltage;Voltage [V];Gain");
+        gc3->SetMarkerStyle(20);
+      	gc3->Draw("APL");
+	string name3 = "plots/" + file2 + "_gain.png";
+        c3->Print(name3.c_str());
+	c3->Close();
+
+	TCanvas * c4 = new TCanvas("c","c",800,600);
+      	//gPad->SetLogy();
+	TGraph *gc4 = new TGraph(4,wave_lenght,quantum_eff);
+	gc4->SetTitle("Quantum efficiency as faction of wavelenght;Wave lenght [nm];Quantum efficiency");
+        gc4->SetMarkerStyle(20);
+      	gc4->Draw("APL");
+	string name4 = "plots/" + file2 + "_quatum_efficiency.png";
+        c4->Print(name4.c_str());
+	c4->Close();
 
 //fill the tree
 tree->Fill();

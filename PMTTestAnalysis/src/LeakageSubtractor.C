@@ -81,6 +81,7 @@ double par[3] = {0, 0, 0};
   for (i = 0; i < size; i++)
   {
     cathode_ye.push_back(error);
+    cathode_out.push_back(cathode->at(i));
   }
 
 
@@ -137,10 +138,31 @@ double par[3] = {0, 0, 0};
     spike = 0;
     }
    }
-	// cout << "========" << hv[index_begin[istep]] << "===========" << endl;
+	// cout << "========" << hv[index_begin[istep]] << "===========" << endl
+
 
    // TGraphErrors has to be defined befor TF1 (the fit function)
    TGraphErrors *gc0 = new TGraphErrors(fitX.size(),&fitX.front(),&fitY.front(),NULL,&fitYe.front());
+
+      	str_volt = "unknownvoltage";
+      	if (hv->at(index_begin[istep]) > -820 and hv->at(index_begin[istep]) < -780)
+	{ fit.c_800V = chi2; str_volt = "800V"; }
+      	if (hv->at(index_begin[istep]) > -920 and hv->at(index_begin[istep]) < -880)
+	{ fit.c_900V = chi2; str_volt = "900V"; }
+      	if (hv->at(index_begin[istep]) > -1020 and hv->at(index_begin[istep]) < -980)
+	{ fit.c_1000V = chi2; str_volt = "1000V"; }
+      	if (hv->at(index_begin[istep]) > -1220 and hv->at(index_begin[istep]) < -1180)
+	{ fit.c_1200V = chi2; str_volt = "1200V"; }
+      	if (hv->at(index_begin[istep]) > -1420 and hv->at(index_begin[istep]) < -1380)
+	{ fit.c_1400V = chi2; str_volt = "1400V"; }
+      	if (hv->at(index_begin[istep]) > -1620 and hv->at(index_begin[istep]) < -1580)
+	{ fit.c_1600V = chi2; str_volt = "1600V"; }
+      	if (hv->at(index_begin[istep]) > -1820 and hv->at(index_begin[istep]) < -1780)
+	{ fit.c_1800V = chi2; str_volt = "1800V"; }
+
+	TCanvas * c = new TCanvas("c","c",800,600);
+      	gPad->SetLogy();
+	str_volt = str_volt + ";Time [s];Current [V]";
 
     TVirtualFitter::SetMaxIterations(7000);
     while (repeate && fcount < 8 && begin_count < 8 && end_count < 5) {
@@ -172,9 +194,9 @@ double par[3] = {0, 0, 0};
 	}
 	if (better_chi2 > chi2 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
 	{
-	//cout << "ini par[1] = " << ini1[fcount] << " begin_shift = " << shifts_begin[begin_count] << " end_shift = " << - shifts_end[end_count] << endl;
-	//cout << "=> " << gMinuit->fCstatu.Data() << endl;
-	//cout << "chi2 = " << chi2 << endl;
+	cout << "ini par[1] = " << ini1[fcount] << " begin_shift = " << shifts_begin[begin_count] << " end_shift = " << - shifts_end[end_count] << endl;
+	cout << "=> " << gMinuit->fCstatu.Data() << endl;
+	cout << "chi2 = " << chi2 << endl;
 	better_chi2 = chi2;
 	better[0] = fcount;
 	better[1] = begin_count;
@@ -204,45 +226,33 @@ double par[3] = {0, 0, 0};
 	gc0->Fit("ff","ERQ");
    	cout << "=> " << gMinuit->fCstatu.Data() << endl;
       	chi2 = ff->GetChisquare()/float(ff->GetNDF());
-        par[0] = ff->GetParameter(0);
+	if (chi2 < 2 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
+        {
+	better_chi2 = chi2;
+	par[0] = ff->GetParameter(0);
 	par[1] = ff->GetParameter(1);
 	par[2] = ff->GetParameter(2);
+	}
       	cout << "chi2 = " << chi2 << endl;
 	}
 	cout << "parameters : " << par[0] << " " << par[1] << " " << par[2] << endl;
-
-      	str_volt = "unknownvoltage";
-      	if (hv->at(index_begin[istep]) > -820 and hv->at(index_begin[istep]) < -780)
-	{ fit.c_800V = chi2; str_volt = "800V"; }
-      	if (hv->at(index_begin[istep]) > -920 and hv->at(index_begin[istep]) < -880)
-	{ fit.c_900V = chi2; str_volt = "900V"; }
-      	if (hv->at(index_begin[istep]) > -1020 and hv->at(index_begin[istep]) < -980)
-	{ fit.c_1000V = chi2; str_volt = "1000V"; }
-      	if (hv->at(index_begin[istep]) > -1220 and hv->at(index_begin[istep]) < -1180)
-	{ fit.c_1200V = chi2; str_volt = "1200V"; }
-      	if (hv->at(index_begin[istep]) > -1420 and hv->at(index_begin[istep]) < -1380)
-	{ fit.c_1400V = chi2; str_volt = "1400V"; }
-      	if (hv->at(index_begin[istep]) > -1620 and hv->at(index_begin[istep]) < -1580)
-	{ fit.c_1600V = chi2; str_volt = "1600V"; }
-      	if (hv->at(index_begin[istep]) > -1820 and hv->at(index_begin[istep]) < -1780)
-	{ fit.c_1800V = chi2; str_volt = "1800V"; }
-        //string name = "fit/" + file + "_" + str_volt + ".png";
-      	//if (chi2 > 5)
-	//{
-	TCanvas * c = new TCanvas("c","c",800,600);
-      	gPad->SetLogy();
-      	gc0->Draw("AP");
-        c->Print(file.c_str());
-	c->Close();
-	//}
 	
+	if (better_chi2 < 2)
+	{
+	cout<<"good fit = " << better_chi2 << " subtracting backgroung now!" << endl;
 	for (i = index_begin[istep]; i < index_end[istep]; i++)
   	{
   	double t = time->at(i);
   	double val = cathode->at(i) - fexp(&t, par); 
-    	cathode_out.push_back(val);
+    	cathode_out.at(i) = val;
   	}
+	}
 	
+        gc0->SetTitle(str_volt.c_str());
+      	gc0->Draw("AP");
+        c->Print(file.c_str());
+	c->Close();
+
 	//cout << "delete phase!" << endl;
 	delete(gc0);
 	//cout << "delete phase2!" << endl;

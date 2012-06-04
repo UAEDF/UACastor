@@ -428,7 +428,8 @@ std::vector<int> vec_begin, vec_end;
 std::vector<int> *pvec_begin, *pvec_end;
 
 std::vector<int> vec_time, vec_hv, vec_led;
-std::vector<float> vec_cath, vec_cath_ori, vec_adut, vec_aref;
+std::vector<float> vec_cath;
+std::vector<float> vec_cath_ori, vec_adut, vec_aref;
 std::vector<int> *pvec_time, *pvec_hv, *pvec_led;
 std::vector<float> *pvec_cath, *pvec_cath_ori, *pvec_adut, *pvec_aref;
 int total_spikes, sector, module, set, bad_fits;
@@ -856,7 +857,7 @@ if (time == 0) { ini_time = (string) read_time; } //set begin time of the measur
 vec_time.push_back(time);
 vec_hv.push_back(hv);
 vec_cath_ori.push_back(cath);
-vec_cath.push_back(cath);
+//vec_cath.push_back(cath);
 vec_adut.push_back(adut);
 vec_aref.push_back(aref);
 vec_led.push_back(led);
@@ -1185,7 +1186,7 @@ index_temp = index_temp + 1;
 int status_index[3] = {1, 2, 3};
 int status_values[3] = {bad_fits, total_spikes, set_unknown};
 
-	TCanvas * c2b = new TCanvas("c","c",800,600);
+	TCanvas * c2b = new TCanvas("c2b","c",800,600);
       	//gPad->SetLogy();
 	TGraph *gc2b = new TGraph(entries,&vec_time.front(),&vec_hv.front());
 	gc2b->SetTitle("High voltage as function of time;time [s];High voltage [V]");
@@ -1193,7 +1194,7 @@ int status_values[3] = {bad_fits, total_spikes, set_unknown};
         c2b->Print(name2.c_str());
 	c2b->Close();
 	
-	TCanvas * c2c = new TCanvas("c","c",800,600);
+	TCanvas * c2c = new TCanvas("c2c","c",800,600);
       	//gPad->SetLogy();
 	TGraph *gc2c = new TGraph(entries,&vec_time.front(),&vec_led.front());
 	gc2c->SetTitle("Led light as function of time;time [s];Led light");
@@ -1201,13 +1202,29 @@ int status_values[3] = {bad_fits, total_spikes, set_unknown};
         c2c->Print(name2.c_str());
 	c2c->Close();
 
-	TCanvas * c2 = new TCanvas("c","c",800,600);
-      	gPad->SetLogy();
+	TCanvas * c2 = new TCanvas("c2","c",800,600);
+      	//gPad->SetLogy();
 	TGraph *gc2 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath.front());
 	gc2->SetTitle("Cathode current as function of time after background subtraction;Time [s];Current [V]");
       	gc2->Draw("AP");
         c2->Print(name2.c_str());
 	c2->Close();
+	
+	TCanvas * c3b = new TCanvas("c3b","c",800,600);
+      	//gPad->SetLogy();
+	TGraph *gc3b = new TGraph(entries,(float*)&vec_time.front(),&vec_adut.front());
+	gc3b->SetTitle("Anode current as function of time;Time [s];Current [V]");
+      	gc3b->Draw("AP");
+        c3b->Print(name2.c_str());
+	c3b->Close();
+	
+	TCanvas * c3c = new TCanvas("c3c","c",800,600);
+      	//gPad->SetLogy();
+	TGraph *gc3c = new TGraph(entries,(float*)&vec_time.front(),&vec_aref.front());
+	gc3c->SetTitle("Reference anode current as function of time;Time [s];Current [V]");
+      	gc3c->Draw("AP");
+        c3c->Print(name2.c_str());
+	c3c->Close();
 
 	TCanvas * c3 = new TCanvas("c","c",800,600);
       	gPad->SetLogy();

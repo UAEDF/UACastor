@@ -69,14 +69,14 @@ int istep, i;
 
 int fcount=0;
 bool repeate=true;
-double ini1[7] = {1.0e-7, 1.0e-8, 1.e-6, 1.0e-9, 1.0e-5, 1.0e-10, 1.e-4};
-double shifts_begin[11] = {0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500};
+double ini1[8] = {1.0e-7, 1.0e-8, 1.e-6, 1.0e-9, 1.0e-5, 1.0e-10, 1.e-4, 1.0e-11};
+double shifts_begin[8] = {0, 50, 100, 150, 200, 250, 300};
 double shifts_end[5] = {0, 50, 100, 150, 200};
 int begin_count = 0;
 int end_count = 0;
 int better_chi2 = 0.0;
 int better[3] = {0, 0, 0};
-float par[3];
+double par[3] = {0, 0, 0};
 
   for (i = 0; i < size; i++)
   {
@@ -143,13 +143,13 @@ float par[3];
    TGraphErrors *gc0 = new TGraphErrors(fitX.size(),&fitX.front(),&fitY.front(),NULL,&fitYe.front());
 
     TVirtualFitter::SetMaxIterations(7000);
-    while (repeate && fcount < 7 && begin_count < 11 && end_count < 5) {
+    while (repeate && fcount < 8 && begin_count < 8 && end_count < 5) {
 
 	//cout << "fcount = " << fcount << " begin_count = " << begin_count << "end_count = " << end_count << endl;
       TF1 *ff = new TF1("ff", fexp, time->at(index_begin[istep]) + shifts_begin[begin_count], time->at(index_end[istep]) - shifts_end[end_count], 3);
 	ff->SetLineColor(2);
 
-      ff->SetParameter(0, 0.01e-9);
+      ff->SetParameter(0, ini1[fcount]);
       ff->SetParameter(2, 300.);
 
       ff->SetParameter(1, ini1[fcount]);
@@ -158,7 +158,7 @@ float par[3];
       //cout << "=> " << gMinuit->fCstatu.Data() << endl;
       chi2 = ff->GetChisquare()/float(ff->GetNDF());
       //cout << "chi2 = " << chi2 << endl;
-      repeate = ( (gMinuit->fCstatu.Data()[0]!='S') || (ff->GetParameter(1)<0) || (ff->GetParameter(0)<0) || chi2 > 1);
+      repeate = ( (gMinuit->fCstatu.Data()[0]!='S') || (ff->GetParameter(1)<0) || (ff->GetParameter(0)<0) || chi2 > 2);
 	
 	if (better_chi2 == 0.0 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
 	{
@@ -186,10 +186,10 @@ float par[3];
 	delete(ff);
 	end_count++;
 	if (end_count == 5) { begin_count++; end_count = 0; }
-	if (begin_count == 11) { fcount++; begin_count = 0; }
+	if (begin_count == 8) { fcount++; begin_count = 0; }
 	}
 
-	if (better_chi2 > 1)
+	if (better_chi2 > 2)
 	{
 	cout << "none of the fits was good, using the best one!" << endl;
         int sb = shifts_begin[better[1]];
@@ -199,9 +199,8 @@ float par[3];
 	cout << ig << " " << sb << " " << se << " " << endl;
 	TF1 *ff = new TF1("ff", fexp, time->at(index_begin[istep]) + sb, time->at(index_end[istep]) - se, 3);
 	ff->SetLineColor(2);
-      	ff->SetParameter(0, 0.01e-9);
+      	ff->SetParameter(0, ig);
       	ff->SetParameter(2, 300.);
-      	ff->SetParameter(1, ig);
 	gc0->Fit("ff","ERQ");
    	cout << "=> " << gMinuit->fCstatu.Data() << endl;
       	chi2 = ff->GetChisquare()/float(ff->GetNDF());
@@ -236,6 +235,13 @@ float par[3];
         c->Print(file.c_str());
 	c->Close();
 	//}
+	
+	for (i = index_begin[istep]; i < index_end[istep]; i++)
+  	{
+  	double t = time->at(i);
+  	double val = cathode->at(i) - fexp(&t, par); 
+    	cathode_out.push_back(val);
+  	}
 	
 	//cout << "delete phase!" << endl;
 	delete(gc0);

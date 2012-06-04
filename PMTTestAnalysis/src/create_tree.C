@@ -433,7 +433,7 @@ std::vector<int> *pvec_time, *pvec_hv, *pvec_led;
 std::vector<float> *pvec_cath, *pvec_cath_ori, *pvec_adut, *pvec_aref;
 int total_spikes, sector, module, set, bad_fits;
 
-int found1, found2, found3;
+int found1, found2, found3, set_unknown;
 int total_unknown = 0;
 int total_bad_fits = 0;
 
@@ -839,6 +839,8 @@ fit.c_1400V = 0.0;
 fit.c_1600V = 0.0;
 fit.c_1800V = 0.0;
 
+set_unknown = 0;
+
 //find the code of the pmt
 found1 = file.find("_");
 found2 = file.find("_",found1+1);
@@ -868,37 +870,20 @@ theSubtractor.Run();
 */
 
 string file2 = file.substr(15,26);
+string name2 = "plots/" + file2 + ".pdf";
 
 	TCanvas * c1 = new TCanvas("c","c",800,600);
       	//gPad->SetLogy();
 	TGraph *gc1 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath_ori.front());
 	gc1->SetTitle("Cathode current as function of time before the background subtraction;time [s];Current [A]");
       	gc1->Draw("AP");
-	string name1 = "plots/" + file2 + ".pdf(";
+      	string name1 = "plots/" + file2 + ".pdf(";
         c1->Print(name1.c_str());
 	c1->Close();
 
-	TCanvas * c2b = new TCanvas("c","c",800,600);
-      	//gPad->SetLogy();
-	TGraph *gc2b = new TGraph(entries,&vec_time.front(),&vec_hv.front());
-	gc2b->SetTitle("High voltage as function of time;time [s];High voltage [V]");
-      	gc2b->Draw("AP");
-	string name2b = "plots/" + file2 + ".pdf";
-        c2b->Print(name2b.c_str());
-	c2b->Close();
-	
-	TCanvas * c2c = new TCanvas("c","c",800,600);
-      	//gPad->SetLogy();
-	TGraph *gc2c = new TGraph(entries,&vec_time.front(),&vec_led.front());
-	gc2c->SetTitle("Led light as function of time;time [s];Led light");
-      	gc2c->Draw("AP");
-	string name2c = "plots/" + file2 + ".pdf";
-        c2c->Print(name2c.c_str());
-	c2c->Close();
-
 //cout << "size before : " << vec_cath_ori.size() << endl;
 
-LeakageSubtractor(&vec_time, &vec_cath_ori, &vec_hv, &vec_led, file2, vec_cath, fit);
+LeakageSubtractor(&vec_time, &vec_cath_ori, &vec_hv, &vec_led, name2, vec_cath, fit);
 
 //set the end time of the measurement
 end_time = (string) read_time; 
@@ -952,7 +937,7 @@ aux_int = atoi( aux_str.c_str() );
 vec_end.push_back(aux_int);
 
 set_coordinates(pmt, module, sector, set);
-if (sector == 0 and module == 0 and set == 0) { total_unknown = total_unknown + 1; }
+if (sector == 0 and module == 0 and set == 0) { total_unknown = total_unknown + 1; set_unknown = 1; }
 
 //output the details of the measurement
 cout<<"PMT code: "<<pmt<<" (Sector : "<<sector<<" ; Module : "<<module<<" ; Set: "<<set<<")"<<endl;
@@ -1197,12 +1182,30 @@ index_temp = index_temp + 1;
 }
 }
 
+int status_index[3] = {1, 2, 3};
+int status_values[3] = {bad_fits, total_spikes, set_unknown};
+
+	TCanvas * c2b = new TCanvas("c","c",800,600);
+      	//gPad->SetLogy();
+	TGraph *gc2b = new TGraph(entries,&vec_time.front(),&vec_hv.front());
+	gc2b->SetTitle("High voltage as function of time;time [s];High voltage [V]");
+      	gc2b->Draw("AP");
+        c2b->Print(name2.c_str());
+	c2b->Close();
+	
+	TCanvas * c2c = new TCanvas("c","c",800,600);
+      	//gPad->SetLogy();
+	TGraph *gc2c = new TGraph(entries,&vec_time.front(),&vec_led.front());
+	gc2c->SetTitle("Led light as function of time;time [s];Led light");
+      	gc2c->Draw("AP");
+        c2c->Print(name2.c_str());
+	c2c->Close();
+
 	TCanvas * c2 = new TCanvas("c","c",800,600);
       	gPad->SetLogy();
 	TGraph *gc2 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath.front());
 	gc2->SetTitle("Cathode current as function of time after background subtraction;Time [s];Current [V]");
       	gc2->Draw("AP");
-	string name2 = "plots/" + file2 + ".pdf";
         c2->Print(name2.c_str());
 	c2->Close();
 
@@ -1213,8 +1216,7 @@ index_temp = index_temp + 1;
 	gc3->SetTitle("Gain as function of voltage;Voltage [V];Gain");
         gc3->SetMarkerStyle(20);
       	gc3->Draw("APL");
-	string name3 = "plots/" + file2 + ".pdf";
-        c3->Print(name3.c_str());
+        c3->Print(name2.c_str());
 	c3->Close();
 
 	TCanvas * c4 = new TCanvas("c","c",800,600);
@@ -1223,9 +1225,17 @@ index_temp = index_temp + 1;
 	gc4->SetTitle("Quantum efficiency as faction of wavelenght;Wave lenght [nm];Quantum efficiency");
         gc4->SetMarkerStyle(20);
       	gc4->Draw("APL");
-	string name4 = "plots/" + file2 + ".pdf)";
-        c4->Print(name4.c_str());
+        c4->Print(name2.c_str());
 	c4->Close();
+	
+	TCanvas * c5 = new TCanvas("c","c",800,600);
+      	//gPad->SetLogy();
+	TGraph *gc5 = new TGraph(3,status_index,status_values);
+	gc5->SetTitle("Final status;Bad fits/Spikes/Unknown PMT;AU");
+      	gc5->Draw("APL");
+        string name5 = "plots/" + file2 + ".pdf)";
+        c5->Print(name5.c_str());
+	c5->Close();
 
 //fill the tree
 tree->Fill();

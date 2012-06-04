@@ -76,6 +76,7 @@ int begin_count = 0;
 int end_count = 0;
 int better_chi2 = 0.0;
 int better[3] = {0, 0, 0};
+float par[3];
 
   for (i = 0; i < size; i++)
   {
@@ -157,7 +158,7 @@ int better[3] = {0, 0, 0};
       //cout << "=> " << gMinuit->fCstatu.Data() << endl;
       chi2 = ff->GetChisquare()/float(ff->GetNDF());
       //cout << "chi2 = " << chi2 << endl;
-      repeate = ( (gMinuit->fCstatu.Data()[0]!='S') || (ff->GetParameter(1)<0) || (ff->GetParameter(0)<0) || chi2 > 5);
+      repeate = ( (gMinuit->fCstatu.Data()[0]!='S') || (ff->GetParameter(1)<0) || (ff->GetParameter(0)<0) || chi2 > 1);
 	
 	if (better_chi2 == 0.0 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
 	{
@@ -165,6 +166,9 @@ int better[3] = {0, 0, 0};
 	better[0] = fcount;
 	better[1] = begin_count;
 	better[2] = end_count;
+	par[0] = ff->GetParameter(0);
+	par[1] = ff->GetParameter(1);
+	par[2] = ff->GetParameter(2);
 	}
 	if (better_chi2 > chi2 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
 	{
@@ -175,6 +179,9 @@ int better[3] = {0, 0, 0};
 	better[0] = fcount;
 	better[1] = begin_count;
 	better[2] = end_count;
+	par[0] = ff->GetParameter(0);
+	par[1] = ff->GetParameter(1);
+	par[2] = ff->GetParameter(2);
 	}
 	delete(ff);
 	end_count++;
@@ -182,7 +189,7 @@ int better[3] = {0, 0, 0};
 	if (begin_count == 11) { fcount++; begin_count = 0; }
 	}
 
-	if (better_chi2 > 5)
+	if (better_chi2 > 1)
 	{
 	cout << "none of the fits was good, using the best one!" << endl;
         int sb = shifts_begin[better[1]];
@@ -198,8 +205,12 @@ int better[3] = {0, 0, 0};
 	gc0->Fit("ff","ERQ");
    	cout << "=> " << gMinuit->fCstatu.Data() << endl;
       	chi2 = ff->GetChisquare()/float(ff->GetNDF());
+        par[0] = ff->GetParameter(0);
+	par[1] = ff->GetParameter(1);
+	par[2] = ff->GetParameter(2);
       	cout << "chi2 = " << chi2 << endl;
 	}
+	cout << "parameters : " << par[0] << " " << par[1] << " " << par[2] << endl;
 
       	str_volt = "unknownvoltage";
       	if (hv->at(index_begin[istep]) > -820 and hv->at(index_begin[istep]) < -780)
@@ -216,15 +227,15 @@ int better[3] = {0, 0, 0};
 	{ fit.c_1600V = chi2; str_volt = "1600V"; }
       	if (hv->at(index_begin[istep]) > -1820 and hv->at(index_begin[istep]) < -1780)
 	{ fit.c_1800V = chi2; str_volt = "1800V"; }
-        string name = "fit/" + file + "_" + str_volt + ".png";
-      	if (chi2 > 5)
-	{
+        //string name = "fit/" + file + "_" + str_volt + ".png";
+      	//if (chi2 > 5)
+	//{
 	TCanvas * c = new TCanvas("c","c",800,600);
       	gPad->SetLogy();
       	gc0->Draw("AP");
-        c->Print(name.c_str());
+        c->Print(file.c_str());
 	c->Close();
-	}
+	//}
 	
 	//cout << "delete phase!" << endl;
 	delete(gc0);

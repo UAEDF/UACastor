@@ -47,13 +47,13 @@ ave = (vec_cath->at(point-2) + vec_cath->at(point-1) + vec_cath->at(point+1) + v
 
 dev = (vec_cath->at(point) - ave)/ave;
 
-if (dev > 1.00 and vec_cath->at(point) > 1e-10)
+if (dev > 0.50 and vec_cath->at(point) > 1e-12)
 {
 //cout<<"Positive spike! "<<dev<<endl;
 //cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
 spike = 1;
 }
-if (dev < -0.50 and vec_cath->at(point) < -1e-10)
+if (dev < -0.50 and vec_cath->at(point) < -1e-12)
 {
 //cout<<"Negative spike! "<<dev<<endl;
 //cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;

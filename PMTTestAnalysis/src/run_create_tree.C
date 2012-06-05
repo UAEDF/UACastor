@@ -89,16 +89,16 @@ files_in[79] = "../data/cpt_sf_CA0640_2012_06_04_12_32_34_mod.cpt";
 files_in[80] = "../data/cpt_sf_CA1438_2012_06_04_14_45_14_mod.cpt";
 files_in[81] = "../data/cpt_sf_CA0723_2012_06_04_17_27_45_mod.cpt";
 files_in[82] = "../data/cpt_sf_CA1410_2012_06_04_19_39_45_mod.cpt";
-files_in[83] = "../data/.cpt";
-files_in[84] = "../data/.cpt";
-files_in[85] = "../data/.cpt";
-files_in[86] = "../data/.cpt";
-files_in[87] = "../data/.cpt";
-files_in[88] = "../data/.cpt";
+files_in[83] = "../data/cpt_sf_CA0885_2012_06_05_07_56_19_mod.cpt";
+files_in[84] = "../data/cpt_sf_CA1434_2012_06_05_10_13_42_mod.cpt";
+files_in[85] = "../data/cpt_sf_CA1524_2012_06_05_12_26_43_mod.cpt";
+files_in[86] = "../data/cpt_sf_CA0315_2012_06_05_14_40_19_mod.cpt";
+files_in[87] = "../data/cpt_sf_CA2044_2012_06_05_16_54_01_mod.cpt";
+files_in[88] = "../data/cpt_sf_CA1228_2012_06_05_19_07_32_mod.cpt";
 files_in[89] = "../data/.cpt";
 
 int ini_file = 1;
-int end_file = 83;
+int end_file = 89;
 
 
   string tree_out = "PMT_test_2012.root";

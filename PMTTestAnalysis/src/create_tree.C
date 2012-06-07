@@ -1457,11 +1457,11 @@ if (set == 1)
 if (canv_old == 1)
 {
 r_old_gain = new TCanvas("r_old_gain","c",800,600);
-r_old_gain->Divide(3,3);
+//r_old_gain->Divide(3,3);
 r_old_qe = new TCanvas("r_old_qe","c",800,600);
-r_old_qe->Divide(3,3);
+//r_old_qe->Divide(3,3);
 r_old_cath = new TCanvas("r_old_cath","c",800,600);
-r_old_cath->Divide(3,3);
+//r_old_cath->Divide(3,3);
 }
 
 if (total_spikes > 10 and bad_fits > 0)
@@ -1533,11 +1533,11 @@ if (set == 2)
 if (canv_new == 1)
 {
 r_new_gain = new TCanvas("r_new_gain","c",800,600);
-r_new_gain->Divide(3,3);
+//r_new_gain->Divide(3,3);
 r_new_qe = new TCanvas("r_new_qe","c",800,600);
-r_new_qe->Divide(3,3);
+//r_new_qe->Divide(3,3);
 r_new_cath = new TCanvas("r_new_cath","c",800,600);
-r_new_cath->Divide(3,3);
+//r_new_cath->Divide(3,3);
 }
 
 if (total_spikes > 10 and bad_fits > 0)
@@ -1546,18 +1546,18 @@ gc3->SetLineColor(2);
 gc4a->SetLineColor(2);
 gc1->SetLineColor(2);
 }
-r_new_gain->cd(canv_new);
+r_new_gain->cd();
 gPad->SetLogy();
 gPad->SetLogx();
 title = pmt + ";Voltage [V];Gain";
 gc3->SetTitle(title.c_str());
 gc3->Draw("APL");
-r_new_qe->cd(canv_new);
+r_new_qe->cd();
 title = pmt + ";Wavelenght [nm];Relative Quantum Efficiency";
 gc4a->SetTitle(title.c_str());
 gc4a->Draw("APL");
 gc4b->Draw("APL same");
-r_new_cath->cd(canv_new);
+r_new_cath->cd();
 title = pmt + ";Time [s];Current [A]";
 gc1->SetTitle(title.c_str());
 gPad->SetLogy();
@@ -1565,7 +1565,7 @@ gc1->Draw("APL");
 canv_new = canv_new + 1;
 
 
-if (canv_new == 10)
+if (canv_new == 2)
 {
 if (page_new == 1)
 {
@@ -1597,9 +1597,9 @@ tree->Fill();
 r_old_gain->Print("report_gains_old.pdf)");
 r_old_qe->Print("report_qe_old.pdf)");
 r_old_cath->Print("report_cath_old.pdf)");
-//r_new_gain->Print("report_gains_new.pdf)");
-//r_new_qe->Print("report_qe_new.pdf)");
-//r_new_cath->Print("report_cath_new.pdf)");
+r_new_gain->Print("report_gains_new.pdf)");
+r_new_qe->Print("report_qe_new.pdf)");
+r_new_cath->Print("report_cath_new.pdf)");
 
 cout<<"Total unknown PMTs : "<<total_unknown<<endl;
 cout<<"Total bad fits : "<<total_bad_fits<<endl;

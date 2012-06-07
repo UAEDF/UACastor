@@ -38,6 +38,10 @@ double fexp(double *x, double *p){
 
 void LeakageSubtractor(const std::vector<float> *time, std::vector<float> *cathode, const std::vector<float> *hv, const std::vector<float> *led, std::string file, std::vector<float>& cathode_out, chi2& fit ){
 
+// 1 -> tries different values
+// 2 -> uses the value of the last fit as input to the next
+int type_minimization = 2;
+
 string str_volt;
 
 gStyle->SetOptFit(1);
@@ -69,15 +73,17 @@ int istep, i;
 
 int fcount=0;
 bool repeate=true;
-double ini1[4] = {1.0e-11, 1.0e-10, 1.0e-9, 1.0e-8};
-double shifts_begin[10] = {0, 50, 100, 150, 200, 250, 300, 350, 400, 450};
+double ini1[5] = {1.0e-12, 1.0e-11, 1.0e-10, 1.0e-9, 1.0e-8};
+double shifts_begin[8] = {0, 50, 100, 150, 200, 250, 300, 350};
 double shifts_end[6] = {0, 50, 100, 150, 200, 250};
-double ini3[3] = {200, 300, 400};
+double ini3[5] = {100, 200, 300, 400, 500};
+double ini2[6] = {1.0e-12, 1.0e-11, 1.0e-10, 1.0e-9, 1.0e-8, 1.0e-7};
+int ini2_count = 0;
 int ini3_count = 0;
 int begin_count = 0;
 int end_count = 0;
 float better_chi2 = 0.0;
-int better[4] = {0, 0, 0, 0};
+int better[5] = {0, 0, 0, 0};
 double par[3] = {0, 0, 0};
 
   for (i = 0; i < size; i++)
@@ -151,17 +157,91 @@ double par[3] = {0, 0, 0};
 	str_volt = str_volt + ";Time [s];Current [V]";
 	TF1 *ff = 0;
 
-    TVirtualFitter::SetMaxIterations(7000);
-    while (repeate && fcount < 4 && begin_count < 10 && end_count < 6 && ini3_count < 3 && fitX.size() > 100) {
+    TVirtualFitter::SetMaxIterations(3000);
+
+if (type_minimization == 2)
+{
+	float par_temp[3] = {1e-9, 1e-7, 300.};
+	par[0] = 0;
+	par[1] = 0;
+	par[2] = 0;
+	int max_tries = 75;
+	int tries = 0;
+
+while (repeate && tries < max_tries && fitX.size() > 100) {
+
+	//cout << "fcount = " << fcount << " begin_count = " << begin_count << "end_count = " << end_count << endl;
+      ff = new TF1("ff", fexp, time->at(index_begin[istep]) + 100, time->at(index_end[istep]) - 50, 3);
+      ff->SetLineColor(4);
+      ff->SetParameter(0, par_temp[0]);
+      ff->SetParameter(1, par_temp[1]);
+      ff->SetParameter(2, par_temp[2]);
+      //cout << "ini par[1] = " << ini1[fcount] << " begin_shift = " << shifts_begin[begin_count] << " end_shift = " << - shifts_end[end_count] << endl;
+      gc0->Fit("ff","ERQ");
+      //cout << "=> " << gMinuit->fCstatu.Data() << endl;
+      chi2 = ff->GetChisquare()/float(ff->GetNDF());
+      //cout << "chi2 = " << chi2 << endl;
+      repeate = ( (gMinuit->fCstatu.Data()[0]!='S') || (ff->GetParameter(1)<0) || (ff->GetParameter(0)<0) || chi2 > 2.0);
+	
+	if (better_chi2 == 0.0 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
+	{
+	better_chi2 = chi2;
+	par[0] = ff->GetParameter(0);
+	par[1] = ff->GetParameter(1);
+	par[2] = ff->GetParameter(2);
+	par_temp[0] = ff->GetParameter(0);
+	par_temp[1] = ff->GetParameter(1);
+	par_temp[2] = ff->GetParameter(2);
+	//cout << "Chi2 of the first approach = " << chi2 << endl;
+	}
+	if (better_chi2 > chi2 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
+	{
+	//cout << "ini par = " << ini1[fcount] << " begin_shift = " << shifts_begin[begin_count] << " end_shift = " << - shifts_end[end_count] << " ini3 = " << ini3[ini3_count]<< endl;
+	//cout << "=> " << gMinuit->fCstatu.Data() << endl;
+	//cout << "chi2 = " << chi2 << endl;
+	better_chi2 = chi2;
+	par[0] = ff->GetParameter(0);
+	par[1] = ff->GetParameter(1);
+	par[2] = ff->GetParameter(2);
+	par_temp[0] = ff->GetParameter(0);
+	par_temp[1] = ff->GetParameter(1);
+	par_temp[2] = ff->GetParameter(2);
+	}
+	else
+	{
+	if (tries%6 == 0) { par_temp[0] = par[0] * 1.1; }
+	if (tries%6 == 1) { par_temp[0] = par[0] * 0.9; }
+	if (tries%6 == 2) { par_temp[1] = par[1] * 1.1; }
+	if (tries%6 == 3) { par_temp[1] = par[1] * 0.9; }
+	if (tries%6 == 4) { par_temp[2] = par[2] * 1.1; }
+	if (tries%6 == 5) { par_temp[2] = par[2] * 0.9; }
+	}
+	tries = tries + 1;
+	//cout << tries << " > " << better_chi2 << " ~ " << par[0] << " ; " << par[1] << " ; " << par[2] << endl;
+	}
+
+
+if (type_minimization == 1 or chi2 > 10.0)
+{
+
+if (chi2 > 15.0)
+{
+par[0] = 0.0;
+par[1] = 0.0;
+par[2] = 0.0;
+better_chi2 = 0.0;
+}
+
+    while (repeate && fcount < 5 && begin_count < 8 && end_count < 6 && ini3_count < 5 && ini2_count < 6 && fitX.size() > 100) {
 
 	//cout << "fcount = " << fcount << " begin_count = " << begin_count << "end_count = " << end_count << endl;
       ff = new TF1("ff", fexp, time->at(index_begin[istep]) + shifts_begin[begin_count], time->at(index_end[istep]) - shifts_end[end_count], 3);
       ff->SetLineColor(3);
 
       ff->SetParameter(0, ini1[fcount]);
+      ff->SetParameter(1, ini2[ini2_count]);
       ff->SetParameter(2, ini3[ini3_count]);
 
-      ff->SetParameter(1, ini1[fcount]);
       //cout << "ini par[1] = " << ini1[fcount] << " begin_shift = " << shifts_begin[begin_count] << " end_shift = " << - shifts_end[end_count] << endl;
       gc0->Fit("ff","ERQ");
       //cout << "=> " << gMinuit->fCstatu.Data() << endl;
@@ -176,10 +256,11 @@ double par[3] = {0, 0, 0};
 	better[1] = begin_count;
 	better[2] = end_count;
 	better[3] = ini3_count;
+	better[4] = ini2_count;
 	par[0] = ff->GetParameter(0);
 	par[1] = ff->GetParameter(1);
 	par[2] = ff->GetParameter(2);
-	//cout << "Chi2 of the first approach = " << chi2 << endl;
+	cout << "Chi2 of the first approach = " << chi2 << endl;
 	}
 	if (better_chi2 > chi2 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
 	{
@@ -191,14 +272,16 @@ double par[3] = {0, 0, 0};
 	better[1] = begin_count;
 	better[2] = end_count;
 	better[3] = ini3_count;
+	better[4] = ini2_count;
 	par[0] = ff->GetParameter(0);
 	par[1] = ff->GetParameter(1);
 	par[2] = ff->GetParameter(2);
 	}
-	ini3_count++;
-	if (ini3_count == 3) { end_count++; ini3_count = 0; }
+	ini2_count++;
+	if (ini2_count == 6) { ini3_count++; ini2_count = 0; }
+	if (ini3_count == 5) { end_count++; ini3_count = 0; }
 	if (end_count == 6) { begin_count++; end_count = 0; }
-	if (begin_count == 10) { fcount++; begin_count = 0; }
+	if (begin_count == 8) { fcount++; begin_count = 0; }
 	}
 
 	if (better_chi2 > 2.0)
@@ -208,17 +291,19 @@ double par[3] = {0, 0, 0};
 	int se = shifts_end[better[2]];
 	float ig = ini1[better[0]];
 	float i3 = ini3[better[3]];
-	cout << better[0] << " " << better[1] << " " << better[2] << " " << better[3] << " " << endl;
-	cout << ig << " " << sb << " " << se << " " << i3 << endl;
+	float i2 = ini2[better[4]];
+	cout << better[0] << " " << better[1] << " " << better[2] << " " << better[3] << " " << better[4] << endl;
+	cout << ig << " " << sb << " " << se << " " << i3 << " " << i2 << endl;
 	ff = new TF1("ff", fexp, time->at(index_begin[istep]) + sb, time->at(index_end[istep]) - se, 3);
 	ff->SetLineColor(2);
-	if (better_chi2 < 5.0) { ff->SetLineColor(3); }
+	if (better_chi2 < 15.0) { ff->SetLineColor(3); }
       	ff->SetParameter(0, ig);
+	ff->SetParameter(1, i2);
       	ff->SetParameter(2, i3);
 	gc0->Fit("ff","ERQ");
    	cout << "=> " << gMinuit->fCstatu.Data() << endl;
       	chi2 = ff->GetChisquare()/float(ff->GetNDF());
-	if (chi2 < 5.0 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
+	if (chi2 < 15.0 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
         {
         ff->SetLineColor(3);
 	better_chi2 = chi2;
@@ -232,9 +317,12 @@ double par[3] = {0, 0, 0};
 	}
       	cout << "chi2 = " << chi2 << endl;
 	}
+}
+
+
 	cout << "parameters : " << par[0] << " " << par[1] << " " << par[2] << endl;
 	
-	if (better_chi2 < 5 and better_chi2 != 0.0 and par[0]>0 and par[1]>0)
+	if (better_chi2 < 15.0 and better_chi2 != 0.0 and par[0]>0 and par[1]>0)
 	{
 	cout<<"good fit = " << better_chi2 << " subtracting backgroung now!" << endl;
 	for (i = index_begin[istep]; i < index_end[istep]; i++)
@@ -248,7 +336,8 @@ double par[3] = {0, 0, 0};
 	{
 	cout << "The fit was bad, no background subtraction will be done" << endl;
 	}
-	
+}	
+
 	if (chi2 == 0) { cout << "No fit was sucessfull at all!" << endl; chi2 = 1000; }
       	str_volt = "unknownvoltage";
       	if (hv->at(index_begin[istep]) > -820 and hv->at(index_begin[istep]) < -780)

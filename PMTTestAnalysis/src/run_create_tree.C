@@ -100,15 +100,15 @@ files_in[90] = "../data/cpt_sf_CA0045_2012_06_06_16_02_43_mod.cpt";
 files_in[91] = "../data/cpt_sf_CA0018_2012_06_06_18_36_34_mod.cpt";
 files_in[92] = "../data/cpt_sf_CA1350_2012_06_06_21_25_43_mod.cpt";
 files_in[93] = "../data/cpt_sf_CA1170_2012_06_06_23_40_08_mod.cpt";
-files_in[94] = "../data/.cpt";
-files_in[95] = "../data/.cpt";
-files_in[96] = "../data/.cpt";
-files_in[97] = "../data/.cpt";
+files_in[94] = "../data/cpt_sf_CA1931_2012_06_07_10_35_51_mod.cpt";
+files_in[95] = "../data/cpt_sf_CA1795_2012_06_07_12_48_58_mod.cpt";
+files_in[96] = "../data/cpt_sf_CA0843_2012_06_07_15_01_25_mod.cpt";
+files_in[97] = "../data/cpt_sf_CA1328_2012_06_07_17_27_52_mod.cpt";
 files_in[98] = "../data/.cpt";
 files_in[99] = "../data/.cpt";
 
 int ini_file = 1;
-int end_file = 94;
+int end_file = 98;
 
 
   string tree_out = "PMT_test_2012.root";

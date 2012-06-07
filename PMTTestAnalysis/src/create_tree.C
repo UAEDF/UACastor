@@ -9,6 +9,7 @@
 #include "TH1.h"
 #include "TTree.h"
 #include "TGraph.h"
+#include "TGraphErrors.h"
 #include "TFile.h"
 
 //structures
@@ -47,15 +48,15 @@ ave = (vec_cath->at(point-2) + vec_cath->at(point-1) + vec_cath->at(point+1) + v
 
 dev = (vec_cath->at(point) - ave)/ave;
 
-if (dev > 0.50 and vec_cath->at(point) > 1e-12)
+if (dev > 0.15 and abs(vec_cath->at(point)) > 1e-13)
 {
-//cout<<"Positive spike! "<<dev<<endl;
+cout<<"Positive spike! "<<dev<<endl;
 //cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
 spike = 1;
 }
-if (dev < -0.50 and vec_cath->at(point) < -1e-12)
+if (dev < -0.15 and abs(vec_cath->at(point)) > 1e-13)
 {
-//cout<<"Negative spike! "<<dev<<endl;
+cout<<"Negative spike! "<<dev<<endl;
 //cout<<"cath values = "<<vec_cath->at(point-2)<<", "<<vec_cath->at(point-1)<<" "<<vec_cath->at(point)<<" "<<vec_cath->at(point+1)<<" "<<vec_cath->at(point+2)<<endl;
 spike = 1;
 }
@@ -244,7 +245,7 @@ float ave_after  = 0.0, error_after  = 0.0;
 
 float ave_low = 0.0;
 
-for (int i = 1; i <= 20; i++)
+for (int i = 1; i <= 30; i++)
 {
 if (i == 1) { low_before = vec_cath->at(ini_val-1-i); }
 if (high_before < vec_cath->at(ini_val-1-i)) { high_before = vec_cath->at(ini_val-1-i); }
@@ -258,18 +259,18 @@ if (high_middle < vec_cath->at(i)) { high_middle = vec_cath->at(i); }
 if (low_middle > vec_cath->at(i)) { low_middle = vec_cath->at(i); }
 }
 
-for (int i = 1; i <= 20; i++)
+for (int i = 1; i <= 30; i++)
 {
 if (i == 1) { low_after = vec_cath->at(end_val+6+i); }
 if (high_after < vec_cath->at(end_val+6+i)) { high_after = vec_cath->at(end_val+6+i); }
 if (low_after > vec_cath->at(end_val+6+i)) { low_after = vec_cath->at(end_val+6+i); }
 }
 
-val_before =  new TH1D("val_before","val_before;current", 100,low_before,high_before);
-val_middle =  new TH1D("val_middle","val_middle;current", 100,low_middle, high_middle);
-val_after  =  new TH1D("val_after","val_after;current", 100,low_after,high_after);
+val_before =  new TH1D("val_before","val_before;current", 100, low_before, high_before);
+val_middle =  new TH1D("val_middle","val_middle;current", 100, low_middle, high_middle);
+val_after  =  new TH1D("val_after","val_after;current", 100, low_after, high_after);
 
-for (int i = 1; i <= 20; i++)
+for (int i = 1; i <= 30; i++)
 {
 spike_check(ini_val-1-i, vec_cath, spike);
 if (spike == 1) { cath_spikes = cath_spikes + 1; }
@@ -285,7 +286,7 @@ else { val_middle->Fill(vec_cath->at(i)); n_middle = n_middle + 1; }
 spike = 0;
 }
 
-for (int i = 1; i <= 20; i++)
+for (int i = 1; i <= 30; i++)
 {
 spike_check(end_val+6+i, vec_cath, spike);
 if (spike == 1) { cath_spikes = cath_spikes + 1; }
@@ -303,24 +304,25 @@ error_after = val_after->GetRMS();
 
 ave_low = (ave_before*n_before + ave_after*n_after)/(n_before+n_after);
 cath_gain = ave_middle;
-if (chi2 > 2)
+if (chi2 > 3.0)
 {
 cath_gain = ave_middle - ave_low;
 }
 
-if (ave_before <= 0 || ave_middle <= 0 || ave_after <= 0 || chi2 > 2)
+if (ave_before <= 0 || ave_middle <= 0 || ave_after <= 0 || chi2 > 3.0)
 {
 cout << "chi2 : " << chi2 << endl;
 cout << "value before : " << ave_before << endl;
 cout << "value middle : " << ave_middle << endl;
-cout << "value after  : " << ave_after  << " " << n_after << endl;
+cout << "value after  : " << ave_after  << endl;
 cout << "cath gain    : " << cath_gain  << endl;
 }
 
 cath_gain = error_middle;
-if (chi2 > 2)
+if (chi2 > 3.0)
 {
 cath_error = (error_before*n_before + error_middle*n_middle + error_after+n_after)/(n_before + n_middle + n_after);
+cout << "Doing the geometrical subtraction!" << endl;
 }
 
 
@@ -332,7 +334,7 @@ delete(val_after);
 
 }
 
-void calc_dif(size_t cent_val, std::vector<float> *vec_adut, std::vector<float> *vec_aref, std::vector<int> *vec_led, float& anode, float& ref)
+void calc_dif(size_t cent_val, std::vector<float> *vec_adut, std::vector<float> *vec_aref, std::vector<float> *vec_led, float& anode, float& ref)
 {
 
 size_t lenght = vec_adut->size();
@@ -405,7 +407,7 @@ ref = ave_ref_after - ave_ref_before;
 }
 
 
-void do_measurement(int index_led_up, int index_led_down, std::vector<float> *vec_cath, std::vector<float> *vec_adut, std::vector<float> *vec_aref, std::vector<int> *vec_led, double chi2, measurement &meas, int &total_spikes)
+void do_measurement(int index_led_up, int index_led_down, std::vector<float> *vec_cath, std::vector<float> *vec_adut, std::vector<float> *vec_aref, std::vector<float> *vec_led, double chi2, measurement &meas, int &total_spikes)
 {
 //step on the anode and reference up
 calc_dif(index_led_up, vec_adut, vec_aref, vec_led, meas.anode_up, meas.ref_up);
@@ -423,12 +425,34 @@ total_spikes = total_spikes + meas.cath_spikes;
 void create_tree(string *files_in, int ini_file, int end_file, string tree_out)
 {
 
-float wave_lenght[4] = {400.0, 470.0, 500.0, 517.0};
-float voltages[7] = {800.0, 900.0, 1000.0, 1200.0, 1400.0, 1600.0, 1800.0};
+double errorx = (0.5/16.6)*10E-12;
+//double errory = 0.0;
+std::vector<float> cathode_ye;
+
+//for the reports
+int page_old = 1;
+int canv_old = 1;
+int page_new = 1;
+int canv_new = 1;
+TCanvas * r_new_gain = 0;
+TCanvas * r_old_gain = 0;
+TCanvas * r_new_qe = 0;
+TCanvas * r_old_qe = 0;
+TCanvas * r_new_cath = 0;
+TCanvas * r_old_cath = 0;
+
+string title;
+
+//float wave_lenght[4] = {400.0, 470.0, 500.0, 517.0};
+float wave_lenght[3] = {400.0, 470.0, 500.0};
+float wave1 = 400.0;
+float voltages[7] = {800.0, 900.0, 1000.0, 1200.0, 1400.0, 1600.0};
+
+float max_graph, min_graph;
 
 //variable declaration
-float cath, adut, aref;
-int entries, time, hv, led, aux_int;
+float cath, adut, aref, time, hv, led;
+int entries, aux_int;
 
 char read_time[20];
 string ini_time, end_time;
@@ -437,11 +461,9 @@ string pmt, aux_str;
 std::vector<int> vec_begin, vec_end;
 std::vector<int> *pvec_begin, *pvec_end;
 
-std::vector<int> vec_time, vec_hv, vec_led;
 std::vector<float> vec_cath;
-std::vector<float> vec_cath_ori, vec_adut, vec_aref;
-std::vector<int> *pvec_time, *pvec_hv, *pvec_led;
-std::vector<float> *pvec_cath, *pvec_cath_ori, *pvec_adut, *pvec_aref;
+std::vector<float> vec_time, vec_cath_ori, vec_adut, vec_aref, vec_hv, vec_led;
+std::vector<float> *pvec_time, *pvec_cath, *pvec_cath_ori, *pvec_adut, *pvec_aref, *pvec_hv, *pvec_led;
 int total_spikes, sector, module, set, bad_fits;
 
 int found1, found2, found3, set_unknown;
@@ -519,13 +541,13 @@ tree->Branch("Entries",&entries,"Number of entries/I");
 tree->Branch("Module",&module,"Castor module/I");
 tree->Branch("Sector",&sector,"Castor sector/I");
 tree->Branch("Set",&set,"Set of pmts/I");
-tree->Branch("Measured_time","std::vector<int>",&pvec_time);
-tree->Branch("HV","std::vector<int>",&pvec_hv);
+tree->Branch("Measured_time","std::vector<float>",&pvec_time);
+tree->Branch("HV","std::vector<float>",&pvec_hv);
 tree->Branch("Cathode","std::vector<float>",&pvec_cath_ori);
 tree->Branch("Cathode_after_background_subtraction","std::vector<float>",&pvec_cath);
 tree->Branch("Anode","std::vector<float>",&pvec_adut);
 tree->Branch("Reference_PMT","std::vector<float>",&pvec_aref);
-tree->Branch("Led","std::vector<int>",&pvec_led);
+tree->Branch("Led","std::vector<float>",&pvec_led);
 tree->Branch("Number_of_spikes",&total_spikes,"Number of spikes found during the analysis/I");
 tree->Branch("Number_of_bad_fits",&bad_fits,"Number of bad fits found during the analysis/I");
 tree->Branch("m_800V_led1",&m_800V_led1.cath_value,"cath_value/F:cath_error/F:cath_spikes/I:cath_points/I:anode_up/F:anode_down/F:ref_up/F:ref_down/F:gain/F:qe/F");
@@ -861,7 +883,7 @@ pmt = file.substr(found2+1,found3-found2-1);
 //reading the cpt file
 while(!feof(f))
 {
-fscanf(f,"%s %i %i %f %f %f %i", read_time, &time, &hv, &cath, &adut, &aref, &led);
+fscanf(f,"%s %f %f %f %f %f %f", read_time, &time, &hv, &cath, &adut, &aref, &led);
 //cout<<read_time<<" "<<time<<" "<<hv<<" "<<cath<<" "<<adut<<" "<<aref<<" "<<led<<endl;
 if (time == 0) { ini_time = (string) read_time; } //set begin time of the measurement
 vec_time.push_back(time);
@@ -880,22 +902,37 @@ theSubtractor.SetVerbosity(0);
 theSubtractor.Run();
 */
 
+max_graph = 0.0;
+min_graph = 1;
+
+  for (unsigned int j = 0; j < vec_cath_ori.size(); j++)
+  {
+    cathode_ye.push_back(errorx);
+    if (vec_cath_ori.at(j) > max_graph and vec_led.at(j) > 0) { max_graph = vec_cath_ori.at(j); }
+    if (vec_cath_ori.at(j) < min_graph and vec_cath_ori.at(j) > 0.0 and abs(vec_hv.at(j)) > 20.0) { min_graph = vec_cath_ori.at(j); }
+  }
+max_graph = max_graph * 1.5;
+min_graph = min_graph * 0.8;
+
 string file2 = file.substr(15,26);
 string name2 = "plots/" + file2 + ".pdf";
 
+//cout << "minimum for the graph = " << min_graph << endl;
+
 	TCanvas * c1 = new TCanvas("c","c",800,600);
-      	//gPad->SetLogy();
-	TGraph *gc1 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath_ori.front());
+	TGraphErrors *gc1 = new TGraphErrors(entries,&vec_time.front(),&vec_cath_ori.front(),NULL,&cathode_ye.front());
 	gc1->SetTitle("Cathode current as function of time before the background subtraction;time [s];Current [A]");
+	gc1->SetMinimum(min_graph);
+	gc1->SetMaximum(max_graph);
       	gc1->Draw("AP");
       	string name1 = "plots/" + file2 + ".pdf(";
         c1->Print(name1.c_str());
 	c1->Close();
 
 //cout << "size before : " << vec_cath_ori.size() << endl;
-
+//cout << "begin of subtraction" << endl;
 LeakageSubtractor(&vec_time, &vec_cath_ori, &vec_hv, &vec_led, name2, vec_cath, fit);
-
+//cout << "end of subtraction" << endl;
 //set the end time of the measurement
 end_time = (string) read_time; 
 
@@ -1083,35 +1120,35 @@ if (vec_led[j] == 2 or vec_led[j] == 3 or vec_led[j] == 1 ) { cout<<"Voltage : "
 //cout<<"index 1400V led1 up    = "<<index_1400V_led1_up<<endl;
 //cout<<"index 1400V led1 down  = "<<index_1400V_led1_down<<endl;
 
-//800V
+cout << "800V" << endl;
 do_measurement(index_800V_led1_up, index_800V_led1_down, &vec_cath, &vec_adut, &vec_aref, &vec_led, fit.c_800V, m_800V_led1, total_spikes);
 do_measurement(index_800V_led2_up, index_800V_led2_down, &vec_cath, &vec_adut, &vec_aref, &vec_led, fit.c_800V, m_800V_led2, total_spikes);
 do_measurement(index_800V_led3_up, index_800V_led3_down, &vec_cath, &vec_adut, &vec_aref, &vec_led, fit.c_800V, m_800V_led3, total_spikes);
-do_measurement(index_800V_led4_up, index_800V_led4_down, &vec_cath, &vec_adut, &vec_aref, &vec_led, fit.c_800V, m_800V_led4, total_spikes);
+do_measurement(index_800V_led4_up, index_800V_led4_down, &vec_cath_ori, &vec_adut, &vec_aref, &vec_led, fit.c_800V, m_800V_led4, total_spikes);
 
-//900V led1
+cout << "900V" << endl;
 do_measurement(index_900V_led1_up, index_900V_led1_down, &vec_cath, &vec_adut, &vec_aref, &vec_led, fit.c_900V, m_900V_led1, total_spikes);
 
-//1000V led1
+cout << "1000V" << endl;
 do_measurement(index_1000V_led1_up, index_1000V_led1_down, &vec_cath, &vec_adut, &vec_aref, &vec_led, fit.c_1000V, m_1000V_led1, total_spikes);
 
-//1200V
+cout << "1200V" << endl;
 do_measurement(index_1200V_led1_up, index_1200V_led1_down, &vec_cath, &vec_adut, &vec_aref, &vec_led, fit.c_1200V, m_1200V_led1, total_spikes);
 do_measurement(index_1200V_led2_up, index_1200V_led2_down, &vec_cath, &vec_adut, &vec_aref, &vec_led, fit.c_1200V, m_1200V_led2, total_spikes);
 do_measurement(index_1200V_led3_up, index_1200V_led3_down, &vec_cath, &vec_adut, &vec_aref, &vec_led, fit.c_1200V, m_1200V_led3, total_spikes);
-do_measurement(index_1200V_led4_up, index_1200V_led4_down, &vec_cath, &vec_adut, &vec_aref, &vec_led, fit.c_1200V, m_1200V_led4, total_spikes);
+do_measurement(index_1200V_led4_up, index_1200V_led4_down, &vec_cath_ori, &vec_adut, &vec_aref, &vec_led, fit.c_1200V, m_1200V_led4, total_spikes);
 
-//1400V
+cout << "1400V" << endl;
 do_measurement(index_1400V_led1_up, index_1400V_led1_down, &vec_cath, &vec_adut, &vec_aref, &vec_led, fit.c_1400V, m_1400V_led1, total_spikes);
 
-//1600V
+cout << "1600V" << endl;
 do_measurement(index_1600V_led1_up, index_1600V_led1_down, &vec_cath, &vec_adut, &vec_aref, &vec_led, fit.c_1600V, m_1600V_led1, total_spikes);
 
-//1800V
+cout << "1800V" << endl;
 do_measurement(index_1800V_led4_up, index_1800V_led4_down, &vec_cath, &vec_adut, &vec_aref, &vec_led, fit.c_1800V, m_1800V_led4, total_spikes);
 
 //index output for the leakage estimation
-cout<<"0V     "<<index_leakage_0V_begin<<" "<<index_leakage_0V_end<<endl;
+//cout<<"0V     "<<index_leakage_0V_begin<<" "<<index_leakage_0V_end<<endl;
 //cout<<"800V   "<<index_leakage_800V_begin<<" "<<index_leakage_800V_end<<endl;
 //cout<<"900V   "<<index_leakage_900V_begin<<" "<<index_leakage_900V_end<<endl;
 //cout<<"1000V  "<<index_leakage_1000V_begin<<" "<<index_leakage_1000V_end<<endl;
@@ -1152,55 +1189,57 @@ total_spikes = total_spikes + leakage_1600V_spikes;
 estimate_leakage(index_leakage_1800V_begin, index_leakage_1800V_end, &vec_cath_ori, leakage_1800V, leakage_1800V_n, leakage_1800V_spikes, leakage_1800V_error);
 total_spikes = total_spikes + leakage_1600V_spikes;
 
-if (fit.c_800V > 10) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
-if (fit.c_900V > 10) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
-if (fit.c_1000V > 10) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
-if (fit.c_1200V > 10) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
-if (fit.c_1400V > 10) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
-if (fit.c_1600V > 10) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
-if (fit.c_1800V > 10) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
+if (fit.c_800V > 5) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
+if (fit.c_900V > 5) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
+if (fit.c_1000V > 5) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
+if (fit.c_1200V > 5) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
+if (fit.c_1400V > 5) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
+if (fit.c_1600V > 5) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
+if (fit.c_1800V > 5) { bad_fits = bad_fits + 1; total_bad_fits = total_bad_fits + 1; }
 
 cout<<"Total spikes = "<<total_spikes<<endl;
 cout<<"Total bad fits = "<<bad_fits<<endl;
 
-float quantum_eff[4];
-if (m_1200V_led1.qe > 0 && m_1200V_led2.qe && m_1200V_led3.qe && m_1200V_led4.qe)
-{
-quantum_eff[0] = m_1200V_led1.qe;
-quantum_eff[1] = m_1200V_led2.qe;
-quantum_eff[2] = m_1200V_led3.qe;
-quantum_eff[3] = m_1200V_led4.qe;
-}
-if (m_800V_led1.qe > 0 && m_800V_led2.qe && m_800V_led3.qe && m_800V_led4.qe)
-{
-quantum_eff[0] = m_800V_led1.qe;
-quantum_eff[1] = m_800V_led2.qe;
-quantum_eff[2] = m_800V_led3.qe;
-quantum_eff[3] = m_800V_led4.qe;
-}
 float gains[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float voltages_temp[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float chi2_temp[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float temp1[7] = {m_800V_led1.anode_up, m_900V_led1.anode_up, m_1000V_led1.anode_up, m_1200V_led1.anode_up, m_1400V_led1.anode_up, m_1600V_led1.anode_up, m_1800V_led4.anode_up};
 float temp2[7] = {m_800V_led1.cath_value, m_900V_led1.cath_value, m_1000V_led1.cath_value, m_1200V_led1.cath_value, m_1400V_led1.cath_value, m_1600V_led1.cath_value, m_1800V_led4.cath_value};
+float chi2s[7] = {fit.c_800V, fit.c_900V, fit.c_1000V, fit.c_1200V, fit.c_1400V, fit.c_1600V, fit.c_1800V};
 int index_temp = 0;
 for (int j=0; j < 7; j++)
 {
-if (temp1[j] != 0 && temp2[j] != 0)
+if (temp1[j] != 0 && temp2[j] != 0 && chi2s[j] < 5.0)
 {
 voltages_temp[index_temp] = voltages[j];
 gains[index_temp] = temp1[j]/temp2[j];
+chi2_temp[index_temp] = chi2s[j];
 index_temp = index_temp + 1;
 }
 }
 
 int status_index[3] = {1, 2, 3};
 int status_values[3] = {bad_fits, total_spikes, set_unknown};
-float chi2s[7] = {fit.c_800V, fit.c_900V, fit.c_1000V, fit.c_1200V, fit.c_1400V, fit.c_1600V, fit.c_1800V};
+
+
+
+max_graph = 0.0;
+min_graph = 1;
+
+  for (unsigned int j = 0; j < vec_cath_ori.size(); j++)
+  {
+    if (vec_cath.at(j) > max_graph and vec_led.at(j) > 0) { max_graph = vec_cath.at(j); }
+    //if (vec_cath.at(j) < min_graph and abs(vec_hv.at(j)) > 20.0) { min_graph = vec_cath.at(j); }
+  }
+max_graph = max_graph * 1.5;
+min_graph = -2e-12;
 
 	TCanvas * c2 = new TCanvas("c2","c",800,600);
       	//gPad->SetLogy();
-	TGraph *gc2 = new TGraph(entries,(float*)&vec_time.front(),&vec_cath.front());
+	TGraph *gc2 = new TGraph(entries,&vec_time.front(),&vec_cath.front());
 	gc2->SetTitle("Cathode current as function of time after background subtraction;Time [s];Current [V]");
+	gc2->SetMinimum(min_graph);
+	gc2->SetMaximum(max_graph);
       	gc2->Draw("AP");
         c2->Print(name2.c_str());
 	c2->Close();
@@ -1247,37 +1286,227 @@ float chi2s[7] = {fit.c_800V, fit.c_900V, fit.c_1000V, fit.c_1200V, fit.c_1400V,
         c3->Print(name2.c_str());
 	c3->Close();
 
+float quantum_eff_800V[3] = {0.0, 0.0, 0.0};
+float quantum_eff_1200V[3] = {0.0, 0.0, 0.0};
+
+TGraph *gc4a = 0;
+TGraph *gc4b = 0;
+
+if (m_800V_led1.qe > 0.0 && m_800V_led2.qe > 0.0 && m_800V_led3.qe > 0.0 && m_800V_led4.qe > 0.0)
+{
+quantum_eff_800V[0] = m_800V_led1.qe;
+quantum_eff_800V[1] = m_800V_led2.qe;
+quantum_eff_800V[2] = m_800V_led3.qe;
+//quantum_eff_800V[3] = m_800V_led4.qe;
+gc4a = new TGraph(3,wave_lenght,quantum_eff_800V);
+}
+
+if (m_800V_led1.qe > 0.0 && m_800V_led2.qe == 0.0 && m_800V_led3.qe == 0.0 && m_800V_led4.qe == 0.0)
+{
+gc4a = new TGraph(1,&wave1,&m_800V_led1.qe);
+}
+
+if (m_1200V_led1.qe > 0 && m_1200V_led2.qe > 0.0 && m_1200V_led3.qe > 0.0 && m_1200V_led4.qe > 0.0)
+{
+quantum_eff_1200V[0] = m_1200V_led1.qe;
+quantum_eff_1200V[1] = m_1200V_led2.qe;
+quantum_eff_1200V[2] = m_1200V_led3.qe;
+//quantum_eff_1200V[3] = m_1200V_led4.qe;
+gc4b = new TGraph(3,wave_lenght,quantum_eff_1200V);
+}
+
+if (m_1200V_led1.qe > 0.0 && m_1200V_led2.qe == 0.0 && m_1200V_led3.qe == 0.0 && m_1200V_led4.qe == 0.0)
+{
+gc4b = new TGraph(1,&wave1,&m_1200V_led1.qe);
+}
+
 	TCanvas * c4 = new TCanvas("c","c",800,600);
       	//gPad->SetLogy();
-	TGraph *gc4 = new TGraph(4,wave_lenght,quantum_eff);
-	gc4->SetTitle("Quantum efficiency as function of wavelenght;Wave lenght [nm];Quantum efficiency");
-        gc4->SetMarkerStyle(20);
-      	gc4->Draw("APL");
+	gc4a->SetTitle("Relative quantum efficiency as function of wavelenght;Wave lenght [nm];Quantum efficiency");
+	gc4b->SetTitle("Relative quantum efficiency as function of wavelenght;Wave lenght [nm];Quantum efficiency");
+        gc4a->SetMarkerStyle(20);
+        gc4a->SetMarkerColor(1);
+      	gc4b->SetMarkerStyle(20);
+        gc4b->SetMarkerColor(3);
+        if (m_800V_led2.qe > 0.0 && m_800V_led3.qe > 0.0 && m_800V_led4.qe > 0.0)
+        {
+	gc4a->SetMinimum(0.0);
+        gc4a->Draw("APL");
+      	gc4b->Draw("PLsame");
+      	}
+      	if (m_1200V_led2.qe > 0.0 && m_1200V_led3.qe > 0.0 && m_1200V_led4.qe > 0.0)
+        {
+	gc4b->SetMinimum(0.0);
+        gc4b->Draw("APL");
+      	gc4a->Draw("PLsame");
+      	}
         c4->Print(name2.c_str());
 	c4->Close();
 
-	TCanvas * c4b = new TCanvas("c","c",800,600);
+	TCanvas * c4z = new TCanvas("c","c",800,600);
       	//gPad->SetLogy();
-	TGraph *gc4b = new TGraph(index_temp,voltages_temp,chi2s);
-	gc4b->SetTitle("Chi2;Voltage [V];Chi2 of the fit");
-        gc4b->SetMarkerStyle(20);
-      	gc4b->Draw("APL");
-        c4b->Print(name2.c_str());
-	c4b->Close();
+	TGraph *gc4z = new TGraph(index_temp,voltages_temp,chi2_temp);
+	gc4z->SetTitle("Chi2;Voltage [V];Chi2 of the fit");
+        gc4z->SetMarkerStyle(20);
+      	gc4z->Draw("APL");
+        c4z->Print(name2.c_str());
+	c4z->Close();
 	
 	TCanvas * c5 = new TCanvas("c","c",800,600);
       	//gPad->SetLogy();
 	TGraph *gc5 = new TGraph(3,status_index,status_values);
 	gc5->SetTitle("Final status;Bad fits/Spikes/Unknown PMT;AU");
+	gc5->SetMarkerStyle(20);
       	gc5->Draw("APL");
         string name5 = "plots/" + file2 + ".pdf)";
         c5->Print(name5.c_str());
 	c5->Close();
 
+if (set == 1)
+{
+if (canv_old == 1)
+{
+r_old_gain = new TCanvas("r_old_gain","c",800,600);
+r_old_gain->Divide(3,3);
+r_old_qe = new TCanvas("r_old_qe","c",800,600);
+r_old_qe->Divide(3,3);
+r_old_cath = new TCanvas("r_old_cath","c",800,600);
+r_old_cath->Divide(3,3);
+}
+
+if (total_spikes > 10 and bad_fits > 0)
+{
+gc3->SetLineColor(2);
+gc4a->SetLineColor(2);
+gc1->SetLineColor(2);
+}
+//r_old_gain->cd(canv_old);
+r_old_gain->cd();
+gPad->SetLogy();
+gPad->SetLogx();
+title = pmt + ";Voltage [V];Gain";
+gc3->SetTitle(title.c_str());
+gc3->Draw("APL");
+//r_old_qe->cd(canv_old);
+r_old_qe->cd();
+title = pmt + ";Wavelenght [nm];Relative Quantum Efficiency";
+gc4a->SetTitle(title.c_str());
+gc4b->SetTitle(title.c_str());
+if (m_800V_led2.qe > 0.0 && m_800V_led3.qe > 0.0 && m_800V_led4.qe > 0.0)
+{
+gc4a->Draw("APL");
+gc4b->Draw("PLsame");
+}
+if (m_1200V_led2.qe > 0.0 && m_1200V_led3.qe > 0.0 && m_1200V_led4.qe > 0.0)
+{
+gc4b->Draw("APL");
+gc4a->Draw("PLsame");
+}
+//r_old_cath->cd(canv_old);
+r_old_cath->cd();
+gPad->SetLogy();
+title = pmt + ";Time [s];Current [A]";
+gc1->SetTitle(title.c_str());
+gc1->Draw("APL");
+canv_old = canv_old + 1;
+
+if (canv_old == 2)
+{
+if (page_old == 1)
+{
+r_old_gain->Print("report_gains_old.pdf(");
+r_old_qe->Print("report_qe_old.pdf(");
+r_old_cath->Print("report_cath_old.pdf(");
+page_old = 1;
+}
+if (page_old > 1)
+{
+r_old_gain->Print("report_gains_old.pdf");
+r_old_qe->Print("report_qe.pdf_old");
+r_old_cath->Print("report_cath_old.pdf");
+page_old = page_old + 1;
+}
+r_old_gain->Clear();
+r_old_qe->Clear();
+r_old_cath->Clear();
+canv_old = 1;
+}
+}
+
+
+if (set == 2)
+{
+if (canv_new == 1)
+{
+r_new_gain = new TCanvas("r_new_gain","c",800,600);
+r_new_gain->Divide(3,3);
+r_new_qe = new TCanvas("r_new_qe","c",800,600);
+r_new_qe->Divide(3,3);
+r_new_cath = new TCanvas("r_new_cath","c",800,600);
+r_new_cath->Divide(3,3);
+}
+
+if (total_spikes > 10 and bad_fits > 0)
+{
+gc3->SetLineColor(2);
+gc4a->SetLineColor(2);
+gc1->SetLineColor(2);
+}
+r_new_gain->cd(canv_new);
+gPad->SetLogy();
+gPad->SetLogx();
+title = pmt + ";Voltage [V];Gain";
+gc3->SetTitle(title.c_str());
+gc3->Draw("APL");
+r_new_qe->cd(canv_new);
+title = pmt + ";Wavelenght [nm];Relative Quantum Efficiency";
+gc4a->SetTitle(title.c_str());
+gc4a->Draw("APL");
+gc4b->Draw("APL same");
+r_new_cath->cd(canv_new);
+title = pmt + ";Time [s];Current [A]";
+gc1->SetTitle(title.c_str());
+gPad->SetLogy();
+gc1->Draw("APL");
+canv_new = canv_new + 1;
+
+
+if (canv_new == 10)
+{
+if (page_new == 1)
+{
+r_new_gain->Print("report_gains_new.pdf(");
+r_new_qe->Print("report_qe_new.pdf(");
+r_new_cath->Print("report_cath_new.pdf(");
+page_new = 2;
+}
+if (page_new > 1)
+{
+r_new_gain->Print("report_gains_new.pdf");
+r_new_qe->Print("report_qe_new.pdf");
+r_new_cath->Print("report_cath_new.pdf");
+page_new = page_new + 1;
+}
+r_new_gain->Clear();
+r_new_qe->Clear();
+r_new_cath->Clear();
+canv_new = 1;
+}
+}
+
+
 //fill the tree
 tree->Fill();
 
 }
+
+r_old_gain->Print("report_gains_old.pdf)");
+r_old_qe->Print("report_qe_old.pdf)");
+r_old_cath->Print("report_cath_old.pdf)");
+//r_new_gain->Print("report_gains_new.pdf)");
+//r_new_qe->Print("report_qe_new.pdf)");
+//r_new_cath->Print("report_cath_new.pdf)");
+
 cout<<"Total unknown PMTs : "<<total_unknown<<endl;
 cout<<"Total bad fits : "<<total_bad_fits<<endl;
 

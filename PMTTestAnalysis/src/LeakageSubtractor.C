@@ -36,7 +36,7 @@ double fexp(double *x, double *p){
     return p[0] + p[1] * exp (-(x[0]/p[2] ) );
 };
 
-void LeakageSubtractor(const std::vector<int> *time, std::vector<float> *cathode, const std::vector<int> *hv, const std::vector<int> *led, std::string file, std::vector<float>& cathode_out, chi2& fit ){
+void LeakageSubtractor(const std::vector<float> *time, std::vector<float> *cathode, const std::vector<float> *hv, const std::vector<float> *led, std::string file, std::vector<float>& cathode_out, chi2& fit ){
 
 string str_volt;
 
@@ -60,7 +60,7 @@ std::vector<double> fitY;
 std::vector<double> fitYe;
 
 //int nstep = 7;
-int step[7]={800,900,1000,1200,1400,1600,1800}; 
+int step[7]={800, 900, 1000, 1200, 1400, 1600, 1800}; 
 //write the endex of the beginning and the end of the hv regions into an array
 int voltageStep[7] = {0,0,0,0,0,0,0};
 int index_begin[7] = {0,0,0,0,0,0,0};
@@ -69,13 +69,15 @@ int istep, i;
 
 int fcount=0;
 bool repeate=true;
-double ini1[8] = {1.0e-7, 1.0e-8, 1.e-6, 1.0e-9, 1.0e-5, 1.0e-10, 1.e-4, 1.0e-11};
-double shifts_begin[8] = {0, 50, 100, 150, 200, 250, 300};
-double shifts_end[5] = {0, 50, 100, 150, 200};
+double ini1[4] = {1.0e-11, 1.0e-10, 1.0e-9, 1.0e-8};
+double shifts_begin[10] = {0, 50, 100, 150, 200, 250, 300, 350, 400, 450};
+double shifts_end[6] = {0, 50, 100, 150, 200, 250};
+double ini3[3] = {200, 300, 400};
+int ini3_count = 0;
 int begin_count = 0;
 int end_count = 0;
-int better_chi2 = 0.0;
-int better[3] = {0, 0, 0};
+float better_chi2 = 0.0;
+int better[4] = {0, 0, 0, 0};
 double par[3] = {0, 0, 0};
 
   for (i = 0; i < size; i++)
@@ -144,6 +146,110 @@ double par[3] = {0, 0, 0};
    // TGraphErrors has to be defined befor TF1 (the fit function)
    TGraphErrors *gc0 = new TGraphErrors(fitX.size(),&fitX.front(),&fitY.front(),NULL,&fitYe.front());
 
+	TCanvas * c = new TCanvas("c","c",800,600);
+      	//gPad->SetLogy();
+	str_volt = str_volt + ";Time [s];Current [V]";
+	TF1 *ff = 0;
+
+    TVirtualFitter::SetMaxIterations(7000);
+    while (repeate && fcount < 4 && begin_count < 10 && end_count < 6 && ini3_count < 3 && fitX.size() > 100) {
+
+	//cout << "fcount = " << fcount << " begin_count = " << begin_count << "end_count = " << end_count << endl;
+      ff = new TF1("ff", fexp, time->at(index_begin[istep]) + shifts_begin[begin_count], time->at(index_end[istep]) - shifts_end[end_count], 3);
+      ff->SetLineColor(3);
+
+      ff->SetParameter(0, ini1[fcount]);
+      ff->SetParameter(2, ini3[ini3_count]);
+
+      ff->SetParameter(1, ini1[fcount]);
+      //cout << "ini par[1] = " << ini1[fcount] << " begin_shift = " << shifts_begin[begin_count] << " end_shift = " << - shifts_end[end_count] << endl;
+      gc0->Fit("ff","ERQ");
+      //cout << "=> " << gMinuit->fCstatu.Data() << endl;
+      chi2 = ff->GetChisquare()/float(ff->GetNDF());
+      //cout << "chi2 = " << chi2 << endl;
+      repeate = ( (gMinuit->fCstatu.Data()[0]!='S') || (ff->GetParameter(1)<0) || (ff->GetParameter(0)<0) || chi2 > 2.0);
+	
+	if (better_chi2 == 0.0 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
+	{
+	better_chi2 = chi2;
+	better[0] = fcount;
+	better[1] = begin_count;
+	better[2] = end_count;
+	better[3] = ini3_count;
+	par[0] = ff->GetParameter(0);
+	par[1] = ff->GetParameter(1);
+	par[2] = ff->GetParameter(2);
+	//cout << "Chi2 of the first approach = " << chi2 << endl;
+	}
+	if (better_chi2 > chi2 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
+	{
+	//cout << "ini par = " << ini1[fcount] << " begin_shift = " << shifts_begin[begin_count] << " end_shift = " << - shifts_end[end_count] << " ini3 = " << ini3[ini3_count]<< endl;
+	//cout << "=> " << gMinuit->fCstatu.Data() << endl;
+	//cout << "chi2 = " << chi2 << endl;
+	better_chi2 = chi2;
+	better[0] = fcount;
+	better[1] = begin_count;
+	better[2] = end_count;
+	better[3] = ini3_count;
+	par[0] = ff->GetParameter(0);
+	par[1] = ff->GetParameter(1);
+	par[2] = ff->GetParameter(2);
+	}
+	ini3_count++;
+	if (ini3_count == 3) { end_count++; ini3_count = 0; }
+	if (end_count == 6) { begin_count++; end_count = 0; }
+	if (begin_count == 10) { fcount++; begin_count = 0; }
+	}
+
+	if (better_chi2 > 2.0)
+	{
+	cout << "none of the fits was very good, using the best one!" << endl;
+        int sb = shifts_begin[better[1]];
+	int se = shifts_end[better[2]];
+	float ig = ini1[better[0]];
+	float i3 = ini3[better[3]];
+	cout << better[0] << " " << better[1] << " " << better[2] << " " << better[3] << " " << endl;
+	cout << ig << " " << sb << " " << se << " " << i3 << endl;
+	ff = new TF1("ff", fexp, time->at(index_begin[istep]) + sb, time->at(index_end[istep]) - se, 3);
+	ff->SetLineColor(2);
+	if (better_chi2 < 5.0) { ff->SetLineColor(3); }
+      	ff->SetParameter(0, ig);
+      	ff->SetParameter(2, i3);
+	gc0->Fit("ff","ERQ");
+   	cout << "=> " << gMinuit->fCstatu.Data() << endl;
+      	chi2 = ff->GetChisquare()/float(ff->GetNDF());
+	if (chi2 < 5.0 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
+        {
+        ff->SetLineColor(3);
+	better_chi2 = chi2;
+	par[0] = ff->GetParameter(0);
+	par[1] = ff->GetParameter(1);
+	par[2] = ff->GetParameter(2);
+	}
+	else
+	{
+        cout << "the fit was bad!" << endl;
+	}
+      	cout << "chi2 = " << chi2 << endl;
+	}
+	cout << "parameters : " << par[0] << " " << par[1] << " " << par[2] << endl;
+	
+	if (better_chi2 < 5 and better_chi2 != 0.0 and par[0]>0 and par[1]>0)
+	{
+	cout<<"good fit = " << better_chi2 << " subtracting backgroung now!" << endl;
+	for (i = index_begin[istep]; i < index_end[istep]; i++)
+  	{
+  	double t = time->at(i);
+  	double val = cathode->at(i) - fexp(&t, par); 
+    	cathode_out.at(i) = val;
+  	}
+	}
+	else
+	{
+	cout << "The fit was bad, no background subtraction will be done" << endl;
+	}
+	
+	if (chi2 == 0) { cout << "No fit was sucessfull at all!" << endl; chi2 = 1000; }
       	str_volt = "unknownvoltage";
       	if (hv->at(index_begin[istep]) > -820 and hv->at(index_begin[istep]) < -780)
 	{ fit.c_800V = chi2; str_volt = "800V"; }
@@ -160,235 +266,42 @@ double par[3] = {0, 0, 0};
       	if (hv->at(index_begin[istep]) > -1820 and hv->at(index_begin[istep]) < -1780)
 	{ fit.c_1800V = chi2; str_volt = "1800V"; }
 
-	TCanvas * c = new TCanvas("c","c",800,600);
-      	gPad->SetLogy();
-	str_volt = str_volt + ";Time [s];Current [V]";
-
-    TVirtualFitter::SetMaxIterations(7000);
-    while (repeate && fcount < 8 && begin_count < 8 && end_count < 5) {
-
-	//cout << "fcount = " << fcount << " begin_count = " << begin_count << "end_count = " << end_count << endl;
-      TF1 *ff = new TF1("ff", fexp, time->at(index_begin[istep]) + shifts_begin[begin_count], time->at(index_end[istep]) - shifts_end[end_count], 3);
-	ff->SetLineColor(2);
-
-      ff->SetParameter(0, ini1[fcount]);
-      ff->SetParameter(2, 300.);
-
-      ff->SetParameter(1, ini1[fcount]);
-      //cout << "ini par[1] = " << ini1[fcount] << " begin_shift = " << shifts_begin[begin_count] << " end_shift = " << - shifts_end[end_count] << endl;
-      gc0->Fit("ff","ERQ");
-      //cout << "=> " << gMinuit->fCstatu.Data() << endl;
-      chi2 = ff->GetChisquare()/float(ff->GetNDF());
-      //cout << "chi2 = " << chi2 << endl;
-      repeate = ( (gMinuit->fCstatu.Data()[0]!='S') || (ff->GetParameter(1)<0) || (ff->GetParameter(0)<0) || chi2 > 2);
-	
-	if (better_chi2 == 0.0 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
-	{
-	better_chi2 = chi2;
-	better[0] = fcount;
-	better[1] = begin_count;
-	better[2] = end_count;
-	par[0] = ff->GetParameter(0);
-	par[1] = ff->GetParameter(1);
-	par[2] = ff->GetParameter(2);
-	}
-	if (better_chi2 > chi2 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
-	{
-	cout << "ini par[1] = " << ini1[fcount] << " begin_shift = " << shifts_begin[begin_count] << " end_shift = " << - shifts_end[end_count] << endl;
-	cout << "=> " << gMinuit->fCstatu.Data() << endl;
-	cout << "chi2 = " << chi2 << endl;
-	better_chi2 = chi2;
-	better[0] = fcount;
-	better[1] = begin_count;
-	better[2] = end_count;
-	par[0] = ff->GetParameter(0);
-	par[1] = ff->GetParameter(1);
-	par[2] = ff->GetParameter(2);
-	}
-	delete(ff);
-	end_count++;
-	if (end_count == 5) { begin_count++; end_count = 0; }
-	if (begin_count == 8) { fcount++; begin_count = 0; }
-	}
-
-	if (better_chi2 > 2)
-	{
-	cout << "none of the fits was good, using the best one!" << endl;
-        int sb = shifts_begin[better[1]];
-	int se = shifts_end[better[2]];
-	float ig = ini1[better[0]];
-	cout << better[0] << " " << better[1] << " " << better[2] << " " << endl;
-	cout << ig << " " << sb << " " << se << " " << endl;
-	TF1 *ff = new TF1("ff", fexp, time->at(index_begin[istep]) + sb, time->at(index_end[istep]) - se, 3);
-	ff->SetLineColor(2);
-      	ff->SetParameter(0, ig);
-      	ff->SetParameter(2, 300.);
-	gc0->Fit("ff","ERQ");
-   	cout << "=> " << gMinuit->fCstatu.Data() << endl;
-      	chi2 = ff->GetChisquare()/float(ff->GetNDF());
-	if (chi2 < 2 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
-        {
-	better_chi2 = chi2;
-	par[0] = ff->GetParameter(0);
-	par[1] = ff->GetParameter(1);
-	par[2] = ff->GetParameter(2);
-	}
-      	cout << "chi2 = " << chi2 << endl;
-	}
-	cout << "parameters : " << par[0] << " " << par[1] << " " << par[2] << endl;
-	
-	if (better_chi2 < 2)
-	{
-	cout<<"good fit = " << better_chi2 << " subtracting backgroung now!" << endl;
-	for (i = index_begin[istep]; i < index_end[istep]; i++)
-  	{
-  	double t = time->at(i);
-  	double val = cathode->at(i) - fexp(&t, par); 
-    	cathode_out.at(i) = val;
-  	}
-	}
-	
         gc0->SetTitle(str_volt.c_str());
+	gc0->SetMaximum(2*par[0]);
+	gc0->SetMinimum(0);
       	gc0->Draw("AP");
         c->Print(file.c_str());
 	c->Close();
 
-	//cout << "delete phase!" << endl;
+
+	par[0] = 0.0;
+	par[1] = 0.0;
+	par[2] = 0.0;
+	better_chi2 = 0.0;
+	better[0] = 0;
+	better[1] = 0;
+	better[2] = 0;
+	better[3] = 0;
+	fcount = 0;
+	repeate = true;
+	ini3_count = 0;
+	begin_count = 0;
+	end_count = 0;
 	delete(gc0);
-	//cout << "delete phase2!" << endl;
 	fitX.clear(); 
-	//cout << "delete phase3!" << endl;
 	fitY.clear();
         fitYe.clear();
         fitXe.clear();
-	//cout << "delete phase end!" << endl;
        }
        else
        { cout << "voltage not found!" << endl;
        }
- /*     for (int j=0; j < index_end[0]-index_begin[0]; j++)
-        {
-            std::cout << "x:" << time[j+index_begin[0]] << "/" << time[index_begin[0]+j]-time[index_begin[0]] << " ===  " << cathode[j+index_begin[0]] << " ..... " << theFcn(time[index_begin[0]+j]-time[index_begin[0]]) << std::endl;
-          // if any poles in the function just skip the subtraction. only the LED regions are of interest. but if the profile doesn't look nice one can delete this if
-          if ((theFcn)(time[j+index_begin[0]]-time[index_begin[0]]) < 1e-6 && (theFcn)(time[j+index_begin[0]]-time[index_begin[0]]) > 0)
-            cathode[j+index_begin[0]] -= float( theFcn(time[j+index_begin[0]]-time[index_begin[0]]));
-        }//subtract the leakage
-*/
-
-//from Colin
-/*  // ----loop over all voltage regions----
-  while (voltageBegin < size)
-    {
-      // ----Skip 0 voltage run----
-      while (abs(hv[voltageBegin]) < 20 && voltageBegin < size) //we assume that it varies between 20A
-        {
-          ++voltageBegin;
-          continue;
-        }
-
-        // ----loop in voltage region----
-      while (hv[voltageBegin+voltageStep] > voltage-20 && hv[voltageBegin+voltageStep] < voltage+20 && voltageBegin+voltageStep < size)
-        {
-          //looking if voltage changes in last five or next five time bins
-//here we define the lenght of voltagestep
-          if (voltageStep-skipAtVChange < 0)
-            {
-              ++voltageStep;
-              continue;
-            }
-
-          if (voltageBegin+voltageStep > size)
-            {
-              ++voltageStep;
-              continue; //don't break because counter used to skip voltage
-            }
-
-          if(cathode[voltageBegin+voltageStep]*1e12 < 0. || cathode[voltageBegin+voltageStep]*1e12 > 1e5) //weird value skip
-            {
-              ++voltageStep;
-              continue;
-            }
-
-
-//remove the parts when I turned on the led, this does not take part in the fitting
-
-          if(led[voltageBegin+voltageStep-skipAtLedChange] || led[voltageBegin+voltageStep] || led[voltageBegin+voltageStep+skipAtLedChange])
-            {
-              ++voltageStep;
-              continue;
-            }
-
-          // copy the x,y values for one voltage set and only where LED was off          
-       //   fitX.push_back(time[voltageBegin+voltageStep]-time[voltageBegin]); // always starts at 0
-	//in pA         
-// fitY.push_back(cathode[voltageBegin+voltageStep]*1e12);
-         // fitYe.push_back(cathode_ye[voltageBegin+voltageStep]*1e12);
-// in A      
- //fitY.push_back(cathode[voltageBegin+voltageStep]*1e12);
-   //       fitYe.push_back(cathode_ye[voltageBegin+voltageStep]*1e12);
-
-
-          ++voltageStep;
-        }
-	cout << "voltage step after one hv plateau " << voltageStep << endl;
-	cout << "voltage hv[voltageBegin+voltageStep]: " << hv[voltageBegin+voltageStep] << endl;
-	cout << "time after the plateau " << time[voltageStep+voltageBegin] << endl;
-
-      if (fitX.size() <= 5) //not enough data for fit
-        {
-            std::cerr << "no fitting. not enough data in voltage set" << std::endl;
-          voltageBegin += voltageStep + 1; //jump to next voltage
-          continue;
-        }
-
-      TF1 theFcn("a","[0]+[1]*TMath::Exp(-(x)/[2])");
-      theFcn.SetParameters(fitY.back(),40,60,fabs(voltage-800)<20.?650:350);
-      theFcn.SetParLimits(3,200.,1200.);
-      TGraphErrors theGraph (fitX.size(),&fitX.front(),&fitY.front(),NULL,&fitYe.front());
-
- // TFitResultPtr theMin = theGraph.Fit(&theFcn,fVerbosity>1?"S M E 0":"S M E 0 Q");
-	cout << "========" << voltage << "===========" << endl;
-	cout << "voltage step: " << voltageStep << endl;
-     TFitResultPtr theMin = theGraph.Fit(&theFcn); //do the fit and print out the fit parameters
-      if (theMin == NULL || !theMin->Status() || theMin->IsValid() == 0)
-        {
-          std::cerr << "fit unsucessful" << std::endl;
-
-          voltageBegin += voltageStep + 1; //jump to next voltage
-          continue;
-        }
-      else
-        {
-          std::cerr << "fit sucessful with f=" << theMin->Chi2()/double(fitX.size()) << std::endl;
-          if (theMin->Chi2()/double(fitX.size()) > 50)
-            std::cout << " - Warning: fit converged but high chi2/ndf compromised: " << theMin->Chi2()/double(fitX.size()) << std::endl;
-        }
-
-      	TCanvas * c = new TCanvas("c","c",800,600);
-      	c->cd();
-      	theGraph.Draw("AP");
-//      theFcn.SetParameters(theMin->Parameter(0),theMin->Parameter(1),theMin->Parameter(2),theMin->Parameter(3));
-      theFcn.SetLineColor(kRed);
-     // theFcn.Draw("lSAME");
-      //cin >> fVerbosity;
-      c->Print("example.eps");
-
-      for (int j=0; j < voltageStep; j++)
-        {
-            std::cout << "x:" << time[j+voltageBegin] << "/" << time[voltageBegin+j]-time[voltageBegin] << " ===  " << cathode[j+voltageBegin] << " ..... " << theFcn(time[voltageBegin+j]-time[voltageBegin]) << std::endl;
-          // if any poles in the function just skip the subtraction. only the LED regions are of interest. but if the profile doesn't look nice one can delete this if
-          if ((theFcn)(time[j+voltageBegin]-time[voltageBegin]) < 1e-6 && (theFcn)(time[j+voltageBegin]-time[voltageBegin]) > 0)
-            cathode[j+voltageBegin] -= float( theFcn(time[j+voltageBegin]-time[voltageBegin]));
-        }//subtract the leakage
-
-      voltageBegin += voltageStep + 1; //jump to next voltage
-     }
-*/
+ 
 }
 
-  for (i = 0; i < size; ++i)
-  {
-    cathode_out.push_back(cathode->at(i));
-  }
+  //for (i = 0; i < size; ++i)
+  //{
+  //  cathode_out.push_back(cathode->at(i));
+  //}
 
 }

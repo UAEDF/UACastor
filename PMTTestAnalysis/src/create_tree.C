@@ -1361,11 +1361,14 @@ min_graph = -2e-12;
         c3->Print(name2.c_str());
 	c3->Close();
 
+cout << "two to last plot" << endl;
+
 float quantum_eff_800V[3] = {0.0, 0.0, 0.0};
 float quantum_eff_1200V[3] = {0.0, 0.0, 0.0};
+float dum = 0.0;
 
-TGraph *gc4a = 0;
-TGraph *gc4b = 0;
+TGraph *gc4a = new TGraph(1,&dum,&dum);
+TGraph *gc4b = new TGraph(1,&dum,&dum);
 
 max_graph = m_800V_led1.qe;
 
@@ -1405,6 +1408,8 @@ if (max_graph < m_800V_led3.qe) { max_graph = m_800V_led3.qe; }
 if (max_graph < m_1200V_led3.qe) { max_graph = m_1200V_led3.qe; }
 max_graph = max_graph * 1.2;
 
+cout << "plotting" << endl;
+
 	TCanvas * c4 = new TCanvas("c","c",800,600);
       	//gPad->SetLogy();
 	gc4a->SetTitle("Relative quantum efficiency as function of wavelenght;Wave lenght [nm];Quantum efficiency");
@@ -1432,6 +1437,8 @@ max_graph = max_graph * 1.2;
         c4->Print(name2.c_str());
 	c4->Close();
 
+cout << "one to last plot" << endl;
+
 	TCanvas * c4z = new TCanvas("c","c",800,600);
       	//gPad->SetLogy();
 	TGraph *gc4z = new TGraph(index_temp,voltages_temp,chi2_temp);
@@ -1441,6 +1448,8 @@ max_graph = max_graph * 1.2;
         c4z->Print(name2.c_str());
 	c4z->Close();
 	
+//cout << "last plot" << endl;
+
 	TCanvas * c5 = new TCanvas("c","c",800,600);
       	//gPad->SetLogy();
 	TGraph *gc5 = new TGraph(3,status_index,status_values);

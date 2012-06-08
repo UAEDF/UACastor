@@ -4,7 +4,7 @@ void run_create_tree()
   //gROOT -> ProcessLine(".L LeakageSubtractor.C++");
   gROOT -> ProcessLine(".L create_tree.C++");
 
-string files_in[100];
+string files_in[110];
 
 files_in[0] = "../data/cpt_sf_CA1579_2012_05_12_15_32_59_mod.cpt"; //good
 files_in[1] = "../data/cpt_sf_CA1579_2012_05_13_09_56_20_mod.cpt"; //good
@@ -12,12 +12,12 @@ files_in[2] = "../data/cpt_sf_CA1579_2012_05_14_08_02_23_mod.cpt"; //good
 files_in[3] = "../data/cpt_sf_CA1842_2012_05_14_11_09_39_mod.cpt"; //good
 files_in[4] = "../data/cpt_sf_CA1842_2012_05_14_13_41_55_mod.cpt"; //good
 files_in[5] = "../data/cpt_sf_CA1842_2012_05_14_17_08_20_mod.cpt"; //bad - 3 bad fits
-files_in[6] = "../data/cpt_sf_CA1592_2012_05_15_08_54_52_mod.cpt"; //good except one of the fits
+files_in[6] = "../data/cpt_sf_CA1592_2012_05_15_08_54_52_mod.cpt"; //warning - except one of the fits
 files_in[7] = "../data/cpt_sf_CA1592_2012_05_15_12_02_58_mod.cpt"; //good
 files_in[8] = "../data/cpt_sf_CA0327_2012_05_15_15_20_10_mod.cpt"; //good
 files_in[9] = "../data/cpt_sf_CA1680_2012_05_16_07_55_12_mod.cpt"; //good
 files_in[10] = "../data/cpt_sf_CA0558_2012_05_16_17_14_48_mod.cpt"; //good
-files_in[11] = "../data/cpt_sf_CA0812_2012_05_17_09_56_21_mod.cpt"; //good - qe plot is empty
+files_in[11] = "../data/cpt_sf_CA0812_2012_05_17_09_56_21_mod.cpt"; //warning - qe plot is empty
 files_in[12] = "../data/cpt_sf_CA1954_2012_05_17_15_57_58_mod.cpt"; //good
 files_in[13] = "../data/cpt_sf_CA1321_2012_05_18_01_04_36_mod.cpt"; //good
 files_in[14] = "../data/cpt_sf_CA1537_2012_05_18_09_53_11_mod.cpt"; //good
@@ -35,19 +35,19 @@ files_in[25] = "../data/cpt_sf_CA1431_2012_05_21_08_55_15_mod.cpt"; //bad - 2 ba
 files_in[26] = "../data/cpt_sf_CA1549_2012_05_21_12_33_16_mod.cpt"; //good
 files_in[27] = "../data/cpt_sf_CA0948_2012_05_21_15_43_16_mod.cpt"; //good
 files_in[28] = "../data/cpt_sf_CA1200_2012_05_21_20_34_38_mod.cpt"; //good
-files_in[29] = "../data/cpt_sf_CA3236_2012_05_22_00_41_35_mod.cpt"; //good - strange plot on the fitting at 800V
+files_in[29] = "../data/cpt_sf_CA3236_2012_05_22_00_41_35_mod.cpt"; //warning - strange plot on the fitting at 800V
 files_in[30] = "../data/cpt_sf_CA0742_2012_05_22_08_13_03_mod.cpt"; //good
 files_in[31] = "../data/cpt_sf_CA0574_2012_05_22_11_37_58_mod.cpt"; //good
 files_in[32] = "../data/cpt_sf_CA0829_2012_05_22_15_04_27_mod.cpt"; //good
-files_in[33] = "../data/cpt_sf_CA0715_2012_05_22_19_14_07_mod.cpt"; //good - imcomplete measurement
+files_in[33] = "../data/cpt_sf_CA0715_2012_05_22_19_14_07_mod.cpt"; //warning - imcomplete measurement
 files_in[34] = "../data/cpt_sf_CA0715_2012_05_23_01_15_27_mod.cpt"; //good
 files_in[35] = "../data/cpt_sf_CA1263_2012_05_23_08_02_05_mod.cpt"; //good
 files_in[36] = "../data/cpt_sf_CA3386_2012_05_23_11_31_26_mod.cpt"; //good
 files_in[37] = "../data/cpt_sf_CA0625_2012_05_23_15_50_52_mod.cpt"; //good
 files_in[38] = "../data/cpt_sf_CA1593_2012_05_23_18_47_30_mod.cpt"; //bad - all plots and values look strange
 files_in[39] = "../data/cpt_sf_CA0892_2012_05_24_08_51_55_mod.cpt"; //good
-files_in[40] = "../data/cpt_sf_CA1620_2012_05_24_14_49_03_mod.cpt";
-files_in[41] = "../data/cpt_sf_BA0274_2012_05_25_17_52_57_mod.cpt";
+files_in[40] = "../data/cpt_sf_CA1620_2012_05_24_14_49_03_mod.cpt"; //warning - fit for 1600V failed!
+files_in[41] = "../data/cpt_sf_BA0274_2012_05_25_17_52_57_mod.cpt"; //bad - 4 bad fits
 files_in[42] = "../data/cpt_sf_BA0311_2012_05_28_19_34_55_mod.cpt";
 files_in[43] = "../data/cpt_sf_BA0265_2012_05_29_07_45_47_mod.cpt";
 files_in[44] = "../data/cpt_sf_BA0264_2012_05_29_11_11_00_mod.cpt";
@@ -105,10 +105,20 @@ files_in[95] = "../data/cpt_sf_CA1795_2012_06_07_12_48_58_mod.cpt";
 files_in[96] = "../data/cpt_sf_CA0843_2012_06_07_15_01_25_mod.cpt";
 files_in[97] = "../data/cpt_sf_CA1328_2012_06_07_17_27_52_mod.cpt";
 files_in[98] = "../data/cpt_sf_CA1442_2012_06_07_19_48_36_mod.cpt";
-files_in[99] = "../data/.cpt";
+files_in[99] = "../data/cpt_sf_CA2023_2012_06_07_22_07_57_mod.cpt";
+files_in[100] = "../data/cpt_sf_CA2022_2012_06_08_08_47_51_mod.cpt";
+files_in[101] = "../data/cpt_sf_CA0790_2012_06_08_11_43_28_mod.cpt";
+files_in[102] = "../data/.cpt";
+files_in[103] = "../data/.cpt";
+files_in[104] = "../data/.cpt";
+files_in[105] = "../data/.cpt";
+files_in[106] = "../data/.cpt";
+files_in[107] = "../data/.cpt";
+files_in[108] = "../data/.cpt";
+files_in[109] = "../data/.cpt";
 
-int ini_file = 41;
-int end_file = 99;
+int ini_file = 52;
+int end_file = 102;
 
 
   string tree_out = "PMT_test_2012.root";

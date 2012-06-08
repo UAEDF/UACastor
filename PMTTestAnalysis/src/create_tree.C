@@ -1,6 +1,10 @@
-//to do:	solve the problem of the points feed to the fitting routine
-//		correct bug on the index fiding for the estimation of the dark current
-//		plot cathodes ans anodes
+//to do:	correct bug on the index fiding for the estimation of the dark current
+//		add legend for the qe plots
+//		add the qe points for other voltages
+//		sometimes the qe plot is missing
+//		sometimes the range for the fit plot is wrong!
+//		error propagation - discuss with ekaterina and peter monday 5pm
+//		add a plot just with the gain for led1 at 1200V
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -449,7 +453,7 @@ string title;
 //float wave_lenght[4] = {400.0, 470.0, 500.0, 517.0};
 float wave_lenght[3] = {400.0, 470.0, 500.0};
 float wave1 = 400.0;
-float voltages[7] = {800.0, 900.0, 1000.0, 1200.0, 1400.0, 1600.0};
+float voltages[7] = {800.0, 900.0, 1000.0, 1200.0, 1400.0, 1600.0, 1800.0};
 
 float max_graph, min_graph;
 

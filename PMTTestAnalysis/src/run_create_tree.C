@@ -47,9 +47,9 @@ files_in[37] = "../data/cpt_sf_CA0625_2012_05_23_15_50_52_mod.cpt"; //good
 files_in[38] = "../data/cpt_sf_CA1593_2012_05_23_18_47_30_mod.cpt"; //bad - all plots and values look strange
 files_in[39] = "../data/cpt_sf_CA0892_2012_05_24_08_51_55_mod.cpt"; //good
 files_in[40] = "../data/cpt_sf_CA1620_2012_05_24_14_49_03_mod.cpt"; //warning - fit for 1600V failed!
-files_in[41] = "../data/cpt_sf_BA0274_2012_05_25_17_52_57_mod.cpt"; //bad - 4 bad fits
-files_in[42] = "../data/cpt_sf_BA0311_2012_05_28_19_34_55_mod.cpt";
-files_in[43] = "../data/cpt_sf_BA0265_2012_05_29_07_45_47_mod.cpt";
+files_in[41] = "../data/cpt_sf_BA0274_2012_05_25_17_52_57_mod.cpt"; //bad - 4 bad fits - i need to update the code and rerun from this onwards
+files_in[42] = "../data/cpt_sf_BA0311_2012_05_28_19_34_55_mod.cpt"; //bad - 4 bad fits
+files_in[43] = "../data/cpt_sf_BA0265_2012_05_29_07_45_47_mod.cpt"; //bad - 6 bad fits and some problem with plooting for 1800V
 files_in[44] = "../data/cpt_sf_BA0264_2012_05_29_11_11_00_mod.cpt";
 files_in[45] = "../data/cpt_sf_BA0263_2012_05_29_14_21_05_mod.cpt";
 files_in[46] = "../data/cpt_sf_BA0263_2012_05_29_15_33_18_mod.cpt";
@@ -58,8 +58,8 @@ files_in[48] = "../data/cpt_sf_BA0287_2012_05_29_21_53_31_mod.cpt";
 files_in[49] = "../data/cpt_sf_BA0288_2012_05_30_07_22_29_mod.cpt";
 files_in[50] = "../data/cpt_sf_BA0291_2012_05_30_10_34_08_mod.cpt";
 files_in[51] = "../data/cpt_sf_BA0297_2012_05_30_13_44_58_mod.cpt";
-files_in[52] = "../data/cpt_sf_BA0300_2012_05_30_16_53_26_mod.cpt";
-files_in[53] = "../data/cpt_sf_BA0303_2012_05_30_20_05_08_mod.cpt";
+files_in[52] = "../data/cpt_sf_BA0300_2012_05_30_16_53_26_mod.cpt"; 
+files_in[53] = "../data/cpt_sf_BA0303_2012_05_30_20_05_08_mod.cpt"; //here
 files_in[54] = "../data/cpt_sf_BA0304_2012_05_31_07_42_35_mod.cpt";
 files_in[55] = "../data/cpt_sf_BA0305_2012_05_31_11_01_55_mod.cpt";
 files_in[56] = "../data/cpt_sf_BA0307_2012_05_31_14_13_08_mod.cpt";
@@ -117,7 +117,7 @@ files_in[107] = "../data/.cpt";
 files_in[108] = "../data/.cpt";
 files_in[109] = "../data/.cpt";
 
-int ini_file = 52;
+int ini_file = 54;
 int end_file = 102;
 
 

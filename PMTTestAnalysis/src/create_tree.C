@@ -1,10 +1,10 @@
-//to do:	correct bug on the index fiding for the estimation of the dark current
-//		add legend for the qe plots
-//		add the qe points for other voltages
+//to do:	correct bug on the index finding for the estimation of the dark current
 //		sometimes the qe plot is missing
 //		sometimes the range for the fit plot is wrong!
-//		error propagation - discuss with ekaterina and peter monday 5pm
-//		add a plot just with the gain for led1 at 1200V
+//		rms plus deviation from 0 after fit for cathode
+//		rms plus deviation from 0 for anodes
+//		control plot anode / reference
+//		anode plateau variation
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +15,7 @@
 #include "TTree.h"
 #include "TGraph.h"
 #include "TGraphErrors.h"
+#include "TLegend.h"
 #include "TFile.h"
 
 //structures
@@ -141,6 +142,37 @@ if (pmt == "CA1495") { sector = 16; module = 6;  set = 1; }
 if (pmt == "CA1538") { sector = 15; module = 6;  set = 1; }
 if (pmt == "CA1844") { sector = 14; module = 6;  set = 1; }
 if (pmt == "CA0292") { sector = 13; module = 6;  set = 1; }
+if (pmt == "CA0045") { sector = 5;  module = 3;  set = 1; }
+if (pmt == "CA0018") { sector = 6;  module = 3;  set = 1; }
+if (pmt == "CA1350") { sector = 7;  module = 3;  set = 1; }
+if (pmt == "CA1170") { sector = 8;  module = 3;  set = 1; }
+if (pmt == "CA0326") { sector = 9;  module = 3;  set = 1; }
+if (pmt == "CA1931") { sector = 10; module = 3;  set = 1; }
+if (pmt == "CA1795") { sector = 11; module = 3;  set = 1; }
+if (pmt == "CA0843") { sector = 12; module = 3;  set = 1; }
+if (pmt == "CA1328") { sector = 5;  module = 4;  set = 1; }
+if (pmt == "CA1442") { sector = 6;  module = 4;  set = 1; }
+if (pmt == "CA2023") { sector = 7;  module = 4;  set = 1; }
+if (pmt == "CA2022") { sector = 8;  module = 4;  set = 1; }
+if (pmt == "CA0790") { sector = 9;  module = 4;  set = 1; }
+if (pmt == "CA0143") { sector = 10; module = 4;  set = 1; }
+if (pmt == "CA2034") { sector = 11; module = 4;  set = 1; }
+if (pmt == "CA2018") { sector = 12; module = 4;  set = 1; }
+if (pmt == "CA0977") { sector = 5;  module = 5;  set = 1; }
+if (pmt == "CA0708") { sector = 6;  module = 5;  set = 1; }
+if (pmt == "CA0072") { sector = 7;  module = 5;  set = 1; }
+if (pmt == "CA1513") { sector = 8;  module = 5;  set = 1; }
+if (pmt == "CA0299") { sector = 9;  module = 5;  set = 1; }
+if (pmt == "CA0584") { sector = 10; module = 5;  set = 1; }
+if (pmt == "CA1325") { sector = 11; module = 5;  set = 1; }
+if (pmt == "CA1450") { sector = 12; module = 5;  set = 1; }
+if (pmt == "CA1870") { sector = 5;  module = 6;  set = 1; }
+if (pmt == "CA2060") { sector = 6;  module = 6;  set = 1; }
+if (pmt == "CA1509") { sector = 7;  module = 6;  set = 1; }
+if (pmt == "CA0796") { sector = 8;  module = 6;  set = 1; }
+if (pmt == "CA1655") { sector = 9;  module = 6;  set = 1; }
+if (pmt == "CA1525") { sector = 10; module = 6;  set = 1; }
+if (pmt == "CA1966") { sector = 11; module = 6;  set = 1; }
 
 
 //new ones first delivery
@@ -311,12 +343,13 @@ if (chi2 > 10.0)
 ave_low = (ave_before*n_before + ave_after*n_after)/(n_before+n_after);
 cath_gain = ave_middle - ave_low;
 cath_error = (error_before*n_before + error_middle*n_middle + error_after+n_after)/(n_before + n_middle + n_after);
+cath_error = sqrt(cath_error*cath_error*cath_gain*cath_gain + ave_low*ave_low);
 cout << "Doing geometrical subtraction!" << endl;
 }
 else
 {
 cath_gain = ave_middle;
-cath_error = error_middle;
+cath_error = sqrt(cath_gain*cath_gain*error_middle*error_middle + ave_low*ave_low);
 }
 
 if (chi2 > 10.0)
@@ -327,7 +360,7 @@ cout << "value middle : " << ave_middle << endl;
 cout << "value after  : " << ave_after  << endl;
 cout << "value low    : " << ave_low  << endl;
 cout << "cath gain    : " << cath_gain  << endl;
-//cout << "cath error   : " << cath_error  << endl;
+cout << "cath error   : " << cath_error  << endl;
 }
 
 delete(val_before);
@@ -436,6 +469,8 @@ double errorx = (0.5/16.6)*10E-12;
 //double errory = 0.0;
 std::vector<float> cathode_ye;
 
+
+/*
 //for the reports
 int page_old = 1;
 int canv_old = 1;
@@ -447,6 +482,7 @@ TCanvas * r_new_qe = 0;
 TCanvas * r_old_qe = 0;
 TCanvas * r_new_cath = 0;
 TCanvas * r_old_cath = 0;
+*/
 
 string title;
 
@@ -1212,25 +1248,30 @@ float gains_bad[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float voltages_temp[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float voltages_temp_bad[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float chi2_temp[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float anodes[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float cathodes[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float reference[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float volt_anodes[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float anodes[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float cathodes[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float cathode_errors[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float reference[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float volt_anodes[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 int index_anodes = 0;
-float temp1[7] = {m_800V_led1.anode_up, m_900V_led1.anode_up, m_1000V_led1.anode_up, m_1200V_led1.anode_up, m_1400V_led1.anode_up, m_1600V_led1.anode_up, m_1800V_led4.anode_up};
-float temp3[7] = {m_800V_led1.anode_down, m_900V_led1.anode_down, m_1000V_led1.anode_down, m_1200V_led1.anode_down, m_1400V_led1.anode_down, m_1600V_led1.anode_down, m_1800V_led4.anode_down};
-float temp2[7] = {m_800V_led1.cath_value, m_900V_led1.cath_value, m_1000V_led1.cath_value, m_1200V_led1.cath_value, m_1400V_led1.cath_value, m_1600V_led1.cath_value, m_1800V_led4.cath_value};
-float temp4[7] = {m_800V_led1.ref_up, m_900V_led1.ref_up, m_1000V_led1.ref_up, m_1200V_led1.ref_up, m_1400V_led1.ref_up, m_1600V_led1.ref_up, m_1800V_led4.ref_up};
-float temp5[7] = {m_800V_led1.ref_down, m_900V_led1.ref_down, m_1000V_led1.ref_down, m_1200V_led1.ref_down, m_1400V_led1.ref_down, m_1600V_led1.ref_down, m_1800V_led4.ref_down};
+float temp1[7] = {m_800V_led1.anode_up, m_900V_led1.anode_up, m_1000V_led1.anode_up, m_1200V_led1.anode_up, m_1400V_led1.anode_up, m_1600V_led1.anode_up};
+float temp3[7] = {m_800V_led1.anode_down, m_900V_led1.anode_down, m_1000V_led1.anode_down, m_1200V_led1.anode_down, m_1400V_led1.anode_down, m_1600V_led1.anode_down};
+float temp2[7] = {m_800V_led1.cath_value, m_900V_led1.cath_value, m_1000V_led1.cath_value, m_1200V_led1.cath_value, m_1400V_led1.cath_value, m_1600V_led1.cath_value};
+float temp4[7] = {m_800V_led1.ref_up, m_900V_led1.ref_up, m_1000V_led1.ref_up, m_1200V_led1.ref_up, m_1400V_led1.ref_up, m_1600V_led1.ref_up};
+float temp5[7] = {m_800V_led1.ref_down, m_900V_led1.ref_down, m_1000V_led1.ref_down, m_1200V_led1.ref_down, m_1400V_led1.ref_down, m_1600V_led1.ref_down};
+float temp6[7] = {m_800V_led1.cath_error, m_900V_led1.cath_error, m_1000V_led1.cath_error, m_1200V_led1.cath_error, m_1400V_led1.cath_error, m_1600V_led1.cath_error};
 float chi2s[7] = {fit.c_800V, fit.c_900V, fit.c_1000V, fit.c_1200V, fit.c_1400V, fit.c_1600V, fit.c_1800V};
+float gain1200V = (temp1[3]+temp3[3])/(2*temp2[3]);
+float volt1200V = 1200.0;
 
-for (int j=0; j < 7; j++)
+for (int j=0; j < 6; j++)
 {
 if (temp1[j] != 0 && temp3[j] != 0)
 {
 volt_anodes[index_anodes] = voltages[j];
 anodes[index_anodes] = (temp1[j]+temp3[j])/(2);
 cathodes[index_anodes] = temp2[j];
+cathode_errors[index_anodes] = temp6[j];
 reference[index_anodes] = (temp4[j]+temp5[j])/2;
 index_anodes = index_anodes + 1;
 }
@@ -1333,7 +1374,7 @@ min_graph = -2e-12;
 	TCanvas * c3e = new TCanvas("c3e","c",800,600);
       	//gPad->SetLogy();
         //gPad->SetLogx();
-	TGraph *gc3e = new TGraph(index_anodes,volt_anodes,cathodes);
+	TGraphErrors *gc3e = new TGraphErrors(index_anodes,volt_anodes,cathodes,NULL,cathode_errors);
 	gc3e->SetTitle("Cathodes;Voltage [V];Current [A]");
         gc3e->SetMarkerStyle(20);
       	gc3e->Draw("APL");
@@ -1349,6 +1390,16 @@ min_graph = -2e-12;
       	gc3f->Draw("APL");
         c3f->Print(name2.c_str());
 	c3f->Close();
+	
+	TCanvas * c3g = new TCanvas("c3g","c",800,600);
+      	//gPad->SetLogy();
+        //gPad->SetLogx();
+	TGraph *gc3g = new TGraph(1,&volt1200V,&gain1200V);
+	gc3g->SetTitle("Selection factor;Voltage [V];Gain");
+        gc3g->SetMarkerStyle(20);
+      	gc3g->Draw("APL");
+        c3g->Print(name2.c_str());
+	c3g->Close();
 
 	TCanvas * c3 = new TCanvas("c","c",800,600);
       	gPad->SetLogy();
@@ -1373,6 +1424,10 @@ float dum = 0.0;
 
 TGraph *gc4a = new TGraph(1,&dum,&dum);
 TGraph *gc4b = new TGraph(1,&dum,&dum);
+TGraph *gc4c = new TGraph(1,&dum,&dum);
+TGraph *gc4d = new TGraph(1,&dum,&dum);
+TGraph *gc4e = new TGraph(1,&dum,&dum);
+TGraph *gc4f = new TGraph(1,&dum,&dum);
 
 max_graph = m_800V_led1.qe;
 
@@ -1388,6 +1443,26 @@ gc4a = new TGraph(3,wave_lenght,quantum_eff_800V);
 if (m_800V_led1.qe > 0.0 && m_800V_led2.qe == 0.0 && m_800V_led3.qe == 0.0 && m_800V_led4.qe == 0.0)
 {
 gc4a = new TGraph(1,&wave1,&m_800V_led1.qe);
+}
+
+if (m_900V_led1.qe > 0.0)
+{
+gc4c = new TGraph(1,&wave1,&m_900V_led1.qe);
+}
+
+if (m_1000V_led1.qe > 0.0)
+{
+gc4d = new TGraph(1,&wave1,&m_1000V_led1.qe);
+}
+
+if (m_1400V_led1.qe > 0.0)
+{
+gc4e = new TGraph(1,&wave1,&m_1400V_led1.qe);
+}
+
+if (m_1600V_led1.qe > 0.0)
+{
+gc4f = new TGraph(1,&wave1,&m_1600V_led1.qe);
 }
 
 if (m_1200V_led1.qe > 0 && m_1200V_led2.qe > 0.0 && m_1200V_led3.qe > 0.0 && m_1200V_led4.qe > 0.0)
@@ -1438,6 +1513,32 @@ cout << "plotting" << endl;
         gc4b->Draw("APL");
       	gc4a->Draw("PLsame");
       	}
+      	gc4c->SetMarkerStyle(20);
+        gc4c->SetMarkerColor(4);
+	gc4c->SetLineColor(4);
+      	gc4c->Draw("PLsame");
+      	gc4d->SetMarkerStyle(20);
+        gc4d->SetMarkerColor(5);
+	gc4d->SetLineColor(5);
+      	gc4d->Draw("PLsame");
+      	gc4e->SetMarkerStyle(20);
+        gc4e->SetMarkerColor(6);
+	gc4e->SetLineColor(6);
+      	gc4e->Draw("PLsame");
+      	gc4f->SetMarkerStyle(20);
+        gc4f->SetMarkerColor(7);
+	gc4f->SetLineColor(7);
+      	gc4f->Draw("PLsame");
+      	
+   	TLegend *leg4 = new TLegend(0.65,0.12,0.88,0.40);
+   	leg4->AddEntry(gc4a,"800V","lp");
+   	leg4->AddEntry(gc4c,"900V","lp");
+   	leg4->AddEntry(gc4d,"1000V","lp");
+   	leg4->AddEntry(gc4b,"1200V","lp");
+   	leg4->AddEntry(gc4e,"1400V","lp");
+   	leg4->AddEntry(gc4f,"1600V","lp");
+   	leg4->Draw();
+      	
         c4->Print(name2.c_str());
 	c4->Close();
 
@@ -1464,7 +1565,7 @@ cout << "one to last plot" << endl;
         string name5 = "plots/" + file2 + ".pdf)";
         c5->Print(name5.c_str());
 	c5->Close();
-
+/*
 if (set == 1)
 {
 if (canv_old == 1)
@@ -1600,19 +1701,21 @@ r_new_cath->Clear();
 canv_new = 1;
 }
 }
-
+*/
 
 //fill the tree
 tree->Fill();
 
 }
 
+/*
 r_old_gain->Print("report_gains_old.pdf)");
 r_old_qe->Print("report_qe_old.pdf)");
 r_old_cath->Print("report_cath_old.pdf)");
 r_new_gain->Print("report_gains_new.pdf)");
 r_new_qe->Print("report_qe_new.pdf)");
 r_new_cath->Print("report_cath_new.pdf)");
+*/
 
 cout<<"Total unknown PMTs : "<<total_unknown<<endl;
 cout<<"Total bad fits : "<<total_bad_fits<<endl;

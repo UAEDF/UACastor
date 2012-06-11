@@ -4,7 +4,7 @@ void run_create_tree()
   //gROOT -> ProcessLine(".L LeakageSubtractor.C++");
   gROOT -> ProcessLine(".L create_tree.C++");
 
-string files_in[110];
+string files_in[130];
 
 files_in[0] = "../data/cpt_sf_CA1579_2012_05_12_15_32_59_mod.cpt"; //good
 files_in[1] = "../data/cpt_sf_CA1579_2012_05_13_09_56_20_mod.cpt"; //good
@@ -108,17 +108,37 @@ files_in[98] = "../data/cpt_sf_CA1442_2012_06_07_19_48_36_mod.cpt";
 files_in[99] = "../data/cpt_sf_CA2023_2012_06_07_22_07_57_mod.cpt";
 files_in[100] = "../data/cpt_sf_CA2022_2012_06_08_08_47_51_mod.cpt";
 files_in[101] = "../data/cpt_sf_CA0790_2012_06_08_11_43_28_mod.cpt";
-files_in[102] = "../data/.cpt";
-files_in[103] = "../data/.cpt";
-files_in[104] = "../data/.cpt";
-files_in[105] = "../data/.cpt";
-files_in[106] = "../data/.cpt";
-files_in[107] = "../data/.cpt";
-files_in[108] = "../data/.cpt";
-files_in[109] = "../data/.cpt";
+files_in[102] = "../data/cpt_sf_CA0143_2012_06_08_14_38_33_mod.cpt";
+files_in[103] = "../data/cpt_sf_CA2034_2012_06_08_17_04_40_mod.cpt";
+files_in[104] = "../data/cpt_sf_CA2018_2012_06_08_19_20_36_mod.cpt";
+files_in[105] = "../data/cpt_sf_CA0977_2012_06_09_08_17_46_mod.cpt";
+files_in[106] = "../data/cpt_sf_CA0708_2012_06_09_10_38_02_mod.cpt";
+files_in[107] = "../data/cpt_sf_CA0072_2012_06_09_12_55_18_mod.cpt";
+files_in[108] = "../data/cpt_sf_CA1513_2012_06_09_15_13_00_mod.cpt";
+files_in[109] = "../data/cpt_sf_CA0299_2012_06_09_17_32_42_mod.cpt";
+files_in[110] = "../data/cpt_sf_CA0584_2012_06_09_19_53_51_mod.cpt";
+files_in[111] = "../data/cpt_sf_CA1325_2012_06_09_22_15_03_mod.cpt";
+files_in[112] = "../data/cpt_sf_CA1450_2012_06_10_08_57_43_mod.cpt";
+files_in[113] = "../data/cpt_sf_CA1870_2012_06_10_11_13_47_mod.cpt";
+files_in[114] = "../data/cpt_sf_CA2060_2012_06_10_13_28_37_mod.cpt";
+files_in[115] = "../data/cpt_sf_CA1509_2012_06_10_16_30_32_mod.cpt";
+files_in[116] = "../data/cpt_sf_CA0796_2012_06_10_18_47_33_mod.cpt";
+files_in[117] = "../data/cpt_sf_CA1655_2012_06_10_21_05_01_mod.cpt";
+files_in[118] = "../data/cpt_sf_CA1525_2012_06_11_13_14_35_mod.cpt";
+files_in[119] = "../data/.cpt";
+files_in[120] = "../data/.cpt";
+files_in[121] = "../data/.cpt";
+files_in[122] = "../data/.cpt";
+files_in[123] = "../data/.cpt";
+files_in[124] = "../data/.cpt";
+files_in[125] = "../data/.cpt";
+files_in[126] = "../data/.cpt";
+files_in[127] = "../data/.cpt";
+files_in[128] = "../data/.cpt";
+files_in[129] = "../data/.cpt";
 
-int ini_file = 54;
-int end_file = 102;
+int ini_file = 1;
+int end_file = 119;
 
 
   string tree_out = "PMT_test_2012.root";

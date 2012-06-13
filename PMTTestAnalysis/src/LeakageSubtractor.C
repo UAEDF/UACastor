@@ -28,7 +28,6 @@
 	float c_1800V;
 };*/
 
-
 // fit function
 
 double fexp(double *x, double *p){
@@ -165,7 +164,7 @@ if (type_minimization == 2)
 	par[0] = 0;
 	par[1] = 0;
 	par[2] = 0;
-	int max_tries = 75;
+	int max_tries = 70;
 	int tries = 0;
 
 while (repeate && tries < max_tries && fitX.size() > 100) {
@@ -221,7 +220,7 @@ while (repeate && tries < max_tries && fitX.size() > 100) {
 	}
 
 
-if (type_minimization == 1 or chi2 > 10.0)
+if (type_minimization == 1 or chi2 > 5.0)
 {
 
 if (chi2 > 15.0)
@@ -303,7 +302,7 @@ better_chi2 = 0.0;
 	gc0->Fit("ff","ERQ");
    	cout << "=> " << gMinuit->fCstatu.Data() << endl;
       	chi2 = ff->GetChisquare()/float(ff->GetNDF());
-	if (chi2 < 15.0 and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
+	if (chi2 < chi2_threshold and gMinuit->fCstatu.Data()[0]=='S' and ff->GetParameter(1)>0 and ff->GetParameter(0)>0)
         {
         ff->SetLineColor(3);
 	better_chi2 = chi2;
@@ -322,7 +321,7 @@ better_chi2 = 0.0;
 
 	cout << "parameters : " << par[0] << " " << par[1] << " " << par[2] << endl;
 	
-	if (better_chi2 < 15.0 and better_chi2 != 0.0 and par[0]>0 and par[1]>0)
+	if (better_chi2 < chi2_threshold and better_chi2 != 0.0 and par[0]>0 ) // and par[1]>0)
 	{
 	cout<<"good fit = " << better_chi2 << " subtracting backgroung now!" << endl;
 	for (i = index_begin[istep]; i < index_end[istep]; i++)

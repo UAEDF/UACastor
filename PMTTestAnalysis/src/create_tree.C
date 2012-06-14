@@ -2,10 +2,10 @@
 //		sometimes the qe plot is missing
 //		sometimes the range for the fit plot is wrong!
 //		fix the range for the gain plot -> use an empty histogram
-//		plot the references for all leds
-//		plot the gain for all leds
 //		rms plus deviation from 0 for anodes
+//		rms plus deviation from 0 for reference
 //		anode plateau variation
+//		fix the plots on the reference
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -175,7 +175,7 @@ if (pmt == "CA0796") { sector = 8;  module = 6;  set = 1; }
 if (pmt == "CA1655") { sector = 9;  module = 6;  set = 1; }
 if (pmt == "CA1525") { sector = 10; module = 6;  set = 1; }
 if (pmt == "CA1966") { sector = 11; module = 6;  set = 1; }
-
+if (pmt == "CA2046") { sector = 12; module = 6;  set = 1; }
 
 //new ones first delivery
 if (pmt == "BA0263") { sector = 4;  module = 1;  set = 2; }
@@ -584,8 +584,14 @@ chi2 fit;
 float chi2_temp[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
 float gains[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float gainsb[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float gainsc[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float gainsd[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float gains_bad[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float voltages_temp[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float voltages_tempb[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float voltages_tempc[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float voltages_tempd[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float voltages_temp_bad[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
 float anodes[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
@@ -622,8 +628,20 @@ float volt1200V = 1200.0;
 int index_temp2 = 0;
 float max_volt = 0;
 int index_temp = 0;
+int index_tempb = 0;
+int index_tempc = 0;
+int index_tempd = 0;
 
 float min_anode_plot;
+
+float gain1200V;
+
+TGraph *gc4a;
+TGraph *gc4b;
+TGraph *gc4c;
+TGraph *gc4d;
+TGraph *gc4e;
+TGraph *gc4f;
 
 //tree declaration
 TTree *tree = new TTree("Castor_PMT_Caracterization_2012","Castor PMT Caracterization 2012");
@@ -966,6 +984,263 @@ fit.c_1600V = 0.0;
 fit.c_1800V = 0.0;
 
 set_unknown = 0;
+
+chi2_temp[0] = 0.0;
+chi2_temp[1] = 0.0;
+chi2_temp[2] = 0.0;
+chi2_temp[3] = 0.0;
+chi2_temp[4] = 0.0;
+chi2_temp[5] = 0.0;
+chi2_temp[6] = 0.0;
+
+gains[0] = 0.0;
+gains[1] = 0.0;
+gains[2] = 0.0;
+gains[3] = 0.0;
+gains[4] = 0.0;
+gains[5] = 0.0;
+gains[6] = 0.0;
+
+gainsb[0] = 0.0;
+gainsb[1] = 0.0;
+gainsb[2] = 0.0;
+gainsb[3] = 0.0;
+gainsb[4] = 0.0;
+gainsb[5] = 0.0;
+gainsb[6] = 0.0;
+
+gainsc[0] = 0.0;
+gainsc[1] = 0.0;
+gainsc[2] = 0.0;
+gainsc[3] = 0.0;
+gainsc[4] = 0.0;
+gainsc[5] = 0.0;
+gainsc[6] = 0.0;
+
+gainsd[0] = 0.0;
+gainsd[1] = 0.0;
+gainsd[2] = 0.0;
+gainsd[3] = 0.0;
+gainsd[4] = 0.0;
+gainsd[5] = 0.0;
+gainsd[6] = 0.0;
+
+gains_bad[0] = 0.0;
+gains_bad[1] = 0.0;
+gains_bad[2] = 0.0;
+gains_bad[3] = 0.0;
+gains_bad[4] = 0.0;
+gains_bad[5] = 0.0;
+gains_bad[6] = 0.0;
+
+voltages_temp[0] = 0.0;
+voltages_temp[1] = 0.0;
+voltages_temp[2] = 0.0;
+voltages_temp[3] = 0.0;
+voltages_temp[4] = 0.0;
+voltages_temp[5] = 0.0;
+voltages_temp[6] = 0.0;
+
+voltages_tempb[0] = 0.0;
+voltages_tempb[1] = 0.0;
+voltages_tempb[2] = 0.0;
+voltages_tempb[3] = 0.0;
+voltages_tempb[4] = 0.0;
+voltages_tempb[5] = 0.0;
+voltages_tempb[6] = 0.0;
+
+voltages_tempc[0] = 0.0;
+voltages_tempc[1] = 0.0;
+voltages_tempc[2] = 0.0;
+voltages_tempc[3] = 0.0;
+voltages_tempc[4] = 0.0;
+voltages_tempc[5] = 0.0;
+voltages_tempc[6] = 0.0;
+
+voltages_tempd[0] = 0.0;
+voltages_tempd[1] = 0.0;
+voltages_tempd[2] = 0.0;
+voltages_tempd[3] = 0.0;
+voltages_tempd[4] = 0.0;
+voltages_tempd[5] = 0.0;
+voltages_tempd[6] = 0.0;
+
+voltages_temp_bad[0] = 0.0;
+voltages_temp_bad[1] = 0.0;
+voltages_temp_bad[2] = 0.0;
+voltages_temp_bad[3] = 0.0;
+voltages_temp_bad[4] = 0.0;
+voltages_temp_bad[5] = 0.0;
+voltages_temp_bad[6] = 0.0;
+
+anodes[0] = 0.0;
+anodes[1] = 0.0;
+anodes[2] = 0.0;
+anodes[3] = 0.0;
+anodes[4] = 0.0;
+anodes[5] = 0.0;
+anodes[6] = 0.0;
+
+anodesb[0] = 0.0;
+anodesb[1] = 0.0;
+anodesb[2] = 0.0;
+anodesb[3] = 0.0;
+anodesb[4] = 0.0;
+anodesb[5] = 0.0;
+anodesb[6] = 0.0;
+
+anodesc[0] = 0.0;
+anodesc[1] = 0.0;
+anodesc[2] = 0.0;
+anodesc[3] = 0.0;
+anodesc[4] = 0.0;
+anodesc[5] = 0.0;
+anodesc[6] = 0.0;
+
+anodesd[0] = 0.0;
+anodesd[1] = 0.0;
+anodesd[2] = 0.0;
+anodesd[3] = 0.0;
+anodesd[4] = 0.0;
+anodesd[5] = 0.0;
+anodesd[6] = 0.0;
+
+cathodes[0] = 0.0;
+cathodes[1] = 0.0;
+cathodes[2] = 0.0;
+cathodes[3] = 0.0;
+cathodes[4] = 0.0;
+cathodes[5] = 0.0;
+cathodes[6] = 0.0;
+
+cathodesb[0] = 0.0;
+cathodesb[1] = 0.0;
+cathodesb[2] = 0.0;
+cathodesb[3] = 0.0;
+cathodesb[4] = 0.0;
+cathodesb[5] = 0.0;
+cathodesb[6] = 0.0;
+
+cathodesc[0] = 0.0;
+cathodesc[1] = 0.0;
+cathodesc[2] = 0.0;
+cathodesc[3] = 0.0;
+cathodesc[4] = 0.0;
+cathodesc[5] = 0.0;
+cathodesc[6] = 0.0;
+
+cathodesd[0] = 0.0;
+cathodesd[1] = 0.0;
+cathodesd[2] = 0.0;
+cathodesd[3] = 0.0;
+cathodesd[4] = 0.0;
+cathodesd[5] = 0.0;
+cathodesd[6] = 0.0;
+
+cathode_errors[0] = 0.0;
+cathode_errors[1] = 0.0;
+cathode_errors[2] = 0.0;
+cathode_errors[3] = 0.0;
+cathode_errors[4] = 0.0;
+cathode_errors[5] = 0.0;
+cathode_errors[6] = 0.0;
+
+cathode_errorsb[0] = 0.0;
+cathode_errorsb[1] = 0.0;
+cathode_errorsb[2] = 0.0;
+cathode_errorsb[3] = 0.0;
+cathode_errorsb[4] = 0.0;
+cathode_errorsb[5] = 0.0;
+cathode_errorsb[6] = 0.0;
+
+cathode_errorsc[0] = 0.0;
+cathode_errorsc[1] = 0.0;
+cathode_errorsc[2] = 0.0;
+cathode_errorsc[3] = 0.0;
+cathode_errorsc[4] = 0.0;
+cathode_errorsc[5] = 0.0;
+cathode_errorsc[6] = 0.0;
+
+cathode_errorsd[0] = 0.0;
+cathode_errorsd[1] = 0.0;
+cathode_errorsd[2] = 0.0;
+cathode_errorsd[3] = 0.0;
+cathode_errorsd[4] = 0.0;
+cathode_errorsd[5] = 0.0;
+cathode_errorsd[6] = 0.0;
+
+reference[0] = 0.0;
+reference[1] = 0.0;
+reference[2] = 0.0;
+reference[3] = 0.0;
+reference[4] = 0.0;
+reference[5] = 0.0;
+reference[6] = 0.0;
+
+referenceb[0] = 0.0;
+referenceb[1] = 0.0;
+referenceb[2] = 0.0;
+referenceb[3] = 0.0;
+referenceb[4] = 0.0;
+referenceb[5] = 0.0;
+referenceb[6] = 0.0;
+
+referencec[0] = 0.0;
+referencec[1] = 0.0;
+referencec[2] = 0.0;
+referencec[3] = 0.0;
+referencec[4] = 0.0;
+referencec[5] = 0.0;
+referencec[6] = 0.0;
+
+referenced[0] = 0.0;
+referenced[1] = 0.0;
+referenced[2] = 0.0;
+referenced[3] = 0.0;
+referenced[4] = 0.0;
+referenced[5] = 0.0;
+referenced[6] = 0.0;
+
+volt_anodes[0] = 0.0;
+volt_anodes[1] = 0.0;
+volt_anodes[2] = 0.0;
+volt_anodes[3] = 0.0;
+volt_anodes[4] = 0.0;
+volt_anodes[5] = 0.0;
+volt_anodes[6] = 0.0;
+
+volt_anodesb[0] = 0.0;
+volt_anodesb[1] = 0.0;
+volt_anodesb[2] = 0.0;
+volt_anodesb[3] = 0.0;
+volt_anodesb[4] = 0.0;
+volt_anodesb[5] = 0.0;
+volt_anodesb[6] = 0.0;
+
+volt_anodesc[0] = 0.0;
+volt_anodesc[1] = 0.0;
+volt_anodesc[2] = 0.0;
+volt_anodesc[3] = 0.0;
+volt_anodesc[4] = 0.0;
+volt_anodesc[5] = 0.0;
+volt_anodesc[6] = 0.0;
+
+volt_anodesd[0] = 0.0;
+volt_anodesd[1] = 0.0;
+volt_anodesd[2] = 0.0;
+volt_anodesd[3] = 0.0;
+volt_anodesd[4] = 0.0;
+volt_anodesd[5] = 0.0;
+volt_anodesd[6] = 0.0;
+
+index_anodes = 0;
+index_anodesb = 0;
+index_anodesc = 0;
+index_anodesd = 0;
+
+index_temp2 = 0;
+max_volt = 0;
+index_temp = 0;
 
 //find the code of the pmt
 found1 = file.find("_");
@@ -1326,7 +1601,8 @@ float temp6b[7] = {m_800V_led2.cath_error, 0.0, 0.0, m_1200V_led2.cath_error, 0.
 float temp6c[7] = {m_800V_led3.cath_error, 0.0, 0.0, m_1200V_led3.cath_error, 0.0, 0.0, 0.0};
 float temp6d[7] = {m_800V_led4.cath_error, 0.0, 0.0, m_1200V_led4.cath_error, 0.0, 0.0, m_1800V_led4.cath_error};
 float chi2s[7] = {fit.c_800V, fit.c_900V, fit.c_1000V, fit.c_1200V, fit.c_1400V, fit.c_1600V, fit.c_1800V};
-float gain1200V = (temp1[3]+temp3[3])/(2*temp2[3]);
+
+gain1200V = (temp1[3]+temp3[3])/(2*temp2[3]);
 
 min_anode_plot = (temp1[0]+temp3[0])/2;
 
@@ -1380,6 +1656,24 @@ voltages_temp[index_temp] = voltages[j];
 gains[index_temp] = (temp1[j]+temp3[j])/(2*temp2[j]);
 chi2_temp[index_temp] = chi2s[j];
 index_temp = index_temp + 1;
+}
+if (temp1b[j] != 0 && temp2b[j] != 0 && chi2s[j] < chi2_threshold)
+{
+voltages_tempb[index_tempb] = voltages[j];
+gainsb[index_tempb] = (temp1b[j]+temp3b[j])/(2*temp2b[j]);
+index_tempb = index_tempb + 1;
+}
+if (temp1c[j] != 0 && temp2c[j] != 0 && chi2s[j] < chi2_threshold)
+{
+voltages_tempc[index_tempc] = voltages[j];
+gainsc[index_tempc] = (temp1c[j]+temp3c[j])/(2*temp2c[j]);
+index_tempc = index_tempc + 1;
+}
+if (temp1d[j] != 0 && temp2d[j] != 0 && chi2s[j] < chi2_threshold)
+{
+voltages_tempd[index_tempd] = voltages[j];
+gainsd[index_tempd] = (temp1d[j]+temp3d[j])/(2*temp2d[j]);
+index_tempd = index_tempd + 1;
 }
 }
 
@@ -1568,11 +1862,41 @@ max_graph = max_graph * 1.2;
       	//gPad->SetLogy();
         //gPad->SetLogx();
 	TGraph *gc3f = new TGraph(index_anodes,volt_anodes,reference);
-	gc3f->SetTitle("Reference;Voltage [V];Current [A]");
+	gc3f->SetTitle("Reference Anode for led 1 as function of voltage;Voltage [V];Current [A]");
         gc3f->SetMarkerStyle(20);
       	gc3f->Draw("APL");
         c3f->Print(name2.c_str());
 	c3f->Close();
+
+	TCanvas * c3fb = new TCanvas("c3fb","c",800,600);
+      	//gPad->SetLogy();
+        //gPad->SetLogx();
+	TGraph *gc3fb = new TGraph(index_anodesb,volt_anodesb,referenceb);
+	gc3fb->SetTitle("Reference Anode for led 2 as function of voltage;Voltage [V];Current [A]");
+        gc3fb->SetMarkerStyle(20);
+      	gc3fb->Draw("APL");
+        c3fb->Print(name2.c_str());
+	c3fb->Close();
+
+	TCanvas * c3fc = new TCanvas("c3fc","c",800,600);
+      	//gPad->SetLogy();
+        //gPad->SetLogx();
+	TGraph *gc3fc = new TGraph(index_anodesc,volt_anodesc,referencec);
+	gc3fc->SetTitle("Reference Anode for led 3 as function of voltage;Voltage [V];Current [A]");
+        gc3fc->SetMarkerStyle(20);
+      	gc3fc->Draw("APL");
+        c3fc->Print(name2.c_str());
+	c3fc->Close();
+
+	TCanvas * c3fd = new TCanvas("c3fd","c",800,600);
+      	//gPad->SetLogy();
+        //gPad->SetLogx();
+	TGraph *gc3fd = new TGraph(index_anodesd,volt_anodesd,referenced);
+	gc3fd->SetTitle("Reference Anode for led 4 as function of voltage;Voltage [V];Current [A]");
+        gc3fd->SetMarkerStyle(20);
+      	gc3fd->Draw("APL");
+        c3fd->Print(name2.c_str());
+	c3fd->Close();
 	
 	TCanvas * c3g = new TCanvas("c3g","c",800,600);
       	//gPad->SetLogy();
@@ -1591,26 +1915,53 @@ max_graph = max_graph * 1.2;
 	gc3->SetTitle("Gain as function of voltage;Voltage [V];Gain");
         gc3->SetMarkerStyle(20);
       	gc3->Draw("APL");
+	TGraph *gc3xb = new TGraph(index_tempb,volt_anodesb,gainsb);
+	gc3xb->SetTitle("Gain as function of voltage;Voltage [V];Gain");
+        gc3xb->SetMarkerStyle(20);
+        gc3xb->SetMarkerColor(3);
+        gc3xb->SetLineColor(3);
+      	gc3xb->Draw("PL same");
+	TGraph *gc3xc = new TGraph(index_tempc,volt_anodesc,gainsc);
+	gc3xc->SetTitle("Gain as function of voltage;Voltage [V];Gain");
+        gc3xc->SetMarkerStyle(20);
+        gc3xc->SetMarkerColor(4);
+        gc3xc->SetLineColor(4);
+      	gc3xc->Draw("PL same");
+	TGraph *gc3xd = new TGraph(index_tempd,volt_anodesd,gainsd);
+	gc3xd->SetTitle("Gain as function of voltage;Voltage [V];Gain");
+        gc3xd->SetMarkerStyle(20);
+        gc3xd->SetMarkerColor(5);
+	gc3xd->SetLineColor(5);
+      	gc3xd->Draw("PL same");
 	TGraph *gc3z = new TGraph(index_temp2,voltages_temp_bad,gains_bad);
         gc3z->SetMarkerStyle(20);
 	gc3z->SetLineColor(2);
 	gc3z->SetMarkerColor(2);
       	gc3z->Draw("PL same");
+
+   	TLegend *leg3b = new TLegend(0.12,0.65,0.40,0.88);
+   	leg3b->AddEntry(gc3,"400 nm","lp");
+   	leg3b->AddEntry(gc3xb,"470 nm","lp");
+   	leg3b->AddEntry(gc3xc,"500 nm","lp");
+   	leg3b->AddEntry(gc3xd,"513 nm","lp");
+   	leg3b->AddEntry(gc3z,"Gains computed with bad fit","lp");
+   	leg3b->Draw();
+
         c3->Print(name2.c_str());
 	c3->Close();
 
-cout << "two to last plot" << endl;
+//cout << "two to last plot" << endl;
 
 float quantum_eff_800V[3] = {0.0, 0.0, 0.0};
 float quantum_eff_1200V[3] = {0.0, 0.0, 0.0};
 float dum = 0.0;
 
-TGraph *gc4a = new TGraph(1,&dum,&dum);
-TGraph *gc4b = new TGraph(1,&dum,&dum);
-TGraph *gc4c = new TGraph(1,&dum,&dum);
-TGraph *gc4d = new TGraph(1,&dum,&dum);
-TGraph *gc4e = new TGraph(1,&dum,&dum);
-TGraph *gc4f = new TGraph(1,&dum,&dum);
+gc4a = new TGraph(1,&dum,&dum);
+gc4b = new TGraph(1,&dum,&dum);
+gc4c = new TGraph(1,&dum,&dum);
+gc4d = new TGraph(1,&dum,&dum);
+gc4e = new TGraph(1,&dum,&dum);
+gc4f = new TGraph(1,&dum,&dum);
 
 max_graph = m_800V_led1.qe;
 

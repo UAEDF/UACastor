@@ -5,7 +5,7 @@
 //		rms plus deviation from 0 for anodes
 //		rms plus deviation from 0 for reference
 //		anode plateau variation
-//		fix the plots on the reference
+//		fix the plots on the reference for led 2, 3 and 4
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -581,42 +581,14 @@ int leakage_1800V_n, leakage_1800V_spikes;
 
 chi2 fit;
 
-float chi2_temp[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-
-float gains[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float gainsb[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float gainsc[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float gainsd[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float gains_bad[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float voltages_temp[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float voltages_tempb[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float voltages_tempc[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float voltages_tempd[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float voltages_temp_bad[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-
-float anodes[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float cathodes[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float cathode_errors[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float reference[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float volt_anodes[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-
-float volt_anodesb[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float anodesb[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float cathodesb[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float cathode_errorsb[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float referenceb[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-
-float volt_anodesc[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float anodesc[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float cathodesc[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float cathode_errorsc[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float referencec[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-
-float volt_anodesd[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float anodesd[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float cathodesd[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float cathode_errorsd[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float referenced[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+std::vector<float> chi2_temp;
+std::vector<float> gains, gainsb, gainsc, gainsd, gains_bad;
+std::vector<float> voltages_temp, voltages_tempb, voltages_tempc, voltages_tempd, voltages_temp_bad;
+std::vector<float> volt_anodes, volt_anodesb, volt_anodesc, volt_anodesd;
+std::vector<float> reference, referenceb, referencec, referenced;
+std::vector<float> anodes, anodesb, anodesc, anodesd;
+std::vector<float> cathodes, cathodesb, cathodesc, cathodesd;
+std::vector<float> cathode_errors, cathode_errorsb, cathode_errorsc, cathode_errorsd;
 
 int index_anodes = 0;
 int index_anodesb = 0;
@@ -635,6 +607,7 @@ int index_tempd = 0;
 float min_anode_plot;
 
 float gain1200V;
+float dum = 0.0;
 
 TGraph *gc4a;
 TGraph *gc4b;
@@ -985,262 +958,56 @@ fit.c_1800V = 0.0;
 
 set_unknown = 0;
 
-chi2_temp[0] = 0.0;
-chi2_temp[1] = 0.0;
-chi2_temp[2] = 0.0;
-chi2_temp[3] = 0.0;
-chi2_temp[4] = 0.0;
-chi2_temp[5] = 0.0;
-chi2_temp[6] = 0.0;
+chi2_temp.clear();
 
-gains[0] = 0.0;
-gains[1] = 0.0;
-gains[2] = 0.0;
-gains[3] = 0.0;
-gains[4] = 0.0;
-gains[5] = 0.0;
-gains[6] = 0.0;
+gains.clear();
+gainsb.clear();
+gainsc.clear();
+gainsd.clear();
+gains_bad.clear();
 
-gainsb[0] = 0.0;
-gainsb[1] = 0.0;
-gainsb[2] = 0.0;
-gainsb[3] = 0.0;
-gainsb[4] = 0.0;
-gainsb[5] = 0.0;
-gainsb[6] = 0.0;
+voltages_temp.clear();
+voltages_tempb.clear();
+voltages_tempc.clear();
+voltages_tempd.clear();
+voltages_temp_bad.clear();
 
-gainsc[0] = 0.0;
-gainsc[1] = 0.0;
-gainsc[2] = 0.0;
-gainsc[3] = 0.0;
-gainsc[4] = 0.0;
-gainsc[5] = 0.0;
-gainsc[6] = 0.0;
+anodes.clear();
+anodesb.clear();
+anodesc.clear();
+anodesd.clear();
 
-gainsd[0] = 0.0;
-gainsd[1] = 0.0;
-gainsd[2] = 0.0;
-gainsd[3] = 0.0;
-gainsd[4] = 0.0;
-gainsd[5] = 0.0;
-gainsd[6] = 0.0;
+cathodes.clear();
+cathodesb.clear();
+cathodesc.clear();
+cathodesd.clear();
 
-gains_bad[0] = 0.0;
-gains_bad[1] = 0.0;
-gains_bad[2] = 0.0;
-gains_bad[3] = 0.0;
-gains_bad[4] = 0.0;
-gains_bad[5] = 0.0;
-gains_bad[6] = 0.0;
+cathode_errors.clear();
+cathode_errorsb.clear();
+cathode_errorsc.clear();
+cathode_errorsd.clear();
 
-voltages_temp[0] = 0.0;
-voltages_temp[1] = 0.0;
-voltages_temp[2] = 0.0;
-voltages_temp[3] = 0.0;
-voltages_temp[4] = 0.0;
-voltages_temp[5] = 0.0;
-voltages_temp[6] = 0.0;
+reference.clear();
+referenceb.clear();
+referencec.clear();
+referenced.clear();
 
-voltages_tempb[0] = 0.0;
-voltages_tempb[1] = 0.0;
-voltages_tempb[2] = 0.0;
-voltages_tempb[3] = 0.0;
-voltages_tempb[4] = 0.0;
-voltages_tempb[5] = 0.0;
-voltages_tempb[6] = 0.0;
-
-voltages_tempc[0] = 0.0;
-voltages_tempc[1] = 0.0;
-voltages_tempc[2] = 0.0;
-voltages_tempc[3] = 0.0;
-voltages_tempc[4] = 0.0;
-voltages_tempc[5] = 0.0;
-voltages_tempc[6] = 0.0;
-
-voltages_tempd[0] = 0.0;
-voltages_tempd[1] = 0.0;
-voltages_tempd[2] = 0.0;
-voltages_tempd[3] = 0.0;
-voltages_tempd[4] = 0.0;
-voltages_tempd[5] = 0.0;
-voltages_tempd[6] = 0.0;
-
-voltages_temp_bad[0] = 0.0;
-voltages_temp_bad[1] = 0.0;
-voltages_temp_bad[2] = 0.0;
-voltages_temp_bad[3] = 0.0;
-voltages_temp_bad[4] = 0.0;
-voltages_temp_bad[5] = 0.0;
-voltages_temp_bad[6] = 0.0;
-
-anodes[0] = 0.0;
-anodes[1] = 0.0;
-anodes[2] = 0.0;
-anodes[3] = 0.0;
-anodes[4] = 0.0;
-anodes[5] = 0.0;
-anodes[6] = 0.0;
-
-anodesb[0] = 0.0;
-anodesb[1] = 0.0;
-anodesb[2] = 0.0;
-anodesb[3] = 0.0;
-anodesb[4] = 0.0;
-anodesb[5] = 0.0;
-anodesb[6] = 0.0;
-
-anodesc[0] = 0.0;
-anodesc[1] = 0.0;
-anodesc[2] = 0.0;
-anodesc[3] = 0.0;
-anodesc[4] = 0.0;
-anodesc[5] = 0.0;
-anodesc[6] = 0.0;
-
-anodesd[0] = 0.0;
-anodesd[1] = 0.0;
-anodesd[2] = 0.0;
-anodesd[3] = 0.0;
-anodesd[4] = 0.0;
-anodesd[5] = 0.0;
-anodesd[6] = 0.0;
-
-cathodes[0] = 0.0;
-cathodes[1] = 0.0;
-cathodes[2] = 0.0;
-cathodes[3] = 0.0;
-cathodes[4] = 0.0;
-cathodes[5] = 0.0;
-cathodes[6] = 0.0;
-
-cathodesb[0] = 0.0;
-cathodesb[1] = 0.0;
-cathodesb[2] = 0.0;
-cathodesb[3] = 0.0;
-cathodesb[4] = 0.0;
-cathodesb[5] = 0.0;
-cathodesb[6] = 0.0;
-
-cathodesc[0] = 0.0;
-cathodesc[1] = 0.0;
-cathodesc[2] = 0.0;
-cathodesc[3] = 0.0;
-cathodesc[4] = 0.0;
-cathodesc[5] = 0.0;
-cathodesc[6] = 0.0;
-
-cathodesd[0] = 0.0;
-cathodesd[1] = 0.0;
-cathodesd[2] = 0.0;
-cathodesd[3] = 0.0;
-cathodesd[4] = 0.0;
-cathodesd[5] = 0.0;
-cathodesd[6] = 0.0;
-
-cathode_errors[0] = 0.0;
-cathode_errors[1] = 0.0;
-cathode_errors[2] = 0.0;
-cathode_errors[3] = 0.0;
-cathode_errors[4] = 0.0;
-cathode_errors[5] = 0.0;
-cathode_errors[6] = 0.0;
-
-cathode_errorsb[0] = 0.0;
-cathode_errorsb[1] = 0.0;
-cathode_errorsb[2] = 0.0;
-cathode_errorsb[3] = 0.0;
-cathode_errorsb[4] = 0.0;
-cathode_errorsb[5] = 0.0;
-cathode_errorsb[6] = 0.0;
-
-cathode_errorsc[0] = 0.0;
-cathode_errorsc[1] = 0.0;
-cathode_errorsc[2] = 0.0;
-cathode_errorsc[3] = 0.0;
-cathode_errorsc[4] = 0.0;
-cathode_errorsc[5] = 0.0;
-cathode_errorsc[6] = 0.0;
-
-cathode_errorsd[0] = 0.0;
-cathode_errorsd[1] = 0.0;
-cathode_errorsd[2] = 0.0;
-cathode_errorsd[3] = 0.0;
-cathode_errorsd[4] = 0.0;
-cathode_errorsd[5] = 0.0;
-cathode_errorsd[6] = 0.0;
-
-reference[0] = 0.0;
-reference[1] = 0.0;
-reference[2] = 0.0;
-reference[3] = 0.0;
-reference[4] = 0.0;
-reference[5] = 0.0;
-reference[6] = 0.0;
-
-referenceb[0] = 0.0;
-referenceb[1] = 0.0;
-referenceb[2] = 0.0;
-referenceb[3] = 0.0;
-referenceb[4] = 0.0;
-referenceb[5] = 0.0;
-referenceb[6] = 0.0;
-
-referencec[0] = 0.0;
-referencec[1] = 0.0;
-referencec[2] = 0.0;
-referencec[3] = 0.0;
-referencec[4] = 0.0;
-referencec[5] = 0.0;
-referencec[6] = 0.0;
-
-referenced[0] = 0.0;
-referenced[1] = 0.0;
-referenced[2] = 0.0;
-referenced[3] = 0.0;
-referenced[4] = 0.0;
-referenced[5] = 0.0;
-referenced[6] = 0.0;
-
-volt_anodes[0] = 0.0;
-volt_anodes[1] = 0.0;
-volt_anodes[2] = 0.0;
-volt_anodes[3] = 0.0;
-volt_anodes[4] = 0.0;
-volt_anodes[5] = 0.0;
-volt_anodes[6] = 0.0;
-
-volt_anodesb[0] = 0.0;
-volt_anodesb[1] = 0.0;
-volt_anodesb[2] = 0.0;
-volt_anodesb[3] = 0.0;
-volt_anodesb[4] = 0.0;
-volt_anodesb[5] = 0.0;
-volt_anodesb[6] = 0.0;
-
-volt_anodesc[0] = 0.0;
-volt_anodesc[1] = 0.0;
-volt_anodesc[2] = 0.0;
-volt_anodesc[3] = 0.0;
-volt_anodesc[4] = 0.0;
-volt_anodesc[5] = 0.0;
-volt_anodesc[6] = 0.0;
-
-volt_anodesd[0] = 0.0;
-volt_anodesd[1] = 0.0;
-volt_anodesd[2] = 0.0;
-volt_anodesd[3] = 0.0;
-volt_anodesd[4] = 0.0;
-volt_anodesd[5] = 0.0;
-volt_anodesd[6] = 0.0;
+volt_anodes.clear();
+volt_anodesb.clear();
+volt_anodesc.clear();
+volt_anodesd.clear();
 
 index_anodes = 0;
 index_anodesb = 0;
 index_anodesc = 0;
 index_anodesd = 0;
+index_temp = 0;
+index_tempb = 0;
+index_tempc = 0;
+index_tempd = 0;
 
 index_temp2 = 0;
 max_volt = 0;
-index_temp = 0;
 
 //find the code of the pmt
 found1 = file.find("_");
@@ -1606,92 +1373,104 @@ gain1200V = (temp1[3]+temp3[3])/(2*temp2[3]);
 
 min_anode_plot = (temp1[0]+temp3[0])/2;
 
+//cout << "loop" << endl;
+
 for (int j=0; j < 7; j++)
 {
 if (temp1[j] != 0 && temp3[j] != 0)
 {
-volt_anodes[index_anodes] = voltages[j];
-anodes[index_anodes] = (temp1[j]+temp3[j])/(2);
-cathodes[index_anodes] = temp2[j];
-cathode_errors[index_anodes] = temp6[j];
-reference[index_anodes] = (temp4[j]+temp5[j])/2;
+volt_anodes.push_back(voltages[j]);
+anodes.push_back((temp1[j]+temp3[j])/(2));
+cathodes.push_back(temp2[j]);
+cathode_errors.push_back(temp6[j]);
+reference.push_back((temp4[j]+temp5[j])/2);
 index_anodes = index_anodes + 1;
 }
 if (temp1b[j] != 0 && temp3b[j] != 0)
 {
-volt_anodesb[index_anodesb] = voltages[j];
-anodesb[index_anodesb] = (temp1b[j]+temp3b[j])/(2);
-cathodesb[index_anodesb] = temp2b[j];
-cathode_errorsb[index_anodesb] = temp6b[j];
-referenceb[index_anodesb] = (temp4b[j]+temp5b[j])/2;
+volt_anodesb.push_back(voltages[j]);
+anodesb.push_back((temp1b[j]+temp3b[j])/(2));
+cathodesb.push_back(temp2b[j]);
+cathode_errorsb.push_back(temp6b[j]);
+referenceb.push_back((temp4b[j]+temp5b[j])/2);
+cout << volt_anodesb.at(index_anodesb) << " -> refb = " << referenceb.at(index_anodesb) << endl;
 index_anodesb = index_anodesb + 1;
 }
 if (temp1c[j] != 0 && temp3c[j] != 0)
 {
-volt_anodesc[index_anodesc] = voltages[j];
-anodesc[index_anodesc] = (temp1c[j]+temp3c[j])/(2);
-cathodesc[index_anodesc] = temp2c[j];
-cathode_errorsc[index_anodesc] = temp6c[j];
-referencec[index_anodesc] = (temp4c[j]+temp5c[j])/2;
+volt_anodesc.push_back(voltages[j]);
+anodesc.push_back((temp1c[j]+temp3c[j])/(2));
+cathodesc.push_back(temp2c[j]);
+cathode_errorsc.push_back(temp6c[j]);
+referencec.push_back((temp4c[j]+temp5c[j])/2);
+cout << volt_anodesc.at(index_anodesc) << " -> refc = " << referencec.at(index_anodesc) << endl;
 index_anodesc = index_anodesc + 1;
 }
 if (temp1d[j] != 0 && temp3d[j] != 0)
 {
-volt_anodesd[index_anodesd] = voltages[j];
-anodesd[index_anodesd] = (temp1d[j]+temp3d[j])/(2);
-cathodesd[index_anodesd] = temp2d[j];
-cathode_errorsd[index_anodesd] = temp6d[j];
-referenced[index_anodesd] = (temp4d[j]+temp5d[j])/2;
+volt_anodesd.push_back(voltages[j]);
+anodesd.push_back((temp1d[j]+temp3d[j])/(2));
+cathodesd.push_back(temp2d[j]);
+cathode_errorsd.push_back(temp6d[j]);
+referenced.push_back((temp4d[j]+temp5d[j])/2);
+cout << volt_anodesd.at(index_anodesd) << " -> refd = " << referenced.at(index_anodesd) << endl;
+if (anodesd.at(index_anodesd) < min_anode_plot) { min_anode_plot = anodesd.at(index_anodesd); }
 index_anodesd = index_anodesd + 1;
-if (anodesd[index_anodesd] < min_anode_plot) { min_anode_plot = anodesd[index_anodesd]; }
 }
 }
 
+cout << "index anodes b = " << index_anodesb << endl;
+cout << "index anodes c = " << index_anodesc << endl;
+cout << "index anodes d = " << index_anodesd << endl;
+
+//cout << "2nd loop" << endl;
 
 for (int j=0; j < 7; j++)
 {
 if (temp1[j] != 0 && temp2[j] != 0 && chi2s[j] < chi2_threshold)
 {
-voltages_temp[index_temp] = voltages[j];
-gains[index_temp] = (temp1[j]+temp3[j])/(2*temp2[j]);
-chi2_temp[index_temp] = chi2s[j];
+voltages_temp.push_back(voltages[j]);
+gains.push_back((temp1[j]+temp3[j])/(2*temp2[j]));
+chi2_temp.push_back(chi2s[j]);
 index_temp = index_temp + 1;
 }
 if (temp1b[j] != 0 && temp2b[j] != 0 && chi2s[j] < chi2_threshold)
 {
-voltages_tempb[index_tempb] = voltages[j];
-gainsb[index_tempb] = (temp1b[j]+temp3b[j])/(2*temp2b[j]);
+voltages_tempb.push_back(voltages[j]);
+gainsb.push_back((temp1b[j]+temp3b[j])/(2*temp2b[j]));
 index_tempb = index_tempb + 1;
 }
 if (temp1c[j] != 0 && temp2c[j] != 0 && chi2s[j] < chi2_threshold)
 {
-voltages_tempc[index_tempc] = voltages[j];
-gainsc[index_tempc] = (temp1c[j]+temp3c[j])/(2*temp2c[j]);
+voltages_tempc.push_back(voltages[j]);
+gainsc.push_back((temp1c[j]+temp3c[j])/(2*temp2c[j]));
 index_tempc = index_tempc + 1;
 }
 if (temp1d[j] != 0 && temp2d[j] != 0 && chi2s[j] < chi2_threshold)
 {
-voltages_tempd[index_tempd] = voltages[j];
-gainsd[index_tempd] = (temp1d[j]+temp3d[j])/(2*temp2d[j]);
+voltages_tempd.push_back(voltages[j]);
+gainsd.push_back((temp1d[j]+temp3d[j])/(2*temp2d[j]));
 index_tempd = index_tempd + 1;
 }
 }
+
+//cout << "3rd loop" << endl;
 
 for (int j=0; j < 7; j++)
 {
 if (temp1[j] != 0 && temp2[j] != 0 && chi2s[j] > chi2_threshold)
 {
-voltages_temp_bad[index_temp2] = voltages[j];
-gains_bad[index_temp2] = (temp1[j]+temp3[j])/(2*temp2[j]);
+voltages_temp_bad.push_back(voltages[j]);
+gains_bad.push_back((temp1[j]+temp3[j])/(2*temp2[j]));
 index_temp2 = index_temp2 + 1;
 max_volt = voltages[j];
 }
 }
 
+//cout << "max val plot " << endl;
+
 int status_index[3] = {1, 2, 3};
 int status_values[3] = {bad_fits, total_spikes, set_unknown};
-
-
 
 max_graph = 0.0;
 min_graph = 1;
@@ -1703,6 +1482,8 @@ min_graph = 1;
   }
 max_graph = max_graph * 1.5;
 min_graph = -2e-12;
+
+//cout << "plotting" << endl;
 
 	TCanvas * c2 = new TCanvas("c2","c",800,600);
       	//gPad->SetLogy();
@@ -1755,7 +1536,7 @@ max_graph = 0.0;
   }
 max_graph = max_graph * 1.2;
 
-	TCanvas * c9 = new TCanvas("c9","c",800,600);
+	TCanvas *c9 = new TCanvas("c9","c",800,600);
       	//gPad->SetLogy();
 	TGraph *gc9 = new TGraph(entries,(float*)&vec_time.front(),&control_anode_ref.front());
 	gc9->SetTitle("Control Anode divided by Reference;Time [s];Ratio of the currents");
@@ -1765,10 +1546,10 @@ max_graph = max_graph * 1.2;
         c9->Print(name2.c_str());
 	c9->Close();
 
-	TCanvas * c3d = new TCanvas("c3d","c",800,600);
+	TCanvas *c3d = new TCanvas("c3d","c",800,600);
       	gPad->SetLogy();
         gPad->SetLogx();
-	TGraph *gc3d = new TGraph(index_anodes,volt_anodes,anodes);
+	TGraph *gc3d = new TGraph(index_anodes,&volt_anodes.front(),&anodes.front());
 	gc3d->SetTitle("Anode Corrent as function of voltage;Voltage [V];Corrent [A]");
 	gc3d->SetMinimum(min_anode_plot);
         gc3d->SetMarkerStyle(20);
@@ -1776,10 +1557,10 @@ max_graph = max_graph * 1.2;
         //c3d->Print(name2.c_str());
 	//c3d->Close();
 	
-	//TCanvas * c3db = new TCanvas("c3db","c",800,600);
+	//TCanvas *c3db = new TCanvas("c3db","c",800,600);
       	//gPad->SetLogy();
         //gPad->SetLogx();
-	TGraph *gc3db = new TGraph(index_anodesb,volt_anodesb,anodesb);
+	TGraph *gc3db = new TGraph(index_anodesb,&volt_anodesb.front(),&anodesb.front());
 	gc3db->SetTitle("Anode Corrent for led 2 as function of voltage;Voltage [V];Current [A]");
 	gc3db->SetLineColor(3);
 	gc3db->SetMarkerColor(3);
@@ -1788,10 +1569,10 @@ max_graph = max_graph * 1.2;
         //c3db->Print(name2.c_str());
 	//c3db->Close();
 	
-	//TCanvas * c3dc = new TCanvas("c3dc","c",800,600);
+	//TCanvas *c3dc = new TCanvas("c3dc","c",800,600);
       	//gPad->SetLogy();
         //gPad->SetLogx();
-	TGraph *gc3dc = new TGraph(index_anodesc,volt_anodesc,anodesc);
+	TGraph *gc3dc = new TGraph(index_anodesc,&volt_anodesc.front(),&anodesc.front());
 	gc3dc->SetTitle("Anode Corrent for led 3 as function of voltage;Voltage [V];Current [A]");
 	gc3dc->SetLineColor(4);
 	gc3dc->SetMarkerColor(4);
@@ -1800,10 +1581,10 @@ max_graph = max_graph * 1.2;
         //c3dc->Print(name2.c_str());
 	//c3dc->Close();
 	
-	//TCanvas * c3dd = new TCanvas("c3d","c",800,600);
+	//TCanvas *c3dd = new TCanvas("c3d","c",800,600);
       	//gPad->SetLogy();
         //gPad->SetLogx();
-	TGraph *gc3dd = new TGraph(index_anodesd,volt_anodesd,anodesd);
+	TGraph *gc3dd = new TGraph(index_anodesd,&volt_anodesd.front(),&anodesd.front());
 	gc3dd->SetTitle("Anode Corrent for led 4 as function of voltage;Voltage [V];Current [A]");
 	gc3dd->SetLineColor(5);
 	gc3dd->SetMarkerColor(5);
@@ -1822,10 +1603,10 @@ max_graph = max_graph * 1.2;
 	c3d->Print(name2.c_str());
 	c3d->Close();
 
-	TCanvas * c3e = new TCanvas("c3e","c",800,600);
+	TCanvas *c3e = new TCanvas("c3e","c",800,600);
       	//gPad->SetLogy();
         //gPad->SetLogx();
-	TGraphErrors *gc3e = new TGraphErrors(index_anodes,volt_anodes,cathodes,NULL,cathode_errors);
+	TGraphErrors *gc3e = new TGraphErrors(index_anodes,&volt_anodes.front(),&cathodes.front(),NULL,&cathode_errors.front());
 	gc3e->SetTitle("Cathode Current for led 1 as function of voltage;Voltage [V];Current [A]");
         gc3e->SetMarkerStyle(20);
         //gc3e->SetMinimum(0.0);
@@ -1833,16 +1614,16 @@ max_graph = max_graph * 1.2;
       	c3e->Print(name2.c_str());
 	c3e->Close();
 	
-	TCanvas * c3eb = new TCanvas("c3eb","c",800,600);
-	TGraphErrors *gc3eb = new TGraphErrors(index_anodesb,volt_anodesb,cathodesb,NULL,cathode_errorsb);
+	TCanvas *c3eb = new TCanvas("c3eb","c",800,600);
+	TGraphErrors *gc3eb = new TGraphErrors(index_anodesb,&volt_anodesb.front(),&cathodesb.front(),NULL,&cathode_errorsb.front());
 	gc3eb->SetTitle("Cathode Current for led 2 as function of voltage;Voltage [V];Current [A]");
 	gc3eb->SetMarkerStyle(20);
       	gc3eb->Draw("APL");
         c3eb->Print(name2.c_str());
 	c3eb->Close();
 	
-	TCanvas * c3ec = new TCanvas("c3ec","c",800,600);
-	TGraphErrors *gc3ec = new TGraphErrors(index_anodesc,volt_anodesc,cathodesc,NULL,cathode_errorsc);
+	TCanvas *c3ec = new TCanvas("c3ec","c",800,600);
+	TGraphErrors *gc3ec = new TGraphErrors(index_anodesc,&volt_anodesc.front(),&cathodesc.front(),NULL,&cathode_errorsc.front());
 	gc3ec->SetTitle("Cathode Current for led 3 as function of voltage;Voltage [V];Current [A]");
 	gc3ec->SetMarkerStyle(20);
       	gc3ec->Draw("APL");
@@ -1850,55 +1631,54 @@ max_graph = max_graph * 1.2;
 	c3ec->Close();
 	
 	TCanvas * c3ed = new TCanvas("c3ed","c",800,600);
-	TGraphErrors *gc3ed = new TGraphErrors(index_anodesd,volt_anodesd,cathodesd,NULL,cathode_errorsd);
+	TGraphErrors *gc3ed = new TGraphErrors(index_anodesd,&volt_anodesd.front(),&cathodesd.front(),NULL,&cathode_errorsd.front());
 	gc3ed->SetTitle("Cathode Current for led 4 as function of voltage;Voltage [V];Current [A]");
 	gc3ed->SetMarkerStyle(20);
       	gc3ed->Draw("APL");
         c3ed->Print(name2.c_str());
 	c3ed->Close();
 	
-
-	TCanvas * c3f = new TCanvas("c3f","c",800,600);
+	TCanvas *c3f = new TCanvas("c3f","c",800,600);
       	//gPad->SetLogy();
         //gPad->SetLogx();
-	TGraph *gc3f = new TGraph(index_anodes,volt_anodes,reference);
+	TGraph *gc3f = new TGraph(index_anodes,&volt_anodes.front(),&reference.front());
 	gc3f->SetTitle("Reference Anode for led 1 as function of voltage;Voltage [V];Current [A]");
         gc3f->SetMarkerStyle(20);
       	gc3f->Draw("APL");
         c3f->Print(name2.c_str());
 	c3f->Close();
 
-	TCanvas * c3fb = new TCanvas("c3fb","c",800,600);
+	TCanvas *c3fb = new TCanvas("c3fb","c",800,600);
       	//gPad->SetLogy();
-        //gPad->SetLogx();
-	TGraph *gc3fb = new TGraph(index_anodesb,volt_anodesb,referenceb);
+        gPad->SetLogx();
+	TGraph *gc3fb = new TGraph(index_anodesb,&volt_anodesb.front(),&referenceb.front());
 	gc3fb->SetTitle("Reference Anode for led 2 as function of voltage;Voltage [V];Current [A]");
         gc3fb->SetMarkerStyle(20);
       	gc3fb->Draw("APL");
         c3fb->Print(name2.c_str());
 	c3fb->Close();
 
-	TCanvas * c3fc = new TCanvas("c3fc","c",800,600);
-      	//gPad->SetLogy();
+	TCanvas *c3fc = new TCanvas("c3fc","c",800,600);
+      	gPad->SetLogy();
         //gPad->SetLogx();
-	TGraph *gc3fc = new TGraph(index_anodesc,volt_anodesc,referencec);
+	TGraph *gc3fc = new TGraph(index_anodesc,&volt_anodesc.front(),&referencec.front());
 	gc3fc->SetTitle("Reference Anode for led 3 as function of voltage;Voltage [V];Current [A]");
         gc3fc->SetMarkerStyle(20);
       	gc3fc->Draw("APL");
         c3fc->Print(name2.c_str());
 	c3fc->Close();
 
-	TCanvas * c3fd = new TCanvas("c3fd","c",800,600);
-      	//gPad->SetLogy();
-        //gPad->SetLogx();
-	TGraph *gc3fd = new TGraph(index_anodesd,volt_anodesd,referenced);
+	TCanvas *c3fd = new TCanvas("c3fd","c",800,600);
+      	gPad->SetLogy();
+        gPad->SetLogx();
+	TGraph *gc3fd = new TGraph(index_anodesd,&volt_anodesd.front(),&referenced.front());
 	gc3fd->SetTitle("Reference Anode for led 4 as function of voltage;Voltage [V];Current [A]");
         gc3fd->SetMarkerStyle(20);
       	gc3fd->Draw("APL");
         c3fd->Print(name2.c_str());
 	c3fd->Close();
 	
-	TCanvas * c3g = new TCanvas("c3g","c",800,600);
+	TCanvas *c3g = new TCanvas("c3g","c",800,600);
       	//gPad->SetLogy();
         //gPad->SetLogx();
 	TGraph *gc3g = new TGraph(1,&volt1200V,&gain1200V);
@@ -1908,32 +1688,32 @@ max_graph = max_graph * 1.2;
         c3g->Print(name2.c_str());
 	c3g->Close();
 
-	TCanvas * c3 = new TCanvas("c","c",800,600);
+	TCanvas *c3 = new TCanvas("c","c",800,600);
       	gPad->SetLogy();
         gPad->SetLogx();
-	TGraph *gc3 = new TGraph(index_temp,voltages_temp,gains);
+	TGraph *gc3 = new TGraph(index_temp,&voltages_temp.front(),&gains.front());
 	gc3->SetTitle("Gain as function of voltage;Voltage [V];Gain");
         gc3->SetMarkerStyle(20);
       	gc3->Draw("APL");
-	TGraph *gc3xb = new TGraph(index_tempb,volt_anodesb,gainsb);
+	TGraph *gc3xb = new TGraph(index_tempb,&volt_anodesb.front(),&gainsb.front());
 	gc3xb->SetTitle("Gain as function of voltage;Voltage [V];Gain");
         gc3xb->SetMarkerStyle(20);
         gc3xb->SetMarkerColor(3);
         gc3xb->SetLineColor(3);
       	gc3xb->Draw("PL same");
-	TGraph *gc3xc = new TGraph(index_tempc,volt_anodesc,gainsc);
+	TGraph *gc3xc = new TGraph(index_tempc,&volt_anodesc.front(),&gainsc.front());
 	gc3xc->SetTitle("Gain as function of voltage;Voltage [V];Gain");
         gc3xc->SetMarkerStyle(20);
         gc3xc->SetMarkerColor(4);
         gc3xc->SetLineColor(4);
       	gc3xc->Draw("PL same");
-	TGraph *gc3xd = new TGraph(index_tempd,volt_anodesd,gainsd);
+	TGraph *gc3xd = new TGraph(index_tempd,&volt_anodesd.front(),&gainsd.front());
 	gc3xd->SetTitle("Gain as function of voltage;Voltage [V];Gain");
         gc3xd->SetMarkerStyle(20);
         gc3xd->SetMarkerColor(5);
 	gc3xd->SetLineColor(5);
       	gc3xd->Draw("PL same");
-	TGraph *gc3z = new TGraph(index_temp2,voltages_temp_bad,gains_bad);
+	TGraph *gc3z = new TGraph(index_temp2,&voltages_temp_bad.front(),&gains_bad.front());
         gc3z->SetMarkerStyle(20);
 	gc3z->SetLineColor(2);
 	gc3z->SetMarkerColor(2);
@@ -1954,7 +1734,6 @@ max_graph = max_graph * 1.2;
 
 float quantum_eff_800V[3] = {0.0, 0.0, 0.0};
 float quantum_eff_1200V[3] = {0.0, 0.0, 0.0};
-float dum = 0.0;
 
 gc4a = new TGraph(1,&dum,&dum);
 gc4b = new TGraph(1,&dum,&dum);
@@ -2080,7 +1859,7 @@ cout << "one to last plot" << endl;
 
 	TCanvas * c4z = new TCanvas("c","c",800,600);
       	//gPad->SetLogy();
-	TGraph *gc4z = new TGraph(index_temp,voltages_temp,chi2_temp);
+	TGraph *gc4z = new TGraph(index_temp,&voltages_temp.front(),&chi2_temp.front());
 	gc4z->SetTitle("Chi2;Voltage [V];Chi2 of the fit");
         gc4z->SetMarkerStyle(20);
       	gc4z->Draw("APL");

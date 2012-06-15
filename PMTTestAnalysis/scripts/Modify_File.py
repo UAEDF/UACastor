@@ -11,7 +11,7 @@ def seconds( time ):
     hour  = time.split(':')[3]
     day   = time.split(':')[2]
     #print day, hour, min, sec
-    return int(day)*86400 * int(hour)*3600 + int(min)*60 + int(sec)
+    return int(day)*86400 + int(hour)*3600 + int(min)*60 + int(sec)
 
 
 def ReadFile( FileName ):

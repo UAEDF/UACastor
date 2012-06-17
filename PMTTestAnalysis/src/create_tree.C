@@ -176,6 +176,16 @@ if (pmt == "CA1655") { sector = 9;  module = 6;  set = 1; }
 if (pmt == "CA1525") { sector = 10; module = 6;  set = 1; }
 if (pmt == "CA1966") { sector = 11; module = 6;  set = 1; }
 if (pmt == "CA2046") { sector = 12; module = 6;  set = 1; }
+if (pmt == "CA1530") { sector = 5; module = 7;  set = 1; }
+if (pmt == "CA1501") { sector = 6; module = 7;  set = 1; }
+if (pmt == "CA1979") { sector = 7; module = 7;  set = 1; }
+if (pmt == "CA1808") { sector = 8; module = 7;  set = 1; }
+if (pmt == "CA1760") { sector = 9; module = 7;  set = 1; }
+if (pmt == "CA1691") { sector = 10; module = 7;  set = 1; }
+if (pmt == "CA0696") { sector = 11; module = 7;  set = 1; }
+if (pmt == "CA1377") { sector = 12; module = 7;  set = 1; }
+if (pmt == "CA0084") { sector = 5; module = 8;  set = 1; }
+
 
 //new ones first delivery
 if (pmt == "BA0263") { sector = 4;  module = 1;  set = 2; }

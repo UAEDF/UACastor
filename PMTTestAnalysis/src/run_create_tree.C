@@ -4,7 +4,7 @@ void run_create_tree()
   //gROOT -> ProcessLine(".L LeakageSubtractor.C++");
   gROOT -> ProcessLine(".L create_tree.C++");
 
-string files_in[132];
+string files_in[140];
 
 files_in[0] = "../data/cpt_sf_CA1579_2012_05_12_15_32_59_mod.cpt"; //good
 files_in[1] = "../data/cpt_sf_CA1579_2012_05_13_09_56_20_mod.cpt"; //good
@@ -136,10 +136,19 @@ files_in[126] = "../data/cpt_sf_CA1691_2012_06_16_18_02_08_mod.cpt";
 files_in[127] = "../data/cpt_sf_CA0696_2012_06_16_20_16_32_mod.cpt";
 files_in[128] = "../data/cpt_sf_CA1377_2012_06_16_22_43_15_mod.cpt";
 files_in[129] = "../data/cpt_sf_CA0084_2012_06_17_09_40_26_mod.cpt";
-files_in[130] = "../data/.cpt";
+files_in[130] = "../data/cpt_sf_CA1992_2012_06_17_12_00_21_mod.cpt";
+files_in[131] = "../data/cpt_sf_CA1432_2012_06_17_14_14_03_mod.cpt";
+files_in[132] = "../data/cpt_sf_CA1577_2012_06_17_16_27_55_mod.cpt";
+files_in[133] = "../data/cpt_sf_CA1657_2012_06_17_18_43_45_mod.cpt";
+files_in[134] = "../data/cpt_sf_CA0787_2012_06_17_20_57_17_mod.cpt";
+files_in[135] = "../data/cpt_sf_CA1591_2012_06_18_08_48_35_mod.cpt";
+files_in[136] = "../data/cpt_sf_CA0847_2012_06_18_11_02_20_mod.cpt";
+files_in[137] = "../data/cpt_sf_CA1300_2012_06_18_13_15_36_mod.cpt";
+files_in[138] = "../data/.cpt";
+files_in[139] = "../data/.cpt";
 
-int ini_file = 130;
-int end_file = 130;
+int ini_file = 121;
+int end_file = 138;
 
 
   string tree_out = "PMT_test_2012.root";

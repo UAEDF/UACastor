@@ -1,8 +1,6 @@
-//to do:	correct bug on the index finding for the estimation of the dark current
-//		sometimes the qe plot is missing
+//to do:	correct bug on the index finding for the estimation of the dark current at 0V
 //		sometimes the range for the fit plot is wrong!
-//		fix the range for the gain plot -> use an empty histogram
-//		fix the plots on the reference for led 2, 3 and 4
+//		fix the voltage range for the gain plot -> use an empty histogram
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,7 +40,7 @@ struct chi2 {
 	float c_1800V;
 };
 
-float chi2_threshold = 15.0;
+float chi2_threshold = 200.0;
 
 void spike_check(float point, std::vector<float> *vec_cath, int& spike)
 {

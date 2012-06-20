@@ -1,3 +1,7 @@
+//to do : 	finish the plots
+//		read a chain instead of a root file
+
+
 #include <stdio.h>
 #include <iostream>
 
@@ -12,16 +16,18 @@
 #include "TFile.h"
 
 struct measurement {
+	int points;
+	int spikes;
 	float cath_value;
 	float cath_error;
-	int cath_spikes;
-	int cath_points;
-	float anode_up;
-	float anode_down;
-	float ref_up;
-	float ref_down;
-	float gain;
-	float qe;
+	float anode_value;
+	float anode_error;
+	float ref_value;
+	float ref_error;
+	float gain_value;
+	float gain_error;
+	float qe_value;
+	float qe_error;
 };
 
 void set_code(int module, int sector, int set, string& pmt)
@@ -209,6 +215,8 @@ int leakage_1400V_n, leakage_1400V_spikes;
 int leakage_1600V_n, leakage_1600V_spikes;
 int leakage_1800V_n, leakage_1800V_spikes;
 
+float ratio_800V, ratio_1200V, error_800V, error_1200V;
+
 //setting the branches
 //tree->SetBranchAddress("PMT",&pmt); //we got the code from the coordinates
 tree->SetBranchAddress("Measurement_begin",&begin);
@@ -331,6 +339,12 @@ pmt = "";
 set_code(module, sector, set, pmt);
 //cout << "output" << endl;
 
+ratio_1200V = m_1200V_led1.qe_value / m_1200V_led3.qe_value;
+error_1200V = ratio_1200V * sqrt( (m_1200V_led1.qe_error/m_1200V_led1.qe_value) * (m_1200V_led1.qe_error/m_1200V_led1.qe_value) + (m_1200V_led3.qe_error/m_1200V_led3.qe_value) * (m_1200V_led3.qe_error/m_1200V_led3.qe_value));
+
+ratio_800V = m_800V_led1.qe_value / m_800V_led3.qe_value;
+error_800V = ratio_800V * sqrt( (m_800V_led1.qe_error/m_800V_led1.qe_value) * (m_800V_led1.qe_error/m_800V_led1.qe_value) + (m_800V_led3.qe_error/m_800V_led3.qe_value) * (m_800V_led3.qe_error/m_800V_led3.qe_value));
+
 cout<<"Measurement "<<i+1<<"; PMT code: "<<pmt<<" (Sector : "<<sector<<" ; Module : "<<module<<" ; Set : "<<set<<")"<<endl;
 cout<<"Begin of the measurement: "<<begin->at(0)<<"/"<<begin->at(1)<<"/"<<begin->at(2)<<" - "<<begin->at(3)<<":"<<begin->at(4)<<":"<<begin->at(5)<<endl;
 cout<<"End of the measurement: "<<end->at(0)<<"/"<<end->at(1)<<"/"<<end->at(2)<<" - "<<end->at(3)<<":"<<end->at(4)<<":"<<end->at(5)<<endl;
@@ -342,208 +356,237 @@ if (m_800V_led2.cath_value > 0.0)
 {
 cout<<"800V      |Current          |"<<m_800V_led1.cath_value<<"   "<<m_800V_led2.cath_value<<"   "<<m_800V_led3.cath_value<<"   "<<m_800V_led4.cath_value<<endl;
 cout<<"          |Error            |"<<m_800V_led1.cath_error<<"   "<<m_800V_led2.cath_error<<"   "<<m_800V_led3.cath_error<<"   "<<m_800V_led4.cath_error<<endl;
-cout<<"          |Number of Spikes |"<<m_800V_led1.cath_spikes<<"   "<<m_800V_led2.cath_spikes<<"   "<<m_800V_led3.cath_spikes<<"   "<<m_800V_led4.cath_spikes<<endl;
-cout<<"          |Points used      |"<<m_800V_led1.cath_points<<"   "<<m_800V_led2.cath_points<<"   "<<m_800V_led3.cath_points<<"   "<<m_800V_led4.cath_points<<endl;
+cout<<"          |Number of Spikes |"<<m_800V_led1.spikes<<"   "<<m_800V_led2.spikes<<"   "<<m_800V_led3.spikes<<"   "<<m_800V_led4.spikes<<endl;
+cout<<"          |Points used      |"<<m_800V_led1.points<<"   "<<m_800V_led2.points<<"   "<<m_800V_led3.points<<"   "<<m_800V_led4.points<<endl;
 }
 if (m_800V_led2.cath_value == 0.0 and m_800V_led3.cath_value == 0.0 and m_800V_led4.cath_value == 0.0)
 {
 cout<<"800V      |Current          |"<<m_800V_led1.cath_value<<endl;
 cout<<"          |Error            |"<<m_800V_led1.cath_error<<endl;
-cout<<"          |Number of Spikes |"<<m_800V_led1.cath_spikes<<endl;
-cout<<"          |Points used      |"<<m_800V_led1.cath_points<<endl;
+cout<<"          |Number of Spikes |"<<m_800V_led1.spikes<<endl;
+cout<<"          |Points used      |"<<m_800V_led1.points<<endl;
 }
 if (m_900V_led1.cath_value > 0.0)
 {
 cout<<"900V      |Current          |"<<m_900V_led1.cath_value<<endl;
 cout<<"          |Error            |"<<m_900V_led1.cath_error<<endl;
-cout<<"          |Number of Spikes |"<<m_900V_led1.cath_spikes<<endl;
-cout<<"          |Points used      |"<<m_900V_led1.cath_points<<endl;
+cout<<"          |Number of Spikes |"<<m_900V_led1.spikes<<endl;
+cout<<"          |Points used      |"<<m_900V_led1.points<<endl;
 }
 cout<<"1000V     |Current          |"<<m_1000V_led1.cath_value<<endl;
 cout<<"          |Error            |"<<m_1000V_led1.cath_error<<endl;
-cout<<"          |Number of Spikes |"<<m_1000V_led1.cath_spikes<<endl;
-cout<<"          |Points used      |"<<m_1000V_led1.cath_points<<endl;
+cout<<"          |Number of Spikes |"<<m_1000V_led1.spikes<<endl;
+cout<<"          |Points used      |"<<m_1000V_led1.points<<endl;
 if (m_1200V_led2.cath_value > 0.0)
 {
 cout<<"1200V     |Current          |"<<m_1200V_led1.cath_value<<"   "<<m_1200V_led2.cath_value<<"   "<<m_1200V_led3.cath_value<<"   "<<m_1200V_led4.cath_value<<endl;
 cout<<"          |Error            |"<<m_1200V_led1.cath_error<<"   "<<m_1200V_led2.cath_error<<"   "<<m_1200V_led3.cath_error<<"   "<<m_1200V_led4.cath_error<<endl;
-cout<<"          |Number of Spikes |"<<m_1200V_led1.cath_spikes<<"   "<<m_1200V_led2.cath_spikes<<"   "<<m_1200V_led3.cath_spikes<<"   "<<m_1200V_led4.cath_spikes<<endl;
-cout<<"          |Points used      |"<<m_1200V_led1.cath_points<<"   "<<m_1200V_led2.cath_points<<"   "<<m_1200V_led3.cath_points<<"   "<<m_1200V_led4.cath_points<<endl;
+cout<<"          |Number of Spikes |"<<m_1200V_led1.spikes<<"   "<<m_1200V_led2.spikes<<"   "<<m_1200V_led3.spikes<<"   "<<m_1200V_led4.spikes<<endl;
+cout<<"          |Points used      |"<<m_1200V_led1.points<<"   "<<m_1200V_led2.points<<"   "<<m_1200V_led3.points<<"   "<<m_1200V_led4.points<<endl;
 }
 if (m_1200V_led2.cath_value == 0.0 and m_1200V_led3.cath_value == 0.0 and m_1200V_led4.cath_value == 0.0)
 {
 cout<<"1200V     |Current          |"<<m_1200V_led1.cath_value<<endl;
 cout<<"          |Error            |"<<m_1200V_led1.cath_error<<endl;
-cout<<"          |Number of Spikes |"<<m_1200V_led1.cath_spikes<<endl;
-cout<<"          |Points used      |"<<m_1200V_led1.cath_points<<endl;
+cout<<"          |Number of Spikes |"<<m_1200V_led1.spikes<<endl;
+cout<<"          |Points used      |"<<m_1200V_led1.points<<endl;
 }
 cout<<"1400V     |Current          |"<<m_1400V_led1.cath_value<<endl;
 cout<<"          |Error            |"<<m_1400V_led1.cath_error<<endl;
-cout<<"          |Number of Spikes |"<<m_1400V_led1.cath_spikes<<endl;
-cout<<"          |Points used      |"<<m_1400V_led1.cath_points<<endl;
+cout<<"          |Number of Spikes |"<<m_1400V_led1.spikes<<endl;
+cout<<"          |Points used      |"<<m_1400V_led1.points<<endl;
 if (m_1600V_led1.cath_value > 0.0)
 {
 cout<<"1600V     |Current          |"<<m_1600V_led1.cath_value<<endl;
 cout<<"          |Error            |"<<m_1600V_led1.cath_error<<endl;
-cout<<"          |Number of Spikes |"<<m_1600V_led1.cath_spikes<<endl;
-cout<<"          |Points used      |"<<m_1600V_led1.cath_points<<endl;
+cout<<"          |Number of Spikes |"<<m_1600V_led1.spikes<<endl;
+cout<<"          |Points used      |"<<m_1600V_led1.points<<endl;
 }
 if (m_1800V_led4.cath_value > 0.0)
 {
 cout<<"1800V     |Current          |                                    "<<m_1800V_led4.cath_value<<endl;
 cout<<"          |Error            |                                    "<<m_1800V_led4.cath_error<<endl;
-cout<<"          |Number of Spikes |                                    "<<m_1800V_led4.cath_spikes<<endl;
-cout<<"          |Points used      |                                    "<<m_1800V_led4.cath_points<<endl;
+cout<<"          |Number of Spikes |                                    "<<m_1800V_led4.spikes<<endl;
+cout<<"          |Points used      |                                    "<<m_1800V_led4.points<<endl;
 }
 cout<<"----------------------------------------------------------"<<endl;
-cout<<"Anode     | led1         led2          led3          led4"<<endl;
+cout<<"Anode     |        | led1         led2          led3          led4"<<endl;
 cout<<"----------------------------------------------------------"<<endl;
-if (m_800V_led2.anode_up > 0.0)
+if (m_800V_led2.anode_value > 0.0)
 {
-cout<<"800V      |"<<m_800V_led1.anode_up<<"   "<<m_800V_led2.anode_up<<"   "<<m_800V_led3.anode_up<<"   "<<m_800V_led4.anode_up<<endl;
-cout<<"          |"<<m_800V_led1.anode_down<<"   "<<m_800V_led2.anode_down<<"   "<<m_800V_led3.anode_down<<"   "<<m_800V_led4.anode_down<<endl;
+cout<<"800V      |Current |"<<m_800V_led1.anode_value<<"   "<<m_800V_led2.anode_value<<"   "<<m_800V_led3.anode_value<<"   "<<m_800V_led4.anode_value<<endl;
+cout<<"          |Error   |"<<m_800V_led1.anode_error<<"   "<<m_800V_led2.anode_error<<"   "<<m_800V_led3.anode_error<<"   "<<m_800V_led4.anode_error<<endl;
 }
-if (m_800V_led2.anode_up == 0.0 and m_800V_led3.anode_up == 0.0 and m_800V_led4.anode_up == 0.0)
+if (m_800V_led2.anode_value == 0.0 and m_800V_led3.anode_value == 0.0 and m_800V_led4.anode_value == 0.0)
 {
-cout<<"800V      |"<<m_800V_led1.anode_up<<endl;
-cout<<"          |"<<m_800V_led1.anode_down<<endl;
+cout<<"800V      |Current |"<<m_800V_led1.anode_value<<endl;
+cout<<"          |Error   |"<<m_800V_led1.anode_error<<endl;
 }
-if (m_900V_led1.anode_up > 0.0)
+if (m_900V_led1.anode_value > 0.0)
 {
-cout<<"900V      |"<<m_900V_led1.anode_up<<endl;
-cout<<"          |"<<m_900V_led1.anode_down<<endl;
+cout<<"900V      |Current |"<<m_900V_led1.anode_value<<endl;
+cout<<"          |Error   |"<<m_900V_led1.anode_error<<endl;
 }
-cout<<"1000V     |"<<m_1000V_led1.anode_up<<endl;
-cout<<"          |"<<m_1000V_led1.anode_down<<endl;
-if (m_1200V_led2.anode_up > 0.0)
+cout<<"1000V     |Current |"<<m_1000V_led1.anode_value<<endl;
+cout<<"          |Error   |"<<m_1000V_led1.anode_error<<endl;
+if (m_1200V_led2.anode_value > 0.0)
 {
-cout<<"1200V     |"<<m_1200V_led1.anode_up<<"   "<<m_1200V_led2.anode_up<<"   "<<m_1200V_led3.anode_up<<"   "<<m_1200V_led4.anode_up<<endl;
-cout<<"          |"<<m_1200V_led1.anode_down<<"   "<<m_1200V_led2.anode_down<<"   "<<m_1200V_led3.anode_down<<"   "<<m_1200V_led4.anode_down<<endl;
+cout<<"1200V     |Current |"<<m_1200V_led1.anode_value<<"   "<<m_1200V_led2.anode_value<<"   "<<m_1200V_led3.anode_value<<"   "<<m_1200V_led4.anode_value<<endl;
+cout<<"          |Error   |"<<m_1200V_led1.anode_error<<"   "<<m_1200V_led2.anode_error<<"   "<<m_1200V_led3.anode_error<<"   "<<m_1200V_led4.anode_error<<endl;
 }
-if (m_1200V_led2.anode_up == 0.0 and m_1200V_led3.anode_up == 0.0 and m_1200V_led4.anode_up == 0.0)
+if (m_1200V_led2.anode_value == 0.0 and m_1200V_led3.anode_value == 0.0 and m_1200V_led4.anode_value == 0.0)
 {
-cout<<"1200V     |"<<m_1200V_led1.anode_up<<endl;
-cout<<"          |"<<m_1200V_led1.anode_down<<endl;
+cout<<"1200V     |Current |"<<m_1200V_led1.anode_value<<endl;
+cout<<"          |Error   |"<<m_1200V_led1.anode_error<<endl;
 }
-cout<<"1400V     |"<<m_1400V_led1.anode_up<<endl;
-cout<<"          |"<<m_1400V_led1.anode_down<<endl;
-if (m_1600V_led1.anode_up > 0.0)
+cout<<"1400V     |Current |"<<m_1400V_led1.anode_value<<endl;
+cout<<"          |Error   |"<<m_1400V_led1.anode_error<<endl;
+if (m_1600V_led1.anode_value > 0.0)
 {
-cout<<"1600V     |"<<m_1600V_led1.anode_up<<endl;
-cout<<"          |"<<m_1600V_led1.anode_down<<endl;
+cout<<"1600V     |Current |"<<m_1600V_led1.anode_value<<endl;
+cout<<"          |Error   |"<<m_1600V_led1.anode_error<<endl;
 }
-if (m_1800V_led4.anode_up > 0.0)
+if (m_1800V_led4.anode_value > 0.0)
 {
-cout<<"1800V     |                                          "<<m_1800V_led4.anode_up<<endl;
-cout<<"          |                                          "<<m_1800V_led4.anode_down<<endl;
-}
-cout<<"----------------------------------------------------------"<<endl;
-cout<<"Reference | led1         led2          led3          led4"<<endl;
-cout<<"----------------------------------------------------------"<<endl;
-if (m_800V_led2.ref_up > 0.0)
-{
-cout<<"800V      |"<<m_800V_led1.ref_up<<"   "<<m_800V_led2.ref_up<<"   "<<m_800V_led3.ref_up<<"   "<<m_800V_led4.ref_up<<endl;
-cout<<"          |"<<m_800V_led1.ref_down<<"   "<<m_800V_led2.ref_down<<"   "<<m_800V_led3.ref_down<<"   "<<m_800V_led4.ref_down<<endl;
-}
-if (m_800V_led2.ref_up == 0.0 and m_800V_led3.ref_up == 0.0 and m_800V_led4.ref_up == 0.0)
-{
-cout<<"800V      |"<<m_800V_led1.ref_up<<endl;
-cout<<"          |"<<m_800V_led1.ref_down<<endl;
-}
-if (m_900V_led1.ref_up > 0.0)
-{
-cout<<"900V      |"<<m_900V_led1.ref_up<<endl;
-cout<<"          |"<<m_900V_led1.ref_down<<endl;
-}
-cout<<"1000V     |"<<m_1000V_led1.ref_up<<endl;
-cout<<"          |"<<m_1000V_led1.ref_down<<endl;
-if (m_1200V_led2.ref_up > 0.0)
-{
-cout<<"1200V     |"<<m_1200V_led1.ref_up<<"   "<<m_1200V_led2.ref_up<<"   "<<m_1200V_led3.ref_up<<"   "<<m_1200V_led4.ref_up<<endl;
-cout<<"          |"<<m_1200V_led1.ref_down<<"   "<<m_1200V_led2.ref_down<<"   "<<m_1200V_led3.ref_down<<"   "<<m_1200V_led4.ref_down<<endl;
-}
-if (m_1200V_led2.ref_up == 0.0 and m_1200V_led3.ref_up == 0.0 and m_1200V_led4.ref_up == 0.0)
-{
-cout<<"1200V     |"<<m_1200V_led1.ref_up<<endl;
-cout<<"          |"<<m_1200V_led1.ref_down<<endl;
-}
-cout<<"1400V     |"<<m_1400V_led1.ref_up<<endl;
-cout<<"          |"<<m_1400V_led1.ref_down<<endl;
-if (m_1600V_led1.ref_up > 0.0)
-{
-cout<<"1600V     |"<<m_1600V_led1.ref_up<<endl;
-cout<<"          |"<<m_1600V_led1.ref_down<<endl;
-}
-if (m_1800V_led4.ref_up > 0.0)
-{
-cout<<"1800V     |                                      "<<m_1800V_led4.ref_up<<endl;
-cout<<"          |                                      "<<m_1800V_led4.ref_down<<endl;
+cout<<"1800V     |Current |                                          "<<m_1800V_led4.anode_value<<endl;
+cout<<"          |Error   |                                          "<<m_1800V_led4.anode_error<<endl;
 }
 cout<<"----------------------------------------------------------"<<endl;
-cout<<"Gain                | led1         led2          led3          led4"<<endl;
+cout<<"Reference |        | led1         led2          led3          led4"<<endl;
 cout<<"----------------------------------------------------------"<<endl;
-if (m_800V_led2.gain > 0.0)
+if (m_800V_led2.ref_value > 0.0)
 {
-cout<<"800V                |"<<m_800V_led1.gain<<"   "<<m_800V_led2.gain<<"   "<<m_800V_led3.gain<<"   "<<m_800V_led4.gain<<endl;
+cout<<"800V      |Current |"<<m_800V_led1.ref_value<<"   "<<m_800V_led2.ref_value<<"   "<<m_800V_led3.ref_value<<"   "<<m_800V_led4.ref_value<<endl;
+cout<<"          |Error   |"<<m_800V_led1.ref_error<<"   "<<m_800V_led2.ref_error<<"   "<<m_800V_led3.ref_error<<"   "<<m_800V_led4.ref_error<<endl;
 }
-if (m_800V_led2.gain == 0.0 and m_800V_led3.gain == 0.0 and m_800V_led4.gain == 0.0)
+if (m_800V_led2.ref_value == 0.0 and m_800V_led3.ref_value == 0.0 and m_800V_led4.ref_value == 0.0)
 {
-cout<<"800V                |"<<m_800V_led1.gain<<endl;
+cout<<"800V      |Current |"<<m_800V_led1.ref_value<<endl;
+cout<<"          |Error   |"<<m_800V_led1.ref_error<<endl;
 }
-if (m_900V_led1.gain > 0.0)
+if (m_900V_led1.ref_value > 0.0)
 {
-cout<<"900V                |"<<m_900V_led1.gain<<endl;
+cout<<"900V      |Current |"<<m_900V_led1.ref_value<<endl;
+cout<<"          |Error   |"<<m_900V_led1.ref_error<<endl;
 }
-cout<<"1000V               |"<<m_1000V_led1.gain<<endl;
-if (m_1200V_led2.gain > 0.0)
+cout<<"1000V     |Current |"<<m_1000V_led1.ref_value<<endl;
+cout<<"          |Error   |"<<m_1000V_led1.ref_error<<endl;
+if (m_1200V_led2.ref_value > 0.0)
 {
-cout<<"1200V               |"<<m_1200V_led1.gain<<"   "<<m_1200V_led2.gain<<"   "<<m_1200V_led3.gain<<"   "<<m_1200V_led4.gain<<endl;
+cout<<"1200V     |Current |"<<m_1200V_led1.ref_value<<"   "<<m_1200V_led2.ref_value<<"   "<<m_1200V_led3.ref_value<<"   "<<m_1200V_led4.ref_value<<endl;
+cout<<"          |Error   |"<<m_1200V_led1.ref_error<<"   "<<m_1200V_led2.ref_error<<"   "<<m_1200V_led3.ref_error<<"   "<<m_1200V_led4.ref_error<<endl;
 }
-if (m_1200V_led2.gain == 0.0 and m_1200V_led3.gain == 0.0 and m_1200V_led4.gain == 0.0)
+if (m_1200V_led2.ref_value == 0.0 and m_1200V_led3.ref_value == 0.0 and m_1200V_led4.ref_value == 0.0)
 {
-cout<<"1200V               |"<<m_1200V_led1.gain<<endl;
+cout<<"1200V     |Current |"<<m_1200V_led1.ref_value<<endl;
+cout<<"          |Error   |"<<m_1200V_led1.ref_error<<endl;
 }
-cout<<"1400V               |"<<m_1400V_led1.gain<<endl;
-if (m_1600V_led1.gain > 0.0)
+cout<<"1400V     |Current |"<<m_1400V_led1.ref_value<<endl;
+cout<<"          |Error   |"<<m_1400V_led1.ref_error<<endl;
+if (m_1600V_led1.ref_error > 0.0)
 {
-cout<<"1600V               |"<<m_1600V_led1.gain<<endl;
+cout<<"1600V     |Current |"<<m_1600V_led1.ref_value<<endl;
+cout<<"          |Error   |"<<m_1600V_led1.ref_error<<endl;
 }
-if (m_1800V_led4.gain > 0.0)
+if (m_1800V_led4.ref_value > 0.0)
 {
-cout<<"1800V               |                                    "<<m_1800V_led4.gain<<endl;
+cout<<"1800V     |Current |                                      "<<m_1800V_led4.ref_value<<endl;
+cout<<"          |Error   |                                      "<<m_1800V_led4.ref_error<<endl;
 }
 cout<<"----------------------------------------------------------"<<endl;
-cout<<"Quantum Efficiency  | led1         led2          led3          led4"<<endl;
+cout<<"Gain                |      | led1         led2          led3          led4"<<endl;
 cout<<"----------------------------------------------------------"<<endl;
-if (m_800V_led2.qe > 0.0)
+if (m_800V_led2.gain_value > 0.0)
 {
-cout<<"800V                |"<<m_800V_led1.qe<<"   "<<m_800V_led2.qe<<"   "<<m_800V_led3.qe<<"   "<<m_800V_led4.qe<<endl;
+cout<<"800V                |Value |"<<m_800V_led1.gain_value<<"   "<<m_800V_led2.gain_value<<"   "<<m_800V_led3.gain_value<<"   "<<m_800V_led4.gain_value<<endl;
+cout<<"                    |Error |"<<m_800V_led1.gain_error<<"   "<<m_800V_led2.gain_error<<"   "<<m_800V_led3.gain_error<<"   "<<m_800V_led4.gain_error<<endl;
 }
-if (m_800V_led2.qe == 0.0 and m_800V_led3.qe == 0.0 and m_800V_led4.qe == 0.0)
+if (m_800V_led2.gain_value == 0.0 and m_800V_led3.gain_value == 0.0 and m_800V_led4.gain_value == 0.0)
 {
-cout<<"800V                |"<<m_800V_led1.qe<<endl;
+cout<<"800V                |Value |"<<m_800V_led1.gain_value<<endl;
+cout<<"                    |Error |"<<m_800V_led1.gain_error<<endl;
 }
-if (m_900V_led1.qe > 0.0)
+if (m_900V_led1.gain_value > 0.0)
 {
-cout<<"900V                |"<<m_900V_led1.qe<<endl;
+cout<<"900V                |Value |"<<m_900V_led1.gain_value<<endl;
+cout<<"                    |Error |"<<m_900V_led1.gain_error<<endl;
 }
-cout<<"1000V               |"<<m_1000V_led1.qe<<endl;
-if (m_1200V_led2.qe > 0.0)
+cout<<"1000V               |Value |"<<m_1000V_led1.gain_value<<endl;
+cout<<"                    |Error |"<<m_1000V_led1.gain_error<<endl;
+if (m_1200V_led2.gain_value > 0.0)
 {
-cout<<"1200V               |"<<m_1200V_led1.qe<<"   "<<m_1200V_led2.qe<<"   "<<m_1200V_led3.qe<<"   "<<m_1200V_led4.qe<<endl;
+cout<<"1200V               |Value |"<<m_1200V_led1.gain_value<<"   "<<m_1200V_led2.gain_value<<"   "<<m_1200V_led3.gain_value<<"   "<<m_1200V_led4.gain_value<<endl;
+cout<<"                    |Error |"<<m_1200V_led1.gain_error<<"   "<<m_1200V_led2.gain_error<<"   "<<m_1200V_led3.gain_error<<"   "<<m_1200V_led4.gain_error<<endl;
 }
-if (m_1200V_led2.qe == 0.0 and m_1200V_led3.qe == 0.0 and m_1200V_led4.qe == 0.0)
+if (m_1200V_led2.gain_value == 0.0 and m_1200V_led3.gain_value == 0.0 and m_1200V_led4.gain_value == 0.0)
 {
-cout<<"1200V               |"<<m_1200V_led1.qe<<endl;
+cout<<"1200V               |Value |"<<m_1200V_led1.gain_value<<endl;
+cout<<"                    |Error |"<<m_1200V_led1.gain_error<<endl;
 }
-cout<<"1400V               |"<<m_1400V_led1.qe<<endl;
-if (m_1600V_led1.qe > 0.0)
+cout<<"1400V               |Value |"<<m_1400V_led1.gain_value<<endl;
+cout<<"                    |Error |"<<m_1400V_led1.gain_error<<endl;
+if (m_1600V_led1.gain_value > 0.0)
 {
-cout<<"1600V               |"<<m_1600V_led1.qe<<endl;
+cout<<"1600V               |Value |"<<m_1600V_led1.gain_value<<endl;
+cout<<"                    |Error |"<<m_1600V_led1.gain_error<<endl;
 }
-if (m_1800V_led4.qe > 0.0)
+if (m_1800V_led4.gain_value > 0.0)
 {
-cout<<"1800V               |                                    "<<m_1800V_led4.qe<<endl;
+cout<<"1800V               |Value |                                    "<<m_1800V_led4.gain_value<<endl;
+cout<<"                    |Error |                                    "<<m_1800V_led4.gain_error<<endl;
+}
+cout<<"----------------------------------------------------------"<<endl;
+cout<<"Quantum Efficiency  |      | led1         led2          led3          led4"<<endl;
+cout<<"----------------------------------------------------------"<<endl;
+if (m_800V_led2.qe_value > 0.0)
+{
+cout<<"800V                |Value |"<<m_800V_led1.qe_value<<"   "<<m_800V_led2.qe_value<<"   "<<m_800V_led3.qe_value<<"   "<<m_800V_led4.qe_value<<endl;
+cout<<"                    |Error |"<<m_800V_led1.qe_error<<"   "<<m_800V_led2.qe_error<<"   "<<m_800V_led3.qe_error<<"   "<<m_800V_led4.qe_error<<endl;
+}
+if (m_800V_led2.qe_value == 0.0 and m_800V_led3.qe_value == 0.0 and m_800V_led4.qe_value == 0.0)
+{
+cout<<"800V                |Value |"<<m_800V_led1.qe_value<<endl;
+cout<<"                    |Error |"<<m_800V_led1.qe_error<<endl;
+}
+if (m_900V_led1.qe_value > 0.0)
+{
+cout<<"900V                |Value |"<<m_900V_led1.qe_value<<endl;
+cout<<"                    |Error |"<<m_900V_led1.qe_error<<endl;
+}
+cout<<"1000V               |Value |"<<m_1000V_led1.qe_value<<endl;
+cout<<"                    |Error |"<<m_1000V_led1.qe_error<<endl;
+if (m_1200V_led2.qe_value > 0.0)
+{
+cout<<"1200V               |Value |"<<m_1200V_led1.qe_value<<"   "<<m_1200V_led2.qe_value<<"   "<<m_1200V_led3_value.qe<<"   "<<m_1200V_led4.qe_value<<endl;
+cout<<"                    |Error |"<<m_1200V_led1.qe_error<<"   "<<m_1200V_led2.qe_error<<"   "<<m_1200V_led3_error.qe<<"   "<<m_1200V_led4.qe_error<<endl;
+}
+if (m_1200V_led2.qe_value == 0.0 and m_1200V_led3.qe_value == 0.0 and m_1200V_led4.qe_value == 0.0)
+{
+cout<<"1200V               |Value |"<<m_1200V_led1.qe_value<<endl;
+cout<<"                    |Error |"<<m_1200V_led1.qe_error<<endl;
+}
+cout<<"1400V               |Value |"<<m_1400V_led1.qe_value<<endl;
+cout<<"                    |Error |"<<m_1400V_led1.qe_error<<endl;
+if (m_1600V_led1.qe_value > 0.0)
+{
+cout<<"1600V               |Value |"<<m_1600V_led1.qe_value<<endl;
+cout<<"                    |Error |"<<m_1600V_led1.qe_error<<endl;
+}
+if (m_1800V_led4.qe_value > 0.0)
+{
+cout<<"1800V               |Value |                                    "<<m_1800V_led4.qe_value<<endl;
+cout<<"                    |Error |                                    "<<m_1800V_led4.qe_error<<endl;
+}
+cout<<"----------------------------------------------------------"<<endl;
+cout<<"QE Ratio            |Value         Error"<<endl;
+cout<<"----------------------------------------------------------"<<endl;
+if (ratio_800V > 0.0)
+{
+cout<<"800V                |"<<ratio_800V<<"  "<<error_800V<<endl;
+}
+if (ratio_1200V > 0.0)
+{
+cout<<"1200V               |"<<ratio_1200V<<"  "<<error_1200V_error<<endl;
 }
 cout<<"----------------------------------------------------------"<<endl;
 cout<<"Leakage             |Value         Error    Spikes Points"<<endl;

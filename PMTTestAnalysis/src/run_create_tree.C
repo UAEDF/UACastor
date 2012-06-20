@@ -148,20 +148,20 @@ files_in[138] = "../data/cpt_sf_CA1884_2012_06_18_15_51_11_mod.cpt";
 files_in[139] = "../data/cpt_sf_CA0930_2012_06_18_18_30_23_mod.cpt";
 files_in[140] = "../data/cpt_sf_CA1161_2012_06_18_22_04_38_mod.cpt";
 files_in[141] = "../data/cpt_sf_CA0656_2012_06_19_08_46_10_mod.cpt";
-files_in[142] = "../data/.cpt";
-files_in[143] = "../data/.cpt";
-files_in[144] = "../data/.cpt";
-files_in[145] = "../data/.cpt";
+files_in[142] = "../data/cpt_sf_CA1273_2012_06_19_18_05_03_mod.cpt";
+files_in[143] = "../data/cpt_sf_CA1828_2012_06_20_09_24_37_mod.cpt";
+files_in[144] = "../data/cpt_sf_CA1828_2012_06_20_11_28_10_mod.cpt";
+files_in[145] = "../data/cpt_sf_CA1760_2012_06_20_13_59_43_mod.cpt";
 files_in[146] = "../data/.cpt";
 files_in[147] = "../data/.cpt";
 files_in[148] = "../data/.cpt";
 files_in[149] = "../data/.cpt";
 
-int ini_file = 1;
-int end_file = 41;
+int ini_file = 144;
+int end_file = 146;
 
 
-  string tree_out = "PMT_test_2012.root";
+  string tree_out = "PMT_test_2012_temp.root";
 
   create_tree(files_in, ini_file, end_file, tree_out);
 }

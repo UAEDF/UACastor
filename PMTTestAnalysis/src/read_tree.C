@@ -3,6 +3,7 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <iostream>
 
 //root libs
@@ -130,6 +131,26 @@ if (sector == 8  and module == 6  and set == 1) { pmt = "CA0796"; }
 if (sector == 9  and module == 6  and set == 1) { pmt = "CA1655"; }
 if (sector == 10 and module == 6  and set == 1) { pmt = "CA1525"; }
 if (sector == 11 and module == 6  and set == 1) { pmt = "CA1966"; }
+if (sector == 12 and module == 6  and set == 1) { pmt = "CA2046"; }
+if (sector == 5  and module == 7  and set == 1) { pmt = "CA1530"; }
+if (sector == 6  and module == 7  and set == 1) { pmt = "CA1501"; }
+if (sector == 7  and module == 7  and set == 1) { pmt = "CA1979"; }
+if (sector == 8  and module == 7  and set == 1) { pmt = "CA1808"; }
+if (sector == 9  and module == 7  and set == 1) { pmt = "CA1760"; }
+if (sector == 10 and module == 7  and set == 1) { pmt = "CA1691"; }
+if (sector == 11 and module == 7  and set == 1) { pmt = "CA0696"; }
+if (sector == 12 and module == 7  and set == 1) { pmt = "CA1377"; }
+if (sector == 5  and module == 8  and set == 1) { pmt = "CA0084"; }
+if (sector == 6  and module == 8  and set == 1) { pmt = "CA1992"; }
+if (sector == 7  and module == 8  and set == 1) { pmt = "CA1432"; }
+if (sector == 8  and module == 8  and set == 1) { pmt = "CA1577"; }
+if (sector == 9  and module == 8  and set == 1) { pmt = "CA1657"; }
+if (sector == 10 and module == 8  and set == 1) { pmt = "CA0787"; }
+if (sector == 11 and module == 8  and set == 1) { pmt = "CA1591"; }
+if (sector == 12 and module == 8  and set == 1) { pmt = "CA0847"; }
+if (sector == 5  and module == 9  and set == 1) { pmt = "CA1300"; }
+if (sector == 6  and module == 9  and set == 1) { pmt = "CA1884"; }
+if (sector == 7  and module == 9  and set == 1) { pmt = "CA0930"; }
 
 if (sector == 4  and module == 1  and set == 2) { pmt = "BA0263"; }
 if (sector == 4  and module == 2  and set == 2) { pmt = "BA0264"; }
@@ -151,17 +172,78 @@ if (sector == 1  and module == 2  and set == 2) { pmt = "BA0305"; }
 if (sector == 1  and module == 3  and set == 2) { pmt = "BA0307"; }
 if (sector == 1  and module == 4  and set == 2) { pmt = "BA0309"; }
 if (sector == 1  and module == 5  and set == 2) { pmt = "BA0311"; }
+if (sector == 5  and module == 1  and set == 2) { pmt = "BA0169"; }
+if (sector == 5  and module == 2  and set == 2) { pmt = "BA0170"; }
+if (sector == 5  and module == 3  and set == 2) { pmt = "BA0314"; }
+if (sector == 5  and module == 4  and set == 2) { pmt = "BA0316"; }
+if (sector == 5  and module == 5  and set == 2) { pmt = "BA0"; }
 
 if (pmt == "") { cout<<"Unknown PMT"<<endl; }
 
 }
 
 
-void read_tree(string tree_in)
+void read_tree(string *trees_in, int ini_file, int end_file)
 {
 //cout << "load tree"<<endl;
 //opening the file
-TFile f(tree_in.c_str());
+
+  TH2F *pmt_inv_qe_800_old;
+  TH2F *pmt_inv_ee_800_old;
+  TH2F *pmt_inv_gain_800_old;
+  TH2F *pmt_inv_qe_1200_old;
+  TH2F *pmt_inv_ee_1200_old;
+  TH2F *pmt_inv_gain_1200_old;
+  TH2F *pmt_inv_gain_1400_old;
+  TH2F *pmt_spikes_old;
+  TH2F *pmt_bad_fits_old;
+  TH2F *measurements_old;
+
+  pmt_inv_qe_800_old =  new TH2F("Inverse_qe_800V_old","inverse_qe_800V_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_ee_800_old =  new TH2F("Inverse_ee_800V_old","inverse_ee_800V_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_gain_800_old =  new TH2F("Inverse_gain_800V_old","inverse_gain_800V_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_qe_1200_old =  new TH2F("Inverse_qe_1200V_old","inverse_qe_1200V_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_ee_1200_old =  new TH2F("Inverse_ee_1200V_old","inverse_ee_1200V_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_gain_1200_old =  new TH2F("Inverse_gain_1200V_old","inverse_gain_1200V_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_inv_gain_1400_old =  new TH2F("Inverse_gain_1400V_old","inverse_gain_1400V_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_spikes_old =  new TH2F("Number_of_spikes_old","number_of_spikes_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_bad_fits_old =  new TH2F("Number_of_bad_fits_old","number_of_bad_fits_old;Sector;Module", 14,0,14,16,0,16);
+  measurements_old =  new TH2F("Number_of_measurements_old","number_of_measurements_old;Sector;Module", 14,0,14,16,0,16);
+
+  TH2F *pmt_inv_qe_800_new1;
+  TH2F *pmt_inv_ee_800_new1;
+  TH2F *pmt_inv_gain_800_new1;
+  TH2F *pmt_inv_qe_1200_new1;
+  TH2F *pmt_inv_ee_1200_new1;
+  TH2F *pmt_inv_gain_1200_new1;
+  TH2F *pmt_inv_gain_1400_new1;
+  TH2F *pmt_spikes_new1;
+  TH2F *pmt_bad_fits_new1;
+  TH2F *measurements_new1;
+
+  pmt_inv_qe_800_new1 =  new TH2F("Inverse_qe_800V_new1","inverse_qe_800V_new1;Sector;Module", 5,0,5,8,0,8);
+  pmt_inv_ee_800_new1 =  new TH2F("Inverse_ee_800V_new1","inverse_ee_800V_new1;Sector;Module", 5,0,5,8,0,8);
+  pmt_inv_gain_800_new1 =  new TH2F("Inverse_gain_800V_new1","inverse_gain_800V_new1;Sector;Module", 5,0,5,8,0,8);
+  pmt_inv_qe_1200_new1 =  new TH2F("Inverse_qe_1200V_new1","inverse_qe_1200V_new1;Sector;Module", 5,0,5,8,0,8);
+  pmt_inv_ee_1200_new1 =  new TH2F("Inverse_ee_1200V_new1","inverse_ee_1200V_new1;Sector;Module", 5,0,5,8,0,8);
+  pmt_inv_gain_1200_new1 =  new TH2F("Inverse_gain_1200V_new1","inverse_gain_1200V_new1;Sector;Module", 5,0,5,8,0,8);
+  pmt_inv_gain_1400_new1 =  new TH2F("Inverse_gain_1400V_new1","inverse_gain_1400V_new1;Sector;Module", 5,0,5,8,0,8);
+  pmt_spikes_new1 =  new TH2F("Number_of_spikes_new1","number_of_spikes_new1;Sector;Module", 5,0,5,8,0,8);
+  pmt_bad_fits_new1 =  new TH2F("Number_of_bad_fits_new1","number_of_bad_fits_new1;Sector;Module", 5,0,5,8,0,8);
+  measurements_new1 =  new TH2F("Number_of_measurements_new1","number_of_measurements_new1;Sector;Module", 5,0,5,8,0,8);
+
+for (int z=ini_file-1; z < end_file; z++)
+{
+
+//open the cpt file
+  string file = trees_in[z];
+  cout<<"File "<<z+1<<"/"<<end_file<<" -> "<<file<<endl;
+  TFile f(file.c_str());
+  //if(f==NULL) {
+  //  std::cout << "can't find file\n";
+  //  exit(1);
+  //}
+
 
 //cout << "declare the tree" << endl;
 //declaring the tree
@@ -171,9 +253,8 @@ TTree *tree = (TTree*)f.Get("Castor_PMT_Caracterization_2012");
 
 //cout << "variables" << endl;
 //declaring variables
-string pmt;
-std::vector<int> *begin, *end, *led, *hv, *time;
-std::vector<float> *cath, *cath_ori, *anode, *ref;
+std::vector<int> *begin, *end;
+std::vector<float> *cath, *cath_ori, *anode, *ref, *led, *hv, *time;
 
 int total_spikes, bad_fits, entries, module, sector, set;
 
@@ -284,66 +365,33 @@ tree->SetBranchAddress("Leakage_1800V_spikes",&leakage_1800V_spikes);
 //loop over the measurements
 int tests = tree->GetEntries();
 
-  TH2F *pmt_inv_qe_800_old;
-  TH2F *pmt_inv_ee_800_old;
-  TH2F *pmt_inv_gain_800_old;
-  TH2F *pmt_inv_qe_1200_old;
-  TH2F *pmt_inv_ee_1200_old;
-  TH2F *pmt_inv_gain_1200_old;
-  TH2F *pmt_inv_gain_1400_old;
-  TH2F *pmt_spikes_old;
-  TH2F *pmt_bad_fits_old;
-  TH2F *measurements_old;
-
-  pmt_inv_qe_800_old =  new TH2F("Inverse_qe_800V_old","inverse_qe_800V_old;Sector;Module", 14,0,14,16,0,16);
-  pmt_inv_ee_800_old =  new TH2F("Inverse_ee_800V_old","inverse_ee_800V_old;Sector;Module", 14,0,14,16,0,16);
-  pmt_inv_gain_800_old =  new TH2F("Inverse_gain_800V_old","inverse_gain_800V_old;Sector;Module", 14,0,14,16,0,16);
-  pmt_inv_qe_1200_old =  new TH2F("Inverse_qe_1200V_old","inverse_qe_1200V_old;Sector;Module", 14,0,14,16,0,16);
-  pmt_inv_ee_1200_old =  new TH2F("Inverse_ee_1200V_old","inverse_ee_1200V_old;Sector;Module", 14,0,14,16,0,16);
-  pmt_inv_gain_1200_old =  new TH2F("Inverse_gain_1200V_old","inverse_gain_1200V_old;Sector;Module", 14,0,14,16,0,16);
-  pmt_inv_gain_1400_old =  new TH2F("Inverse_gain_1400V_old","inverse_gain_1400V_old;Sector;Module", 14,0,14,16,0,16);
-  pmt_spikes_old =  new TH2F("Number_of_spikes_old","number_of_spikes_old;Sector;Module", 14,0,14,16,0,16);
-  pmt_bad_fits_old =  new TH2F("Number_of_bad_fits_old","number_of_bad_fits_old;Sector;Module", 14,0,14,16,0,16);
-  measurements_old =  new TH2F("Number_of_measurements_old","number_of_measurements_old;Sector;Module", 14,0,14,16,0,16);
-
-  TH2F *pmt_inv_qe_800_new1;
-  TH2F *pmt_inv_ee_800_new1;
-  TH2F *pmt_inv_gain_800_new1;
-  TH2F *pmt_inv_qe_1200_new1;
-  TH2F *pmt_inv_ee_1200_new1;
-  TH2F *pmt_inv_gain_1200_new1;
-  TH2F *pmt_inv_gain_1400_new1;
-  TH2F *pmt_spikes_new1;
-  TH2F *pmt_bad_fits_new1;
-  TH2F *measurements_new1;
-
-  pmt_inv_qe_800_new1 =  new TH2F("Inverse_qe_800V_new1","inverse_qe_800V_new1;Sector;Module", 5,0,5,4,0,4);
-  pmt_inv_ee_800_new1 =  new TH2F("Inverse_ee_800V_new1","inverse_ee_800V_new1;Sector;Module", 5,0,5,4,0,4);
-  pmt_inv_gain_800_new1 =  new TH2F("Inverse_gain_800V_new1","inverse_gain_800V_new1;Sector;Module", 5,0,5,4,0,4);
-  pmt_inv_qe_1200_new1 =  new TH2F("Inverse_qe_1200V_new1","inverse_qe_1200V_new1;Sector;Module", 5,0,5,4,0,4);
-  pmt_inv_ee_1200_new1 =  new TH2F("Inverse_ee_1200V_new1","inverse_ee_1200V_new1;Sector;Module", 5,0,5,4,0,4);
-  pmt_inv_gain_1200_new1 =  new TH2F("Inverse_gain_1200V_new1","inverse_gain_1200V_new1;Sector;Module", 5,0,5,4,0,4);
-  pmt_inv_gain_1400_new1 =  new TH2F("Inverse_gain_1400V_new1","inverse_gain_1400V_new1;Sector;Module", 5,0,5,4,0,4);
-  pmt_spikes_new1 =  new TH2F("Number_of_spikes_new1","number_of_spikes_new1;Sector;Module", 5,0,5,4,0,4);
-  pmt_bad_fits_new1 =  new TH2F("Number_of_bad_fits_new1","number_of_bad_fits_new1;Sector;Module", 5,0,5,4,0,4);
-  measurements_new1 =  new TH2F("Number_of_measurements_new1","number_of_measurements_new1;Sector;Module", 5,0,5,4,0,4);
-
 for (int i = 0; i < tests ;i++)
 {
 
 //cout << "getting the event : "<< i << endl;
 tree->GetEvent(i);
 //cout << "empty string" << endl;
-pmt = "";
+string pmt = "";
 //cout << "set code" << endl;
 set_code(module, sector, set, pmt);
 //cout << "output" << endl;
 
+ratio_800V = 0.0;
+ratio_1200V = 0.0;
+error_800V = 0.0;
+error_1200V = 0.0;
+
+if (m_1200V_led3.qe_value > 0.0)
+{
 ratio_1200V = m_1200V_led1.qe_value / m_1200V_led3.qe_value;
 error_1200V = ratio_1200V * sqrt( (m_1200V_led1.qe_error/m_1200V_led1.qe_value) * (m_1200V_led1.qe_error/m_1200V_led1.qe_value) + (m_1200V_led3.qe_error/m_1200V_led3.qe_value) * (m_1200V_led3.qe_error/m_1200V_led3.qe_value));
+}
 
+if (m_800V_led3.qe_value > 0.0)
+{
 ratio_800V = m_800V_led1.qe_value / m_800V_led3.qe_value;
 error_800V = ratio_800V * sqrt( (m_800V_led1.qe_error/m_800V_led1.qe_value) * (m_800V_led1.qe_error/m_800V_led1.qe_value) + (m_800V_led3.qe_error/m_800V_led3.qe_value) * (m_800V_led3.qe_error/m_800V_led3.qe_value));
+}
 
 cout<<"Measurement "<<i+1<<"; PMT code: "<<pmt<<" (Sector : "<<sector<<" ; Module : "<<module<<" ; Set : "<<set<<")"<<endl;
 cout<<"Begin of the measurement: "<<begin->at(0)<<"/"<<begin->at(1)<<"/"<<begin->at(2)<<" - "<<begin->at(3)<<":"<<begin->at(4)<<":"<<begin->at(5)<<endl;
@@ -557,8 +605,8 @@ cout<<"1000V               |Value |"<<m_1000V_led1.qe_value<<endl;
 cout<<"                    |Error |"<<m_1000V_led1.qe_error<<endl;
 if (m_1200V_led2.qe_value > 0.0)
 {
-cout<<"1200V               |Value |"<<m_1200V_led1.qe_value<<"   "<<m_1200V_led2.qe_value<<"   "<<m_1200V_led3_value.qe<<"   "<<m_1200V_led4.qe_value<<endl;
-cout<<"                    |Error |"<<m_1200V_led1.qe_error<<"   "<<m_1200V_led2.qe_error<<"   "<<m_1200V_led3_error.qe<<"   "<<m_1200V_led4.qe_error<<endl;
+cout<<"1200V               |Value |"<<m_1200V_led1.qe_value<<"   "<<m_1200V_led2.qe_value<<"   "<<m_1200V_led3.qe_value<<"   "<<m_1200V_led4.qe_value<<endl;
+cout<<"                    |Error |"<<m_1200V_led1.qe_error<<"   "<<m_1200V_led2.qe_error<<"   "<<m_1200V_led3.qe_error<<"   "<<m_1200V_led4.qe_error<<endl;
 }
 if (m_1200V_led2.qe_value == 0.0 and m_1200V_led3.qe_value == 0.0 and m_1200V_led4.qe_value == 0.0)
 {
@@ -586,7 +634,7 @@ cout<<"800V                |"<<ratio_800V<<"  "<<error_800V<<endl;
 }
 if (ratio_1200V > 0.0)
 {
-cout<<"1200V               |"<<ratio_1200V<<"  "<<error_1200V_error<<endl;
+cout<<"1200V               |"<<ratio_1200V<<"  "<<error_1200V<<endl;
 }
 cout<<"----------------------------------------------------------"<<endl;
 cout<<"Leakage             |Value         Error    Spikes Points"<<endl;
@@ -616,11 +664,11 @@ cout<<" "<<endl;
 
 if (set == 1)
 {
-pmt_inv_gain_800_old->SetBinContent(module,sector,4.0e-08/m_800V_led1.anode_up);
-pmt_inv_gain_1200_old->SetBinContent(module,sector,5.0e-07/m_1200V_led1.gain);
-pmt_inv_gain_1400_old->SetBinContent(module,sector,1.3e-06/m_1400V_led1.gain);
-pmt_inv_qe_800_old->SetBinContent(module,sector,50000.0/m_800V_led1.qe);
-pmt_inv_qe_1200_old->SetBinContent(module,sector,50000.0/m_1200V_led1.qe);
+//pmt_inv_gain_800_old->SetBinContent(module,sector,4.0e-08/m_800V_led1.anode_up);
+//pmt_inv_gain_1200_old->SetBinContent(module,sector,5.0e-07/m_1200V_led1.gain);
+//pmt_inv_gain_1400_old->SetBinContent(module,sector,1.3e-06/m_1400V_led1.gain);
+//pmt_inv_qe_800_old->SetBinContent(module,sector,50000.0/m_800V_led1.qe);
+//pmt_inv_qe_1200_old->SetBinContent(module,sector,50000.0/m_1200V_led1.qe);
 pmt_spikes_old->SetBinContent(module,sector,total_spikes);
 pmt_bad_fits_old->SetBinContent(module,sector,bad_fits);
 measurements_old->Fill(module-0.5,sector-0.5);
@@ -628,17 +676,18 @@ measurements_old->Fill(module-0.5,sector-0.5);
 
 if (set == 2)
 {
-pmt_inv_gain_800_new1->SetBinContent(module,sector,4.0e-08/m_800V_led1.anode_up);
-pmt_inv_gain_1200_new1->SetBinContent(module,sector,5.0e-07/m_1200V_led1.gain);
-pmt_inv_gain_1400_new1->SetBinContent(module,sector,1.3e-06/m_1400V_led1.gain);
-pmt_inv_qe_800_new1->SetBinContent(module,sector,50000.0/m_800V_led1.qe);
-pmt_inv_qe_1200_new1->SetBinContent(module,sector,50000.0/m_1200V_led1.qe);
+//pmt_inv_gain_800_new1->SetBinContent(module,sector,4.0e-08/m_800V_led1.anode_up);
+//pmt_inv_gain_1200_new1->SetBinContent(module,sector,5.0e-07/m_1200V_led1.gain);
+//pmt_inv_gain_1400_new1->SetBinContent(module,sector,1.3e-06/m_1400V_led1.gain);
+//pmt_inv_qe_800_new1->SetBinContent(module,sector,50000.0/m_800V_led1.qe);
+//pmt_inv_qe_1200_new1->SetBinContent(module,sector,50000.0/m_1200V_led1.qe);
 pmt_spikes_new1->SetBinContent(module,sector,total_spikes);
 pmt_bad_fits_new1->SetBinContent(module,sector,bad_fits);
 measurements_new1->Fill(module-0.5,sector-0.5);
 }
 }
 
+}
 
 TCanvas *c01 = new TCanvas("c01","Canvas",0,29,1200,800);
 gStyle->SetOptStat(0);

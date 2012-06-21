@@ -40,7 +40,7 @@ struct chi2 {
 	float c_1800V;
 };
 
-float chi2_threshold = 200.0;
+float chi2_threshold = 25.0;
 
 void spike_check(float point, std::vector<float> *vec_cath, int& spike)
 {
@@ -214,6 +214,11 @@ if (pmt == "BA0305") { sector = 1;  module = 2;  set = 2; }
 if (pmt == "BA0307") { sector = 1;  module = 3;  set = 2; }
 if (pmt == "BA0309") { sector = 1;  module = 4;  set = 2; }
 if (pmt == "BA0311") { sector = 1;  module = 5;  set = 2; }
+if (pmt == "BA0169") { sector = 5;  module = 1;  set = 2; }
+if (pmt == "BA0170") { sector = 5;  module = 2;  set = 2; }
+if (pmt == "BA0314") { sector = 5;  module = 3;  set = 2; }
+if (pmt == "BA0316") { sector = 5;  module = 4;  set = 2; }
+if (pmt == "BA0") { sector = 5;  module = 5;  set = 2; }
 
 if (sector == 0 and module == 0 and set == 0) { cout<<"Unknown PMT"<<endl; }
 
@@ -796,19 +801,19 @@ tree->Branch("Reference_PMT","std::vector<float>",&pvec_aref);
 tree->Branch("Led","std::vector<float>",&pvec_led);
 tree->Branch("Number_of_spikes",&total_spikes,"Number of spikes found during the analysis/I");
 tree->Branch("Number_of_bad_fits",&bad_fits,"Number of bad fits found during the analysis/I");
-tree->Branch("m_800V_led1",&m_800V_led1.points,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:qe_error/F:gain_value/F:qe_error/F");
-tree->Branch("m_800V_led2",&m_800V_led2.cath_value,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:qe_error/F:gain_value/F:qe_error/F");
-tree->Branch("m_800V_led3",&m_800V_led3.cath_value,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:qe_error/F:gain_value/F:qe_error/F");
-tree->Branch("m_800V_led4",&m_800V_led4.cath_value,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:qe_error/F:gain_value/F:qe_error/F");
-tree->Branch("m_900V_led1",&m_900V_led1.cath_value,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:qe_error/F:gain_value/F:qe_error/F");
-tree->Branch("m_1000V_led1",&m_1000V_led1.cath_value,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:qe_error/F:gain_value/F:qe_error/F");
-tree->Branch("m_1200V_led1",&m_1200V_led1.cath_value,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:qe_error/F:gain_value/F:qe_error/F");
-tree->Branch("m_1200V_led2",&m_1200V_led2.cath_value,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:qe_error/F:gain_value/F:qe_error/F");
-tree->Branch("m_1200V_led3",&m_1200V_led3.cath_value,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:qe_error/F:gain_value/F:qe_error/F");
-tree->Branch("m_1200V_led4",&m_1200V_led4.cath_value,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:qe_error/F:gain_value/F:qe_error/F");
-tree->Branch("m_1400V_led1",&m_1400V_led1.cath_value,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:qe_error/F:gain_value/F:qe_error/F");
-tree->Branch("m_1600V_led1",&m_1600V_led1.cath_value,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:qe_error/F:gain_value/F:qe_error/F");
-tree->Branch("m_1800V_led4",&m_1800V_led4.cath_value,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:qe_error/F:gain_value/F:qe_error/F");
+tree->Branch("m_800V_led1",&m_800V_led1.points,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:gain_error/F:qe_value/F:qe_error/F");
+tree->Branch("m_800V_led2",&m_800V_led2.points,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:gain_error/F:qe_value/F:qe_error/F");
+tree->Branch("m_800V_led3",&m_800V_led3.points,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:gain_error/F:qe_value/F:qe_error/F");
+tree->Branch("m_800V_led4",&m_800V_led4.points,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:gain_error/F:qe_value/F:qe_error/F");
+tree->Branch("m_900V_led1",&m_900V_led1.points,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:gain_error/F:qe_value/F:qe_error/F");
+tree->Branch("m_1000V_led1",&m_1000V_led1.points,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:gain_error/F:qe_value/F:qe_error/F");
+tree->Branch("m_1200V_led1",&m_1200V_led1.points,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:gain_error/F:qe_value/F:qe_error/F");
+tree->Branch("m_1200V_led2",&m_1200V_led2.points,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:gain_error/F:qe_value/F:qe_error/F");
+tree->Branch("m_1200V_led3",&m_1200V_led3.points,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:gain_error/F:qe_value/F:qe_error/F");
+tree->Branch("m_1200V_led4",&m_1200V_led4.points,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:gain_error/F:qe_value/F:qe_error/F");
+tree->Branch("m_1400V_led1",&m_1400V_led1.points,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:gain_error/F:qe_value/F:qe_error/F");
+tree->Branch("m_1600V_led1",&m_1600V_led1.points,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:gain_error/F:qe_value/F:qe_error/F");
+tree->Branch("m_1800V_led4",&m_1800V_led4.points,"points/I:spikes/I:cath_value/F:cath_error/F:anode_value/F:anode_error/F:ref_value/F:ref_error/F:gain_value/F:gain_error/F:qe_value/F:qe_error/F");
 tree->Branch("Leakage_0V",&leakage_0V,"Current leakage at 0V");
 tree->Branch("Leakage_0V_error",&leakage_0V_error,"Error on the current leakage at 0V");
 tree->Branch("Leakage_0V_n",&leakage_0V_n,"Number of points used to estimate the current leakage at 0V/I");
@@ -1608,7 +1613,7 @@ cathodesb.push_back(temp2b[j]);
 cathode_errorsb.push_back(temp6b[j]);
 referenceb.push_back(temp4b[j]);
 reference_errorsb.push_back(temp5b[j]);
-cout << volt_anodesb.at(index_anodesb) << " -> refb = " << referenceb.at(index_anodesb) << endl;
+//cout << volt_anodesb.at(index_anodesb) << " -> refb = " << referenceb.at(index_anodesb) << endl;
 index_anodesb = index_anodesb + 1;
 }
 if (temp1c[j] != 0 && temp3c[j] != 0)
@@ -1620,7 +1625,7 @@ cathodesc.push_back(temp2c[j]);
 cathode_errorsc.push_back(temp6c[j]);
 referencec.push_back(temp4c[j]);
 reference_errorsc.push_back(temp5c[j]);
-cout << volt_anodesc.at(index_anodesc) << " -> refc = " << referencec.at(index_anodesc) << endl;
+//cout << volt_anodesc.at(index_anodesc) << " -> refc = " << referencec.at(index_anodesc) << endl;
 index_anodesc = index_anodesc + 1;
 }
 if (temp1d[j] != 0 && temp3d[j] != 0)
@@ -1632,15 +1637,15 @@ cathodesd.push_back(temp2d[j]);
 cathode_errorsd.push_back(temp6d[j]);
 referenced.push_back(temp4d[j]);
 reference_errorsd.push_back(temp5d[j]);
-cout << volt_anodesd.at(index_anodesd) << " -> refd = " << referenced.at(index_anodesd) << endl;
+//cout << volt_anodesd.at(index_anodesd) << " -> refd = " << referenced.at(index_anodesd) << endl;
 if (anodesd.at(index_anodesd) < min_anode_plot) { min_anode_plot = anodesd.at(index_anodesd); }
 index_anodesd = index_anodesd + 1;
 }
 }
 
-cout << "index anodes b = " << index_anodesb << endl;
-cout << "index anodes c = " << index_anodesc << endl;
-cout << "index anodes d = " << index_anodesd << endl;
+//cout << "index anodes b = " << index_anodesb << endl;
+//cout << "index anodes c = " << index_anodesc << endl;
+//cout << "index anodes d = " << index_anodesd << endl;
 
 //cout << "2nd loop" << endl;
 

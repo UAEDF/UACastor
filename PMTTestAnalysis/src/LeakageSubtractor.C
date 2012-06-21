@@ -223,7 +223,7 @@ while (repeate && tries < max_tries && fitX.size() > 100) {
 if (type_minimization == 1 or chi2 > 5.0)
 {
 
-if (chi2 > 15.0)
+if (chi2 > chi2_threshold)
 {
 par[0] = 0.0;
 par[1] = 0.0;

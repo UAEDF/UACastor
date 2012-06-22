@@ -216,9 +216,11 @@ if (pmt == "BA0309") { sector = 1;  module = 4;  set = 2; }
 if (pmt == "BA0311") { sector = 1;  module = 5;  set = 2; }
 if (pmt == "BA0169") { sector = 5;  module = 1;  set = 2; }
 if (pmt == "BA0170") { sector = 5;  module = 2;  set = 2; }
-if (pmt == "BA0314") { sector = 5;  module = 3;  set = 2; }
-if (pmt == "BA0316") { sector = 5;  module = 4;  set = 2; }
-if (pmt == "BA0") { sector = 5;  module = 5;  set = 2; }
+if (pmt == "BA0314") { sector = 5;  module = 4;  set = 2; }
+if (pmt == "BA0316") { sector = 5;  module = 5;  set = 2; }
+if (pmt == "BA0317") { sector = 6;  module = 1;  set = 2; }
+if (pmt == "BA0318") { sector = 6;  module = 2;  set = 2; }
+if (pmt == "BA0319") { sector = 6;  module = 3;  set = 2; }
 
 if (sector == 0 and module == 0 and set == 0) { cout<<"Unknown PMT"<<endl; }
 
@@ -517,21 +519,21 @@ delete(cath_before);
 delete(cath_middle);
 delete(cath_after);
 
-	TCanvas * c0 = new TCanvas("c","c",800,600);
-      	gPad->SetLogy();
-      	anode_middle->Draw("");
-        c0->Print("anode_middle.png");
-	c0->Close();
+	//TCanvas * c0 = new TCanvas("c","c",800,600);
+      	//gPad->SetLogy();
+      	//anode_middle->Draw("");
+        //c0->Print("anode_middle.png");
+	//c0->Close();
 
 delete(anode_before);
 delete(anode_middle);
 delete(anode_after);
 
-	TCanvas * c0b = new TCanvas("c","c",800,600);
-      	gPad->SetLogy();
-      	ref_middle->Draw("");
-        c0b->Print("ref_middle.png");
-	c0b->Close();
+	//TCanvas * c0b = new TCanvas("c","c",800,600);
+      	//gPad->SetLogy();
+      	//ref_middle->Draw("");
+        //c0b->Print("ref_middle.png");
+	//c0b->Close();
 
 delete(ref_before);
 delete(ref_middle);

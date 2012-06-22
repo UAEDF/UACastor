@@ -179,6 +179,7 @@ if (sector == 5  and module == 5  and set == 2) { pmt = "BA0316"; }
 if (sector == 6  and module == 1  and set == 2) { pmt = "BA0317"; }
 if (sector == 6  and module == 2  and set == 2) { pmt = "BA0318"; }
 if (sector == 6  and module == 3  and set == 2) { pmt = "BA0319"; }
+if (sector == 6  and module == 4  and set == 2) { pmt = "BA"; }
 
 if (pmt == "") { cout<<"Unknown PMT"<<endl; }
 

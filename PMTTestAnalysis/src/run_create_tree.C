@@ -154,12 +154,12 @@ files_in[144] = "../data/cpt_sf_CA1828_2012_06_20_11_28_10_mod.cpt";
 files_in[145] = "../data/cpt_sf_CA1760_2012_06_20_13_59_43_mod.cpt";
 files_in[146] = "../data/cpt_sf_CA0292_2012_06_20_16_39_13_mod.cpt";
 files_in[147] = "../data/cpt_sf_CA0792_2012_06_20_21_08_24_mod.cpt";
-files_in[148] = "../data/cpt_sf_BA0169_2012_06_21_10_06_04_mod.cpt";
-files_in[149] = "../data/cpt_sf_BA0170_2012_06_21_14_15_29_mod.cpt";
-files_in[150] = "../data/cpt_sf_BA0314_2012_06_21_17_09_11_mod.cpt";
-files_in[151] = "../data/cpt_sf_BA0316_2012_06_21_22_01_15_mod.cpt";
-files_in[152] = "../data/cpt_sf_BA0317_2012_06_22_08_10_48_mod.cpt";
-files_in[153] = "../data/cpt_sf_BA0318_2012_06_22_11_01_45_mod.cpt";
+files_in[148] = "../data/cpt_sf_BA0169_2012_06_21_10_06_04_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[149] = "../data/cpt_sf_BA0170_2012_06_21_14_15_29_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[150] = "../data/cpt_sf_BA0314_2012_06_21_17_09_11_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[151] = "../data/cpt_sf_BA0316_2012_06_21_22_01_15_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[152] = "../data/cpt_sf_BA0317_2012_06_22_08_10_48_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[153] = "../data/cpt_sf_BA0318_2012_06_22_11_01_45_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
 files_in[154] = "../data/.cpt";
 files_in[155] = "../data/.cpt";
 files_in[156] = "../data/.cpt";
@@ -171,7 +171,7 @@ int ini_file = 122;
 int end_file = 148;
 
 
-  string tree_out = "PMT_test_2012_new_group2.root";
+  string tree_out = "PMT_test_2012_old_group3.root";
 
   create_tree(files_in, ini_file, end_file, tree_out);
 }

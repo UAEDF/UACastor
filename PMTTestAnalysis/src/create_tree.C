@@ -214,14 +214,14 @@ if (pmt == "BA0305") { sector = 1;  module = 2;  set = 2; }
 if (pmt == "BA0307") { sector = 1;  module = 3;  set = 2; }
 if (pmt == "BA0309") { sector = 1;  module = 4;  set = 2; }
 if (pmt == "BA0311") { sector = 1;  module = 5;  set = 2; }
-if (pmt == "BA0169") { sector = 5;  module = 1;  set = 2; }
-if (pmt == "BA0170") { sector = 5;  module = 2;  set = 2; }
-if (pmt == "BA0314") { sector = 5;  module = 4;  set = 2; }
-if (pmt == "BA0316") { sector = 5;  module = 5;  set = 2; }
-if (pmt == "BA0317") { sector = 6;  module = 1;  set = 2; }
-if (pmt == "BA0318") { sector = 6;  module = 2;  set = 2; }
-if (pmt == "BA0319") { sector = 6;  module = 3;  set = 2; }
-if (pmt == "BA") { sector = 6;  module = 4;  set = 2; }
+if (pmt == "BA0169") { sector = 8;  module = 1;  set = 2; }
+if (pmt == "BA0170") { sector = 8;  module = 2;  set = 2; }
+if (pmt == "BA0314") { sector = 8;  module = 4;  set = 2; }
+if (pmt == "BA0316") { sector = 8;  module = 5;  set = 2; }
+if (pmt == "BA0317") { sector = 7;  module = 1;  set = 2; }
+if (pmt == "BA0318") { sector = 7;  module = 2;  set = 2; }
+if (pmt == "BA0319") { sector = 7;  module = 3;  set = 2; }
+if (pmt == "BA") { sector = 7;  module = 4;  set = 2; }
 
 if (sector == 0 and module == 0 and set == 0) { cout<<"Unknown PMT"<<endl; }
 

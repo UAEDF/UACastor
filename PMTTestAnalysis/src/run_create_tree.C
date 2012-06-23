@@ -160,10 +160,10 @@ files_in[150] = "../data/cpt_sf_BA0314_2012_06_21_17_09_11_mod.cpt";//if you are
 files_in[151] = "../data/cpt_sf_BA0316_2012_06_21_22_01_15_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
 files_in[152] = "../data/cpt_sf_BA0317_2012_06_22_08_10_48_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
 files_in[153] = "../data/cpt_sf_BA0318_2012_06_22_11_01_45_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
-files_in[154] = "../data/.cpt";
-files_in[155] = "../data/.cpt";
-files_in[156] = "../data/.cpt";
-files_in[157] = "../data/.cpt";
+files_in[154] = "../data/cpt_sf_BA0321_2012_06_22_14_39_03_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[155] = "../data/cpt_sf_BA0322_2012_06_22_17_33_18_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[156] = "../data/cpt_sf_BA0324_2012_06_23_08_28_31_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[157] = "../data/cpt_sf_BA0326_2012_06_23_11_22_49_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
 files_in[158] = "../data/.cpt";
 files_in[159] = "../data/.cpt";
 

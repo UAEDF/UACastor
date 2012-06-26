@@ -4,7 +4,7 @@ void run_create_tree()
   //gROOT -> ProcessLine(".L LeakageSubtractor.C++");
   gROOT -> ProcessLine(".L create_tree.C++");
 
-string files_in[160];
+string files_in[170];
 
 files_in[0] = "../data/cpt_sf_CA1579_2012_05_12_15_32_59_mod.cpt"; //good
 files_in[1] = "../data/cpt_sf_CA1579_2012_05_13_09_56_20_mod.cpt"; //good
@@ -164,11 +164,21 @@ files_in[154] = "../data/cpt_sf_BA0321_2012_06_22_14_39_03_mod.cpt";//if you are
 files_in[155] = "../data/cpt_sf_BA0322_2012_06_22_17_33_18_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
 files_in[156] = "../data/cpt_sf_BA0324_2012_06_23_08_28_31_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
 files_in[157] = "../data/cpt_sf_BA0326_2012_06_23_11_22_49_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
-files_in[158] = "../data/.cpt";
-files_in[159] = "../data/.cpt";
+files_in[158] = "../data/cpt_sf_BA0327_2012_06_23_14_22_19_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[159] = "../data/cpt_sf_BA0329_2012_06_23_17_12_36_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[160] = "../data/cpt_sf_BA0336_2012_06_24_08_54_41_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[161] = "../data/.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[162] = "../data/.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[163] = "../data/.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[164] = "../data/.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[165] = "../data/.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[166] = "../data/.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[167] = "../data/.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+files_in[168] = "../data/.cpt";
+files_in[169] = "../data/.cpt";
 
-int ini_file = 122;
-int end_file = 148;
+int ini_file = 149;
+int end_file = 161;
 
 
   string tree_out = "PMT_test_2012_old_group3.root";

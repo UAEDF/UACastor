@@ -193,6 +193,11 @@ if (pmt == "CA1300") { sector = 5;  module = 9;  set = 1; }
 if (pmt == "CA1884") { sector = 6;  module = 9;  set = 1; }
 if (pmt == "CA0930") { sector = 7;  module = 9;  set = 1; }
 
+
+
+//if (pmt == "CA2000") { sector = 7;  module = 9;  set = 1; }
+
+
 //new ones first delivery
 if (pmt == "BA0263") { sector = 4;  module = 1;  set = 2; }
 if (pmt == "BA0264") { sector = 4;  module = 2;  set = 2; }
@@ -225,6 +230,36 @@ if (pmt == "BA0321") { sector = 7;  module = 4;  set = 2; }
 if (pmt == "BA0322") { sector = 7;  module = 5;  set = 2; }
 if (pmt == "BA0324") { sector = 6;  module = 1;  set = 2; }
 if (pmt == "BA0325") { sector = 6;  module = 2;  set = 2; }
+
+
+ if (pmt == "BA0319") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0321") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0322") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0324") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0326") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0327") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0329") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0336") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0337") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0339") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0342") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0349") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0351") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0352") { sector = 6;  module = 2;  set = 2; }
+
+ if (pmt == "BA0353") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0354") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0359") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0360") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0361") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0364") { sector = 6;  module = 2;  set = 2; }
+ if (pmt == "BA0373") { sector = 6;  module = 2;  set = 2; }
+
+
+
+
+
+
 
 if (sector == 0 and module == 0 and set == 0) { cout<<"Unknown PMT"<<endl; }
 

@@ -152,6 +152,10 @@ if (sector == 5  and module == 9  and set == 1) { pmt = "CA1300"; }
 if (sector == 6  and module == 9  and set == 1) { pmt = "CA1884"; }
 if (sector == 7  and module == 9  and set == 1) { pmt = "CA0930"; }
 
+//testpmt
+if (sector == 1  and module == 1  and set == 3) { pmt = "CA2000"; }
+
+//newpmts
 if (sector == 4  and module == 1  and set == 2) { pmt = "BA0263"; }
 if (sector == 4  and module == 2  and set == 2) { pmt = "BA0264"; }
 if (sector == 4  and module == 3  and set == 2) { pmt = "BA0265"; }

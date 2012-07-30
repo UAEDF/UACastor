@@ -4,7 +4,7 @@ void run_create_tree()
   //gROOT -> ProcessLine(".L LeakageSubtractor.C++");
   gROOT -> ProcessLine(".L create_tree.C++");
 
-string files_in[220];
+string files_in[250];
 
 //PMT_test_2012_old_group1.root
 files_in[0] = "../data/cpt_sf_CA1579_2012_05_12_15_32_59_mod.cpt"; //good
@@ -189,7 +189,7 @@ files_in[170] = "../data/cpt_sf_BA0355_2012_06_26_10_34_28_mod.cpt";
 files_in[171] = "../data/cpt_sf_BA0359_2012_06_26_17_53_21_mod.cpt";
 files_in[172] = "../data/cpt_sf_BA0360_2012_06_27_07_55_51_mod.cpt";
 
-//PMT_test_2012_testmpt.root
+//PMT_test_2012_testpmt.root
 files_in[173] = "../data/cpt_sf_CA2000_2012_06_27_10_57_09_mod.cpt";
 files_in[174] = "../data/cpt_sf_CA2000_2012_07_07_13_56_22_mod.cpt";
 
@@ -205,57 +205,78 @@ files_in[182] = "../data/cpt_sf_BA0351_2012_07_08_14_47_05_mod.cpt";
 files_in[183] = "../data/cpt_sf_BA0329_2012_07_08_17_52_15_mod.cpt";
 files_in[184] = "../data/cpt_sf_BA0326_2012_07_09_07_43_46_mod.cpt";
 
+//PMT_test_2012_old_group4.root
+files_in[185] = "../data/cpt_sf_CA1601_2012_07_09_10_47_10_mod.cpt";
+files_in[186] = "../data/cpt_sf_CA0040_2012_07_09_14_58_02_mod.cpt";
+files_in[187] = "../data/cpt_sf_CA2123_2012_07_09_17_14_56_mod.cpt";
+files_in[188] = "../data/cpt_sf_CA1095_2012_07_09_19_28_01_mod.cpt";
+files_in[189] = "../data/cpt_sf_CA0808_2012_07_10_08_00_22_mod.cpt";
+files_in[190] = "../data/cpt_sf_CA1469_2012_07_10_13_17_39_mod.cpt";
+files_in[191] = "../data/cpt_sf_CA1951_2012_07_10_15_38_44_mod.cpt";
+files_in[192] = "../data/cpt_sf_CA0791_2012_07_10_18_03_42_mod.cpt";
+files_in[193] = "../data/cpt_sf_CA0055_2012_07_11_08_04_34_mod.cpt";
+files_in[194] = "../data/cpt_sf_CA2045_2012_07_11_10_23_40_mod.cpt";
+files_in[195] = "../data/cpt_sf_CA1636_2012_07_11_12_36_59_mod.cpt";
+files_in[196] = "../data/cpt_sf_CA1576_2012_07_11_15_02_19_mod.cpt";
+files_in[197] = "../data/cpt_sf_CA2020_2012_07_11_17_24_26_mod.cpt";
+files_in[198] = "../data/cpt_sf_CA0745_2012_07_11_19_40_51_mod.cpt";
+files_in[199] = "../data/cpt_sf_CA0675_2012_07_12_08_08_38_mod.cpt";
+
 //PMT_test_2012_old_group5.root
-files_in[176] = "../data/cpt_sf_CA1601_2012_07_09_10_47_10_mod.cpt";
-files_in[176] = "../data/cpt_sf_CA0040_2012_07_09_14_58_02_mod.cpt";
-files_in[177] = "../data/cpt_sf_CA2123_2012_07_09_17_14_56_mod.cpt";
-files_in[178] = "../data/cpt_sf_CA1095_2012_07_09_19_28_01_mod.cpt";
-files_in[179] = "../data/cpt_sf_CA0808_2012_07_10_08_00_22_mod.cpt";
-files_in[180] = "../data/cpt_sf_CA1469_2012_07_10_13_17_39_mod.cpt";
-files_in[181] = "../data/cpt_sf_CA1951_2012_07_10_15_38_44_mod.cpt";
-files_in[182] = "../data/cpt_sf_CA0791_2012_07_10_18_03_42_mod.cpt";
-files_in[183] = "../data/cpt_sf_CA0055_2012_07_11_08_04_34_mod.cpt";
-files_in[184] = "../data/cpt_sf_CA2045_2012_07_11_10_23_40_mod.cpt";
-files_in[185] = "../data/cpt_sf_CA1636_2012_07_11_12_36_59_mod.cpt";
-files_in[186] = "../data/cpt_sf_CA1576_2012_07_11_15_02_19_mod.cpt";
-files_in[187] = "../data/cpt_sf_CA2020_2012_07_11_17_24_26_mod.cpt";
-files_in[188] = "../data/cpt_sf_CA0745_2012_07_11_19_40_51_mod.cpt";
-files_in[189] = "../data/cpt_sf_CA0675_2012_07_12_08_08_38_mod.cpt";
+files_in[200] = "../data/cpt_sf_CA1229_2012_07_12_10_44_08_mod.cpt";
+files_in[201] = "../data/cpt_sf_CA0749_2012_07_12_12_59_13_mod.cpt";
+files_in[202] = "../data/cpt_sf_CA0422_2012_07_12_15_33_05_mod.cpt";
+files_in[203] = "../data/cpt_sf_CA2057_2012_07_12_17_47_19_mod.cpt";
+files_in[204] = "../data/cpt_sf_CA3400_2012_07_13_08_04_24_mod.cpt";
+files_in[205] = "../data/cpt_sf_CA1527_2012_07_13_10_41_11_mod.cpt";
+files_in[206] = "../data/cpt_sf_CA0400_2012_07_13_13_16_09_mod.cpt";
+files_in[207] = "../data/cpt_sf_CA1016_2012_07_13_15_31_33_mod.cpt";
+files_in[208] = "../data/cpt_sf_CA1548_2012_07_13_17_49_23_mod.cpt";
+files_in[209] = "../data/cpt_sf_CA1852_2012_07_14_09_16_50_mod.cpt";
+files_in[210] = "../data/cpt_sf_CA0267_2012_07_14_11_32_12_mod.cpt";
+files_in[211] = "../data/cpt_sf_CA2115_2012_07_14_13_50_31_mod.cpt";
+files_in[212] = "../data/cpt_sf_CA1881_2012_07_14_16_04_18_mod.cpt";
+files_in[213] = "../data/cpt_sf_CA1363_2012_07_14_18_24_32_mod.cpt";
+files_in[214] = "../data/cpt_sf_CA1468_2012_07_15_09_17_12_mod.cpt";
+files_in[215] = "../data/cpt_sf_CA1143_2012_07_15_11_48_47_mod.cpt";
+files_in[216] = "../data/cpt_sf_CA2051_2012_07_15_14_03_09_mod.cpt";
+files_in[217] = "../data/cpt_sf_CA0907_2012_07_15_16_17_52_mod.cpt";
+files_in[218] = "../data/cpt_sf_CA1953_2012_07_16_08_16_40_mod.cpt";
+files_in[219] = "../data/cpt_sf_CA0780_2012_07_16_11_10_29_mod.cpt";
+files_in[220] = "../data/cpt_sf_CA0932_2012_07_16_13_51_10_mod.cpt";
+files_in[221] = "../data/cpt_sf_CA1010_2012_07_16_16_07_25_mod.cpt";
+files_in[222] = "../data/cpt_sf_CA0031_2012_07_16_18_38_41_mod.cpt";
+files_in[223] = "../data/cpt_sf_CA1594_2012_07_17_08_05_40_mod.cpt";
+files_in[224] = "../data/cpt_sf_CA0043_2012_07_17_10_37_23_mod.cpt";
+files_in[225] = "../data/cpt_sf_CA1444_2012_07_17_17_35_35_mod.cpt";
+files_in[226] = "../data/cpt_sf_CA1490_2012_07_17_20_03_21_mod.cpt";
 
-// PMT_test_2012_old_group6.root
-files_in[190] = "../data/cpt_sf_CA1229_2012_07_12_10_44_08_mod.cpt";
-files_in[191] = "../data/cpt_sf_CA0749_2012_07_12_12_59_13_mod.cpt";
-files_in[192] = "../data/cpt_sf_CA0422_2012_07_12_15_33_05_mod.cpt";
-files_in[193] = "../data/cpt_sf_CA2057_2012_07_12_17_47_19_mod.cpt";
-files_in[194] = "../data/cpt_sf_CA3400_2012_07_13_08_04_24_mod.cpt";
-files_in[195] = "../data/cpt_sf_CA1527_2012_07_13_10_41_11_mod.cpt";
-files_in[196] = "../data/cpt_sf_CA0400_2012_07_13_13_16_09_mod.cpt";
-files_in[197] = "../data/cpt_sf_CA1016_2012_07_13_15_31_33_mod.cpt";
-files_in[198] = "../data/cpt_sf_CA1548_2012_07_13_17_49_23_mod.cpt";
-files_in[199] = "../data/cpt_sf_CA1852_2012_07_14_09_16_50_mod.cpt";
-files_in[200] = "../data/cpt_sf_CA0267_2012_07_14_11_32_12_mod.cpt";
-files_in[201] = "../data/cpt_sf_CA2115_2012_07_14_13_50_31_mod.cpt";
-files_in[202] = "../data/cpt_sf_CA1881_2012_07_14_16_04_18_mod.cpt";
-files_in[203] = "../data/cpt_sf_CA1363_2012_07_14_18_24_32_mod.cpt";
-files_in[204] = "../data/cpt_sf_CA1468_2012_07_15_09_17_12_mod.cpt";
-files_in[205] = "../data/cpt_sf_CA1143_2012_07_15_11_48_47_mod.cpt";
-files_in[206] = "../data/cpt_sf_CA2051_2012_07_15_14_03_09_mod.cpt";
-files_in[207] = "../data/cpt_sf_CA0907_2012_07_15_16_17_52_mod.cpt";
-files_in[208] = "../data/cpt_sf_CA1953_2012_07_16_08_16_40_mod.cpt";
-files_in[209] = "../data/cpt_sf_CA0780_2012_07_16_11_10_29_mod.cpt";
-files_in[210] = "../data/cpt_sf_CA0932_2012_07_16_13_51_10_mod.cpt";
-files_in[211] = "../data/cpt_sf_CA1010_2012_07_16_16_07_25_mod.cpt";
-files_in[212] = "../data/cpt_sf_CA0031_2012_07_16_18_38_41_mod.cpt";
-files_in[213] = "../data/cpt_sf_CA1594_2012_07_17_08_05_40_mod.cpt";
-files_in[214] = "../data/cpt_sf_CA0043_2012_07_17_10_37_23_mod.cpt";
-files_in[215] = "../data/cpt_sf_CA1444_2012_07_17_17_35_35_mod.cpt";
-files_in[216] = "../data/cpt_sf_CA1490_2012_07_17_20_03_21_mod.cpt";
+//PMT_test_2012_old_group6.root
+files_in[227] = "../data/cpt_sf_CA1790_2012_07_20_14_21_21_mod.cpt";
+files_in[228] = "../data/cpt_sf_CA3400_2012_07_20_16_44_18_mod.cpt";
+files_in[229] = "../data/cpt_sf_CA1538_2012_07_20_18_59_28_mod.cpt";
+files_in[230] = "../data/cpt_sf_CA0043_2012_07_21_09_30_20_mod.cpt";
+files_in[231] = "../data/cpt_sf_CA0327_2012_07_21_11_53_40_mod.cpt";
+files_in[232] = "../data/cpt_sf_CA1760_2012_07_21_14_19_17_mod.cpt";
+files_in[233] = "../data/cpt_sf_CA2034_2012_07_21_16_36_42_mod.cpt";
+files_in[234] = "../data/cpt_sf_CA0084_2012_07_22_10_01_27_mod.cpt";
+files_in[235] = "../data/cpt_sf_CA1680_2012_07_22_12_17_15_mod.cpt";
+files_in[236] = "../data/cpt_sf_CA1620_2012_07_22_14_36_01_mod.cpt";
+files_in[237] = "../data/cpt_sf_CA1842_2012_07_22_16_57_12_mod.cpt";
+files_in[238] = "../data/cpt_sf_CA0808_2012_07_23_08_06_23_mod.cpt";
+files_in[239] = "../data/cpt_sf_CA1676_2012_07_27_11_48_58_mod.cpt";
 
- int ini_file = 122;  // +1 wrt file 
- int end_file = 148;
+//PMT_test_2012_new_group4.root
+files_in[240] = "../data/cpt_sf_BA0182_2012_07_30_10_38_09_mod.cpt";
+files_in[241] = "../data/cpt_sf_BA0184_2012_07_30_15_02_42_mod.cpt"; //needs to be converted and added
+
+//there are many measurements missing!!!!
+
+ int ini_file = 176;  // +1 wrt file 
+ int end_file = 185;
 
 
-  string tree_out = "PMT_test_2012_old_group3.root";
+  string tree_out = "PMT_test_2012_new_group3.root";
 
   create_tree(files_in, ini_file, end_file, tree_out);
 }

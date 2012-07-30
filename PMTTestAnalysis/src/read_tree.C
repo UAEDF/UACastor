@@ -33,7 +33,7 @@ struct measurement {
 
 void set_code(int module, int sector, int set, string& pmt)
 {
-
+//old pmts
 if (sector == 4  and module == 1  and set == 1) { pmt = "CA1579"; }
 if (sector == 1  and module == 2  and set == 1) { pmt = "CA3399"; }
 if (sector == 13 and module == 1  and set == 1) { pmt = "CA0683"; }
@@ -151,6 +151,54 @@ if (sector == 12 and module == 8  and set == 1) { pmt = "CA0847"; }
 if (sector == 5  and module == 9  and set == 1) { pmt = "CA1300"; }
 if (sector == 6  and module == 9  and set == 1) { pmt = "CA1884"; }
 if (sector == 7  and module == 9  and set == 1) { pmt = "CA0930"; }
+if (sector == 9  and module == 9  and set == 1) { pmt = "CA0656"; }
+if (sector == 10 and module == 9  and set == 1) { pmt = "CA1273"; }
+if (sector == 11 and module == 9  and set == 1) { pmt = "CA1828"; }
+if (sector == 3  and module == 10 and set == 1) { pmt = "CA1601"; }
+if (sector == 4  and module == 7  and set == 1) { pmt = "CA0040"; }
+if (sector == 15 and module == 9  and set == 1) { pmt = "CA2123"; }
+if (sector == 16 and module == 9  and set == 1) { pmt = "CA1095"; }
+if (sector == 14 and module == 10 and set == 1) { pmt = "CA0808"; }
+if (sector == 14 and module == 8  and set == 1) { pmt = "CA1469"; }
+if (sector == 13 and module == 10 and set == 1) { pmt = "CA1951"; }
+if (sector == 4  and module == 8  and set == 1) { pmt = "CA0791"; }
+if (sector == 15 and module == 7  and set == 1) { pmt = "CA0055"; }
+if (sector == 16 and module == 10 and set == 1) { pmt = "CA2045"; }
+if (sector == 2  and module == 8  and set == 1) { pmt = "CA1636"; }
+if (sector == 13 and module == 9  and set == 1) { pmt = "CA1576"; }
+if (sector == 3  and module == 7  and set == 1) { pmt = "CA2020"; }
+if (sector == 13 and module == 7  and set == 1) { pmt = "CA0745"; }
+if (sector == 14 and module == 9  and set == 1) { pmt = "CA0675"; }
+if (sector == 1  and module == 7  and set == 1) { pmt = "CA1229"; }
+if (sector == 2  and module == 11 and set == 1) { pmt = "CA0749"; }
+if (sector == 1  and module == 9  and set == 1) { pmt = "CA0422"; }
+if (sector == 2  and module == 10 and set == 1) { pmt = "CA2057"; }
+if (sector == 3  and module == 9  and set == 1) { pmt = "CA3400"; }
+if (sector == 4  and module == 11 and set == 1) { pmt = "CA1527"; }
+if (sector == 13 and module == 7  and set == 1) { pmt = "CA0400"; }
+if (sector == 1  and module == 8  and set == 1) { pmt = "CA1016"; }
+if (sector == 4  and module == 10 and set == 1) { pmt = "CA1548"; }
+if (sector == 2  and module == 9  and set == 1) { pmt = "CA1852"; }
+if (sector == 6  and module == 8  and set == 1) { pmt = "CA0267"; }
+if (sector == 14 and module == 7  and set == 1) { pmt = "CA2115"; }
+if (sector == 16 and module == 7  and set == 1) { pmt = "CA1881"; }
+if (sector == 4  and module == 9  and set == 1) { pmt = "CA1363"; }
+if (sector == 1  and module == 10 and set == 1) { pmt = "CA1468"; }
+if (sector == 15 and module == 8  and set == 1) { pmt = "CA1866"; }
+if (sector == 2  and module == 7  and set == 1) { pmt = "CA1143"; }
+if (sector == 16 and module == 8  and set == 1) { pmt = "CA2051"; }
+if (sector == 15 and module == 10 and set == 1) { pmt = "CA0907"; }
+if (sector == 12 and module == 9  and set == 1) { pmt = "CA1953"; }
+if (sector == 10 and module == 10 and set == 1) { pmt = "CA0780"; }
+if (sector == 6  and module == 10 and set == 1) { pmt = "CA0932"; }
+if (sector == 9  and module == 10 and set == 1) { pmt = "CA1010"; }
+if (sector == 5  and module == 10 and set == 1) { pmt = "CA0031"; }
+if (sector == 12 and module == 8  and set == 1) { pmt = "CA1594"; }
+if (sector == 7  and module == 11 and set == 1) { pmt = "CA0043"; }
+if (sector == 5  and module == 11 and set == 1) { pmt = "CA1444"; }
+if (sector == 11 and module == 10 and set == 1) { pmt = "CA1490"; }
+if (sector == 12 and module == 10 and set == 1) { pmt = "CA1790"; }
+if (sector == 5  and module == 12 and set == 1) { pmt = "CA1676"; }
 
 //testpmt
 if (sector == 1  and module == 1  and set == 3) { pmt = "CA2000"; }
@@ -176,17 +224,37 @@ if (sector == 1  and module == 2  and set == 2) { pmt = "BA0305"; }
 if (sector == 1  and module == 3  and set == 2) { pmt = "BA0307"; }
 if (sector == 1  and module == 4  and set == 2) { pmt = "BA0309"; }
 if (sector == 1  and module == 5  and set == 2) { pmt = "BA0311"; }
-if (sector == 8  and module == 1  and set == 2) { pmt = "BA0169"; }
-if (sector == 8  and module == 2  and set == 2) { pmt = "BA0170"; }
-if (sector == 8  and module == 4  and set == 2) { pmt = "BA0314"; }
-if (sector == 8  and module == 5  and set == 2) { pmt = "BA0316"; }
-if (sector == 7  and module == 1  and set == 2) { pmt = "BA0317"; }
-if (sector == 7  and module == 2  and set == 2) { pmt = "BA0318"; }
-if (sector == 7  and module == 3  and set == 2) { pmt = "BA0319"; }
-if (sector == 7  and module == 4  and set == 2) { pmt = "BA0321"; }
-if (sector == 7  and module == 5  and set == 2) { pmt = "BA0322"; }
-if (sector == 6  and module == 1  and set == 2) { pmt = "BA0324"; }
-if (sector == 6  and module == 2  and set == 2) { pmt = "BA0326"; }
+if (sector == 10 and module == 1  and set == 2) { pmt = "BA0169"; }
+if (sector == 10 and module == 2  and set == 2) { pmt = "BA0170"; }
+if (sector == 10 and module == 4  and set == 2) { pmt = "BA0314"; }
+if (sector == 10 and module == 5  and set == 2) { pmt = "BA0316"; }
+if (sector == 9  and module == 1  and set == 2) { pmt = "BA0317"; }
+if (sector == 9  and module == 2  and set == 2) { pmt = "BA0318"; }
+if (sector == 9  and module == 3  and set == 2) { pmt = "BA0319"; }
+if (sector == 9  and module == 4  and set == 2) { pmt = "BA0321"; }
+if (sector == 9  and module == 5  and set == 2) { pmt = "BA0322"; }
+if (sector == 8  and module == 1  and set == 2) { pmt = "BA0324"; }
+if (sector == 8  and module == 2  and set == 2) { pmt = "BA0325"; }
+if (sector == 8  and module == 3  and set == 2) { pmt = "BA0326"; }
+if (sector == 8  and module == 4  and set == 2) { pmt = "BA0327"; }
+if (sector == 8  and module == 5  and set == 2) { pmt = "BA0329"; }
+if (sector == 7  and module == 1  and set == 2) { pmt = "BA0336"; }
+if (sector == 7  and module == 2  and set == 2) { pmt = "BA0337"; }
+if (sector == 7  and module == 3  and set == 2) { pmt = "BA0339"; }
+if (sector == 7  and module == 4  and set == 2) { pmt = "BA0342"; }
+if (sector == 7  and module == 5  and set == 2) { pmt = "BA0349"; }
+if (sector == 6  and module == 1  and set == 2) { pmt = "BA0351"; }
+if (sector == 6  and module == 2  and set == 2) { pmt = "BA0352"; }
+if (sector == 6  and module == 3  and set == 2) { pmt = "BA0353"; }
+if (sector == 6  and module == 4  and set == 2) { pmt = "BA0354"; }
+if (sector == 6  and module == 5  and set == 2) { pmt = "BA0359"; }
+if (sector == 5  and module == 1  and set == 2) { pmt = "BA0360"; }
+if (sector == 5  and module == 2  and set == 2) { pmt = "BA0361"; }
+if (sector == 5  and module == 3  and set == 2) { pmt = "BA0364"; }
+if (sector == 5  and module == 4  and set == 2) { pmt = "BA0373"; }
+if (sector == 5  and module == 5  and set == 2) { pmt = "BA0374"; }
+if (sector == 11 and module == 1  and set == 2) { pmt = "BA0182"; }
+if (sector == 11 and module == 2  and set == 2) { pmt = "BA0184"; }
 
 if (pmt == "") { cout<<"Unknown PMT"<<endl; }
 

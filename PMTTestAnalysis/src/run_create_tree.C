@@ -176,6 +176,8 @@ files_in[157] = "../data/cpt_sf_BA0324_2012_06_23_08_28_31_mod.cpt";//if you are
 files_in[158] = "../data/cpt_sf_BA0326_2012_06_23_11_22_49_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
 files_in[159] = "../data/cpt_sf_BA0327_2012_06_23_14_22_19_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
 files_in[160] = "../data/cpt_sf_BA0329_2012_06_23_17_12_36_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
+
+//PMT_test_2012_new_group3.root
 files_in[161] = "../data/cpt_sf_BA0336_2012_06_24_08_54_41_mod.cpt";//if you are not happy: repeat analysis with chi2 threshold = 100 or 200;
 files_in[162] = "../data/cpt_sf_BA0337_2012_06_24_11_46_54_mod.cpt";
 files_in[163] = "../data/cpt_sf_BA0339_2012_06_24_14_40_03_mod.cpt";
@@ -193,7 +195,7 @@ files_in[172] = "../data/cpt_sf_BA0360_2012_06_27_07_55_51_mod.cpt";
 files_in[173] = "../data/cpt_sf_CA2000_2012_06_27_10_57_09_mod.cpt";
 files_in[174] = "../data/cpt_sf_CA2000_2012_07_07_13_56_22_mod.cpt";
 
-//PMT_test_2012_new_group3.root
+//PMT_test_2012_new_group4.root
 files_in[175] = "../data/cpt_sf_BA0361_2012_06_27_13_15_01_mod.cpt";
 files_in[176] = "../data/cpt_sf_BA0364_2012_06_27_16_05_19_mod.cpt";
 files_in[177] = "../data/cpt_sf_BA0373_2012_07_06_18_38_37_mod.cpt";
@@ -266,17 +268,18 @@ files_in[237] = "../data/cpt_sf_CA1842_2012_07_22_16_57_12_mod.cpt";
 files_in[238] = "../data/cpt_sf_CA0808_2012_07_23_08_06_23_mod.cpt";
 files_in[239] = "../data/cpt_sf_CA1676_2012_07_27_11_48_58_mod.cpt";
 
-//PMT_test_2012_new_group4.root
+//PMT_test_2012_new_group5.root
 files_in[240] = "../data/cpt_sf_BA0182_2012_07_30_10_38_09_mod.cpt";
-files_in[241] = "../data/cpt_sf_BA0184_2012_07_30_15_02_42_mod.cpt"; //needs to be converted and added
+files_in[241] = "../data/cpt_sf_BA0184_2012_07_30_15_02_42_mod.cpt";
+files_in[242] = "../data/cpt_sf_BA0367_2012_07_30_18_36_17_mod.cpt";
+files_in[243] = "../data/cpt_sf_BA0372_2012_07_31_13_20_48_mod.cpt";
+files_in[244] = "../data/cpt_sf_BA0377_2012_07_31_16_36_36_mod.cpt"; //needs to be converted and added
 
-//there are many measurements missing!!!!
-
- int ini_file = 176;  // +1 wrt file 
- int end_file = 185;
+ int ini_file = 149;  // +1 wrt file 
+ int end_file = 161;
 
 
-  string tree_out = "PMT_test_2012_new_group3.root";
+  string tree_out = "PMT_test_2012_new_group2.root";
 
   create_tree(files_in, ini_file, end_file, tree_out);
 }

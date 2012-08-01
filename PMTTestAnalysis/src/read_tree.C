@@ -253,12 +253,13 @@ if (sector == 5  and module == 2  and set == 2) { pmt = "BA0361"; }
 if (sector == 5  and module == 3  and set == 2) { pmt = "BA0364"; }
 if (sector == 5  and module == 4  and set == 2) { pmt = "BA0373"; }
 if (sector == 5  and module == 5  and set == 2) { pmt = "BA0374"; }
-if (sector == 11 and module == 1  and set == 2) { pmt = "BA0182"; }
-if (sector == 11 and module == 2  and set == 2) { pmt = "BA0184"; }
-if (sector == 11 and module == 3  and set == 2) { pmt = "BA0367"; }
-if (sector == 11 and module == 4  and set == 2) { pmt = "BA0372"; }
-if (sector == 11 and module == 5  and set == 2) { pmt = "BA0377"; }
-
+if (sector == 12 and module == 1  and set == 2) { pmt = "BA0182"; }
+if (sector == 12 and module == 2  and set == 2) { pmt = "BA0184"; }
+if (sector == 12 and module == 3  and set == 2) { pmt = "BA0367"; }
+if (sector == 12 and module == 4  and set == 2) { pmt = "BA0372"; }
+if (sector == 12 and module == 5  and set == 2) { pmt = "BA0377"; }
+if (sector == 11 and module == 1  and set == 2) { pmt = "BA0379"; }
+if (sector == 11 and module == 2  and set == 2) { pmt = "BA0381"; }
 
 if (pmt == "") { cout<<"Unknown PMT"<<endl; }
 
@@ -297,14 +298,14 @@ void read_tree(string *trees_in, int ini_file, int end_file)
   TH2F *pmt_bad_fits_new;
   TH2F *measurements_new;
 
-  pmt_qe_800_new =  new TH2F("QE_800V_new","QE_800V_new;Sector;Module", 5,0,5,8,0,8);
-  pmt_gain_800_new =  new TH2F("Gain_800V_new","Gain_800V_new;Sector;Module", 5,0,5,8,0,8);
-  pmt_qe_1200_new =  new TH2F("QE_1200V_new","QE_1200V_new;Sector;Module", 5,0,5,8,0,8);
-  pmt_gain_1200_new =  new TH2F("Gain_1200V_new","Gain_1200V_new;Sector;Module", 5,0,5,8,0,8);
-  pmt_ratio_new =  new TH2F("Ratio_new","Ratio_new;Sector;Module", 5,0,5,8,0,8);
-  pmt_spikes_new =  new TH2F("Number_of_spikes_new","number_of_spikes_new1;Sector;Module", 5,0,5,8,0,8);
-  pmt_bad_fits_new =  new TH2F("Number_of_bad_fits_new","number_of_bad_fits_new1;Sector;Module", 5,0,5,8,0,8);
-  measurements_new =  new TH2F("Number_of_measurements_new","number_of_measurements_new1;Sector;Module", 5,0,5,8,0,8);
+  pmt_qe_800_new =  new TH2F("QE_800V_new","QE_800V_new;Sector;Module", 5,0,5,12,0,12);
+  pmt_gain_800_new =  new TH2F("Gain_800V_new","Gain_800V_new;Sector;Module", 5,0,5,12,0,12);
+  pmt_qe_1200_new =  new TH2F("QE_1200V_new","QE_1200V_new;Sector;Module", 5,0,5,12,0,12);
+  pmt_gain_1200_new =  new TH2F("Gain_1200V_new","Gain_1200V_new;Sector;Module", 5,0,5,12,0,12);
+  pmt_ratio_new =  new TH2F("Ratio_new","Ratio_new;Sector;Module", 5,0,5,12,0,12);
+  pmt_spikes_new =  new TH2F("Number_of_spikes_new","number_of_spikes_new1;Sector;Module", 5,0,5,12,0,12);
+  pmt_bad_fits_new =  new TH2F("Number_of_bad_fits_new","number_of_bad_fits_new1;Sector;Module", 5,0,5,12,0,12);
+  measurements_new =  new TH2F("Number_of_measurements_new","number_of_measurements_new1;Sector;Module", 5,0,5,12,0,12);
 
 for (int z=ini_file-1; z < end_file; z++)
 {

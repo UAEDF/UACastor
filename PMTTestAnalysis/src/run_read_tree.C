@@ -23,8 +23,8 @@ trees_in[10] = "PMT_test_2012_new_group5.root"; // measurements 241 to 244 (imco
 //test pmt
 trees_in[11] = "PMT_test_2012_testpmt.root"; // measurement 174 to 175 - done
 
-int ini_file = 6;
-int end_file = 6;
+int ini_file = 1;
+int end_file = 7;
 
 read_tree(trees_in, ini_file, end_file);
 }

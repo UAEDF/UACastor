@@ -40,7 +40,7 @@ struct chi2 {
 	float c_1800V;
 };
 
-float chi2_threshold = 200.0;
+float chi2_threshold = 25.0;
 
 void spike_check(float point, std::vector<float> *vec_cath, int& spike)
 {
@@ -269,27 +269,28 @@ if (pmt == "BA0309") { sector = 1;  module = 4;  set = 2; }
 if (pmt == "BA0311") { sector = 1;  module = 5;  set = 2; }
 if (pmt == "BA0169") { sector = 10; module = 1;  set = 2; }
 if (pmt == "BA0170") { sector = 10; module = 2;  set = 2; }
-if (pmt == "BA0314") { sector = 10; module = 4;  set = 2; }
-if (pmt == "BA0316") { sector = 10; module = 5;  set = 2; }
-if (pmt == "BA0317") { sector = 9;  module = 1;  set = 2; }
-if (pmt == "BA0318") { sector = 9;  module = 2;  set = 2; }
-if (pmt == "BA0319") { sector = 9;  module = 3;  set = 2; }
-if (pmt == "BA0321") { sector = 9;  module = 4;  set = 2; }
-if (pmt == "BA0322") { sector = 9;  module = 5;  set = 2; }
-if (pmt == "BA0324") { sector = 8;  module = 1;  set = 2; }
-if (pmt == "BA0325") { sector = 8;  module = 2;  set = 2; }
-if (pmt == "BA0326") { sector = 8;  module = 3;  set = 2; }
-if (pmt == "BA0327") { sector = 8;  module = 4;  set = 2; }
-if (pmt == "BA0329") { sector = 8;  module = 5;  set = 2; }
-if (pmt == "BA0336") { sector = 7;  module = 1;  set = 2; }
-if (pmt == "BA0337") { sector = 7;  module = 2;  set = 2; }
-if (pmt == "BA0339") { sector = 7;  module = 3;  set = 2; }
-if (pmt == "BA0342") { sector = 7;  module = 4;  set = 2; }
-if (pmt == "BA0349") { sector = 7;  module = 5;  set = 2; }
-if (pmt == "BA0351") { sector = 6;  module = 1;  set = 2; }
-if (pmt == "BA0352") { sector = 6;  module = 2;  set = 2; }
-if (pmt == "BA0353") { sector = 6;  module = 3;  set = 2; }
-if (pmt == "BA0354") { sector = 6;  module = 4;  set = 2; }
+if (pmt == "BA0314") { sector = 10; module = 3;  set = 2; }
+if (pmt == "BA0316") { sector = 10; module = 4;  set = 2; }
+if (pmt == "BA0317") { sector = 10; module = 5;  set = 2; }
+if (pmt == "BA0318") { sector = 9;  module = 1;  set = 2; }
+if (pmt == "BA0319") { sector = 9;  module = 2;  set = 2; }
+if (pmt == "BA0321") { sector = 9;  module = 3;  set = 2; }
+if (pmt == "BA0322") { sector = 9;  module = 4;  set = 2; }
+if (pmt == "BA0324") { sector = 9;  module = 5;  set = 2; }
+if (pmt == "BA0325") { sector = 8;  module = 1;  set = 2; }
+if (pmt == "BA0326") { sector = 8;  module = 2;  set = 2; }
+if (pmt == "BA0327") { sector = 8;  module = 3;  set = 2; }
+if (pmt == "BA0329") { sector = 8;  module = 4;  set = 2; }
+if (pmt == "BA0336") { sector = 8;  module = 5;  set = 2; }
+if (pmt == "BA0337") { sector = 7;  module = 1;  set = 2; }
+if (pmt == "BA0339") { sector = 7;  module = 2;  set = 2; }
+if (pmt == "BA0342") { sector = 7;  module = 3;  set = 2; }
+if (pmt == "BA0349") { sector = 7;  module = 4;  set = 2; }
+if (pmt == "BA0351") { sector = 7;  module = 5;  set = 2; }
+if (pmt == "BA0352") { sector = 6;  module = 1;  set = 2; }
+if (pmt == "BA0353") { sector = 6;  module = 2;  set = 2; }
+if (pmt == "BA0354") { sector = 6;  module = 3;  set = 2; }
+if (pmt == "BA0355") { sector = 6;  module = 4;  set = 2; }
 if (pmt == "BA0359") { sector = 6;  module = 5;  set = 2; }
 if (pmt == "BA0360") { sector = 5;  module = 1;  set = 2; }
 if (pmt == "BA0361") { sector = 5;  module = 2;  set = 2; }
@@ -303,6 +304,7 @@ if (pmt == "BA0372") { sector = 12; module = 4;  set = 2; }
 if (pmt == "BA0377") { sector = 12; module = 5;  set = 2; }
 if (pmt == "BA0379") { sector = 11; module = 1;  set = 2; }
 if (pmt == "BA0381") { sector = 11; module = 2;  set = 2; }
+if (pmt == "BA0384") { sector = 11; module = 3;  set = 2; }
 
 if (sector == 0 and module == 0 and set == 0) { cout<<"Unknown PMT"<<endl; }
 

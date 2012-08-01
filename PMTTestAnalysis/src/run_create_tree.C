@@ -275,13 +275,14 @@ files_in[242] = "../data/cpt_sf_BA0367_2012_07_30_18_36_17_mod.cpt";
 files_in[243] = "../data/cpt_sf_BA0372_2012_07_31_13_20_48_mod.cpt";
 files_in[244] = "../data/cpt_sf_BA0377_2012_07_31_16_36_36_mod.cpt";
 files_in[245] = "../data/cpt_sf_BA0379_2012_07_31_19_28_59_mod.cpt";
-files_in[246] = "../data/cpt_sf_BA0381_2012_08_01_10_46_25_mod.cpt"; //needs to be converted and added
+files_in[246] = "../data/cpt_sf_BA0381_2012_08_01_10_46_25_mod.cpt";
+files_in[247] = "../data/cpt_sf_BA0384_2012_08_01_13_40_38_mod.cpt";
 
- int ini_file = 162;  // +1 wrt file 
- int end_file = 173;
+ int ini_file = 241;  // +1 wrt file 
+ int end_file = 248;
 
 
-  string tree_out = "PMT_test_2012_new_group3.root";
+  string tree_out = "PMT_test_2012_new_group5.root";
 
   create_tree(files_in, ini_file, end_file, tree_out);
 }

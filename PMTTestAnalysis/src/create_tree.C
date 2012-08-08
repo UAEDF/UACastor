@@ -297,14 +297,26 @@ if (pmt == "BA0361") { sector = 5;  module = 2;  set = 2; }
 if (pmt == "BA0364") { sector = 5;  module = 3;  set = 2; }
 if (pmt == "BA0373") { sector = 5;  module = 4;  set = 2; }
 if (pmt == "BA0374") { sector = 5;  module = 5;  set = 2; }
-if (pmt == "BA0182") { sector = 12; module = 1;  set = 2; }
-if (pmt == "BA0184") { sector = 12; module = 2;  set = 2; }
-if (pmt == "BA0367") { sector = 12; module = 3;  set = 2; }
-if (pmt == "BA0372") { sector = 12; module = 4;  set = 2; }
-if (pmt == "BA0377") { sector = 12; module = 5;  set = 2; }
-if (pmt == "BA0379") { sector = 11; module = 1;  set = 2; }
-if (pmt == "BA0381") { sector = 11; module = 2;  set = 2; }
-if (pmt == "BA0384") { sector = 11; module = 3;  set = 2; }
+if (pmt == "BA0182") { sector = 14; module = 1;  set = 2; }
+if (pmt == "BA0184") { sector = 14; module = 2;  set = 2; }
+if (pmt == "BA0367") { sector = 14; module = 3;  set = 2; }
+if (pmt == "BA0372") { sector = 14; module = 4;  set = 2; }
+if (pmt == "BA0377") { sector = 14; module = 5;  set = 2; }
+if (pmt == "BA0379") { sector = 13; module = 1;  set = 2; }
+if (pmt == "BA0381") { sector = 13; module = 2;  set = 2; }
+if (pmt == "BA0384") { sector = 13; module = 3;  set = 2; }
+if (pmt == "BA0386") { sector = 13; module = 4;  set = 2; }
+if (pmt == "BA0387") { sector = 13; module = 5;  set = 2; }
+if (pmt == "BA0388") { sector = 12; module = 1;  set = 2; }
+if (pmt == "BA0390") { sector = 12; module = 2;  set = 2; }
+if (pmt == "BA0391") { sector = 12; module = 3;  set = 2; }
+if (pmt == "BA0392") { sector = 12; module = 4;  set = 2; }
+if (pmt == "BA0393") { sector = 12; module = 5;  set = 2; }
+if (pmt == "BA0396") { sector = 11; module = 1;  set = 2; }
+if (pmt == "BA0397") { sector = 11; module = 2;  set = 2; }
+if (pmt == "BA0398") { sector = 11; module = 3;  set = 2; }
+if (pmt == "BA0400") { sector = 11; module = 4;  set = 2; }
+if (pmt == "BA0401") { sector = 11; module = 5;  set = 2; }
 
 if (sector == 0 and module == 0 and set == 0) { cout<<"Unknown PMT"<<endl; }
 

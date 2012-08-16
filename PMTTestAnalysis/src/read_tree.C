@@ -31,6 +31,119 @@ struct measurement {
 	float qe_error;
 };
 
+void set_inst_code(string pmt, int& module, int& sector)
+{
+
+if ( pmt == "BA0364" ) { sector = 5;  module = 4; }
+if ( pmt == "BA0264" ) { sector = 6;  module = 4; }
+if ( pmt == "BA0360" ) { sector = 7;  module = 4; }
+if ( pmt == "BA0288" ) { sector = 8;  module = 4; }
+if ( pmt == "BA    " ) { sector = 9;  module = 4; }
+if ( pmt == "BA0339" ) { sector = 10; module = 4; }
+if ( pmt == "BA0355" ) { sector = 11; module = 4; }
+if ( pmt == "BA0265" ) { sector = 12; module = 4; }
+if ( pmt == "BA0322" ) { sector = 5;  module = 1; }
+if ( pmt == "BA0336" ) { sector = 6;  module = 1; }
+if ( pmt == "BA0314" ) { sector = 7;  module = 1; }
+if ( pmt == "BA0359" ) { sector = 8;  module = 1; }
+if ( pmt == "BA0297" ) { sector = 9;  module = 1; }
+if ( pmt == "BA0337" ) { sector = 10; module = 1; }
+if ( pmt == "BA0342" ) { sector = 11; module = 1; }
+if ( pmt == "BA0353" ) { sector = 12; module = 1; }
+if ( pmt == "BA0287" ) { sector = 5;  module = 2; }
+if ( pmt == "BA0317" ) { sector = 6;  module = 2; }
+if ( pmt == "BA0263" ) { sector = 7;  module = 2; }
+if ( pmt == "BA0321" ) { sector = 8;  module = 2; }
+if ( pmt == "BA0291" ) { sector = 9;  module = 2; }
+if ( pmt == "BA0303" ) { sector = 10; module = 2; }
+if ( pmt == "BA0361" ) { sector = 11; module = 2; }
+if ( pmt == "BA0304" ) { sector = 12; module = 2; }
+if ( pmt == "BA0305" ) { sector = 5;  module = 3; }
+if ( pmt == "BA0349" ) { sector = 6;  module = 3; }
+if ( pmt == "BA0274" ) { sector = 7;  module = 3; }
+if ( pmt == "BA0327" ) { sector = 8;  module = 3; }
+if ( pmt == "BA0169" ) { sector = 9;  module = 3; }
+if ( pmt == "BA0329" ) { sector = 10; module = 3; }
+if ( pmt == "BA0300" ) { sector = 11; module = 3; }
+if ( pmt == "BA0352" ) { sector = 12; module = 3; }
+if ( pmt == "BA0311" ) { sector = 5;  module = 5; }
+if ( pmt == "BA0373" ) { sector = 6;  module = 5; }
+if ( pmt == "BA0374" ) { sector = 7;  module = 5; }
+if ( pmt == "BA0324" ) { sector = 8;  module = 5; }
+if ( pmt == "BA0279" ) { sector = 9;  module = 5; }
+if ( pmt == "BA0307" ) { sector = 10; module = 5; }
+if ( pmt == "BA0318" ) { sector = 11; module = 5; }
+if ( pmt == "BA0170" ) { sector = 12; module = 5; }
+if ( pmt == "CA1387" ) { sector = 1;  module = 7; }
+if ( pmt == "CA0292" ) { sector = 2;  module = 7; }
+if ( pmt == "CA1490" ) { sector = 3;  module = 7; }
+if ( pmt == "CA0400" ) { sector = 4;  module = 7; }
+if ( pmt == "CA1010" ) { sector = 5;  module = 7; }
+if ( pmt == "CA0656" ) { sector = 6;  module = 7; }
+if ( pmt == "CA0948" ) { sector = 7;  module = 7; }
+if ( pmt == "CA1509" ) { sector = 8;  module = 7; }
+if ( pmt == "CA2044" ) { sector = 9;  module = 7; }
+if ( pmt == "CA1953" ) { sector = 10; module = 7; }
+if ( pmt == "CA0932" ) { sector = 11; module = 7; }
+if ( pmt == "CA1884" ) { sector = 12; module = 7; }
+if ( pmt == "CA1450" ) { sector = 13; module = 7; }
+if ( pmt == "CA0977" ) { sector = 14; module = 7; }
+if ( pmt == "CA1434" ) { sector = 15; module = 7; }
+if ( pmt == "CA1576" ) { sector = 16; module = 7; }
+if ( pmt == "CA1620" ) { sector = 1;  module = 8; }
+if ( pmt == "CA1229" ) { sector = 2;  module = 8; }
+if ( pmt == "CA0930" ) { sector = 3;  module = 8; }
+if ( pmt == "CA1300" ) { sector = 4;  module = 8; }
+if ( pmt == "CA0045" ) { sector = 5;  module = 8; }
+if ( pmt == "CA1881" ) { sector = 6;  module = 8; }
+if ( pmt == "CA2060" ) { sector = 7;  module = 8; }
+if ( pmt == "CA1363" ) { sector = 8;  module = 8; }
+if ( pmt == "CA1501" ) { sector = 9;  module = 8; }
+if ( pmt == "CA1530" ) { sector = 10; module = 8; }
+if ( pmt == "CA0979" ) { sector = 11; module = 8; }
+if ( pmt == "CA1143" ) { sector = 12; module = 8; }
+if ( pmt == "CA0847" ) { sector = 13; module = 8; }
+if ( pmt == "CA1680" ) { sector = 14; module = 8; }
+if ( pmt == "CA1844" ) { sector = 15; module = 8; }
+if ( pmt == "CA0811" ) { sector = 16; module = 8; }
+if ( pmt == "CA1095" ) { sector = 1;  module = 9; }
+if ( pmt == "CA1760" ) { sector = 2;  module = 9; }
+if ( pmt == "CA0422" ) { sector = 3;  module = 9; }
+if ( pmt == "CA2123" ) { sector = 4;  module = 9; }
+if ( pmt == "CA1410" ) { sector = 5;  module = 9; }
+if ( pmt == "CA0354" ) { sector = 6;  module = 9; }
+if ( pmt == "CA0299" ) { sector = 7;  module = 9; }
+if ( pmt == "CA1759" ) { sector = 8;  module = 9; }
+if ( pmt == "CA2022" ) { sector = 9;  module = 9; }
+if ( pmt == "CA1377" ) { sector = 10; module = 9; }
+if ( pmt == "CA1951" ) { sector = 11; module = 9; }
+if ( pmt == "CA1966" ) { sector = 12; module = 9; }
+if ( pmt == "CA0808" ) { sector = 13; module = 9; }
+if ( pmt == "CA0907" ) { sector = 14; module = 9; }
+if ( pmt == "CA1325" ) { sector = 15; module = 9; }
+if ( pmt == "CA1316" ) { sector = 16; module = 9; }
+if ( pmt == "CA1691" ) { sector = 1;  module = 10; }
+if ( pmt == "CA0055" ) { sector = 2;  module = 10; }
+if ( pmt == "CA1979" ) { sector = 3;  module = 10; }
+if ( pmt == "CA1495" ) { sector = 4;  module = 10; }
+if ( pmt == "CA2034" ) { sector = 5;  module = 10; }
+if ( pmt == "CA1808" ) { sector = 6;  module = 10; }
+if ( pmt == "CA1432" ) { sector = 7;  module = 10; }
+if ( pmt == "CA1469" ) { sector = 8;  module = 10; }
+if ( pmt == "CA0084" ) { sector = 9;  module = 10; }
+if ( pmt == "CA1655" ) { sector = 10; module = 10; }
+if ( pmt == "CA1931" ) { sector = 11; module = 10; }
+if ( pmt == "CA1577" ) { sector = 12; module = 10; }
+if ( pmt == "CA2623" ) { sector = 13; module = 10; }
+if ( pmt == "CA1634" ) { sector = 14; module = 10; }
+if ( pmt == "CA0584" ) { sector = 15; module = 10; }
+if ( pmt == "CA2046" ) { sector = 16; module = 10; }
+if ( pmt == "CA0749" ) { sector = 2;  module = 11; }
+if ( pmt == "CA1527" ) { sector = 4;  module = 11; }
+if ( pmt == "CA1444" ) { sector = 5;  module = 11; }
+if ( pmt == "CA0043" ) { sector = 7;  module = 11; }
+}
+
 void set_code(int module, int sector, int set, string& pmt)
 {
 //old pmts
@@ -293,6 +406,7 @@ void read_tree(string *trees_in, int ini_file, int end_file)
   TH2F *pmt_spikes_old;
   TH2F *pmt_bad_fits_old;
   TH2F *measurements_old;
+  TH2F *pmt_gain_1200_qe_old;
 
   pmt_qe_800_old =  new TH2F("QE_800V_old","QE_800V_old;Sector;Module", 14,0,14,16,0,16);
   pmt_gain_800_old =  new TH2F("Gain_800V_old","Gain_800V_old;Sector;Module", 14,0,14,16,0,16);
@@ -302,6 +416,7 @@ void read_tree(string *trees_in, int ini_file, int end_file)
   pmt_spikes_old =  new TH2F("Number_of_spikes_old","number_of_spikes_old;Sector;Module", 14,0,14,16,0,16);
   pmt_bad_fits_old =  new TH2F("Number_of_bad_fits_old","number_of_bad_fits_old;Sector;Module", 14,0,14,16,0,16);
   measurements_old =  new TH2F("Number_of_measurements_old","number_of_measurements_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_gain_1200_qe_old =  new TH2F("PMT_gain_1200V_times_QE_old","PMT_gain_1200V_times_QE_old;Sector;Module", 14,0,14,16,0,16);
 
   TH2F *pmt_qe_800_new;
   TH2F *pmt_gain_800_new;
@@ -311,6 +426,7 @@ void read_tree(string *trees_in, int ini_file, int end_file)
   TH2F *pmt_spikes_new;
   TH2F *pmt_bad_fits_new;
   TH2F *measurements_new;
+  TH2F *pmt_gain_1200_qe_new;
 
   pmt_qe_800_new =  new TH2F("QE_800V_new","QE_800V_new;Row;Line", 5,0,5,14,0,14);
   pmt_gain_800_new =  new TH2F("Gain_800V_new","Gain_800V_new;Row;Line", 5,0,5,14,0,14);
@@ -320,6 +436,27 @@ void read_tree(string *trees_in, int ini_file, int end_file)
   pmt_spikes_new =  new TH2F("Number_of_spikes_new","number_of_spikes_new1;Row;Line", 5,0,5,14,0,14);
   pmt_bad_fits_new =  new TH2F("Number_of_bad_fits_new","number_of_bad_fits_new1;Row;Line", 5,0,5,14,0,14);
   measurements_new =  new TH2F("Number_of_measurements_new","number_of_measurements_new1;Row;Line", 5,0,5,14,0,14);
+  pmt_gain_1200_qe_new =  new TH2F("PMT_gain_1200V_times_QE_old","PMT_gain_1200V_times_QE_old;Row;Line", 5,0,5,14,0,14);
+  
+  TH2F *pmt_qe_800_inst;
+  TH2F *pmt_gain_800_inst;
+  TH2F *pmt_qe_1200_inst;
+  TH2F *pmt_gain_1200_inst;
+  TH2F *pmt_ratio_inst;
+  TH2F *pmt_spikes_inst;
+  TH2F *pmt_bad_fits_inst;
+  TH2F *measurements_inst;
+  TH2F *pmt_gain_1200_qe_inst;
+
+  pmt_qe_800_inst =  new TH2F("QE_800V_inst","QE_800V_inst;Sector;Module", 14,0,14,16,0,16);
+  pmt_gain_800_inst =  new TH2F("Gain_800V_inst","Gain_800V_inst;Sector;Module", 14,0,14,16,0,16);
+  pmt_qe_1200_inst =  new TH2F("QE_1200V_inst","QE_1200V_inst;Sector;Module", 14,0,14,16,0,16);
+  pmt_gain_1200_inst =  new TH2F("Gain_1200V_inst","Gain_1200V_inst;Sector;Module", 14,0,14,16,0,16);
+  pmt_ratio_inst =  new TH2F("Ratio_inst","Ratio_inst;Sector;Module", 14,0,14,16,0,16);
+  pmt_spikes_inst =  new TH2F("Number_of_spikes_inst","number_of_spikes_inst;Sector;Module", 14,0,14,16,0,16);
+  pmt_bad_fits_inst =  new TH2F("Number_of_bad_fits_inst","number_of_bad_fits_inst;Sector;Module", 14,0,14,16,0,16);
+  measurements_inst =  new TH2F("Number_of_measurements_inst","number_of_measurements_inst;Sector;Module", 14,0,14,16,0,16);
+  pmt_gain_1200_qe_inst =  new TH2F("PMT_gain_1200V_times_QE_inst","PMT_gain_1200V_times_QE_inst;Sector;Module", 14,0,14,16,0,16);
 
 for (int z=ini_file-1; z < end_file; z++)
 {
@@ -346,6 +483,8 @@ std::vector<int> *begin, *end;
 std::vector<float> *cath, *cath_ori, *anode, *ref, *led, *hv, *time;
 
 int total_spikes, bad_fits, entries, module, sector, set;
+
+int inst_module, inst_sector;
 
 measurement m_800V_led1;
 measurement m_800V_led2;
@@ -461,8 +600,11 @@ for (int i = 0; i < tests ;i++)
 tree->GetEvent(i);
 //cout << "empty string" << endl;
 string pmt = "";
+inst_module = 0;
+inst_sector = 0;
 //cout << "set code" << endl;
 set_code(module, sector, set, pmt);
+set_inst_code(pmt, inst_module, inst_sector);
 //cout << "output" << endl;
 
 ratio_800V = 0.0;
@@ -762,6 +904,7 @@ if (ratio_1200V > 0.0) { pmt_ratio_old->SetBinContent(module,sector,ratio_1200V)
 pmt_spikes_old->SetBinContent(module,sector,total_spikes);
 pmt_bad_fits_old->SetBinContent(module,sector,bad_fits);
 measurements_old->Fill(module-0.5,sector-0.5);
+pmt_gain_1200_qe_old->SetBinContent(module,sector,m_1200V_led1.gain_value*m_1200V_led1.qe_value);
 }
 
 if (set == 2)
@@ -775,6 +918,21 @@ if (ratio_1200V > 0.0) { pmt_ratio_new->SetBinContent(module,sector,ratio_1200V)
 pmt_spikes_new->SetBinContent(module,sector,total_spikes);
 pmt_bad_fits_new->SetBinContent(module,sector,bad_fits);
 measurements_new->Fill(module-0.5,sector-0.5);
+pmt_gain_1200_qe_new->SetBinContent(module,sector,m_1200V_led1.gain_value*m_1200V_led1.qe_value);
+}
+
+if (inst_module > 0 and inst_sector > 0)
+{
+pmt_gain_800_inst->SetBinContent(inst_module,inst_sector,m_800V_led1.gain_value);
+pmt_gain_1200_inst->SetBinContent(inst_module,inst_sector,m_1200V_led1.gain_value);
+pmt_qe_800_inst->SetBinContent(inst_module,inst_sector,m_800V_led1.qe_value);
+pmt_qe_1200_inst->SetBinContent(inst_module,inst_sector,m_1200V_led1.qe_value);
+if (ratio_800V > 0.0) { pmt_ratio_inst->SetBinContent(inst_module,inst_sector,ratio_800V); }
+if (ratio_1200V > 0.0) { pmt_ratio_inst->SetBinContent(inst_module,inst_sector,ratio_1200V); }
+pmt_spikes_inst->SetBinContent(inst_module,inst_sector,total_spikes);
+pmt_bad_fits_inst->SetBinContent(inst_module,inst_sector,bad_fits);
+measurements_inst->Fill(inst_module-0.5,inst_sector-0.5);
+pmt_gain_1200_qe_inst->SetBinContent(inst_module,inst_sector,m_1200V_led1.gain_value*m_1200V_led1.qe_value);
 }
 }
 
@@ -886,7 +1044,7 @@ measurements_old->Draw("text same");
 c06->Print("Number_of_Measurements_old.png");
 c06->Close();
 
-/*TCanvas *c07 = new TCanvas("c07","Canvas",0,29,1200,800);
+TCanvas *c07 = new TCanvas("c07","Canvas",0,29,1200,800);
 gStyle->SetOptStat(0);
 gStyle->SetOptTitle(kFALSE);
 gStyle->SetPalette(1);
@@ -899,12 +1057,12 @@ gPad->SetRightMargin(0.20);
 gPad->SetTopMargin(0.01);
 gPad->SetFrameBorderMode(0);
 
-pmt_inv_ee_800_old->Draw("colz");
-pmt_inv_ee_800_old->Draw("text same");
-c07->Print("Inverse_Eletrical_Efficiency_800V_old.png");
+pmt_gain_1200_qe_old->Draw("colz");
+pmt_gain_1200_qe_old->Draw("text same");
+c07->Print("Gain_1200_qe_old.png");
 c07->Close();
 
-TCanvas *c08 = new TCanvas("c08","Canvas",0,29,1200,800);
+/*TCanvas *c08 = new TCanvas("c08","Canvas",0,29,1200,800);
 gStyle->SetOptStat(0);
 gStyle->SetOptTitle(kFALSE);
 gStyle->SetPalette(1);
@@ -920,26 +1078,7 @@ gPad->SetFrameBorderMode(0);
 pmt_inv_ee_1200_old->Draw("colz");
 pmt_inv_ee_1200_old->Draw("text same");
 c08->Print("Inverse_Eletrical_Efficiency_1200V_old.png");
-c08->Close();
-
-
-TCanvas *c09 = new TCanvas("c09","Canvas",0,29,1200,800);
-gStyle->SetOptStat(0);
-gStyle->SetOptTitle(kFALSE);
-gStyle->SetPalette(1);
-gStyle->SetPaintTextFormat("3.2g");
-gPad->SetFillColor(0);
-gPad->SetBorderMode(0);
-gPad->SetBorderSize(2);
-gPad->SetLeftMargin(0.10);
-gPad->SetRightMargin(0.20);
-gPad->SetTopMargin(0.01);
-gPad->SetFrameBorderMode(0);
-
-pmt_inv_gain_1400_old->Draw("colz");
-pmt_inv_gain_1400_old->Draw("text same");
-c09->Print("Inverse_Gain_1400V_old.png");
-c09->Close(); */
+c08->Close();*/
 
 TCanvas *c09 = new TCanvas("c09","Canvas",0,29,1200,800);
 gStyle->SetOptStat(0);
@@ -1083,7 +1222,7 @@ measurements_new->Draw("text same");
 c16->Print("Number_of_Measurements_new.png");
 c16->Close();
 
-/*TCanvas *c17 = new TCanvas("c17","Canvas",0,29,1200,800);
+TCanvas *c17 = new TCanvas("c17","Canvas",0,29,1200,800);
 gStyle->SetOptStat(0);
 gStyle->SetOptTitle(kFALSE);
 gStyle->SetPalette(1);
@@ -1096,12 +1235,12 @@ gPad->SetRightMargin(0.20);
 gPad->SetTopMargin(0.01);
 gPad->SetFrameBorderMode(0);
 
-pmt_inv_ee_800_new1->Draw("colz");
-pmt_inv_ee_800_new1->Draw("text same");
-c17->Print("Inverse_Eletrical_Efficiency_800V_new1.png");
+pmt_gain_1200_qe_new->Draw("colz");
+pmt_gain_1200_qe_new->Draw("text same");
+c17->Print("Gain_1200_qe_new.png");
 c17->Close();
 
-TCanvas *c18 = new TCanvas("c18","Canvas",0,29,1200,800);
+/* TCanvas *c18 = new TCanvas("c18","Canvas",0,29,1200,800);
 gStyle->SetOptStat(0);
 gStyle->SetOptTitle(kFALSE);
 gStyle->SetPalette(1);
@@ -1155,5 +1294,185 @@ pmt_bad_fits_new->Draw("colz");
 pmt_bad_fits_new->Draw("text same");
 c20->Print("Bad_fits_new.png");
 c20->Close();
+
+TCanvas *c21 = new TCanvas("c21","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_qe_800_inst->Draw("colz");
+pmt_qe_800_inst->Draw("text same");
+c21->Print("Quantum_Efficiency_800V_inst.png");
+c21->Close();
+
+TCanvas *c22 = new TCanvas("c22","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_qe_1200_inst->Draw("colz");
+pmt_qe_1200_inst->Draw("text same");
+c22->Print("Quantum_Efficiency_1200V_inst.png");
+c22->Close();
+
+TCanvas *c23 = new TCanvas("c23","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_gain_800_inst->Draw("colz");
+pmt_gain_800_inst->Draw("text same");
+c23->Print("Gain_800V_inst.png");
+c23->Close();
+
+TCanvas *c24 = new TCanvas("c24","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_gain_1200_inst->Draw("colz");
+pmt_gain_1200_inst->Draw("text same");
+c24->Print("Gain_1200V_inst.png");
+c24->Close();
+
+TCanvas *c25 = new TCanvas("c25","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_spikes_inst->Draw("colz");
+pmt_spikes_inst->Draw("text same");
+c25->Print("Number_of_Spikes_inst.png");
+c25->Close();
+
+TCanvas *c26 = new TCanvas("c26","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+measurements_inst->Draw("colz");
+measurements_inst->Draw("text same");
+c26->Print("Number_of_Measurements_inst.png");
+c26->Close();
+
+TCanvas *c27 = new TCanvas("c27","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_gain_1200_qe_inst->Draw("colz");
+pmt_gain_1200_qe_inst->Draw("text same");
+c27->Print("Gain_1200_qe_inst.png");
+c27->Close();
+
+/*TCanvas *c28 = new TCanvas("c28","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_inv_ee_1200_new1->Draw("colz");
+pmt_inv_ee_1200_new1->Draw("text same");
+c28->Print("Inverse_Eletrical_Efficiency_1200V_new1.png");
+c28->Close(); */
+
+
+TCanvas *c29 = new TCanvas("c29","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_ratio_inst->Draw("colz");
+pmt_ratio_inst->Draw("text same");
+c29->Print("Ratio_of_qe_between_led1_and_led3_inst.png");
+c29->Close();
+
+TCanvas *c30 = new TCanvas("c30","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_bad_fits_inst->Draw("colz");
+pmt_bad_fits_inst->Draw("text same");
+c30->Print("Bad_fits_inst.png");
+c30->Close();
+
 
 }

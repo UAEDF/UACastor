@@ -40,7 +40,7 @@ struct chi2 {
 	float c_1800V;
 };
 
-float chi2_threshold = 25.0;
+float chi2_threshold = 200.0;
 
 void spike_check(float point, std::vector<float> *vec_cath, int& spike)
 {

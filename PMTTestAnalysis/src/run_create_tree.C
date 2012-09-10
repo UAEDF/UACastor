@@ -4,7 +4,7 @@ void run_create_tree()
   //gROOT -> ProcessLine(".L LeakageSubtractor.C++");
   gROOT -> ProcessLine(".L create_tree.C++");
 
-string files_in[270];
+string files_in[310];
 
 //PMT_test_2012_old_group1.root
 files_in[0] = "../data/cpt_sf_CA1579_2012_05_12_15_32_59_mod.cpt"; //good
@@ -291,13 +291,72 @@ files_in[256] = "../data/cpt_sf_BA0397_2012_08_06_17_22_13_mod.cpt";
 files_in[257] = "../data/cpt_sf_BA0398_2012_08_07_11_04_21_mod.cpt";
 files_in[258] = "../data/cpt_sf_BA0400_2012_08_07_13_57_45_mod.cpt";
 files_in[259] = "../data/cpt_sf_BA0401_2012_08_07_18_29_35_mod.cpt";
-files_in[260] = "../data/_mod.cpt";
 
- int ini_file = 253;  // +1 wrt file 
- int end_file = 260;
+//PMT_test_2012_new_group7.root
+files_in[260] = "../data/cpt_sf_BA0376_2012_08_15_11_13_28_mod.cpt";
+files_in[261] = "../data/cpt_sf_BA0402_2012_08_15_14_04_31_mod.cpt";
+files_in[262] = "../data/cpt_sf_BA0403_2012_08_15_16_58_53_mod.cpt";
+files_in[263] = "../data/cpt_sf_BA0404_2012_08_16_10_33_17_mod.cpt";
+files_in[264] = "../data/cpt_sf_BA0405_2012_08_16_13_27_58_mod.cpt";
+files_in[265] = "../data/cpt_sf_BA0407_2012_08_16_16_20_37_mod.cpt";
+files_in[266] = "../data/cpt_sf_BA0408_2012_08_16_20_24_22_mod.cpt";
+files_in[267] = "../data/cpt_sf_BA0409_2012_08_17_09_42_26_mod.cpt";
+
+//PMT_test_2012_new_group8.root
+files_in[268] = "../data/cpt_sf_BA0411_2012_08_17_17_47_32_mod.cpt";
+files_in[269] = "../data/cpt_sf_BA0413_2012_08_18_15_36_31_mod.cpt";
+files_in[270] = "../data/cpt_sf_BA0422_2012_08_18_18_38_29_mod.cpt";
+files_in[271] = "../data/cpt_sf_BA0425_2012_08_18_21_57_29_mod.cpt";
+files_in[272] = "../data/cpt_sf_BA0426_2012_08_19_00_34_39_mod.cpt";
+files_in[273] = "../data/cpt_sf_BA0425_2012_08_19_12_30_02_mod.cpt";
+files_in[274] = "../data/cpt_sf_BA0427_2012_08_19_15_26_13_mod.cpt";
+files_in[275] = "../data/cpt_sf_BA0428_2012_08_19_18_29_19_mod.cpt";
+
+//PMT_test_2012_new_group9.root
+files_in[276] = "../data/cpt_sf_BA0431_2012_08_19_21_27_59_mod.cpt";
+files_in[277] = "../data/cpt_sf_BA0433_2012_08_20_11_23_15_mod.cpt";
+files_in[278] = "../data/cpt_sf_BA0435_2012_08_20_14_15_56_mod.cpt";
+files_in[279] = "../data/cpt_sf_BA0437_2012_08_20_17_12_54_mod.cpt";
+files_in[280] = "../data/cpt_sf_BA0438_2012_08_20_20_04_17_mod.cpt";
+files_in[281] = "../data/cpt_sf_BA0386_2012_08_21_11_26_01_mod.cpt";
+files_in[282] = "../data/cpt_sf_BA0392_2012_08_21_14_24_07_mod.cpt";
+files_in[283] = "../data/cpt_sf_BA0393_2012_08_21_20_19_18_mod.cpt";
+files_in[284] = "../data/cpt_sf_BA0411_2012_08_22_10_38_55_mod.cpt";
+files_in[285] = "../data/cpt_sf_BA0425_2012_08_22_16_35_33_mod.cpt";
+
+//PMT_test_2012_new_group10.root
+files_in[286] = "../data/cpt_sf_BA0433_2012_08_22_19_27_25_mod.cpt";
+files_in[287] = "../data/cpt_sf_BA0437_2012_08_23_10_28_54_mod.cpt";
+files_in[288] = "../data/cpt_sf_BA0438_2012_08_23_13_26_21_mod.cpt";
+files_in[289] = "../data/cpt_sf_BA0427_2012_08_24_18_17_16_mod.cpt";
+files_in[290] = "../data/cpt_sf_BA0420_2012_08_27_13_45_51_mod.cpt";
+files_in[291] = "../data/cpt_sf_BA0430_2012_08_27_16_46_38_mod.cpt";
+files_in[292] = "../data/cpt_sf_BA0434_2012_08_27_19_42_31_mod.cpt";
+files_in[293] = "../data/cpt_sf_BA0439_2012_08_28_11_21_16_mod.cpt";
+files_in[294] = "../data/cpt_sf_BA0440_2012_08_28_14_23_57_mod.cpt";
+files_in[295] = "../data/cpt_sf_BA0441_2012_08_28_17_14_47_mod.cpt";
+
+//PMT_test_2012_new_group11.root
+files_in[296] = "../data/cpt_sf_BA0443_2012_08_29_08_20_10_mod.cpt";
+files_in[297] = "../data/cpt_sf_BA0444_2012_08_29_11_11_32_mod.cpt";
+files_in[298] = "../data/cpt_sf_BA0444_2012_08_29_14_18_40_mod.cpt";
+files_in[299] = "../data/cpt_sf_BA0445_2012_08_29_17_24_05_mod.cpt";
+files_in[300] = "../data/cpt_sf_BA0446_2012_08_30_11_17_37_mod.cpt";
+files_in[301] = "../data/cpt_sf_BA0447_2012_08_30_14_32_42_mod.cpt";
+files_in[302] = "../data/cpt_sf_BA0448_2012_08_30_17_47_37_mod.cpt";
+files_in[303] = "../data/cpt_sf_BA0449_2012_08_31_08_17_27_mod.cpt";
+files_in[304] = "../data/cpt_sf_BA0451_2012_08_31_11_08_11_mod.cpt";
+files_in[305] = "../data/cpt_sf_BA0451_2012_08_31_13_31_01_mod.cpt";
+
+//PMT_test_2012_new_group12.root
+files_in[306] = "../data/_mod.cpt";
 
 
-  string tree_out = "PMT_test_2012_new_group6.root";
+ int ini_file = 297;  // +1 wrt file 
+ int end_file = 306;
+
+
+  string tree_out = "PMT_test_2012_new_group11.root";
 
   create_tree(files_in, ini_file, end_file, tree_out);
 }

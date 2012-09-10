@@ -387,6 +387,46 @@ if (sector == 11 and module == 2  and set == 2) { pmt = "BA0397"; }
 if (sector == 11 and module == 3  and set == 2) { pmt = "BA0398"; }
 if (sector == 11 and module == 4  and set == 2) { pmt = "BA0400"; }
 if (sector == 11 and module == 5  and set == 2) { pmt = "BA0401"; }
+if (sector == 15 and module == 1  and set == 2) { pmt = "BA0376"; }
+if (sector == 15 and module == 2  and set == 2) { pmt = "BA0402"; }
+if (sector == 15 and module == 3  and set == 2) { pmt = "BA0403"; }
+if (sector == 15 and module == 4  and set == 2) { pmt = "BA0404"; }
+if (sector == 15 and module == 5  and set == 2) { pmt = "BA0405"; }
+if (sector == 16 and module == 1  and set == 2) { pmt = "BA0407"; }
+if (sector == 16 and module == 2  and set == 2) { pmt = "BA0408"; }
+if (sector == 16 and module == 3  and set == 2) { pmt = "BA0409"; }
+if (sector == 16 and module == 4  and set == 2) { pmt = "BA0411"; }
+if (sector == 16 and module == 5  and set == 2) { pmt = "BA0413"; }
+if (sector == 17 and module == 1  and set == 2) { pmt = "BA0422"; }
+if (sector == 17 and module == 2  and set == 2) { pmt = "BA0425"; }
+if (sector == 17 and module == 3  and set == 2) { pmt = "BA0426"; }
+if (sector == 17 and module == 4  and set == 2) { pmt = "BA0427"; }
+if (sector == 17 and module == 5  and set == 2) { pmt = "BA0428"; }
+if (sector == 18 and module == 1  and set == 2) { pmt = "BA0431"; }
+if (sector == 18 and module == 2  and set == 2) { pmt = "BA0433"; }
+if (sector == 18 and module == 3  and set == 2) { pmt = "BA0435"; }
+if (sector == 18 and module == 4  and set == 2) { pmt = "BA0437"; }
+if (sector == 18 and module == 5  and set == 2) { pmt = "BA0438"; }
+if (sector == 19 and module == 1  and set == 2) { pmt = "BA0420"; }
+if (sector == 19 and module == 2  and set == 2) { pmt = "BA0430"; }
+if (sector == 19 and module == 3  and set == 2) { pmt = "BA0434"; }
+if (sector == 19 and module == 4  and set == 2) { pmt = "BA0439"; }
+if (sector == 19 and module == 5  and set == 2) { pmt = "BA0440"; }
+if (sector == 20 and module == 1  and set == 2) { pmt = "BA0441"; }
+if (sector == 20 and module == 2  and set == 2) { pmt = "BA0443"; }
+if (sector == 20 and module == 3  and set == 2) { pmt = "BA0443"; }
+if (sector == 20 and module == 4  and set == 2) { pmt = "BA0444"; }
+if (sector == 20 and module == 5  and set == 2) { pmt = "BA0445"; }
+if (sector == 21 and module == 1  and set == 2) { pmt = "BA0447"; }
+if (sector == 21 and module == 2  and set == 2) { pmt = "BA0448"; }
+if (sector == 21 and module == 3  and set == 2) { pmt = "BA0449"; }
+if (sector == 21 and module == 4  and set == 2) { pmt = "BA0451"; }
+if (sector == 21 and module == 5  and set == 2) { pmt = "BA0452"; }
+if (sector == 20 and module == 1  and set == 2) { pmt = "BA0453"; }
+if (sector == 20 and module == 2  and set == 2) { pmt = "BA0454"; }
+if (sector == 20 and module == 3  and set == 2) { pmt = "BA0455"; }
+if (sector == 20 and module == 4  and set == 2) { pmt = "BA0456"; }
+if (sector == 20 and module == 5  and set == 2) { pmt = "BA0457"; }
 
 if (pmt == "") { cout<<"Unknown PMT"<<endl; }
 
@@ -428,15 +468,15 @@ void read_tree(string *trees_in, int ini_file, int end_file)
   TH2F *measurements_new;
   TH2F *pmt_gain_1200_qe_new;
 
-  pmt_qe_800_new =  new TH2F("QE_800V_new","QE_800V_new;Row;Line", 5,0,5,14,0,14);
-  pmt_gain_800_new =  new TH2F("Gain_800V_new","Gain_800V_new;Row;Line", 5,0,5,14,0,14);
-  pmt_qe_1200_new =  new TH2F("QE_1200V_new","QE_1200V_new;Row;Line", 5,0,5,14,0,14);
-  pmt_gain_1200_new =  new TH2F("Gain_1200V_new","Gain_1200V_new;Row;Line", 5,0,5,14,0,14);
-  pmt_ratio_new =  new TH2F("Ratio_new","Ratio_new;Row;Line", 5,0,5,14,0,14);
-  pmt_spikes_new =  new TH2F("Number_of_spikes_new","number_of_spikes_new1;Row;Line", 5,0,5,14,0,14);
-  pmt_bad_fits_new =  new TH2F("Number_of_bad_fits_new","number_of_bad_fits_new1;Row;Line", 5,0,5,14,0,14);
-  measurements_new =  new TH2F("Number_of_measurements_new","number_of_measurements_new1;Row;Line", 5,0,5,14,0,14);
-  pmt_gain_1200_qe_new =  new TH2F("PMT_gain_1200V_times_QE_old","PMT_gain_1200V_times_QE_old;Row;Line", 5,0,5,14,0,14);
+  pmt_qe_800_new =  new TH2F("QE_800V_new","QE_800V_new;Row;Line", 5,0,5,20,0,20);
+  pmt_gain_800_new =  new TH2F("Gain_800V_new","Gain_800V_new;Row;Line", 5,0,5,20,0,20);
+  pmt_qe_1200_new =  new TH2F("QE_1200V_new","QE_1200V_new;Row;Line", 5,0,5,20,0,20);
+  pmt_gain_1200_new =  new TH2F("Gain_1200V_new","Gain_1200V_new;Row;Line", 5,0,5,20,0,20);
+  pmt_ratio_new =  new TH2F("Ratio_new","Ratio_new;Row;Line", 5,0,5,20,0,20);
+  pmt_spikes_new =  new TH2F("Number_of_spikes_new","number_of_spikes_new1;Row;Line", 5,0,5,20,0,20);
+  pmt_bad_fits_new =  new TH2F("Number_of_bad_fits_new","number_of_bad_fits_new1;Row;Line", 5,0,5,20,0,20);
+  measurements_new =  new TH2F("Number_of_measurements_new","number_of_measurements_new1;Row;Line", 5,0,5,20,0,20);
+  pmt_gain_1200_qe_new =  new TH2F("PMT_gain_1200V_times_QE_new","PMT_gain_1200V_times_QE_new;Row;Line", 5,0,5,20,0,20);
   
   TH2F *pmt_qe_800_inst;
   TH2F *pmt_gain_800_inst;

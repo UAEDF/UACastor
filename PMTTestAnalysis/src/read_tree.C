@@ -424,14 +424,14 @@ if (sector == 21 and module == 4  and set == 2) { pmt = "BA0451"; }
 if (sector == 21 and module == 5  and set == 2) { pmt = "BA0452"; }
 if (sector == 22 and module == 1  and set == 2) { pmt = "BA0453"; }
 if (sector == 22 and module == 2  and set == 2) { pmt = "BA0454"; }
-if (sector == 22 and module == 3  and set == 2) { pmt = "BA0456"; }
-if (sector == 22 and module == 4  and set == 2) { pmt = "BA0457"; }
-if (sector == 22 and module == 5  and set == 2) { pmt = "BA0458"; }
-if (sector == 23 and module == 1  and set == 2) { pmt = "BA0460"; }
-if (sector == 23 and module == 2  and set == 2) { pmt = "BA0461"; }
-if (sector == 23 and module == 3  and set == 2) { pmt = "BA0466"; }
-if (sector == 23 and module == 4  and set == 2) { pmt = "BA0472"; }
-if (sector == 23 and module == 5  and set == 2) { pmt = "BA04"; }
+if (sector == 22 and module == 3  and set == 2) { pmt = "BA0455"; }
+if (sector == 22 and module == 4  and set == 2) { pmt = "BA0456"; }
+if (sector == 22 and module == 5  and set == 2) { pmt = "BA0457"; }
+if (sector == 23 and module == 1  and set == 2) { pmt = "BA0458"; }
+if (sector == 23 and module == 2  and set == 2) { pmt = "BA0460"; }
+if (sector == 23 and module == 3  and set == 2) { pmt = "BA0461"; }
+if (sector == 23 and module == 4  and set == 2) { pmt = "BA0466"; }
+if (sector == 23 and module == 5  and set == 2) { pmt = "BA0472"; }
 
 if (pmt == "") { cout<<"Unknown PMT"<<endl; }
 

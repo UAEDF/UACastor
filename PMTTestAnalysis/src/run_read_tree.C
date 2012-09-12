@@ -25,12 +25,13 @@ trees_in[13] = "PMT_test_2012_new_group8.root"; // measurements 269 to 276 - don
 trees_in[14] = "PMT_test_2012_new_group9.root"; // measurements 277 to 286 - running
 trees_in[15] = "PMT_test_2012_new_group10.root"; // measurements 287 to 296 - running
 trees_in[16] = "PMT_test_2012_new_group11.root"; // measurements 297 to 306 - running
+trees_in[17] = "PMT_test_2012_new_group12.root"; // measurements 307 to 317 - running
 
 //test pmt
-trees_in[17] = "PMT_test_2012_testpmt.root"; // measurement 174 to 175 - done
+trees_in[18] = "PMT_test_2012_testpmt.root"; // measurement 174 to 175 - done
 
-int ini_file = 15;
-int end_file = 15;
+int ini_file = 1;
+int end_file = 19;
 
 read_tree(trees_in, ini_file, end_file);
 }

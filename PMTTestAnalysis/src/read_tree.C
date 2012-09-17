@@ -414,9 +414,9 @@ if (sector == 19 and module == 4  and set == 2) { pmt = "BA0439"; }
 if (sector == 19 and module == 5  and set == 2) { pmt = "BA0440"; }
 if (sector == 20 and module == 1  and set == 2) { pmt = "BA0441"; }
 if (sector == 20 and module == 2  and set == 2) { pmt = "BA0443"; }
-if (sector == 20 and module == 3  and set == 2) { pmt = "BA0443"; }
-if (sector == 20 and module == 4  and set == 2) { pmt = "BA0444"; }
-if (sector == 20 and module == 5  and set == 2) { pmt = "BA0445"; }
+if (sector == 20 and module == 3  and set == 2) { pmt = "BA0444"; }
+if (sector == 20 and module == 4  and set == 2) { pmt = "BA0445"; }
+if (sector == 20 and module == 5  and set == 2) { pmt = "BA0446"; }
 if (sector == 21 and module == 1  and set == 2) { pmt = "BA0447"; }
 if (sector == 21 and module == 2  and set == 2) { pmt = "BA0448"; }
 if (sector == 21 and module == 3  and set == 2) { pmt = "BA0449"; }

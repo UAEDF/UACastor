@@ -473,15 +473,15 @@ void read_tree(string *trees_in, int ini_file, int end_file)
   TH2F *measurements_new;
   TH2F *pmt_gain_1200_qe_new;
 
-  pmt_qe_800_new =  new TH2F("QE_800V_new","QE_800V_new;Row;Line", 5,0,5,20,0,20);
-  pmt_gain_800_new =  new TH2F("Gain_800V_new","Gain_800V_new;Row;Line", 5,0,5,20,0,20);
-  pmt_qe_1200_new =  new TH2F("QE_1200V_new","QE_1200V_new;Row;Line", 5,0,5,20,0,20);
-  pmt_gain_1200_new =  new TH2F("Gain_1200V_new","Gain_1200V_new;Row;Line", 5,0,5,20,0,20);
-  pmt_ratio_new =  new TH2F("Ratio_new","Ratio_new;Row;Line", 5,0,5,20,0,20);
-  pmt_spikes_new =  new TH2F("Number_of_spikes_new","number_of_spikes_new1;Row;Line", 5,0,5,20,0,20);
-  pmt_bad_fits_new =  new TH2F("Number_of_bad_fits_new","number_of_bad_fits_new1;Row;Line", 5,0,5,20,0,20);
-  measurements_new =  new TH2F("Number_of_measurements_new","number_of_measurements_new1;Row;Line", 5,0,5,20,0,20);
-  pmt_gain_1200_qe_new =  new TH2F("PMT_gain_1200V_times_QE_new","PMT_gain_1200V_times_QE_new;Row;Line", 5,0,5,20,0,20);
+  pmt_qe_800_new =  new TH2F("QE_800V_new","QE_800V_new;Row;Line", 5,0,5,23,0,23);
+  pmt_gain_800_new =  new TH2F("Gain_800V_new","Gain_800V_new;Row;Line", 5,0,5,23,0,23);
+  pmt_qe_1200_new =  new TH2F("QE_1200V_new","QE_1200V_new;Row;Line", 5,0,5,23,0,23);
+  pmt_gain_1200_new =  new TH2F("Gain_1200V_new","Gain_1200V_new;Row;Line", 5,0,5,23,0,23);
+  pmt_ratio_new =  new TH2F("Ratio_new","Ratio_new;Row;Line", 5,0,5,23,0,23);
+  pmt_spikes_new =  new TH2F("Number_of_spikes_new","number_of_spikes_new1;Row;Line", 5,0,5,23,0,23);
+  pmt_bad_fits_new =  new TH2F("Number_of_bad_fits_new","number_of_bad_fits_new1;Row;Line", 5,0,5,23,0,23);
+  measurements_new =  new TH2F("Number_of_measurements_new","number_of_measurements_new1;Row;Line", 5,0,5,23,0,23);
+  pmt_gain_1200_qe_new =  new TH2F("PMT_gain_1200V_times_QE_new","PMT_gain_1200V_times_QE_new;Row;Line", 5,0,5,23,0,23);
   
   TH2F *pmt_qe_800_inst;
   TH2F *pmt_gain_800_inst;

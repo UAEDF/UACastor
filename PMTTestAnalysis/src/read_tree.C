@@ -347,7 +347,7 @@ if (sector == 9  and module == 2  and set == 2) { pmt = "BA0319"; }
 if (sector == 9  and module == 3  and set == 2) { pmt = "BA0321"; }
 if (sector == 9  and module == 4  and set == 2) { pmt = "BA0322"; }
 if (sector == 9  and module == 5  and set == 2) { pmt = "BA0324"; }
-if (sector == 8  and module == 1  and set == 2) { pmt = "BA0325"; }
+if (sector == 8  and module == 1  and set == 2) { pmt = "BA0172"; }
 if (sector == 8  and module == 2  and set == 2) { pmt = "BA0326"; }
 if (sector == 8  and module == 3  and set == 2) { pmt = "BA0327"; }
 if (sector == 8  and module == 4  and set == 2) { pmt = "BA0329"; }

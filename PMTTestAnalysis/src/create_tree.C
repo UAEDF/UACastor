@@ -277,7 +277,7 @@ if (pmt == "BA0319") { sector = 9;  module = 2;  set = 2; }
 if (pmt == "BA0321") { sector = 9;  module = 3;  set = 2; }
 if (pmt == "BA0322") { sector = 9;  module = 4;  set = 2; }
 if (pmt == "BA0324") { sector = 9;  module = 5;  set = 2; }
-if (pmt == "BA0325") { sector = 8;  module = 1;  set = 2; }
+if (pmt == "BA0172") { sector = 8;  module = 1;  set = 2; }
 if (pmt == "BA0326") { sector = 8;  module = 2;  set = 2; }
 if (pmt == "BA0327") { sector = 8;  module = 3;  set = 2; }
 if (pmt == "BA0329") { sector = 8;  module = 4;  set = 2; }

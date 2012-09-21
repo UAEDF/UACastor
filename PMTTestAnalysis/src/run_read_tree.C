@@ -22,16 +22,17 @@ trees_in[10] = "PMT_test_2012_new_group5.root"; // measurements 241 to 252 - don
 trees_in[11] = "PMT_test_2012_new_group6.root"; // measurements 253 to 260 - done
 trees_in[12] = "PMT_test_2012_new_group7.root"; // measurements 261 to 268 - done
 trees_in[13] = "PMT_test_2012_new_group8.root"; // measurements 269 to 276 - done
-trees_in[14] = "PMT_test_2012_new_group9.root"; // measurements 277 to 286 - running
-trees_in[15] = "PMT_test_2012_new_group10.root"; // measurements 287 to 296 - running
-trees_in[16] = "PMT_test_2012_new_group11.root"; // measurements 297 to 306 - running
-trees_in[17] = "PMT_test_2012_new_group12.root"; // measurements 307 to 317 - running
+trees_in[14] = "PMT_test_2012_new_group9.root"; // measurements 277 to 286 - done
+trees_in[15] = "PMT_test_2012_new_group10.root"; // measurements 287 to 296 - done
+trees_in[16] = "PMT_test_2012_new_group11.root"; // measurements 297 to 306 - done
+trees_in[17] = "PMT_test_2012_new_group12.root"; // measurements 307 to 317 - done
+trees_in[18] = "PMT_test_2012_new_group13.root"; // measurements 318 to 323 - running
 
 //test pmt
-trees_in[18] = "PMT_test_2012_testpmt.root"; // measurement 174 to 175 - done
+trees_in[19] = "PMT_test_2012_testpmt.root"; // measurement 174 to 175 - done
 
 int ini_file = 1;
-int end_file = 19;
+int end_file = 20;
 
 read_tree(trees_in, ini_file, end_file);
 }

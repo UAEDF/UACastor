@@ -31,7 +31,7 @@ struct measurement {
 	float qe_error;
 };
 
-void set_inst_code(string pmt, int& module, int& sector)
+void set_inst_code(string pmt, int& module, int& sector, double& gain1200, double& qe1200)
 {
 
 if ( pmt == "BA0364" ) { sector = 5;  module = 4; }
@@ -65,7 +65,7 @@ if ( pmt == "BA0327" ) { sector = 8;  module = 3; }
 if ( pmt == "BA0169" ) { sector = 9;  module = 3; }
 if ( pmt == "BA0329" ) { sector = 10; module = 3; }
 if ( pmt == "BA0300" ) { sector = 11; module = 3; }
-if ( pmt == "BA0352" ) { sector = 12; module = 3; }
+if ( pmt == "BA0352" ) { sector = 12; module = 3; gain1200 = 18680.0;}
 if ( pmt == "BA0311" ) { sector = 5;  module = 5; }
 if ( pmt == "BA0373" ) { sector = 6;  module = 5; }
 if ( pmt == "BA0374" ) { sector = 7;  module = 5; }
@@ -142,6 +142,54 @@ if ( pmt == "CA0749" ) { sector = 2;  module = 11; }
 if ( pmt == "CA1527" ) { sector = 4;  module = 11; }
 if ( pmt == "CA1444" ) { sector = 5;  module = 11; }
 if ( pmt == "CA0043" ) { sector = 7;  module = 11; }
+if ( pmt == "BA0393" ) { sector = 1;  module = 1; }
+if ( pmt == "BA0392" ) { sector = 2;  module = 1; gain1200 = 28916; qe1200 = 22.2e-6; }
+if ( pmt == "BA0398" ) { sector = 3;  module = 1; }
+if ( pmt == "BA0433" ) { sector = 4;  module = 1; }
+if ( pmt == "BA0404" ) { sector = 13; module = 1; }
+if ( pmt == "BA0413" ) { sector = 14; module = 1; }
+if ( pmt == "BA0446" ) { sector = 15; module = 1; }
+if ( pmt == "BA0451" ) { sector = 16; module = 1; }
+if ( pmt == "BA0388" ) { sector = 1;  module = 2; }
+if ( pmt == "BA0408" ) { sector = 2;  module = 2; }
+if ( pmt == "BA0411" ) { sector = 3;  module = 2; }
+if ( pmt == "BA0452" ) { sector = 4;  module = 2; gain1200 = 30056.0; qe1200 = 24.2e-6; }
+if ( pmt == "BA0456" ) { sector = 13; module = 2; }
+if ( pmt == "BA0387" ) { sector = 14; module = 2; }
+if ( pmt == "BA0381" ) { sector = 15; module = 2; }
+if ( pmt == "BA0460" ) { sector = 16; module = 2; }
+if ( pmt == "BA0457" ) { sector = 1;  module = 3; }
+if ( pmt == "BA0379" ) { sector = 2;  module = 3; }
+if ( pmt == "BA0461" ) { sector = 3;  module = 3; }
+if ( pmt == "BA0384" ) { sector = 4;  module = 3; }
+if ( pmt == "BA0443" ) { sector = 13; module = 3; }
+if ( pmt == "BA0407" ) { sector = 14; module = 3; }
+if ( pmt == "BA0396" ) { sector = 15; module = 3; }
+if ( pmt == "BA0444" ) { sector = 16; module = 3; }
+if ( pmt == "BA0401" ) { sector = 1;  module = 4; }
+if ( pmt == "BA0425" ) { sector = 2;  module = 4; gain1200 = 38943.0; qe1200 = 22.9e-6; }
+if ( pmt == "BA0458" ) { sector = 3;  module = 4; }
+if ( pmt == "BA0449" ) { sector = 4;  module = 4; }
+if ( pmt == "BA0447" ) { sector = 13; module = 4; }
+if ( pmt == "BA0367" ) { sector = 14; module = 4; }
+if ( pmt == "BA0430" ) { sector = 15; module = 4; }
+if ( pmt == "BA0409" ) { sector = 16; module = 4; }
+if ( pmt == "BA0376" ) { sector = 1;  module = 5; }
+if ( pmt == "BA0453" ) { sector = 2;  module = 5; }
+if ( pmt == "BA0440" ) { sector = 3;  module = 5; gain1200 = 19701.0; qe1200 = 20.1e-6; }
+if ( pmt == "BA0326" ) { sector = 4;  module = 5; }
+if ( pmt == "BA0455" ) { sector = 13; module = 5; }
+if ( pmt == "BA0402" ) { sector = 14; module = 5; }
+if ( pmt == "BA0439" ) { sector = 15; module = 5; gain1200 = 21506.0; qe1200 = 17.7e-6; }
+if ( pmt == "BA0377" ) { sector = 16; module = 5; }
+if ( pmt == "BA0441" ) { sector = 1;  module = 6; qe1200 = 19.1e-6;}
+if ( pmt == "BA0472" ) { sector = 2;  module = 6; }
+if ( pmt == "BA0386" ) { sector = 3;  module = 6; }
+if ( pmt == "BA0454" ) { sector = 4;  module = 6; }
+if ( pmt == "BA0372" ) { sector = 13; module = 6; gain1200 = 9427; }
+if ( pmt == "BA0438" ) { sector = 14; module = 6; gain1200 = 9345; }
+if ( pmt == "BA0351" ) { sector = 15; module = 6; gain1200 = 8840; }
+if ( pmt == "BA0434" ) { sector = 16; module = 6; gain1200 = 12941; }
 }
 
 void set_code(int module, int sector, int set, string& pmt)
@@ -530,6 +578,7 @@ std::vector<float> *cath, *cath_ori, *anode, *ref, *led, *hv, *time;
 int total_spikes, bad_fits, entries, module, sector, set;
 
 int inst_module, inst_sector;
+double inst_gain1200, inst_qe1200;
 
 measurement m_800V_led1;
 measurement m_800V_led2;
@@ -647,9 +696,11 @@ tree->GetEvent(i);
 string pmt = "";
 inst_module = 0;
 inst_sector = 0;
+inst_gain1200 = 0.0;
+inst_qe1200 = 0.0;
 //cout << "set code" << endl;
 set_code(module, sector, set, pmt);
-set_inst_code(pmt, inst_module, inst_sector);
+set_inst_code(pmt, inst_module, inst_sector, inst_gain1200, inst_qe1200);
 //cout << "output" << endl;
 
 ratio_800V = 0.0;
@@ -969,15 +1020,44 @@ pmt_gain_1200_qe_new->SetBinContent(module,sector,m_1200V_led1.gain_value*m_1200
 if (inst_module > 0 and inst_sector > 0)
 {
 pmt_gain_800_inst->SetBinContent(inst_module,inst_sector,m_800V_led1.gain_value);
+if (inst_gain1200 > 0)
+{
+pmt_gain_1200_inst->SetBinContent(inst_module,inst_sector,inst_gain1200);
+}
+else
+{
 pmt_gain_1200_inst->SetBinContent(inst_module,inst_sector,m_1200V_led1.gain_value);
+}
 pmt_qe_800_inst->SetBinContent(inst_module,inst_sector,m_800V_led1.qe_value);
+if (inst_qe1200 > 0)
+{
+pmt_qe_1200_inst->SetBinContent(inst_module,inst_sector,inst_qe1200);
+}
+else
+{
 pmt_qe_1200_inst->SetBinContent(inst_module,inst_sector,m_1200V_led1.qe_value);
+}
 if (ratio_800V > 0.0) { pmt_ratio_inst->SetBinContent(inst_module,inst_sector,ratio_800V); }
 if (ratio_1200V > 0.0) { pmt_ratio_inst->SetBinContent(inst_module,inst_sector,ratio_1200V); }
 pmt_spikes_inst->SetBinContent(inst_module,inst_sector,total_spikes);
 pmt_bad_fits_inst->SetBinContent(inst_module,inst_sector,bad_fits);
 measurements_inst->Fill(inst_module-0.5,inst_sector-0.5);
+if (inst_gain1200 > 0 and inst_qe1200 > 0)
+{
+pmt_gain_1200_qe_inst->SetBinContent(inst_module,inst_sector,inst_gain1200*inst_qe1200);
+}
+if (inst_gain1200 == 0.0 and inst_qe1200 == 0.0)
+{
 pmt_gain_1200_qe_inst->SetBinContent(inst_module,inst_sector,m_1200V_led1.gain_value*m_1200V_led1.qe_value);
+}
+if (inst_gain1200 > 0.0 and inst_qe1200 == 0.0)
+{
+pmt_gain_1200_qe_inst->SetBinContent(inst_module,inst_sector,inst_gain1200*m_1200V_led1.qe_value);
+}
+if (inst_gain1200 == 0.0 and inst_qe1200 > 0.0)
+{
+pmt_gain_1200_qe_inst->SetBinContent(inst_module,inst_sector,m_1200V_led1.gain_value*inst_qe1200);
+}
 }
 }
 

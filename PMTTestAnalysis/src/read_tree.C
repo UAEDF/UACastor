@@ -33,15 +33,10 @@ struct measurement {
 
 void set_inst_code(string pmt, int& module, int& sector, double& gain1200, double& qe1200)
 {
-
-if ( pmt == "BA0364" ) { sector = 5;  module = 4; }
-if ( pmt == "BA0264" ) { sector = 6;  module = 4; }
-if ( pmt == "BA0360" ) { sector = 7;  module = 4; }
-if ( pmt == "BA0288" ) { sector = 8;  module = 4; }
-if ( pmt == "BA    " ) { sector = 9;  module = 4; }
-if ( pmt == "BA0339" ) { sector = 10; module = 4; }
-if ( pmt == "BA0355" ) { sector = 11; module = 4; }
-if ( pmt == "BA0265" ) { sector = 12; module = 4; }
+if ( pmt == "BA0393" ) { sector = 1;  module = 1; }
+if ( pmt == "BA0392" ) { sector = 2;  module = 1; gain1200 = 28916; qe1200 = 22.2e-6; }
+if ( pmt == "BA0398" ) { sector = 3;  module = 1; }
+if ( pmt == "BA0433" ) { sector = 4;  module = 1; }
 if ( pmt == "BA0322" ) { sector = 5;  module = 1; }
 if ( pmt == "BA0336" ) { sector = 6;  module = 1; }
 if ( pmt == "BA0314" ) { sector = 7;  module = 1; }
@@ -50,6 +45,14 @@ if ( pmt == "BA0297" ) { sector = 9;  module = 1; }
 if ( pmt == "BA0337" ) { sector = 10; module = 1; }
 if ( pmt == "BA0342" ) { sector = 11; module = 1; }
 if ( pmt == "BA0353" ) { sector = 12; module = 1; }
+if ( pmt == "BA0404" ) { sector = 13; module = 1; }
+if ( pmt == "BA0413" ) { sector = 14; module = 1; }
+if ( pmt == "BA0446" ) { sector = 15; module = 1; }
+if ( pmt == "BA0451" ) { sector = 16; module = 1; }
+if ( pmt == "BA0388" ) { sector = 1;  module = 2; }
+if ( pmt == "BA0408" ) { sector = 2;  module = 2; }
+if ( pmt == "BA0411" ) { sector = 3;  module = 2; }
+if ( pmt == "BA0452" ) { sector = 4;  module = 2; gain1200 = 30056.0; qe1200 = 24.2e-6; }
 if ( pmt == "BA0287" ) { sector = 5;  module = 2; }
 if ( pmt == "BA0317" ) { sector = 6;  module = 2; }
 if ( pmt == "BA0263" ) { sector = 7;  module = 2; }
@@ -58,6 +61,14 @@ if ( pmt == "BA0291" ) { sector = 9;  module = 2; }
 if ( pmt == "BA0303" ) { sector = 10; module = 2; }
 if ( pmt == "BA0361" ) { sector = 11; module = 2; }
 if ( pmt == "BA0304" ) { sector = 12; module = 2; }
+if ( pmt == "BA0456" ) { sector = 13; module = 2; }
+if ( pmt == "BA0387" ) { sector = 14; module = 2; }
+if ( pmt == "BA0381" ) { sector = 15; module = 2; }
+if ( pmt == "BA0460" ) { sector = 16; module = 2; }
+if ( pmt == "BA0457" ) { sector = 1;  module = 3; }
+if ( pmt == "BA0379" ) { sector = 2;  module = 3; }
+if ( pmt == "BA0461" ) { sector = 3;  module = 3; }
+if ( pmt == "BA0384" ) { sector = 4;  module = 3; }
 if ( pmt == "BA0305" ) { sector = 5;  module = 3; }
 if ( pmt == "BA0349" ) { sector = 6;  module = 3; }
 if ( pmt == "BA0274" ) { sector = 7;  module = 3; }
@@ -66,6 +77,30 @@ if ( pmt == "BA0169" ) { sector = 9;  module = 3; }
 if ( pmt == "BA0329" ) { sector = 10; module = 3; }
 if ( pmt == "BA0300" ) { sector = 11; module = 3; }
 if ( pmt == "BA0352" ) { sector = 12; module = 3; gain1200 = 18680.0;}
+if ( pmt == "BA0443" ) { sector = 13; module = 3; }
+if ( pmt == "BA0407" ) { sector = 14; module = 3; }
+if ( pmt == "BA0396" ) { sector = 15; module = 3; }
+if ( pmt == "BA0444" ) { sector = 16; module = 3; }
+if ( pmt == "BA0401" ) { sector = 1;  module = 4; }
+if ( pmt == "BA0425" ) { sector = 2;  module = 4; gain1200 = 38943.0; qe1200 = 22.9e-6; }
+if ( pmt == "BA0458" ) { sector = 3;  module = 4; }
+if ( pmt == "BA0449" ) { sector = 4;  module = 4; }
+if ( pmt == "BA0364" ) { sector = 5;  module = 4; }
+if ( pmt == "BA0264" ) { sector = 6;  module = 4; }
+if ( pmt == "BA0360" ) { sector = 7;  module = 4; }
+if ( pmt == "BA0288" ) { sector = 8;  module = 4; }
+if ( pmt == "BA    " ) { sector = 9;  module = 4; }
+if ( pmt == "BA0339" ) { sector = 10; module = 4; }
+if ( pmt == "BA0355" ) { sector = 11; module = 4; }
+if ( pmt == "BA0265" ) { sector = 12; module = 4; }
+if ( pmt == "BA0447" ) { sector = 13; module = 4; }
+if ( pmt == "BA0367" ) { sector = 14; module = 4; }
+if ( pmt == "BA0430" ) { sector = 15; module = 4; }
+if ( pmt == "BA0409" ) { sector = 16; module = 4; }
+if ( pmt == "BA0376" ) { sector = 1;  module = 5; }
+if ( pmt == "BA0453" ) { sector = 2;  module = 5; }
+if ( pmt == "BA0440" ) { sector = 3;  module = 5; gain1200 = 19701.0; qe1200 = 20.1e-6; }
+if ( pmt == "BA0326" ) { sector = 4;  module = 5; }
 if ( pmt == "BA0311" ) { sector = 5;  module = 5; }
 if ( pmt == "BA0373" ) { sector = 6;  module = 5; }
 if ( pmt == "BA0374" ) { sector = 7;  module = 5; }
@@ -74,6 +109,26 @@ if ( pmt == "BA0279" ) { sector = 9;  module = 5; }
 if ( pmt == "BA0307" ) { sector = 10; module = 5; }
 if ( pmt == "BA0318" ) { sector = 11; module = 5; }
 if ( pmt == "BA0170" ) { sector = 12; module = 5; }
+if ( pmt == "BA0455" ) { sector = 13; module = 5; }
+if ( pmt == "BA0402" ) { sector = 14; module = 5; }
+if ( pmt == "BA0439" ) { sector = 15; module = 5; gain1200 = 21506.0; qe1200 = 17.7e-6; }
+if ( pmt == "BA0377" ) { sector = 16; module = 5; }
+if ( pmt == "BA0441" ) { sector = 1;  module = 6; qe1200 = 19.1e-6;}
+if ( pmt == "BA0472" ) { sector = 2;  module = 6; }
+if ( pmt == "BA0386" ) { sector = 3;  module = 6; }
+if ( pmt == "BA0454" ) { sector = 4;  module = 6; }
+if ( pmt == "BA0184" ) { sector = 5;  module = 6; }
+if ( pmt == "BA0182" ) { sector = 6;  module = 6; }
+if ( pmt == "BA0390" ) { sector = 7;  module = 6; }
+if ( pmt == "BA0405" ) { sector = 8;  module = 6; }
+if ( pmt == "BA0437" ) { sector = 9;  module = 6; }
+if ( pmt == "BA0435" ) { sector = 10; module = 6; }
+if ( pmt == "BA0354" ) { sector = 11; module = 6; }
+if ( pmt == "BA0428" ) { sector = 12; module = 6; }
+if ( pmt == "BA0372" ) { sector = 13; module = 6; gain1200 = 9427; }
+if ( pmt == "BA0438" ) { sector = 14; module = 6; gain1200 = 9345; }
+if ( pmt == "BA0351" ) { sector = 15; module = 6; gain1200 = 8840; }
+if ( pmt == "BA0434" ) { sector = 16; module = 6; gain1200 = 12941; }
 if ( pmt == "CA1387" ) { sector = 1;  module = 7; }
 if ( pmt == "CA0292" ) { sector = 2;  module = 7; }
 if ( pmt == "CA1490" ) { sector = 3;  module = 7; }
@@ -142,54 +197,6 @@ if ( pmt == "CA0749" ) { sector = 2;  module = 11; }
 if ( pmt == "CA1527" ) { sector = 4;  module = 11; }
 if ( pmt == "CA1444" ) { sector = 5;  module = 11; }
 if ( pmt == "CA0043" ) { sector = 7;  module = 11; }
-if ( pmt == "BA0393" ) { sector = 1;  module = 1; }
-if ( pmt == "BA0392" ) { sector = 2;  module = 1; gain1200 = 28916; qe1200 = 22.2e-6; }
-if ( pmt == "BA0398" ) { sector = 3;  module = 1; }
-if ( pmt == "BA0433" ) { sector = 4;  module = 1; }
-if ( pmt == "BA0404" ) { sector = 13; module = 1; }
-if ( pmt == "BA0413" ) { sector = 14; module = 1; }
-if ( pmt == "BA0446" ) { sector = 15; module = 1; }
-if ( pmt == "BA0451" ) { sector = 16; module = 1; }
-if ( pmt == "BA0388" ) { sector = 1;  module = 2; }
-if ( pmt == "BA0408" ) { sector = 2;  module = 2; }
-if ( pmt == "BA0411" ) { sector = 3;  module = 2; }
-if ( pmt == "BA0452" ) { sector = 4;  module = 2; gain1200 = 30056.0; qe1200 = 24.2e-6; }
-if ( pmt == "BA0456" ) { sector = 13; module = 2; }
-if ( pmt == "BA0387" ) { sector = 14; module = 2; }
-if ( pmt == "BA0381" ) { sector = 15; module = 2; }
-if ( pmt == "BA0460" ) { sector = 16; module = 2; }
-if ( pmt == "BA0457" ) { sector = 1;  module = 3; }
-if ( pmt == "BA0379" ) { sector = 2;  module = 3; }
-if ( pmt == "BA0461" ) { sector = 3;  module = 3; }
-if ( pmt == "BA0384" ) { sector = 4;  module = 3; }
-if ( pmt == "BA0443" ) { sector = 13; module = 3; }
-if ( pmt == "BA0407" ) { sector = 14; module = 3; }
-if ( pmt == "BA0396" ) { sector = 15; module = 3; }
-if ( pmt == "BA0444" ) { sector = 16; module = 3; }
-if ( pmt == "BA0401" ) { sector = 1;  module = 4; }
-if ( pmt == "BA0425" ) { sector = 2;  module = 4; gain1200 = 38943.0; qe1200 = 22.9e-6; }
-if ( pmt == "BA0458" ) { sector = 3;  module = 4; }
-if ( pmt == "BA0449" ) { sector = 4;  module = 4; }
-if ( pmt == "BA0447" ) { sector = 13; module = 4; }
-if ( pmt == "BA0367" ) { sector = 14; module = 4; }
-if ( pmt == "BA0430" ) { sector = 15; module = 4; }
-if ( pmt == "BA0409" ) { sector = 16; module = 4; }
-if ( pmt == "BA0376" ) { sector = 1;  module = 5; }
-if ( pmt == "BA0453" ) { sector = 2;  module = 5; }
-if ( pmt == "BA0440" ) { sector = 3;  module = 5; gain1200 = 19701.0; qe1200 = 20.1e-6; }
-if ( pmt == "BA0326" ) { sector = 4;  module = 5; }
-if ( pmt == "BA0455" ) { sector = 13; module = 5; }
-if ( pmt == "BA0402" ) { sector = 14; module = 5; }
-if ( pmt == "BA0439" ) { sector = 15; module = 5; gain1200 = 21506.0; qe1200 = 17.7e-6; }
-if ( pmt == "BA0377" ) { sector = 16; module = 5; }
-if ( pmt == "BA0441" ) { sector = 1;  module = 6; qe1200 = 19.1e-6;}
-if ( pmt == "BA0472" ) { sector = 2;  module = 6; }
-if ( pmt == "BA0386" ) { sector = 3;  module = 6; }
-if ( pmt == "BA0454" ) { sector = 4;  module = 6; }
-if ( pmt == "BA0372" ) { sector = 13; module = 6; gain1200 = 9427; }
-if ( pmt == "BA0438" ) { sector = 14; module = 6; gain1200 = 9345; }
-if ( pmt == "BA0351" ) { sector = 15; module = 6; gain1200 = 8840; }
-if ( pmt == "BA0434" ) { sector = 16; module = 6; gain1200 = 12941; }
 }
 
 void set_code(int module, int sector, int set, string& pmt)

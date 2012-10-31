@@ -1697,7 +1697,7 @@ gPad->SetFrameBorderMode(0);
 //old_gain->Print();
 
 cout << "Drawning new values for sector " << i << "..." << endl;
-new_gain->SetTitle("Commisioning Gain for 1200V");
+new_gain->SetTitle("Commisioning Gain for 1200V;Gain;Module");
 new_gain->SetMarkerColor(4);
 new_gain->SetMarkerStyle(21);
 new_gain->SetMinimum(0);

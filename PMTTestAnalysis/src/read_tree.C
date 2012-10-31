@@ -35,13 +35,14 @@ struct measurement {
 };
 
 
-void read_newgain(TGraphErrors *s_gain, int sec, int hv)
+TGraphErrors *read_newgain(int sec, int hv)
 {
 // By Samantha Dooling
+// Changed by Pedro Cipriano
 //==============
 //    get the root files
 //==============
-
+TGraphErrors *s_gain;
 char strRootFile[255]; char * RootFile = NULL;
 sprintf(strRootFile,"sec%d_%d.root",sec,hv );
 RootFile = strRootFile;
@@ -57,24 +58,26 @@ f[0] = new TFile(filesdir + RootFile);
 
 //_s_gain[0] = (TGraphErrors*) f[0]->Get("gr_g;1");
 s_gain = (TGraphErrors*) f[0]->Get("gr_g;1");
+return s_gain;
 }
 
-void get_gain_sector(TGraphErrors *graph, double *gain, double *egain, int sec)
+TGraphErrors *get_gain_sector(double *gain, double *egain, int sec)
 {
+TGraphErrors *graph;
 int n = 14;
 double x[n], y[n], ex[n], ey[n];
 
-for (int i=1; i <= 14; i++)
+for (int i=0; i < 14; i++)
 {
-x[i] = i;
+x[i] = i + 1;
 ex[i] = 0;
-y[i] = gain[(i-1)*14 + (sec-1)];
-ey[i] = egain[(i-1)*14 + (sec-1)];
-cout << "Sector : " << sec << " Module : " << i << "  Gain = " << y[i] << " (" << ey[i] << ")" << endl;
+y[i] = gain[(i)*14 + (sec-1)];
+ey[i] = egain[(i)*14 + (sec-1)];
+//cout << "Sector : " << sec << " Module : " << i << "  Gain = " << y[i] << " (" << ey[i] << ")" << endl;
 }
 
 graph = new TGraphErrors(n,x,y,ex,ey);
-
+return graph;
 }
 
 void set_inst_code(string pmt, int& module, int& sector, double& gain1200, double& qe1200)
@@ -1085,7 +1088,7 @@ if (inst_module > 0 and inst_sector > 0)
 {
 pmt_gain_800_inst->SetBinContent(inst_module,inst_sector,m_800V_led1.gain_value);
 egain_1200[(inst_module-1)*14 + (inst_sector-1)] = m_1200V_led1.gain_error;
-if (inst_gain1200 > 0)
+if (inst_gain1200 > 0.0)
 {
 pmt_gain_1200_inst->SetBinContent(inst_module,inst_sector,inst_gain1200);
 gain_1200[(inst_module-1)*14 + (inst_sector-1)] = inst_gain1200;
@@ -1096,7 +1099,7 @@ pmt_gain_1200_inst->SetBinContent(inst_module,inst_sector,m_1200V_led1.gain_valu
 gain_1200[(inst_module-1)*14 + (inst_sector-1)] = m_1200V_led1.gain_value;
 }
 pmt_qe_800_inst->SetBinContent(inst_module,inst_sector,m_800V_led1.qe_value);
-if (inst_qe1200 > 0)
+if (inst_qe1200 > 0.0)
 {
 pmt_qe_1200_inst->SetBinContent(inst_module,inst_sector,inst_qe1200);
 }
@@ -1669,14 +1672,11 @@ c30->Close();
 
 for (int i=1; i<= 16; i++)
 {
-int graph_size = 14;
-TGraphErrors *new_gain = new TGraphErrors(graph_size);
-TGraphErrors *old_gain = new TGraphErrors(graph_size);
 
 cout << "Reading new gain files for sector " << i << "..." << endl;
-read_newgain(new_gain, i , 1200);
+TGraphErrors *new_gain = read_newgain(i , 1200);
 cout << "Reading old gain array for sector " << i << "..." << endl;
-get_gain_sector(old_gain, gain_1200, egain_1200, i);
+TGraphErrors *old_gain = get_gain_sector(gain_1200, egain_1200, i);
 
 TCanvas *c31 = new TCanvas("c31","Canvas",0,29,1200,800);
 gStyle->SetOptStat(0);
@@ -1691,16 +1691,22 @@ gPad->SetRightMargin(0.20);
 gPad->SetTopMargin(0.01);
 gPad->SetFrameBorderMode(0);
 
-cout << "eY new " << new_gain->GetErrorY(1) << endl;
-cout << "eY old " << old_gain->GetErrorY(1) << endl;
+//cout << "output new_gain" << endl;
+//new_gain->Print();
+//cout << "output old_gain" << endl;
+//old_gain->Print();
 
 cout << "Drawning new values for sector " << i << "..." << endl;
-new_gain->SetTitle("TGraphErrors Example");
+new_gain->SetTitle("Commisioning Gain for 1200V");
 new_gain->SetMarkerColor(4);
 new_gain->SetMarkerStyle(21);
-new_gain->Draw("ALP");
+new_gain->SetMinimum(0);
+new_gain->Draw("AP");
 cout << "Drawning old values for sector " << i << "..." << endl;
-old_gain->Draw("ALP");
+old_gain->SetTitle("PMT test Gain for 1200V");
+old_gain->SetMarkerColor(2);
+old_gain->SetMarkerStyle(21);
+old_gain->Draw("P");
 
 std::stringstream ss;
 ss << i;

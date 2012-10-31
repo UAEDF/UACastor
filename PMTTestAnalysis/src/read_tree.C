@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <sstream>
 
 //root libs
 #include "TROOT.h"
@@ -13,6 +14,8 @@
 #include "TH1.h"
 #include "TH2.h"
 #include "TCanvas.h"
+#include "TGraphErrors.h"
+#include "TString.h"
 #include "TTree.h"
 #include "TFile.h"
 
@@ -30,6 +33,49 @@ struct measurement {
 	float qe_value;
 	float qe_error;
 };
+
+
+void read_newgain(TGraphErrors *s_gain, int sec, int hv)
+{
+// By Samantha Dooling
+//==============
+//    get the root files
+//==============
+
+char strRootFile[255]; char * RootFile = NULL;
+sprintf(strRootFile,"sec%d_%d.root",sec,hv );
+RootFile = strRootFile;
+
+TString filesdir("../data_new/");
+
+const int n = 4 ;
+TFile *f[n];
+f[0] = new TFile(filesdir + RootFile);
+
+//TGraphErrors *_s_gain[n];
+//TGraphErrors *_s_gain;
+
+//_s_gain[0] = (TGraphErrors*) f[0]->Get("gr_g;1");
+s_gain = (TGraphErrors*) f[0]->Get("gr_g;1");
+}
+
+void get_gain_sector(TGraphErrors *graph, double *gain, double *egain, int sec)
+{
+int n = 14;
+double x[n], y[n], ex[n], ey[n];
+
+for (int i=1; i <= 14; i++)
+{
+x[i] = i;
+ex[i] = 0;
+y[i] = gain[(i-1)*14 + (sec-1)];
+ey[i] = egain[(i-1)*14 + (sec-1)];
+cout << "Sector : " << sec << " Module : " << i << "  Gain = " << y[i] << " (" << ey[i] << ")" << endl;
+}
+
+graph = new TGraphErrors(n,x,y,ex,ey);
+
+}
 
 void set_inst_code(string pmt, int& module, int& sector, double& gain1200, double& qe1200)
 {
@@ -508,15 +554,15 @@ void read_tree(string *trees_in, int ini_file, int end_file)
   TH2F *measurements_old;
   TH2F *pmt_gain_1200_qe_old;
 
-  pmt_qe_800_old =  new TH2F("QE_800V_old","QE_800V_old;Sector;Module", 14,0,14,16,0,16);
-  pmt_gain_800_old =  new TH2F("Gain_800V_old","Gain_800V_old;Sector;Module", 14,0,14,16,0,16);
-  pmt_qe_1200_old =  new TH2F("QE_1200V_old","QE_1200V_old;Sector;Module", 14,0,14,16,0,16);
-  pmt_gain_1200_old =  new TH2F("Gain_1200V_old","Gain_1200V_old;Sector;Module", 14,0,14,16,0,16);
-  pmt_ratio_old =  new TH2F("Ratio_old","Ratio_old;Sector;Module", 14,0,14,16,0,16);
-  pmt_spikes_old =  new TH2F("Number_of_spikes_old","number_of_spikes_old;Sector;Module", 14,0,14,16,0,16);
-  pmt_bad_fits_old =  new TH2F("Number_of_bad_fits_old","number_of_bad_fits_old;Sector;Module", 14,0,14,16,0,16);
-  measurements_old =  new TH2F("Number_of_measurements_old","number_of_measurements_old;Sector;Module", 14,0,14,16,0,16);
-  pmt_gain_1200_qe_old =  new TH2F("PMT_gain_1200V_times_QE_old","PMT_gain_1200V_times_QE_old;Sector;Module", 14,0,14,16,0,16);
+  pmt_qe_800_old =  new TH2F("QE_800V_old","QE_800V_old;Module;Sector", 14,0,14,16,0,16);
+  pmt_gain_800_old =  new TH2F("Gain_800V_old","Gain_800V_old;Module;Sector", 14,0,14,16,0,16);
+  pmt_qe_1200_old =  new TH2F("QE_1200V_old","QE_1200V_old;Module;Sector", 14,0,14,16,0,16);
+  pmt_gain_1200_old =  new TH2F("Gain_1200V_old","Gain_1200V_old;Module;Sector", 14,0,14,16,0,16);
+  pmt_ratio_old =  new TH2F("Ratio_old","Ratio_old;Module;Sector", 14,0,14,16,0,16);
+  pmt_spikes_old =  new TH2F("Number_of_spikes_old","number_of_spikes_old;Module;Sector", 14,0,14,16,0,16);
+  pmt_bad_fits_old =  new TH2F("Number_of_bad_fits_old","number_of_bad_fits_old;Module;Sector", 14,0,14,16,0,16);
+  measurements_old =  new TH2F("Number_of_measurements_old","number_of_measurements_old;Module;Sector", 14,0,14,16,0,16);
+  pmt_gain_1200_qe_old =  new TH2F("PMT_gain_1200V_times_QE_old","PMT_gain_1200V_times_QE_old;Module;Sector", 14,0,14,16,0,16);
 
   TH2F *pmt_qe_800_new;
   TH2F *pmt_gain_800_new;
@@ -548,15 +594,26 @@ void read_tree(string *trees_in, int ini_file, int end_file)
   TH2F *measurements_inst;
   TH2F *pmt_gain_1200_qe_inst;
 
-  pmt_qe_800_inst =  new TH2F("QE_800V_inst","QE_800V_inst;Sector;Module", 14,0,14,16,0,16);
-  pmt_gain_800_inst =  new TH2F("Gain_800V_inst","Gain_800V_inst;Sector;Module", 14,0,14,16,0,16);
-  pmt_qe_1200_inst =  new TH2F("QE_1200V_inst","QE_1200V_inst;Sector;Module", 14,0,14,16,0,16);
-  pmt_gain_1200_inst =  new TH2F("Gain_1200V_inst","Gain_1200V_inst;Sector;Module", 14,0,14,16,0,16);
-  pmt_ratio_inst =  new TH2F("Ratio_inst","Ratio_inst;Sector;Module", 14,0,14,16,0,16);
-  pmt_spikes_inst =  new TH2F("Number_of_spikes_inst","number_of_spikes_inst;Sector;Module", 14,0,14,16,0,16);
-  pmt_bad_fits_inst =  new TH2F("Number_of_bad_fits_inst","number_of_bad_fits_inst;Sector;Module", 14,0,14,16,0,16);
-  measurements_inst =  new TH2F("Number_of_measurements_inst","number_of_measurements_inst;Sector;Module", 14,0,14,16,0,16);
-  pmt_gain_1200_qe_inst =  new TH2F("PMT_gain_1200V_times_QE_inst","PMT_gain_1200V_times_QE_inst;Sector;Module", 14,0,14,16,0,16);
+  pmt_qe_800_inst =  new TH2F("QE_800V_inst","QE_800V_inst;Module;Sector", 14,0,14,16,0,16);
+  pmt_gain_800_inst =  new TH2F("Gain_800V_inst","Gain_800V_inst;Module;Sector", 14,0,14,16,0,16);
+  pmt_qe_1200_inst =  new TH2F("QE_1200V_inst","QE_1200V_inst;Module;Sector", 14,0,14,16,0,16);
+  pmt_gain_1200_inst =  new TH2F("Gain_1200V_inst","Gain_1200V_inst;Module;Sector", 14,0,14,16,0,16);
+  pmt_ratio_inst =  new TH2F("Ratio_inst","Ratio_inst;Module;Sector", 14,0,14,16,0,16);
+  pmt_spikes_inst =  new TH2F("Number_of_spikes_inst","number_of_spikes_inst;Module;Sector", 14,0,14,16,0,16);
+  pmt_bad_fits_inst =  new TH2F("Number_of_bad_fits_inst","number_of_bad_fits_inst;Module;Sector", 14,0,14,16,0,16);
+  measurements_inst =  new TH2F("Number_of_measurements_inst","number_of_measurements_inst;Module;Sector", 14,0,14,16,0,16);
+  pmt_gain_1200_qe_inst =  new TH2F("PMT_gain_1200V_times_QE_inst","PMT_gain_1200V_times_QE_inst;Module;Sector", 14,0,14,16,0,16);
+
+//variables for the comparison
+    int array_size = 14 * 16;
+    double gain_1200[array_size];
+    double egain_1200[array_size];
+    
+    for (int i = 0; i < array_size-1; i++)
+    {
+    gain_1200[i] = 0.0;
+    egain_1200[i] = 0.0;
+    }
 
 for (int z=ini_file-1; z < end_file; z++)
 {
@@ -1027,13 +1084,16 @@ pmt_gain_1200_qe_new->SetBinContent(module,sector,m_1200V_led1.gain_value*m_1200
 if (inst_module > 0 and inst_sector > 0)
 {
 pmt_gain_800_inst->SetBinContent(inst_module,inst_sector,m_800V_led1.gain_value);
+egain_1200[(inst_module-1)*14 + (inst_sector-1)] = m_1200V_led1.gain_error;
 if (inst_gain1200 > 0)
 {
 pmt_gain_1200_inst->SetBinContent(inst_module,inst_sector,inst_gain1200);
+gain_1200[(inst_module-1)*14 + (inst_sector-1)] = inst_gain1200;
 }
 else
 {
 pmt_gain_1200_inst->SetBinContent(inst_module,inst_sector,m_1200V_led1.gain_value);
+gain_1200[(inst_module-1)*14 + (inst_sector-1)] = m_1200V_led1.gain_value;
 }
 pmt_qe_800_inst->SetBinContent(inst_module,inst_sector,m_800V_led1.qe_value);
 if (inst_qe1200 > 0)
@@ -1606,5 +1666,45 @@ pmt_bad_fits_inst->Draw("text same");
 c30->Print("Bad_fits_inst.png");
 c30->Close();
 
+
+for (int i=1; i<= 16; i++)
+{
+int graph_size = 14;
+TGraphErrors *new_gain = new TGraphErrors(graph_size);
+TGraphErrors *old_gain = new TGraphErrors(graph_size);
+
+cout << "Reading new gain files for sector " << i << "..." << endl;
+read_newgain(new_gain, i , 1200);
+cout << "Reading old gain array for sector " << i << "..." << endl;
+get_gain_sector(old_gain, gain_1200, egain_1200, i);
+
+TCanvas *c31 = new TCanvas("c31","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+cout << "eY new " << new_gain->GetErrorY(1) << endl;
+cout << "eY old " << old_gain->GetErrorY(1) << endl;
+
+cout << "Drawning new values for sector " << i << "..." << endl;
+new_gain->Draw("ALP");
+cout << "Drawning old values for sector " << i << "..." << endl;
+old_gain->Draw("ALP");
+
+std::stringstream ss;
+ss << i;
+TString fileout = "sector_comparison_" + ss.str() + ".png";
+c31->Print(fileout);
+c31->Close();
+
+}
 
 }

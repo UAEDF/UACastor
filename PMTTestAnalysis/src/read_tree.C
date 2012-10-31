@@ -1695,6 +1695,9 @@ cout << "eY new " << new_gain->GetErrorY(1) << endl;
 cout << "eY old " << old_gain->GetErrorY(1) << endl;
 
 cout << "Drawning new values for sector " << i << "..." << endl;
+new_gain->SetTitle("TGraphErrors Example");
+new_gain->SetMarkerColor(4);
+new_gain->SetMarkerStyle(21);
 new_gain->Draw("ALP");
 cout << "Drawning old values for sector " << i << "..." << endl;
 old_gain->Draw("ALP");

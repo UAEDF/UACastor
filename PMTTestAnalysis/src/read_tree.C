@@ -18,6 +18,7 @@
 #include "TString.h"
 #include "TTree.h"
 #include "TFile.h"
+#include "TLegend.h"
 
 struct measurement {
 	int points;
@@ -138,7 +139,7 @@ if ( pmt == "BA0364" ) { sector = 5;  module = 4; }
 if ( pmt == "BA0264" ) { sector = 6;  module = 4; }
 if ( pmt == "BA0360" ) { sector = 7;  module = 4; }
 if ( pmt == "BA0288" ) { sector = 8;  module = 4; }
-if ( pmt == "BA    " ) { sector = 9;  module = 4; }
+if ( pmt == "BA0403" ) { sector = 9;  module = 4; }
 if ( pmt == "BA0339" ) { sector = 10; module = 4; }
 if ( pmt == "BA0355" ) { sector = 11; module = 4; }
 if ( pmt == "BA0265" ) { sector = 12; module = 4; }
@@ -1670,6 +1671,11 @@ c30->Print("Bad_fits_inst.png");
 c30->Close();
 
 
+double x = 0.0,y = 0.0;
+
+TH2F *pmt_gain_1200_com;
+pmt_gain_1200_com =  new TH2F("Gain_1200V_com","Gain_1200V_inst;Module;Sector", 14,0,14,16,0,16);
+
 for (int i=1; i<= 16; i++)
 {
 
@@ -1695,25 +1701,54 @@ gPad->SetFrameBorderMode(0);
 //new_gain->Print();
 //cout << "output old_gain" << endl;
 //old_gain->Print();
-
+for (int j=1; j <= 14; j++)
+{
+new_gain->GetPoint(j,x,y);
+pmt_gain_1200_com->SetBinContent(j,i,y);
+}
 cout << "Drawning new values for sector " << i << "..." << endl;
-new_gain->SetTitle("Commisioning Gain for 1200V;Gain;Module");
-new_gain->SetMarkerColor(4);
+new_gain->SetTitle("Commisioning Gain for 1200V;Module;Gain");
+new_gain->SetMarkerColor(2);
 new_gain->SetMarkerStyle(21);
 new_gain->SetMinimum(0);
 new_gain->Draw("AP");
 cout << "Drawning old values for sector " << i << "..." << endl;
 old_gain->SetTitle("PMT test Gain for 1200V");
-old_gain->SetMarkerColor(2);
+old_gain->SetMarkerColor(4);
 old_gain->SetMarkerStyle(21);
 old_gain->Draw("P");
+
+TLegend *leg01 = new TLegend(0.13, 0.98, 0.50, .88);
+leg01->AddEntry(new_gain,"Commissioning Gain for 1200V","p");
+leg01->AddEntry(old_gain,"PMT test Gain for 1200V","p");
+leg01->SetFillColor(0);
+leg01->SetLineWidth(1);
+leg01->SetLineColor(0);
+leg01->SetFillStyle(1001);
+leg01->Draw();
 
 std::stringstream ss;
 ss << i;
 TString fileout = "sector_comparison_" + ss.str() + ".png";
 c31->Print(fileout);
 c31->Close();
-
 }
 
+TCanvas *c32 = new TCanvas("c32","Canvas",0,29,1200,800);
+gStyle->SetOptStat(0);
+gStyle->SetOptTitle(kFALSE);
+gStyle->SetPalette(1);
+gStyle->SetPaintTextFormat("3.2g");
+gPad->SetFillColor(0);
+gPad->SetBorderMode(0);
+gPad->SetBorderSize(2);
+gPad->SetLeftMargin(0.10);
+gPad->SetRightMargin(0.20);
+gPad->SetTopMargin(0.01);
+gPad->SetFrameBorderMode(0);
+
+pmt_gain_1200_com->Draw("colz");
+pmt_gain_1200_com->Draw("text same");
+c32->Print("Gain_1200_commissioning.png");
+c32->Close();
 }

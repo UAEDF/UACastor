@@ -40,7 +40,7 @@ struct chi2 {
 	float c_1800V;
 };
 
-float chi2_threshold = 200.0;
+float chi2_threshold = 25.0;
 
 void spike_check(float point, std::vector<float> *vec_cath, int& spike)
 {
@@ -188,10 +188,10 @@ if (pmt == "CA1577") { sector = 8;  module = 8;  set = 1; }
 if (pmt == "CA1657") { sector = 9;  module = 8;  set = 1; }
 if (pmt == "CA0787") { sector = 10; module = 8;  set = 1; }
 if (pmt == "CA1591") { sector = 11; module = 8;  set = 1; }
-if (pmt == "CA0847") { sector = 12; module = 8;  set = 1; }
-if (pmt == "CA1300") { sector = 5;  module = 9;  set = 1; }
-if (pmt == "CA1884") { sector = 6;  module = 9;  set = 1; }
-if (pmt == "CA0930") { sector = 7;  module = 9;  set = 1; }
+if (pmt == "CA0847") { sector = 5;  module = 9;  set = 1; }
+if (pmt == "CA1300") { sector = 6;  module = 9;  set = 1; }
+if (pmt == "CA1884") { sector = 7;  module = 9;  set = 1; }
+if (pmt == "CA0930") { sector = 8;  module = 9;  set = 1; }
 if (pmt == "CA0656") { sector = 9;  module = 9;  set = 1; }
 if (pmt == "CA1273") { sector = 10; module = 9;  set = 1; }
 if (pmt == "CA1828") { sector = 11; module = 9;  set = 1; }
@@ -220,7 +220,7 @@ if (pmt == "CA0400") { sector = 13; module = 7;  set = 1; }
 if (pmt == "CA1016") { sector = 1;  module = 8;  set = 1; }
 if (pmt == "CA1548") { sector = 4;  module = 10; set = 1; }
 if (pmt == "CA1852") { sector = 2;  module = 9;  set = 1; }
-if (pmt == "CA0267") { sector = 6;  module = 8;  set = 1; }
+if (pmt == "CA0267") { sector = 3;  module = 8;  set = 1; }
 if (pmt == "CA2115") { sector = 14; module = 7;  set = 1; }
 if (pmt == "CA1881") { sector = 16; module = 7;  set = 1; }
 if (pmt == "CA1363") { sector = 4;  module = 9;  set = 1; }

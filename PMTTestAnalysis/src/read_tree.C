@@ -207,7 +207,7 @@ if ( pmt == "CA1501" ) { sector = 9;  module = 8; }
 if ( pmt == "CA1530" ) { sector = 10; module = 8; }
 if ( pmt == "CA0979" ) { sector = 11; module = 8; }
 if ( pmt == "CA1143" ) { sector = 12; module = 8; }
-if ( pmt == "CA0847" ) { sector = 13; module = 8; }
+if ( pmt == "CA0847" ) { sector = 5;  module = 9; }
 if ( pmt == "CA1680" ) { sector = 14; module = 8; }
 if ( pmt == "CA1844" ) { sector = 15; module = 8; }
 if ( pmt == "CA0811" ) { sector = 16; module = 8; }
@@ -364,9 +364,9 @@ if (sector == 9  and module == 8  and set == 1) { pmt = "CA1657"; }
 if (sector == 10 and module == 8  and set == 1) { pmt = "CA0787"; }
 if (sector == 11 and module == 8  and set == 1) { pmt = "CA1591"; }
 if (sector == 12 and module == 8  and set == 1) { pmt = "CA0847"; }
-if (sector == 5  and module == 9  and set == 1) { pmt = "CA1300"; }
-if (sector == 6  and module == 9  and set == 1) { pmt = "CA1884"; }
-if (sector == 7  and module == 9  and set == 1) { pmt = "CA0930"; }
+if (sector == 6  and module == 9  and set == 1) { pmt = "CA1300"; }
+if (sector == 7  and module == 9  and set == 1) { pmt = "CA1884"; }
+if (sector == 8  and module == 9  and set == 1) { pmt = "CA0930"; }
 if (sector == 9  and module == 9  and set == 1) { pmt = "CA0656"; }
 if (sector == 10 and module == 9  and set == 1) { pmt = "CA1273"; }
 if (sector == 11 and module == 9  and set == 1) { pmt = "CA1828"; }
@@ -414,11 +414,12 @@ if (sector == 5  and module == 11 and set == 1) { pmt = "CA1444"; }
 if (sector == 11 and module == 10 and set == 1) { pmt = "CA1490"; }
 if (sector == 12 and module == 10 and set == 1) { pmt = "CA1790"; }
 if (sector == 5  and module == 12 and set == 1) { pmt = "CA1676"; }
+if (sector == 3  and module == 8  and set == 1) { pmt = "CA0267"; }
+if (sector == 6  and module == 8  and set == 1) { pmt = "CA1992"; }
+
 
 //problematic ones
-if (sector == 8  and module == 3  and set == 1) { pmt = "CA0267"; }
-if (sector == 8  and module == 6  and set == 1) { pmt = "CA0796"; }
-if (sector == 6  and module == 8  and set == 1) { pmt = "CA1992"; }
+
 
 //testpmt
 if (sector == 1  and module == 1  and set == 3) { pmt = "CA2000"; }

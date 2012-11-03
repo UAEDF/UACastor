@@ -173,7 +173,7 @@ if (pmt == "CA1655") { sector = 9;  module = 6;  set = 1; }
 if (pmt == "CA1525") { sector = 10; module = 6;  set = 1; }
 if (pmt == "CA1966") { sector = 11; module = 6;  set = 1; }
 if (pmt == "CA2046") { sector = 12; module = 6;  set = 1; }
-if (pmt == "CA1530") { sector = 5;  module = 7;  set = 1; }
+if (pmt == "CA1530") { sector = 15; module = 7;  set = 1; }
 if (pmt == "CA1501") { sector = 6;  module = 7;  set = 1; }
 if (pmt == "CA1979") { sector = 7;  module = 7;  set = 1; }
 if (pmt == "CA1808") { sector = 8;  module = 7;  set = 1; }
@@ -208,7 +208,7 @@ if (pmt == "CA2045") { sector = 16; module = 10; set = 1; }
 if (pmt == "CA1636") { sector = 2;  module = 8;  set = 1; }
 if (pmt == "CA1576") { sector = 13; module = 9;  set = 1; }
 if (pmt == "CA2020") { sector = 3;  module = 7;  set = 1; }
-if (pmt == "CA0745") { sector = 13; module = 7;  set = 1; }
+if (pmt == "CA0745") { sector = 13; module = 8;  set = 1; }
 if (pmt == "CA0675") { sector = 14; module = 9;  set = 1; }
 if (pmt == "CA1229") { sector = 1;  module = 7;  set = 1; }
 if (pmt == "CA0749") { sector = 2;  module = 11; set = 1; }

@@ -207,7 +207,7 @@ if ( pmt == "CA1501" ) { sector = 9;  module = 8; }
 if ( pmt == "CA1530" ) { sector = 10; module = 8; }
 if ( pmt == "CA0979" ) { sector = 11; module = 8; }
 if ( pmt == "CA1143" ) { sector = 12; module = 8; }
-if ( pmt == "CA0847" ) { sector = 5;  module = 9; }
+if ( pmt == "CA0847" ) { sector = 13; module = 8; }
 if ( pmt == "CA1680" ) { sector = 14; module = 8; }
 if ( pmt == "CA1844" ) { sector = 15; module = 8; }
 if ( pmt == "CA0811" ) { sector = 16; module = 8; }
@@ -349,7 +349,7 @@ if (sector == 9  and module == 6  and set == 1) { pmt = "CA1655"; }
 if (sector == 10 and module == 6  and set == 1) { pmt = "CA1525"; }
 if (sector == 11 and module == 6  and set == 1) { pmt = "CA1966"; }
 if (sector == 12 and module == 6  and set == 1) { pmt = "CA2046"; }
-if (sector == 5  and module == 7  and set == 1) { pmt = "CA1530"; }
+if (sector == 15 and module == 7  and set == 1) { pmt = "CA1530"; }
 if (sector == 6  and module == 7  and set == 1) { pmt = "CA1501"; }
 if (sector == 7  and module == 7  and set == 1) { pmt = "CA1979"; }
 if (sector == 8  and module == 7  and set == 1) { pmt = "CA1808"; }
@@ -363,7 +363,7 @@ if (sector == 8  and module == 8  and set == 1) { pmt = "CA1577"; }
 if (sector == 9  and module == 8  and set == 1) { pmt = "CA1657"; }
 if (sector == 10 and module == 8  and set == 1) { pmt = "CA0787"; }
 if (sector == 11 and module == 8  and set == 1) { pmt = "CA1591"; }
-if (sector == 12 and module == 8  and set == 1) { pmt = "CA0847"; }
+if (sector == 5  and module == 9  and set == 1) { pmt = "CA0847"; }
 if (sector == 6  and module == 9  and set == 1) { pmt = "CA1300"; }
 if (sector == 7  and module == 9  and set == 1) { pmt = "CA1884"; }
 if (sector == 8  and module == 9  and set == 1) { pmt = "CA0930"; }
@@ -383,7 +383,7 @@ if (sector == 16 and module == 10 and set == 1) { pmt = "CA2045"; }
 if (sector == 2  and module == 8  and set == 1) { pmt = "CA1636"; }
 if (sector == 13 and module == 9  and set == 1) { pmt = "CA1576"; }
 if (sector == 3  and module == 7  and set == 1) { pmt = "CA2020"; }
-if (sector == 13 and module == 7  and set == 1) { pmt = "CA0745"; }
+if (sector == 13 and module == 8  and set == 1) { pmt = "CA0745"; }
 if (sector == 14 and module == 9  and set == 1) { pmt = "CA0675"; }
 if (sector == 1  and module == 7  and set == 1) { pmt = "CA1229"; }
 if (sector == 2  and module == 11 and set == 1) { pmt = "CA0749"; }
@@ -416,9 +416,7 @@ if (sector == 12 and module == 10 and set == 1) { pmt = "CA1790"; }
 if (sector == 5  and module == 12 and set == 1) { pmt = "CA1676"; }
 if (sector == 3  and module == 8  and set == 1) { pmt = "CA0267"; }
 if (sector == 6  and module == 8  and set == 1) { pmt = "CA1992"; }
-
-
-//problematic ones
+if (sector == 8  and module == 6  and set == 1) { pmt = "CA0796"; }
 
 
 //testpmt

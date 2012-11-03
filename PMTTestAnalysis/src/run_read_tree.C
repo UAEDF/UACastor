@@ -3,7 +3,7 @@ void run_read_tree()
 gROOT -> Reset();
 gROOT -> ProcessLine(".L read_tree.C++");
 
-string trees_in[35];
+string trees_in[30];
 
 //old pmts
 trees_in[0]  = "PMT_test_2012_old_group1.root";  // measurements 1 to 41 - done
@@ -12,8 +12,8 @@ trees_in[2]  = "PMT_test_2012_old_group3.root";  // measurements 67 to 74 - done
 trees_in[3]  = "PMT_test_2012_old_group4.root";  // measurements 75 to 82 - done
 trees_in[4]  = "PMT_test_2012_old_group5.root";  // measurements 83 to 91 - done
 trees_in[5]  = "PMT_test_2012_old_group6.root";  // measurements 92 to 101 - done
-trees_in[6]  = "PMT_test_2012_old_group6b.root";  // measurements 102 to 111 - running
-trees_in[7]  = "PMT_test_2012_old_group8.root";  // measurements 112 to 122 - running
+trees_in[6]  = "PMT_test_2012_old_group7.root";  // measurements 102 to 111 - done
+trees_in[7]  = "PMT_test_2012_old_group8.root";  // measurements 112 to 122 - done
 trees_in[8]  = "PMT_test_2012_old_group9.root";  // measurements 123 to 129 - done
 trees_in[9]  = "PMT_test_2012_old_group10.root"; // measurements 130 to 135 - done
 trees_in[10] = "PMT_test_2012_old_group11.root"; // measurements 136 to 149 - done
@@ -41,11 +41,8 @@ trees_in[28] = "PMT_test_2012_new_group13.root"; // measurements 319 to 324 - do
 //test pmt
 trees_in[29] = "PMT_test_2012_testpmt.root";     // measurement 175 to 176 - done
 
-//fixes
-trees_in[30] = "PMT_test_2012_old_fix.root";     // some fixes in the positions
-
 int ini_file = 1;
-int end_file = 28;
+int end_file = 30;
 
 read_tree(trees_in, ini_file, end_file);
 }

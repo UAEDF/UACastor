@@ -173,7 +173,7 @@ if (pmt == "CA1655") { sector = 9;  module = 6;  set = 1; }
 if (pmt == "CA1525") { sector = 10; module = 6;  set = 1; }
 if (pmt == "CA1966") { sector = 11; module = 6;  set = 1; }
 if (pmt == "CA2046") { sector = 12; module = 6;  set = 1; }
-if (pmt == "CA1530") { sector = 15; module = 7;  set = 1; }
+if (pmt == "CA1530") { sector = 5;  module = 7;  set = 1; }
 if (pmt == "CA1501") { sector = 6;  module = 7;  set = 1; }
 if (pmt == "CA1979") { sector = 7;  module = 7;  set = 1; }
 if (pmt == "CA1808") { sector = 8;  module = 7;  set = 1; }

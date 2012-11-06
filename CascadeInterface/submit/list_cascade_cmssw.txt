@@ -1,1 +1,0 @@
-bsub -q 2nd -R "pool>10000" 'submitBatch_cascade_cmssw.csh Cascade2_CMS_FWD_10_011_rivet_cfg.py'
